@@ -1,0 +1,19 @@
+<html>
+  <header>
+  </header>
+  <body>
+    <script type='text/javascript'>
+      (async function() {
+        let mem = new WebAssembly.Memory({ initial: 1 })
+        let table = new WebAssembly.Table({ initial: 1, element: "anyfunc" })
+        let {module, instance} = await fetch('mem.wasm')
+          .then(res => res.arrayBuffer())
+          .then(arrayBuffer => WebAssembly.instantiate(arrayBuffer, { js: { mem, table } }))
+        console.log(instance)
+        instance.exports.main()
+      })()
+    </script>
+    <script src="mem.wasabi.js"></script>
+    <script src="watch-mem.js"></script>
+  </body>
+</html>
