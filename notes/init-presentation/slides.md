@@ -463,7 +463,7 @@ I did not deeply investigate where there is room for further optimisation
 
 # How to instrument the wasm
 
-Wasabi seems to provide almost all features I need.
+Wasabi seems to provide all features I need.
 * `EVT called` in wasabi: `start`
 * `EVT exit_func` in wasabi: `return_`
 * `EVT call` in wasabi: `call_pre`
