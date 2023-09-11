@@ -187,7 +187,8 @@ layout: two-cols
 
 Trace:
 ```
-EVT called, $a, params 1, memory nil
+EVT called, $a, params 1, mem nil
+EVT exit_func, $a, mem nil
 ```
 
 Generated js:
@@ -255,6 +256,7 @@ layout: two-cols
 Trace:
 ```
 EVT called, $a, params nil, mem [ ... ]
+EVT exit_func, $a, mem [ ... ]
 ```
 
 Generated js:
@@ -324,6 +326,7 @@ layout: two-cols
 Trace:
 ```
 EVT called, $a, params nil, tables 0 $c
+EVT exit_func, $a, tables 0 $c
 ```
 
 Generated js:
@@ -440,7 +443,7 @@ EVT called, $a, params nil, mem [ ... ]
 EVT call, caller $a, callee $b, params nil, mem [ ... ]
 EVT called, $b, params nil, mem [ ... ]
 EVT exit_func, $b, mem [ ... ]
-EVT return,, return nil, mem [ ... ]
+EVT return, return nil, mem [ ... ]
 ```
 
 Generated js:
@@ -464,7 +467,7 @@ I did not deeply investigate where there is room for further optimisation
 # How to instrument the wasm
 
 Wasabi seems to provide all features I need.
-* `EVT called` in wasabi: `start`
+* `EVT called` in wasabi: `begin` (if type == "function")
 * `EVT exit_func` in wasabi: `return_`
 * `EVT call` in wasabi: `call_pre`
 * `EVT return` in wasabi: `call_post`
@@ -474,6 +477,8 @@ Inside of the hooks we can access exported table and memory like this.
 Wasabi.module.exports.table
 Wasabi.module.exports.memory
 ```
+
+2.0 features like `Multiple tables` and `Multiple values` seem to be supported
 
 ---
 layout: end
