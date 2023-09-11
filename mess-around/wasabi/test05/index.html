@@ -1,0 +1,17 @@
+<html>
+  <header>
+  </header>
+  <body>
+    <script type='text/javascript'>
+      (async function() {
+        let {module, instance} = await fetch('hooks.wasm')
+          .then(res => res.arrayBuffer())
+          .then(arrayBuffer => WebAssembly.instantiate(arrayBuffer, {}))
+        console.log(instance)
+        instance.exports.main()
+      })()
+    </script>
+    <script src="hooks.wasabi.js"></script>
+    <script src="try_hooks.js"></script>
+  </body>
+</html>
