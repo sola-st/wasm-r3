@@ -143,7 +143,7 @@ layout: two-cols
     )
     (func $a (result i32)
         i32.const 0
-        call $import ;; returns 1
+        call $b ;; returns 1
     )
 )
 ```
@@ -209,7 +209,7 @@ layout: two-cols
         i32.const 1234
         i32.const 42
         i32.store
-        call $import
+        call $b
         i32.const 1234
         i32.load ;; returns 69
     )
@@ -276,12 +276,12 @@ layout: two-cols
     (func $a
         i32.const 0
         call_indirect ;; calls $b
-        call $import
+        call $d
         i32.const 0
         call_indirect ;; calls $c
     )
-    (func $a (export "b"))
-    (func $b (export "c"))
+    (func $b (export "b"))
+    (func $c (export "c"))
     (table $table (export "table") 1))
     (elem $table (i32.const 0) $b)
 )
@@ -296,8 +296,8 @@ EVT return, return nil, tables 0 $c
 ```
 Generated js:
 ```js
-function c() {
-    instance.exports.table.modify.set(0, instance.exports.b)
+function d() {
+    instance.exports.table.modify.set(0, instance.exports.c)
 }
 ```
 
@@ -314,8 +314,8 @@ layout: two-cols
         i32.const 0
         call_indirect ;; calls $c
     )
-    (func $a (export "b"))
-    (func $b (export "c"))
+    (func $b (export "b"))
+    (func $c (export "c"))
     (table $table (export "table") 1))
     (elem $table (i32.const 0) $b)
 )
@@ -351,10 +351,10 @@ Nondeterministic host functions
         i32.const 1234
         i32.const 42
         i32.store
-        call $a
+        call $b
         i32.const 1234
         i32.load ;; returns 69
-        call $a
+        call $b
         i32.const 1234
         i32.load ;; returns 420
     )
@@ -377,6 +377,7 @@ function b() {
             instance.exports.mem[1234] = 420
             break
     }
+    callCounter_b++:
 }
 ```
 
@@ -398,16 +399,16 @@ layout: two-cols
 (module
     (import $c "js" "c")
     (func $a (export "a")
-        i32.const 42
         i32.const 1234
+        i32.const 42
         i32.store
         call $c
         i32.const 1234
         i32.load ;; returns 69
     )
     (func $b (export "b")
-        i32.const 69
         i32.const 1234
+        i32.const 69
         i32.store
     )
     (memory (export "mem") 1))
@@ -427,7 +428,7 @@ instance.exports.a()
 Trace:
 ```
 EVT called, $a, params nil, mem [ ... ]
-EVT call, caller $a, callee $b, params nil, mem [ ... ]
+EVT call, caller $a, callee $c, params nil, mem [ ... ]
 EVT called, $b, params nil, mem [ ... ]
 EVT exit_func, $b, mem [ ... ]
 EVT return, return nil, mem [ ... ]
@@ -440,7 +441,7 @@ EVT return, return nil, mem [ ... ]
 Trace:
 ```
 EVT called, $a, params nil, mem [ ... ]
-EVT call, caller $a, callee $b, params nil, mem [ ... ]
+EVT call, caller $a, callee $c, params nil, mem [ ... ]
 EVT called, $b, params nil, mem [ ... ]
 EVT exit_func, $b, mem [ ... ]
 EVT return, return nil, mem [ ... ]
