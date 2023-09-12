@@ -1,0 +1,168 @@
+<!DOCTYPE>
+<html>
+  <header>
+    
+  </header>
+  <body>
+    <h1>This is a test</h1>
+    <button id='logCallHistory'>Log call history</button>
+    <h2>What happens??</h2>
+    <li>
+      <ul>
+        Call of "main"(3) in wasm
+      </ul>
+      <ul>
+        "main"(3) calls imported function "func1"(0) => push "func1"(0) onto callHistory
+      </ul>
+      <ul>
+        "func1"(0) calls exported function "exportFunc"(5) => add "call_wasm" event to youngest function on callHistory
+      </ul>
+      <ul>
+        "exportFunc"(5) calls imported function "changeMem"(2) => push "changeMem"(2) onto callHistory
+      </ul>
+      <ul>
+        "changeMem"(2) alters the memory
+      </ul>
+      <ul>
+        "changeMem"(2) returns. We are again in "exportedFunc"(5) => add "return values" to youngest function that did not return yet on callHistory, hence to "changeMem"(2)
+      </ul>
+      <ul>
+        "exportedFunc"(5) returns. We are again in "func1"(0)
+      </ul>
+      <ul>
+        "func1" calls "changeMem"(2)
+      </ul>
+      <ul>
+        "changeMem"(2) alters the memory the same as before (redundant)
+      </ul>
+      <ul>
+        "changeMem"(2) returns. We are again in "func1"(0)
+      </ul>
+      <ul>
+        "func1"(0) returns with result 0. We are again in "main"(3) => add "return values" to youngest function that did not return yet on callHistory, hence to "func1"(0)
+      </ul>
+      <ul>
+        "main"(3) calls "testChangeMem"(4)
+      </ul>
+      <ul>
+        "testChangeMem"(6) loads a value from memory => detect a memory change through "shadowMemory". add "change_mem" event to youngest function on callHistory
+      </ul>
+      <ul>
+        "testChangeMem"(6) returns. We are again in "main"(3)
+      </ul>
+      <ul>
+        "main"(3) calls imported function "func2"(1) => push "func2"(1) onto callHistory
+      </ul>
+      <ul>
+        "func2"(1) returns. We are again in "main"(3) => add "return values" (empty array) to youngest function that did not return yet on callHistory, hence to "func2"(1)
+      </ul>
+      <ul>
+       "main" call "randomFunc"(4), "randomFunc" returns, nothing happens
+      </ul>
+      <ul>
+        "main"(3) calls imported function "func1"(0) => push "func1"(0) onto callHistory
+      </ul>
+      <ul>
+        "func1"(0) calls exported function "exportFunc"(5) => add "call_wasm" event to youngest function on callHistory
+      </ul>
+      <ul>
+        "exportFunc"(5) calls imported function "changeMem"(2) => push "changeMem"(2) onto callHistory
+      </ul>
+      <ul>
+        "changeMem"(2) alters the memory but it is already altered (redundant)
+      </ul>
+      <ul>
+        "changeMem"(2) returns. We are again in "exportedFunc"(5) => add "return values" to youngest function that did not return yet on callHistory, hence to "changeMem"(2)
+      </ul>
+      <ul>
+        "exportedFunc"(5) returns. We are again in "func1"(0)
+      </ul>
+      <ul>
+        "func1" calls "changeMem"(2)
+      </ul>
+      <ul>
+        "changeMem"(2) alters the memory the same as before (redundant)
+      </ul>
+      <ul>
+        "changeMem"(2) returns. We are again in "func1"(0)
+      </ul>
+      <ul>
+        "func1"(0) returns with result 0. We are again in "main"(3) => add "return values" to youngest function that did not return yet on callHistory, hence to "func1"(0)
+      </ul>
+      <ul>
+        again "testChangeMem"(6) gets called this time nothing happens because the memory was already altered
+      </ul>
+      <ul>
+        "main"(3) calls imported function "func1"(0) => push "func1"(0) onto callHistory
+      </ul>
+      <ul>
+        "func1"(0) calls exported function "exportFunc"(5) => add "call_wasm" event to youngest function on callHistory
+      </ul>
+      <ul>
+        "exportFunc"(5) calls imported function "changeMem"(2) => push "changeMem"(2) onto callHistory
+      </ul>
+      <ul>
+        "changeMem"(2) alters the memory but it is already altered (redundant)
+      </ul>
+      <ul>
+        "changeMem"(2) returns. We are again in "exportedFunc"(5) => add "return values" to youngest function that did not return yet on callHistory, hence to "changeMem"(2)
+      </ul>
+      <ul>
+        "exportedFunc"(5) returns. We are again in "func1"(0)
+      </ul>
+      <ul>
+        "func1" calls "changeMem"(2)
+      </ul>
+      <ul>
+        "changeMem"(2) alters the memory the same as before (redundant)
+      </ul>
+      <ul>
+        "changeMem"(2) returns. We are again in "func1"(0)
+      </ul>
+      <ul>
+        "func1"(0) returns with result 0. We are again in "main"(3) => add "return values" to youngest function that did not return yet on callHistory, hence to "func1"(0)
+      </ul>
+      <ul>
+        "main"(3) returns
+      </ul>
+    </li>
+  </body>
+  <script>
+  let wasm
+  (async function() {
+    const changeMem = () => {
+      let view = new Int32Array(wasm.instance.exports.mem.buffer)
+      view[0] = 69
+    }
+    const func1 = (a, b) => {
+      wasm.instance.exports.exportFunc()
+      if (a == 0 && b == 0) {
+        return 1
+      }
+      changeMem()
+      if (a != 0 && b == 0) {
+        return 2
+      }
+      return 3
+    }
+    const func2 = () => {}
+  
+    let imports = {
+      'js': {
+        changeMem,
+        func1,
+        func2,
+      }
+    }
+    wasm = await fetch('main.wasm')
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => WebAssembly.instantiate(arrayBuffer, imports))
+    wasm.instance.exports.main()
+    })()
+    document.getElementById('logCallHistory').addEventListener('click', () => {
+      console.log(callHistory)
+    })
+  </script>
+  <script src="./main.wasabi.js"></script>
+  <script src='./tracer.js'></script>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE>
+<html>
+  <header>
+    
+  </header>
+  <body>
+    <h1>This is a test</h1>
+  </body>
+  <script>
+  let wasm
+  (async function() {
+    const func1 = (a, b) => {
+      wasm.instance.exports.exportFunc()
+      if (a == 0 && b == 0) {
+        return 1
+      }
+      if (a != 0 && b == 0) {
+        return 2
+      }
+      return 3
+    }
+    const func2 = () => {}
+      
+    let imports = {
+      'js': {
+        func1,
+        func2,
+      }
+    }
+    wasm = await fetch('main.wasm')
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => WebAssembly.instantiate(arrayBuffer, imports))
+    wasm.instance.exports.main()
+    console.log(callHistory)
+    })()
+  </script>
+  <script src="./main.wasabi.js"></script>
+  <script src='./tracer.js'></script>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE>
+<html>
+  <header>
+    
+  </header>
+  <body>
+    <h1>This is a test</h1>
+    <button id='testChangeMem'>Test changeMem</button>
+    <button id='logTrace'>Log Trace</button>
+  </body>
+  <script>
+  let wasm
+  (async function() {
+    const changeMem = () => {
+      let view = new Int32Array(wasm.instance.exports.mem.buffer)
+      view[0] = 69
+    }
+      
+    let imports = {
+      'js': {
+        changeMem,
+      }
+    }
+    wasm = await fetch('main.wasm')
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => WebAssembly.instantiate(arrayBuffer, imports))
+    })()
+    document.getElementById('testChangeMem').addEventListener('click', () => {
+      wasm.instance.exports.testChangeMem()
+    })
+    document.getElementById('logTrace').addEventListener('click', () => {
+      console.log(trace)
+    })
+  </script>
+  <script src="./main.wasabi.js"></script>
+  <script src='./tracer.js'></script>
+</html>
