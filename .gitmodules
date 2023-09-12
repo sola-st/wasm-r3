@@ -1,0 +1,3 @@
+[submodule "poc/tictactoe-game-wasm"]
+	path = poc/tictactoe-game-wasm
+	url = git@github.com:yusungsim/tictactoe-game-wasm.git
