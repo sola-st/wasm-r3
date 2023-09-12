@@ -8,12 +8,15 @@ traces of WASM interacting with host environment (JS).
 
 1. Target WASM app
 
+Init and update the git submodules to pull the `tictactoe-game-wasm`. The
+submodule targets [tictactoe
+game](https://github.com/yusungsim/tictactoe-game-wasm) repo.
+
 The `tictactoe-game-wasm` directory contains a WASM web app of tic-tac-toe game.
 It's forked from [arwalokhandwala's
 repo](https://github.com/arwalokhandwala/tictactoe-game-wasm).
 The directory already contains the instrumented codes.
 
-Init and update the git submodules to pull the `tictactoe-game-wasm`.
 
 1. Instrumenting the WASM binary
 
