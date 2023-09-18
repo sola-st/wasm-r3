@@ -65,6 +65,9 @@ function imported_function() {
 We need to know in which order certain events happened in the host function!
 
 ## Solution
+Tracing whenever a function in wasm is entered. That way we know later if a specific memory store happened before a certain function call or after.
+
+<!-- ## Solution
 My solution involves a specific trace design:
 The trace will be a `list` which contains information of the call history of all called **imported** functions.
 
@@ -76,7 +79,8 @@ The trace will be a `list` which contains information of the call history of all
 * When we enter a function in wasm which gets exported **AND** there is somewhere in our call history a function object which doesnt have return values, we add a `wasm_call` event to the last function object in our call history that does **not** have return values.
 
 The specific steps work simillar for tables. We need to pay attention here on the `call_indirect` instruction.\
-Again, we might have many redundant instructions in our replay binary with this strategy, but the algorithm overall should be sound for what it is intended.
+Again, we might have many redundant instructions in our replay binary with this strategy, but the algorithm overall should be sound for what it is intended. -->
 
-## Open questions
-How to handle memory and table resizing?
+
+## A Third Problem
+Wasabi does not suppot table.set instructions and the new memory./table.init/copy/fill yet. In order to implement our approach we need to extend Wasabi with that functionality.
