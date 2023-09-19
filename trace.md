@@ -4,6 +4,8 @@ This document describes the trace specification of the wasm-r3 toolchain.
 
 This specification inherits a few definitions from the original [WebAssembly spec](https://webassembly.github.io/spec/core/intro/index.html). Specifically it inherits the types `sN` and `fN` and the concrete type `u32`, as well as `byte` and `reftype`
 
+TODO: Define behaviour for table and memory grow.
+
 ## Trace
 A WebAssembly program can be recorded as a *Trace*, which is a sequence of Events. The specification is defined in a Typescript like syntax. `Vec<T>` is essentially `T[]` that is restricted to a maximum length of `2^32 - 1`.
 
@@ -47,11 +49,12 @@ The Grammar is defined as follows:
 - Nonterminal symbols can be resolved to strings. These consist out of Terminals, the `+` symbol and utility functions like `str(x)`
 - This function `str(x)` will take an input of type `iN|fN|u32` and convert it to a string. Example `str(42)` will result in `"42"`
 - `str(x)` is an overloaded macro. If it takes an input of type `(iN|fN|u32)[]` or `Vec<(iN|fN|u32)>` it may resolve into the following Nonterminal: `str(x[0]) + "," + ... + str(x[x.length - 1])`
+- `byte[]` will just stay as raw data
 
 Production rules are written as follows: `TraceType => Nonterminal`. Left denotes a type which appears in the [trace](Trace) specification and on the right denotes a Nonterminal to which the corresponding type resolves to. In the Nonterminal part we write `self` to refer to the concrete instantiation of the respective type on the right. Fields of these types can directly be accessed by their identifier.
 
 ```
-iN|fN|u32 => str(self) + ","
+iN|fN|u32 => str(self)
 ```
 
 ```
@@ -67,15 +70,7 @@ ExportCall => "ExportCall " + str(self)
 ```
 
 ```
-TableSet => "TableSet " + str(tableidx) + ";" str(idx) + ";" + str(ref)
-```
-
-```
 TableGet => "TableGet " + str(tableidx) + ";" str(idx) + ";" + str(ref)
-```
-
-```
-Store => "Store " + str(offset) + ";" + data
 ```
 
 ```
@@ -87,7 +82,7 @@ Event => self + "\n"
 ```
 
 ## Optaining Trace
-The following presents general rules of thumb presented as an algorithm in pseudocode on how one might obtain the trace from a WebAssembly module.
+The following presents general rules of thumb as a rough algorithm in pseudocode on how one might obtain the trace from a WebAssembly module.
 
 The Tracer program wants to maintain three global data structures: the trace itself, a shadow memory and a list of shadow tables. On the instantion of the WebAssembly module those datastructures should be initialized with the internal memory and tables state.
 ```typescript
@@ -143,6 +138,7 @@ function onTableSet(tableidx, idx, ref) {
 
 ```typescript
 function onEnterExportedFunction(funcidx) {
+    
     trace.push(funcidx: ExportCall)
 }
 ```
