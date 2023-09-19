@@ -30,6 +30,7 @@ The target binary in the final benchmark shall be exactly the same as in the ori
 - The target binary behaves in the benchmark exactly the same as in the real world
 
 ## Roadmap
+- [ ] As suggested by Michelle [wizer](https://github.com/fitzgen/wizer) has a strategy for taking snapshots of memory so we want to check that out
 - [ ] Extend Wasabi with needed features for wasm 2.0
 - [ ] Define trace standart
 - [ ] Implement trace collection
