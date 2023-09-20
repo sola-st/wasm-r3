@@ -17,6 +17,7 @@ Wasabi.analysis = {
     },
 
     store(location, op, memarg, value) {
+        // TODO: actual support for store with different datatypes. Uint8Array servers only as a dummy here
         let shadowArray = new Uint8Array(shadowMemory)
         if (shadowArray[memarg.addr] === value) {
             return
@@ -31,6 +32,7 @@ Wasabi.analysis = {
     },
 
     load(location, op, memarg, value) {
+        // TODO: actual support for load with different datatypes. Uint8Array serves only as a dummy here
         let shadowArray = new Uint8Array(shadowMemory)
         if (shadowArray[memarg.addr] === new Uint8Array(Wasabi.module.exports.memory.buffer)[memarg.addr]) {
             return
