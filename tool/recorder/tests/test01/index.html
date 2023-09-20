@@ -1,0 +1,55 @@
+<html>
+<header>
+  <script type="text/JavaScript" src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js">
+</script>
+</header>
+
+<body>
+  <h1>Test01</h1>
+  <button id="reset">Set Memory in wasm code to all 0</button><br />
+  <button id="change-wasm">Change Memory in wasm code at address 420 to 69</button><br />
+  <button id="change-host">Change Memory at in Hostcode address 420 to 69</button><br />
+  <button id="load">Load value from Memory at address 420</button><br />
+  <h2>Shadow memory at 420: <span id="shadow-state"></span></h2>
+  <h2>Actual memory at 420: <span id="actual-state"></span></h2>
+  <button id="dumb-trace">Print trace text</button>
+  <div id="trace-dump"></div>
+  <script type='text/javascript'>
+    let instance
+    (async function () {
+      let wasm = await fetch('mem.wasm')
+        .then(res => res.arrayBuffer())
+        .then(arrayBuffer => WebAssembly.instantiate(arrayBuffer, {}))
+      instance = wasm.instance
+    })()
+    document.getElementById("reset").addEventListener("click", () => {
+      instance.exports.resetMem()
+      console.log(trace)
+    })
+    document.getElementById("change-wasm").addEventListener("click", () => {
+      instance.exports.changeMem()
+      console.log(trace)
+    })
+    document.getElementById("change-host").addEventListener("click", () => {
+      const memory = new Uint8Array(instance.exports.memory.buffer);
+      memory[420] = 69
+      console.log(trace)
+    })
+    document.getElementById("load").addEventListener("click", () => {
+      instance.exports.loadMem()
+      console.log(trace)
+
+    })
+    document.addEventListener("click", () => {
+      document.getElementById("shadow-state").innerText = new Uint8Array(shadowMemory)[420]
+      document.getElementById("actual-state").innerText = new Uint8Array(instance.exports.memory.buffer)[420]
+    })
+    document.getElementById("dumb-trace").addEventListener("click", () => {
+      document.getElementById("trace-dump").innerText = stringifyTrace(trace)
+    })
+  </script>
+  <script src="mem.wasabi.js"></script>
+  <script src="../../tracer.js"></script>
+</body>
+
+</html>

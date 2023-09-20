@@ -28,11 +28,11 @@ type  TableGet = { tableidx: u32, idx: u32, ref: reftype }
 ```
 
 ```typescript
-type  ExportCall = u32
+type  ExportCall = string[]
 ```
 
 ```typescript
-type  ImportCall = { funcidx: u32, params: Vec<(iN | fN)> }
+type  ImportCall = { module: string, name: string, params: Vec<(iN | fN)> }
 ```
 
 ```typescript
@@ -52,35 +52,36 @@ The Grammar is defined as follows:
 - This function `str(x)` will take an input of type `iN|fN|u32` and convert it to a string. Example `str(42)` will result in `"42"`
 - `str(x)` is an overloaded macro. If it takes an input of type `(iN|fN|u32)[]` or `Vec<(iN|fN|u32)>` it may resolve into the following Nonterminal: `str(x[0]) + "," + ... + str(x[x.length - 1])`
 - `byte[]` will just stay as raw data
+- `x` of type `string[]` gets resolved to `x[0] + "," + ... + x[x.length - 1]`
 
 Production rules are written as follows: `TraceType => Nonterminal`. Left denotes a type which appears in the [Trace](Trace) specification and right denotes a Nonterminal to which the corresponding type resolves to. In the Nonterminal part we write `self` to refer to the concrete instantiation of the respective type on the right. Fields of these types can directly be accessed by their identifier.
 
 ```
-iN|fN|u32 => str(self)
-```
-
-```
-ImportReturn => "ImportReturn " + str(results) + ";" str(memGrow) + ";" + str(tableGrow)
-```
-
-```
-ImportCall => "ImportCall " + str(funcidx) + ";" + str(params)
-```
-
-```
-ExportCall => "ExportCall " + str(self)
-```
-
-```
-TableGet => "TableGet " + str(tableidx) + ";" str(idx) + ";" + str(ref)
-```
-
-```
-Load => "Load " + str(offset) + ";" + data
-```
-
-```
 Event => self + "\n"
+```
+
+```
+Load => "Load;" + str(memidx) + ";" + str(offset) + ";" + data
+```
+
+```
+TableGet => "TableGet;" + str(tableidx) + ";" + str(idx) + ";" + str(ref)
+```
+
+```
+ExportCall => "ExportCall;" + self
+```
+
+```
+ImportCall => "ImportCall;" + module + ";" + name + ";" + str(params)
+```
+
+```
+ImportReturn => "ImportReturn;" + str(results) + ";" str(memGrow) + ";" + str(tableGrow)
+```
+
+```
+iN|fN|u32 => str(self)
 ```
 
 ## Optaining Trace
@@ -90,8 +91,8 @@ The Tracer program wants to maintain three global data structures: the trace its
 
 ```typescript
 let trace: Event[] = []
-let shadowMemory: byte[]
-let shadowTables: Vec<[Vec<u32>, reftype]>
+let shadowMemory: byte[] = []
+let shadowTables: Vec<[Vec<u32>, reftype]> = []
 ```
 Additionally we assume that a global variable `module` is available that contains state information about the instanciated WebAssembly module during runtime. When certain events happen during the execution of our target programm we will perform certain actions and may or may not append a new `Event` to the `trace`. Below is a listing of those events.
 
@@ -145,8 +146,8 @@ function onTableGet(tableidx, idx, ref) {
 ```
 
 ```typescript
-function onEnterExportedFunction(funcidx) {
-    trace.push(funcidx: ExportCall)
+function onEnterExportedFunction(exportNames) {
+    trace.push(exportNames)
 }
 ```
 
