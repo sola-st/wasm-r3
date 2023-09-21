@@ -1,3 +1,6 @@
 [submodule "poc/tictactoe-game-wasm"]
 	path = poc/tictactoe-game-wasm
 	url = git@github.com:yusungsim/tictactoe-game-wasm.git
+[submodule "mess-around/aphros"]
+	path = mess-around/aphros
+	url = https://github.com/cselab/aphros.git

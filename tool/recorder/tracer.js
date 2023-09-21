@@ -63,6 +63,8 @@ Wasabi.analysis = {
         // TODO: check if table needs to be grown and grow it
         trace.push(importReturn)
     },
+
+    
 }
 
 function stringifyTrace(trace) {
