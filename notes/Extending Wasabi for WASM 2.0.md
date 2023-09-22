@@ -27,7 +27,9 @@
 - `table.size x` : consume nothing, returns a `i32` representing the size of the table.
 - `table.grow x` : consume 
 - Table instruction argument `x` : decides the index of table that the instruction should operate on (WASM 2.0 supports multiple tables per module).
+
 ### Extending `wasabi_wasm` with table instructions
+
 **Defining new ASTs for table instructions**
 ```rust
 pub enum Instr {
@@ -39,6 +41,7 @@ pub enum Instr {
 }
 ```
 - Defined new AST for 4 instructions in `Instr` enum.
+
 **Parsing table instructions**
 ```rust
 fn parse_instr(...) {
@@ -55,6 +58,7 @@ fn parse_instr(...) {
 - Depends on `wasmparser` library
 	- `wp` : namespace of operators(instructions) defined by `wasmparser`
 	- `parse_instr` matches the parsing result of the operator and produces corresponding AST (defined in `wasabi_wasm`).
+
 **Encoding table instructions**
 ```rust
 fn encode_instruction(...) {
@@ -71,5 +75,6 @@ fn encode_instruction(...) {
 - Depends on `wasm_encoder` library
 	- `we` : namespace of WASM instructions defined by `wasm_encoder`
 	- `encode_instruction` matches the AST and produces corresponding encoding define in `wasm_encoder`.
+
 **Defining instrumentation for table instructions**
 - [ ] TODO - Technical challenge : we should define an instrumentation for each table instruction(i.e. what instructions should be added around each table instruction), which does not change original behavior and connects the low-level hook. We can refer to Wasabi paper and see how other similar instructions (ex. `load`, `store` instructions) are instrumented.
