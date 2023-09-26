@@ -7,7 +7,8 @@ Wasabi.analysis = {
 
     begin(location, type) {
         if (init) {
-            shadowMemory = _.cloneDeep(Wasabi.module.exports.memory.buffer)
+            console.log(Wasabi)
+            shadowMemory = _.cloneDeep(Wasabi.module.imports.memory.buffer)
             // TODO: shadowTables init
             init = false
         }
