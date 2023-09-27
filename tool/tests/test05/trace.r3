@@ -1,0 +1,9 @@
+ExportCall;main
+ImportCall;env;add;1,2
+ImportReturn;3;;
+ImportCall;env;add;5,-4
+ImportReturn;1;;
+ImportCall;env;sub;5,2.5
+ImportReturn;2.5;;
+ImportCall;lib;add;2.5,2.5
+ImportReturn;5;;

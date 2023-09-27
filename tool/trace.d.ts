@@ -11,7 +11,7 @@ type Load = { type: "Load", memidx: number, offset: number, data: Uint8Array }
 
 type TableGet = { type: "TableGet", tableidx: number, idx: number, ref: "funcref" | "externref" }
 
-type ExportCall = { type: "ExportCall", name: string[] }
+type ExportCall = { type: "ExportCall", names: string[], params: number[] }
 
 type ImportCall = { type: "ImportCall", module: string, name: string, params: number[] }
 

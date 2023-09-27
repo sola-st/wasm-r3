@@ -28,7 +28,7 @@ type  TableGet = { tableidx: u32, idx: u32, ref: reftype }
 ```
 
 ```typescript
-type  ExportCall = string[]
+type  ExportCall = { names: string[], params: Vec<(iN | fN)> }
 ```
 
 ```typescript
@@ -42,8 +42,8 @@ type  ImportReturn = { results: Vec<(iN | fN)>, memGrow: Vec<u32>, tableGrow: Ve
 ## Text
 The text format of wasm-r3 traces is a utf-8 encoded representation of the abstract [Trace](Trace).
 
-The recommended extension for files containing wasm-r3 traces in textual format is "`.r3`"
-and the recommended MediaType is "`application/r3`".
+The recommended extension for files containing wasm-r3 traces in textual format is "`.txt`"
+and the recommended MediaType is "`text/plain`".
 
 The Grammar is defined as follows:
 - Terminal symbols are strings surrounded by a `"`
@@ -69,7 +69,7 @@ TableGet => "TableGet;" + str(tableidx) + ";" + str(idx) + ";" + str(ref)
 ```
 
 ```
-ExportCall => "ExportCall;" + self
+ExportCall => "ExportCall;" + str(names) + ";" + str(params)
 ```
 
 ```
@@ -82,6 +82,36 @@ ImportReturn => "ImportReturn;" + str(results) + ";" str(memGrow) + ";" + str(ta
 
 ```
 iN|fN|u32 => str(self)
+```
+
+# Binary
+The raw format of wasm-r3 traces is a linear encoding of the abstract [Trace](Trace).
+
+The recommended extension for files containing wasm-r3 traces in textual format is "`.txt`"
+and the recommended MediaType is "`application/r3`".
+
+```
+Event => self
+```
+
+```
+Load => 0x00 memidx offset length(data) data
+```
+
+```
+TableGet => 0x01 tableidx idx ref
+```
+
+```
+ExportCall => 0x02 + length(names) names length(params) params
+```
+
+```
+ImportCall => 0x03 length(module) module length(name) name length(params) paramas
+```
+
+```
+ImportReturn => 0x04 + length(results) results length(memGrow) memGrow length(tableGrow) tableGrow
 ```
 
 ## Optaining Trace
