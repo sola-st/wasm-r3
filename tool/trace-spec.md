@@ -32,12 +32,13 @@ type  ExportCall = { names: string[], params: Vec<(iN | fN)> }
 ```
 
 ```typescript
-type  ImportCall = { module: string, name: string, params: Vec<(iN | fN)> }
+type  ImportCall = { funcidx: u32, module: string, name: string, params: Vec<(iN | fN)> }
 ```
 
 ```typescript
-type  ImportReturn = { results: Vec<(iN | fN)>, memGrow: Vec<u32>, tableGrow: Vec<u32> }
+type  ImportReturn = { funcidx: u32, results: Vec<(iN | fN)>, memGrow: Vec<u32>, tableGrow: Vec<u32> }
 ``` 
+**Note** This trace design contains more information then what is minimal necessarry for the actual implementation of a generator like for example `funcidx` in the events `ImportCall` and `ImportReturn`. This design choise simplifies and speeds up the replay generation. It increases the trace size slightly.
 
 ## Text
 The text format of wasm-r3 traces is a utf-8 encoded representation of the abstract [Trace](Trace).
