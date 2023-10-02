@@ -1,8 +1,6 @@
 (module
-  (import "env" "changeMem" (func $changeMemHost (param i32 i32)))
+  (import "env" "changeMem" (func $changeMemHost))
   (func $main (export "main")
-    i32.const 1
-    i32.const 1
     call $changeMemHost
     i32.const 1
     i32.load

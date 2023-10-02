@@ -506,18 +506,24 @@ function stringifyTrace(trace) {
     }
     return traceString
 }
-export default async function () {
-    const fs = await import('fs')
-    const path = await import('path')
+export default async function() {
+const fs = await import('fs')
+const path = await import('path')
+let instance
+let imports = {}
+imports.env = {}
+imports.env.add = (a0, a1) => {
+if (a0 === 1 && a1 === 2) {
+return 3
+}
+if (a0 === 5 && a1 === -4) {
+return 1
+}
+}
+let wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))
+let wasm = await WebAssembly.instantiate(wasmBinary, imports)
+instance = wasm.instance
+await instance.exports.main()
 
-    let imports = {
-        env: {
-            add: (a, b) => a + b
-        }
-    }
-    let wasmBinary = fs.readFileSync(path.join(import.meta.dir, './index.wasm'))
-    let wasm = await WebAssembly.instantiate(wasmBinary, imports)
-    wasm.instance.exports.main()
-
-    return trace
+return trace
 }

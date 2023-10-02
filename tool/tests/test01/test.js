@@ -1,17 +1,19 @@
-const fs = await import('fs')
-const path = await import('path')
 
-let instance
-let imports = {
-    env: {
-        changeMem: (address, value) => (
-            new Uint8Array(instance.exports.memory.buffer)[address] = value
-        )
+export default async () => {
+    const fs = await import('fs')
+    const path = await import('path')
+
+    let instance
+    let imports = {
+        env: {
+            changeMem: () => (
+                new Uint8Array(instance.exports.memory.buffer)[1] = 1
+            )
+        }
     }
+    let wasmBinary = fs.readFileSync(path.join(import.meta.dir, './index.wasm'))
+    let wasm = await WebAssembly.instantiate(wasmBinary, imports)
+    instance = wasm.instance
+    instance.exports.main()
+    return trace
 }
-WebAssembly.instantiate(fs.readFileSync(path.join(import.meta.dir, './index.wasm')), imports)
-    .then((wasm) => {
-        instance = wasm.instance
-        instance.exports.main()
-        fs.writeFileSync(path.join(import.meta.dir, 'trace.r3'), stringifyTrace(trace))
-    })

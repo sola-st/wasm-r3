@@ -189,12 +189,22 @@ Wasabi.analysis = {
     call_pre(location, targetFunc, args, indirectTableIdx) {
         let module = Wasabi.module.info.functions[targetFunc].import[0]
         let name = Wasabi.module.info.functions[targetFunc].import[1]
-        trace.push({ type: "ImportCall", module, name, params: args })
+        trace.push({ type: "ImportCall", funcidx: targetFunc, module, name, params: args })
     },
 
     call_post(location, values) {
+        let funcidx
+        for (let i = trace.length - 1; i >= 0; i--) {
+            if (trace[i].type === 'ImportCall') {
+                funcidx = trace[i].funcidx
+            }
+        }
+        if (funcidx === undefined) {
+            throw 'this cannot be, there must be a call before a return event'
+        }
         let importReturn = {
             type: "ImportReturn",
+            funcidx,
             results: values,
             memGrow: [],
             tableGrow: [],
@@ -205,40 +215,6 @@ Wasabi.analysis = {
         // TODO: check if table needs to be grown and grow it
         trace.push(importReturn)
     },
-}
-
-function stringifyTrace(trace) {
-    function str(list) {
-        let s = ""
-        for (let l of list) {
-            s += l + ","
-        }
-        return s.slice(0, -1)
-    }
-    let traceString = ""
-    for (let t of trace) {
-        switch (t.type) {
-            case "Load":
-                traceString += "Load;" + t.memidx + ";" + t.offset + ";" + str(t.data)
-                break
-            case "TableGet":
-                traceString += "TableGet;" + t.tableidx + ";" + t.idx + ";" + t.ref
-                break
-            case "ExportCall":
-                traceString += "ExportCall;" + str(t.names)
-                break
-            case "ImportCall":
-                traceString += "ImportCall;" + t.module + ";" + t.name + ";" + str(t.params)
-                break
-            case "ImportReturn":
-                traceString += "ImportReturn;" + str(t.results) + ";" + str(t.memGrow) + ";" + str(t.tableGrow)
-                break
-            default:
-                throw "Invalid Trace event type"
-        }
-        traceString += "\n"
-    }
-    return traceString
 }
 
 function set_shadow_memory(data, address, numBytes) {
@@ -291,4 +267,38 @@ function cloneDeep(obj) {
         }
     }
     return objCopy;
+}
+
+function stringifyTrace(trace) {
+    function str(list) {
+        let s = ""
+        for (let l of list) {
+            s += l + ","
+        }
+        return s.slice(0, -1)
+    }
+    let traceString = ""
+    for (let t of trace) {
+        switch (t.type) {
+            case "Load":
+                traceString += "Load;" + t.memidx + ";" + t.offset + ";" + str(t.data)
+                break
+            case "TableGet":
+                traceString += "TableGet;" + t.tableidx + ";" + t.idx + ";" + t.ref
+                break
+            case "ExportCall":
+                traceString += "ExportCall;" + str(t.names)
+                break
+            case "ImportCall":
+                traceString += "ImportCall;" + t.funcidx + ';' + t.module + ";" + t.name + ";" + str(t.params)
+                break
+            case "ImportReturn":
+                traceString += "ImportReturn;" + t.funcidx + ';' + str(t.results) + ";" + str(t.memGrow) + ";" + str(t.tableGrow)
+                break
+            default:
+                throw "Invalid Trace event type"
+        }
+        traceString += "\n"
+    }
+    return traceString
 }

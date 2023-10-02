@@ -185,20 +185,20 @@ let Wasabi = {
     WebAssembly.Instance = newInstance;
 }
 
-Wasabi.module.info = {"functions":[{"type":"ii|i","import":["env","add"],"export":[],"locals":"","instrCount":0},{"type":"|","import":null,"export":["main"],"locals":"","instrCount":9},{"type":"|","import":null,"export":["foo"],"locals":"","instrCount":4}],"globals":"","start":null,"tableExportName":null,"brTables":[],"originalFunctionImportsCount":1};
+Wasabi.module.info = {"functions":[{"type":"|","import":["env","changeMem"],"export":[],"locals":"","instrCount":0},{"type":"|","import":null,"export":["main"],"locals":"","instrCount":5}],"globals":"","start":null,"tableExportName":null,"brTables":[],"originalFunctionImportsCount":1};
 
 Wasabi.module.lowlevelHooks = {
 "begin_function": function (func, instr, ) {
     Wasabi.analysis.begin({func, instr}, "function");
 },
-"call_ii": function (func, instr, targetFunc, arg0, arg1) {
-    Wasabi.analysis.call_pre({func, instr}, targetFunc, [arg0, arg1]);
+"call": function (func, instr, targetFunc) {
+    Wasabi.analysis.call_pre({func, instr}, targetFunc, []);
 },
-"call_post_i": function (func, instr, result0) {
-    Wasabi.analysis.call_post({func, instr}, [result0]);
+"call_post": function (func, instr, ) {
+    Wasabi.analysis.call_post({func, instr}, []);
 },
-"i32_load16_s": function (func, instr, offset, align, addr, value) {
-    Wasabi.analysis.load({func, instr}, "i32.load16_s", {addr, offset, align}, value);
+"i32_load": function (func, instr, offset, align, addr, value) {
+    Wasabi.analysis.load({func, instr}, "i32.load", {addr, offset, align}, value);
 },
 };
 
@@ -506,18 +506,22 @@ function stringifyTrace(trace) {
     }
     return traceString
 }
-export default async function () {
-    const fs = await import('fs')
-    const path = await import('path')
+export default async function() {
+const fs = await import('fs')
+const path = await import('path')
+let instance
+let imports = {}
+imports.env = {}
+imports.env.changeMem = () => {
+new Uint8Array(instance.exports.memory)[1] = 1
+new Uint8Array(instance.exports.memory)[2] = 0
+new Uint8Array(instance.exports.memory)[3] = 0
+new Uint8Array(instance.exports.memory)[4] = 0
+}
+let wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))
+let wasm = await WebAssembly.instantiate(wasmBinary, imports)
+instance = wasm.instance
+await instance.exports.main()
 
-    let imports = {
-        env: {
-            add: (a, b) => a + b
-        }
-    }
-    let wasmBinary = fs.readFileSync(path.join(import.meta.dir, './index.wasm'))
-    let wasm = await WebAssembly.instantiate(wasmBinary, imports)
-    wasm.instance.exports.main()
-
-    return trace
+return trace
 }

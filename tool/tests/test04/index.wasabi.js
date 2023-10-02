@@ -194,23 +194,11 @@ Wasabi.module.lowlevelHooks = {
 "begin_function": function (func, instr, ) {
     Wasabi.analysis.begin({func, instr}, "function");
 },
-"i32_const": function (func, instr, value) {
-    Wasabi.analysis.const_({func, instr}, "i32.const", value);
-},
 "call_ii": function (func, instr, targetFunc, arg0, arg1) {
     Wasabi.analysis.call_pre({func, instr}, targetFunc, [arg0, arg1]);
 },
 "call_post_i": function (func, instr, result0) {
     Wasabi.analysis.call_post({func, instr}, [result0]);
-},
-"drop_i": function (func, instr, value) {
-    Wasabi.analysis.drop({func, instr}, value);
-},
-"return": function (func, instr, ) {
-    Wasabi.analysis.return_({func, instr}, []);
-},
-"end_function": function (func, instr, ) {
-    Wasabi.analysis.end({func, instr}, "function", {func, instr: -1});
 },
 "i32_load16_s": function (func, instr, offset, align, addr, value) {
     Wasabi.analysis.load({func, instr}, "i32.load16_s", {addr, offset, align}, value);
