@@ -1,4 +1,5 @@
 (module
+  (import "env" "mem" (memory 1))
   (import "env" "changeMem" (func $changeMemHost))
   (func $main (export "main")
     call $changeMemHost
@@ -6,6 +7,4 @@
     i32.load
     drop
   )
-  (memory (export "memory") 1)
-  (data (i32.const 0) "\00\00\00\00")
 )

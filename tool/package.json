@@ -10,5 +10,9 @@
   },
   "dependencies": {
     "@types/node": "^20.7.0"
+  },
+  "scripts": {
+    "test": "bun ./tests/run-test.ts",
+    "clean-tests": "bun ./tests/run-test.ts clean"
   }
 }

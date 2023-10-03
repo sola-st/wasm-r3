@@ -2,64 +2,105 @@ import fs from 'fs'
 import path from 'path'
 import cp from 'child_process'
 import { parse, generate } from '../replay-generator'
-import stringifyTrace from '../recorder/stringify'
-import assert from 'assert'
 
 const testDir = import.meta.dir
 
 let testNames = getDirectoryNames(testDir)
+if (process.argv[2] === 'clean') {
+    for (let name of testNames) {
+        const testPath = path.join(testDir, name)
+        rmSafe(path.join(testPath, 'gen.js'))
+        rmSafe(path.join(testPath, 'replayGen.js'))
+        rmSafe(path.join(testPath, 'index.wasabi.js'))
+        rmSafe(path.join(testPath, 'index.wasm'))
+        rmSafe(path.join(testPath, 'trace.r3'))
+        rmSafe(path.join(testPath, 'replay-trace.r3'))
+        rmSafe(path.join(testPath, 'replay.js'))
+        rmSafe(path.join(testPath, 'report.txt'))
+    }
+    process.exit(0)
+}
 if (process.argv.length > 2) {
     testNames = testNames.filter(n => process.argv.includes(n))
 }
 
-console.log(`running tests: ${testNames}`)
-
+process.stdout.write(`Executing Tests ... \n`)
 for (let name of testNames) {
-    console.log(`Test ${name}`)
-    let testPath = path.join(testDir, name)
-
-    console.log('1. Generate trace')
-    cp.execSync(`wat2wasm ${path.join(testPath, 'index.wat')} -o ${path.join(testPath, 'index.wasm')}`)
-    cp.execSync(`wasabi ${path.join(testPath, 'index.wasm')} --hooks=begin,store,load,call -o ${testPath}`)
-    let gen = fs.readFileSync(path.join(testPath, 'index.wasabi.js')) + '\n'
-    gen = removeLinesWithConsole(gen)
-    gen += fs.readFileSync(path.join(testDir, '../recorder/tracer.js')) + '\n'
-    gen += fs.readFileSync(path.join(testPath, 'test.js')) + '\n'
+    process.stdout.write(writeTestName(name))
+    const testPath = path.join(testDir, name)
+    const watPath = path.join(testPath, 'index.wat')
+    const wasmPath = path.join(testPath, 'index.wasm')
+    const wasabiRuntimePath = path.join(testPath, 'index.wasabi.js')
+    const tracerPath = path.join(testDir, '../recorder/tracer.js')
     const genPath = path.join(testPath, 'gen.js')
-    fs.writeFileSync(genPath, gen)
-    let test
-    test = await import(genPath)
-    let trace = await test.default()
-    fs.writeFileSync(path.join(testPath, 'trace.r3'), stringifyTrace(trace))
-
-    console.log('2. Generate replay binary')
-    // trace = parse(stringifyTrace(trace)) // test out if string conversion works
-    let replayCode = generate(trace)
-    fs.writeFileSync(path.join(testPath, 'replay.js'), replayCode)
-    let origTrace = stringifyTrace(trace)
-
-    console.log('3. Check if original trace and replay trace match')
-    let gen2 = ''
-    gen2 = fs.readFileSync(path.join(testPath, 'index.wasabi.js')) + '\n'
-    gen2 = removeLinesWithConsole(gen2)
-    gen2 += fs.readFileSync(path.join(testDir, '../recorder/tracer.js')) + '\n'
-    gen2 += `export default async function() {\n`
-    gen2 += fs.readFileSync(path.join(testPath, 'replay.js')) + '\n'
-    // gen2 += `fs.writeFileSync(path.join('${testPath}', 'replay-trace.r3'), stringifyTrace(trace))\n`
-    gen2 += `return trace\n`
-    gen2 += `}`
+    const tracePath = path.join(testPath, 'trace.r3')
+    const replayPath = path.join(testPath, 'replay.js')
     const replayGenPath = path.join(testPath, 'replayGen.js')
-    fs.writeFileSync(replayGenPath, gen2)
-    let ref = await import(replayGenPath)
-    let refTrace = await ref.default()
-    console.log(refTrace)
-    let replayTrace = stringifyTrace(refTrace)
-    if (replayTrace !== origTrace) {
-        console.error(`Test ${name} failed`)
-        console.error(`Expected:\n ${origTrace}`)
-        console.error(`Actual:\n ${replayTrace}`)
+    const replayTracePath = path.join(testPath, 'replay-trace.r3')
+    const testReportPath = path.join(testPath, 'report.txt')
+
+    // console.log('1. Generate trace')
+    cp.execSync(`wat2wasm ${watPath} -o ${path.join(testPath, 'index.wasm')}`)
+    cp.execSync(`wasabi ${wasmPath} --hooks=begin,store,load,call -o ${testPath}`)
+    const stream = fs.createWriteStream(genPath)
+    stream.write(`const fs = require('fs')\n`)
+    stream.write(`const path = require('path')\n`)
+    // stream.write(`${lodashDependency}\n`)
+    stream.write(removeLinesWithConsole(fs.readFileSync(wasabiRuntimePath, 'utf-8')) + '\n')
+    stream.write(fs.readFileSync(tracerPath) + '\n')
+    stream.write(`async function run() {\n`)
+    stream.write(`let wasmBinary = fs.readFileSync('${wasmPath}')\n`)
+    stream.write(fs.readFileSync(path.join(testPath, 'test.js')) + '\n')
+    stream.write(`fs.writeFileSync('${tracePath}', stringifyTrace(trace))\n`)
+    stream.write(`}\n`)
+    stream.write(`run()\n`)
+    stream.end()
+    try {
+        cp.execSync(`bun ${genPath}`)
+    } catch (e: any) {
+        fail(e.toString(), testReportPath)
+        continue
+    }
+
+    // console.log('2. Generate replay binary')
+    const traceString = fs.readFileSync(tracePath, 'utf-8')
+    let trace
+    try {
+        trace = parse(traceString)
+    } catch (e: any) {
+        fail(e.toString(), testReportPath)
+        continue
+    }
+    let replayCode
+    try {
+        replayCode = generate(trace!)
+    } catch (e: any) {
+        fail(e.toString(), testReportPath)
+        continue
+    }
+    fs.writeFileSync(replayPath, replayCode!)
+
+    // console.log('3. Check if original trace and replay trace match')
+    const replayStream = fs.createWriteStream(replayGenPath)
+    // replayStream.write(`${lodashDependency}\n`)
+    replayStream.write(removeLinesWithConsole(fs.readFileSync(wasabiRuntimePath, 'utf-8')) + '\n')
+    replayStream.write(fs.readFileSync(tracerPath) + '\n')
+    replayStream.write(`async function run() {\n`)
+    replayStream.write(fs.readFileSync(replayPath) + '\n')
+    replayStream.write(`}\n`)
+    replayStream.write(`run().then(() => require('fs').writeFileSync('${replayTracePath}', stringifyTrace(trace)))\n`)
+    replayStream.end()
+    cp.execSync(`bun ${replayGenPath}`)
+    let replayTrace = fs.readFileSync(replayTracePath, 'utf-8')
+    if (replayTrace !== traceString) {
+        let report = `[Expected]\n`
+        report += traceString
+        report += `\n\n`
+        report += `[Actual]\n`
+        report += replayTrace
+        fail(report, testReportPath)
     } else {
-        console.log(`Test ${name} successfull`)
+        process.stdout.write(`\u2713\n`)
     }
 }
 
@@ -69,7 +110,7 @@ for (let name of testNames) {
 //     cleanUp(testPath)
 // }
 
-console.log(`done running ${testNames.length} tests`)
+process.stdout.write(`done running ${testNames.length} tests\n`)
 
 
 function removeLinesWithConsole(inputString: string) {
@@ -95,8 +136,25 @@ function cleanUp(testPath: string) {
     fs.rmSync(path.join(testPath, 'index.wasm'))
 }
 
-function delay(ms: number) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
+function fail(report: string, testReportPath: string) {
+    process.stdout.write(`\u2717\t\t${testReportPath}\n`)
+    fs.writeFileSync(testReportPath, report)
+}
+
+function writeTestName(name: string) {
+    const totalLength = 35
+    if (totalLength < name.length) {
+        throw 'Total length should be greater than or equal to the length of the initial word.'
+    }
+    const spacesLength = totalLength - name.length
+    const spaces = ' '.repeat(spacesLength)
+    return `${name}${spaces}`
+}
+
+function rmSafe(path: string) {
+    try {
+        fs.rmSync(path)
+    } catch {
+        // file doesnt exist, ok
+    }
 }

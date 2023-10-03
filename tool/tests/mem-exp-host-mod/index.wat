@@ -1,11 +1,10 @@
 (module
-  (import "env" "changeMem" (func $changeMemHost))
+  (import "env" "changeMem" (func $changeMem))
   (func $main (export "main")
-    call $changeMemHost
+    call $changeMem
     i32.const 1
     i32.load
     drop
   )
   (memory (export "memory") 1)
-  (data (i32.const 0) "\00\00\00\00")
 )

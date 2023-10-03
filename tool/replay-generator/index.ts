@@ -6,10 +6,12 @@ type Code = {
         [key: string]: {
             module: string,
             name: string,
-            mappings: {
-                [params: string]: number[]
-            }
-            stores: { addr: number, data: Uint8Array }[]
+            body: {
+                results: number[],
+                stores: { addr: number, data: Uint8Array }[],
+                // tables
+                // globals
+            }[]
         }
     }
     exports: string[]
@@ -18,7 +20,7 @@ type Code = {
 export function generate(trace: Trace) {
     let code: Code = { imports: {}, exports: [] }
     let importCallStack: ImportCall[] = []
-    let callHistory: ImportCall[] = []
+    let lastReturnedImportedFunction: number
     trace.forEach((event, i) => {
         switch (event.type) {
             case "ExportCall":
@@ -27,21 +29,13 @@ export function generate(trace: Trace) {
                 break
             case "ImportCall":
                 importCallStack.push(event)
-                let funcidx = 'func_' + event.funcidx
+                let funcidx = event.funcidx
                 if (code.imports[funcidx] === undefined) {
                     code.imports[funcidx] = {
                         module: event.module,
                         name: event.name,
-                        mappings: {},
-                        stores: []
+                        body: [],
                     }
-                }
-                let params = stringifyParams(event.params)
-                if (params === '') {
-                    break
-                }
-                if (code.imports[funcidx].mappings[params] === undefined) {
-                    code.imports[funcidx].mappings[params] = []
                 }
                 break
             case "ImportReturn":
@@ -49,24 +43,14 @@ export function generate(trace: Trace) {
                 if (call === undefined) {
                     throw 'This cannot be you cannot return from an imported function without it being called'
                 }
-                callHistory.push(call)
-                code.imports['func_' + call.funcidx].mappings[stringifyParams(call.params)] = event.results
+                lastReturnedImportedFunction = call.funcidx
+                code.imports[call.funcidx].body.push({ results: event.results, stores: [] })
                 break
             case "Load":
-                // This means that the load was different then expected,
-                // there was a store in the host code
-                // find the last returned function
-                for (let j = i; j >= 0; j--) {
-                    if (trace[j].type === "ImportReturn") {
-                        let funcidx = (trace[j] as ImportReturn).funcidx
-                        if (funcidx === callHistory[callHistory.length - 1].funcidx) {
-                            code.imports['func_' + funcidx].stores.push({
-                                addr: event.offset,
-                                data: event.data,
-                            })
-                        }
-                    }
-                }
+                code.imports[lastReturnedImportedFunction].body.slice(-1)[0].stores.push({
+                    addr: event.offset,
+                    data: event.data,
+                })
                 break
             case "TableGet":
                 throw "TableGet not supported yet"
@@ -85,73 +69,36 @@ function stringify(code: Code) {
     jsString += 'let imports = {}\n'
     let instanciatedModules: string[] = []
     for (let funcidx in code.imports) {
+        jsString += `${global(funcidx)} = 0\n`
         let func = code.imports[funcidx]
         if (!instanciatedModules.includes(func.module)) {
             jsString += `imports.${func.module} = {}\n`
             instanciatedModules.push(func.module)
         }
         jsString += `imports.${func.module}.${func.name} = `
-        let paramString = Object.keys(func.mappings)[0]
-        let args = parseParams(paramString)
-        let argString = ''
-        for (let i = 0; i < args.length; i++) {
-            argString += `a${i}, `
-        }
-        argString = argString.slice(0, argString.length - 2)
-        jsString += `(${argString}) => {\n`
-        for (let store of code.imports[funcidx].stores) {
-            for (let i = 0; i < store.data.length; i++) {
-                jsString += `new Uint8Array(instance.exports.memory)[${store.addr + i}] = ${store.data[i]}\n`
+        jsString += `() => {\n`
+        jsString += `${global(funcidx)}++\n`
+        jsString += `switch (${global(funcidx)}) {\n`
+        func.body.forEach((b, i) => {
+            jsString += `case ${i}:\n`
+            for (let store of b.stores) {
+                store.data.forEach((byte, j) => {
+                    jsString += `new Uint8Array(instance.exports.memory.buffer)[${store.addr + j}] = ${byte}\n`
+                })
             }
-        }
-        for (let paramString in func.mappings) {
-            if (func.mappings[paramString] === undefined || paramString === '') {
-                continue
-            }
-            let params = parseParams(paramString)
-            jsString += 'if ('
-            params.map((p, i) => {
-                jsString += `a${i} === ${p}`
-                if (i < params.length - 1) {
-                    jsString += ' && '
-                }
-            })
-            jsString += ') {\n'
-            let returnString = ''
-            for (let value of func.mappings[paramString]) {
-                returnString += value.toString() + ', '
-            }
-            returnString = returnString.slice(0, returnString.length - 2)
-            jsString += `return ${returnString}\n`
-            jsString += '}\n'
-        }
+            jsString += `return ${b.results[0]}\n`
+            jsString += `break\n`
+        })
+        jsString += '}\n'
         jsString += '}\n'
     }
-    jsString += `let wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))\n`
+    jsString += `let wasmBinary = fs.readFileSync(path.join(__dirname, 'index.wasm'))\n`
     jsString += `let wasm = await WebAssembly.instantiate(wasmBinary, imports)\n`
     jsString += `instance = wasm.instance\n`
     for (let exp of code.exports) {
         jsString += `await instance.exports.${exp}()\n`
     }
     return jsString
-}
-
-function stringifyParams(params: number[]) {
-    let paramString = ''
-    for (let param of params) {
-        paramString += param.toString() + '_'
-    }
-    paramString = paramString.replaceAll('.', 'd')
-    paramString = paramString.replaceAll('-', 'n')
-    paramString = paramString.slice(0, paramString.length - 1)
-    return paramString
-}
-
-function parseParams(params: string) {
-    if (params === '') {
-        return []
-    }
-    return params.replaceAll('d', '.').replaceAll('n', '-').split('_')
 }
 
 export function parse(traceString: string) {
@@ -164,7 +111,7 @@ export function parse(traceString: string) {
                 trace.push({
                     type: components[0],
                     names: components[1]?.split(','),
-                    params: components[2]?.split(',').map(parseNumber) || []
+                    params: splitList(components[2])
                 })
                 break
             case "ImportCall":
@@ -173,14 +120,13 @@ export function parse(traceString: string) {
                     funcidx: parseInt(components[1]),
                     module: components[2],
                     name: components[3],
-                    params: components[4]?.split(',').map(parseNumber) || []
                 })
                 break
             case "ImportReturn":
                 trace.push({
                     type: components[0],
                     funcidx: parseInt(components[1]),
-                    results: components[2]?.split(',').map(parseNumber) || [],
+                    results: splitList(components[2]),
                     // TODO: MemGrow and TableGrow
                     memGrow: [],
                     tableGrow: [],
@@ -191,7 +137,7 @@ export function parse(traceString: string) {
                     type: components[0],
                     memidx: parseInt(components[1]),
                     offset: parseInt(components[2]),
-                    data: new Uint8Array(components[3]?.split(',').map(parseNumber)),
+                    data: new Uint8Array(splitList(components[3])),
                 })
                 break
             case "TableGet":
@@ -208,6 +154,18 @@ export function parse(traceString: string) {
         }
     }
     return trace
+}
+
+function global(funcidx: string) {
+    return `global_${funcidx}`
+}
+
+function splitList(c?: string) {
+    let list = c?.split(',').map(parseNumber)
+    if (list === undefined || (list.length === 1 && Number.isNaN(list[0]))) {
+        return []
+    }
+    return list
 }
 
 function parseNumber(n: string) {

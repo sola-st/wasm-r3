@@ -1,9 +1,10 @@
 let instance
+let global = 0
 let imports = {
     env: {
-        changeMem: (address, value) => {
-            new Uint8Array(instance.exports.memory.buffer)[address] = value
-            instance.exports.foo()
+        foo: () => {
+            global++
+            return global
         }
     }
 }

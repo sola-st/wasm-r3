@@ -19,7 +19,7 @@ export default function stringifyTrace(trace) {
                 traceString += "ExportCall;" + str(t.names)
                 break
             case "ImportCall":
-                traceString += "ImportCall;" + t.funcidx + ';' + t.module + ";" + t.name + ";" + str(t.params)
+                traceString += "ImportCall;" + t.funcidx + ';' + t.module + ";" + t.name
                 break
             case "ImportReturn":
                 traceString += "ImportReturn;" + t.funcidx + ';' + str(t.results) + ";" + str(t.memGrow) + ";" + str(t.tableGrow)

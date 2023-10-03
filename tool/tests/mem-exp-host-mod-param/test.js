@@ -1,8 +1,8 @@
 let instance
 let imports = {
     env: {
-        changeMem: (address, value) => (
-            new Uint8Array(instance.exports.memory.buffer)[address] = value
+        changeMem: (addr, value) => (
+            new Uint8Array(instance.exports.memory.buffer)[addr] = value
         )
     }
 }

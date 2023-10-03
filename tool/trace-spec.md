@@ -32,7 +32,7 @@ type  ExportCall = { names: string[], params: Vec<(iN | fN)> }
 ```
 
 ```typescript
-type  ImportCall = { funcidx: u32, module: string, name: string, params: Vec<(iN | fN)> }
+type  ImportCall = { funcidx: u32, module: string, name: string }
 ```
 
 ```typescript
@@ -74,11 +74,11 @@ ExportCall => "ExportCall;" + str(names) + ";" + str(params)
 ```
 
 ```
-ImportCall => "ImportCall;" + module + ";" + name + ";" + str(params)
+ImportCall => "ImportCall;" + str(funcidx) + ";" + module + ";" + name
 ```
 
 ```
-ImportReturn => "ImportReturn;" + str(results) + ";" str(memGrow) + ";" + str(tableGrow)
+ImportReturn => "ImportReturn;" + str(funcidx) + ";" + str(results) + ";" str(memGrow) + ";" + str(tableGrow)
 ```
 
 ```
