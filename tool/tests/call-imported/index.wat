@@ -1,5 +1,5 @@
 (module
-    (import "env" "func" (func $foo))
+    (import "env" "foo" (func $foo))
     (func $main (export "main")
         call $foo
     )

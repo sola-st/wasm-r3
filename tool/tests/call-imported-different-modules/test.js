@@ -1,7 +1,10 @@
 let instance
 let imports = {
     env: {
-        foo: () => instance.exports.bar()
+        foo: () => { }
+    },
+    env2: {
+        bar: () => { }
     }
 }
 let wasm = await WebAssembly.instantiate(wasmBinary, imports)

@@ -394,6 +394,8 @@
     }, be = de(); "function" == typeof define && "object" == typeof define.amd && define.amd ? (re._ = be, define(function () { return be })) : ue ? ((ue.exports = be)._ = be, ee._ = be) : re._ = be
 }).call(this);
 
+const MEM_PAGE_SIZE = 65536
+
 let trace = []
 let shadowMemory = []
 let actualMemory
@@ -404,13 +406,15 @@ Wasabi.analysis = {
 
     begin(location, type) {
         if (init) {
-            actualMemory = Wasabi.module.exports.memory.buffer
+            // Algorithm for later
+            assignMemory()
             shadowMemory = module.exports._.cloneDeep(actualMemory)
             // TODO: shadowTables init
             init = false
         }
         if (type === "function") {
             trace.push({ type: "ExportCall", names: Wasabi.module.info.functions[location.func].export, params: [] })
+            checkMemGrow()
         }
     },
 
@@ -463,7 +467,7 @@ Wasabi.analysis = {
     // TODO: bulk memory instructions
 
     memory_grow(location, byPages, previousSizePages) {
-        shadowMemory.grow(byPages)
+        growShadowMem(byPages)
     },
 
     load(location, op, memarg, value) {
@@ -605,11 +609,9 @@ Wasabi.analysis = {
             memGrow: [],
             tableGrow: [],
         }
-        if (Wasabi.module.exports.memory.buffer.byteLength > shadowMemory.byteLength) {
-            // TODO: grow memory
-        }
-        // TODO: check if table needs to be grown and grow it
         trace.push(importReturn)
+        checkMemGrow()
+        // TODO: check if table needs to be grown and grow it
     },
 }
 
@@ -643,11 +645,51 @@ function get_actual_mem(addr, numBytes) {
     return uint1Array
 }
 
+function assignMemory() {
+    if (Wasabi.module.info.memories !== undefined) {
+        for (let mem of Wasabi.module.info.memories) {
+            if (mem.export.length >= 1) {
+                actualMemory = mem.memory.buffer
+            }
+        }
+    }
+    if (Wasabi.module.exports.memory !== undefined) {
+        actualMemory = Wasabi.module.exports.memory.buffer
+    }
+}
+
+function growShadowMem(byPages) {
+    const newShadow = new ArrayBuffer(shadowMemory.byteLength + byPages * MEM_PAGE_SIZE)
+    new Uint8Array(shadowMemory).forEach((b, i) => {
+        new Uint8Array(newShadow)[i] = b
+    })
+    shadowMemory = newShadow
+}
+
+function checkMemGrow() {
+    let memoryWasGrown = actualMemory && actualMemory.byteLength === 0
+    if (memoryWasGrown) {
+        assignMemory()
+        let memGrow = {}
+        let amount = actualMemory.byteLength / MEM_PAGE_SIZE - shadowMemory.byteLength / MEM_PAGE_SIZE
+        memGrow[0] = amount
+        growShadowMem(amount)
+        trace.push({ type: 'MemGrow', memidx: 0, amount })
+    }
+}
+
 function stringifyTrace(trace) {
     function str(list) {
         let s = ""
         for (let l of list) {
             s += l + ","
+        }
+        return s.slice(0, -1)
+    }
+    function objectify(o) {
+        let s = ''
+        for (let i in o) {
+            s += i + ':' + o[i] + ','
         }
         return s.slice(0, -1)
     }
@@ -657,8 +699,14 @@ function stringifyTrace(trace) {
             case "Load":
                 traceString += "Load;" + t.memidx + ";" + t.offset + ";" + str(t.data)
                 break
+            case 'MemGrow':
+                traceString += 'MemGrow;' + t.memidx + ';' + t.amount
+                break
             case "TableGet":
                 traceString += "TableGet;" + t.tableidx + ";" + t.idx + ";" + t.ref
+                break
+            case 'TableGrow':
+                traceString += 'TableGrowGrow;' + t.tableidx + ';' + t.amount
                 break
             case "ExportCall":
                 traceString += "ExportCall;" + str(t.names)
@@ -667,7 +715,7 @@ function stringifyTrace(trace) {
                 traceString += "ImportCall;" + t.funcidx + ';' + t.module + ";" + t.name
                 break
             case "ImportReturn":
-                traceString += "ImportReturn;" + t.funcidx + ';' + str(t.results) + ";" + str(t.memGrow) + ";" + str(t.tableGrow)
+                traceString += "ImportReturn;" + t.funcidx + ';' + str(t.results) + ";" + objectify(t.memGrow) + ";" + objectify(t.tableGrow)
                 break
             default:
                 throw "Invalid Trace event type"

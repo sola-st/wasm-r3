@@ -8,6 +8,12 @@ let imports = {
         changeMemBeforeReentry: () => {
             new Uint8Array(instance.exports.memory.buffer)[1] = 1
             instance.exports.reentry()
+        },
+        foo: () => {
+            instance.exports.reentry2()
+        },
+        bar: () => {
+            new Uint8Array(instance.exports.memory.buffer)[1] = 2
         }
     }
 }

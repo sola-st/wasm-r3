@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import cp from 'child_process'
-import { parse, generate } from '../replay-generator'
+import generate from '../src/replay-generator'
+import parse from '../src/trace-parser'
 
 const testDir = import.meta.dir
 
@@ -24,6 +25,8 @@ if (process.argv.length > 2) {
     testNames = testNames.filter(n => process.argv.includes(n))
 }
 
+// testNames = ["test01"]
+
 process.stdout.write(`Executing Tests ... \n`)
 for (let name of testNames) {
     process.stdout.write(writeTestName(name))
@@ -31,7 +34,7 @@ for (let name of testNames) {
     const watPath = path.join(testPath, 'index.wat')
     const wasmPath = path.join(testPath, 'index.wasm')
     const wasabiRuntimePath = path.join(testPath, 'index.wasabi.js')
-    const tracerPath = path.join(testDir, '../recorder/tracer.js')
+    const tracerPath = path.join(testDir, '../src/tracer.js')
     const genPath = path.join(testPath, 'gen.js')
     const tracePath = path.join(testPath, 'trace.r3')
     const replayPath = path.join(testPath, 'replay.js')
@@ -90,7 +93,12 @@ for (let name of testNames) {
     replayStream.write(`}\n`)
     replayStream.write(`run().then(() => require('fs').writeFileSync('${replayTracePath}', stringifyTrace(trace)))\n`)
     replayStream.end()
-    cp.execSync(`bun ${replayGenPath}`)
+    try {
+        cp.execSync(`bun ${replayGenPath}`)
+    } catch (e: any) {
+        fail(e.toString(), testReportPath)
+        continue
+    }
     let replayTrace = fs.readFileSync(replayTracePath, 'utf-8')
     if (replayTrace !== traceString) {
         let report = `[Expected]\n`

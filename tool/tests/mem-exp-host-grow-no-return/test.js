@@ -5,7 +5,7 @@ let imports = {
             instance.exports.memory.grow(1)
             let changeAddr = instance.exports.memory.buffer.byteLength - 4
             new Uint8Array(instance.exports.memory.buffer)[changeAddr] = 60000
-            return changeAddr
+            instance.exports.reentry()
         }
     }
 }

@@ -1,12 +1,8 @@
-let instance
 let imports = {
     env: {
-        changeMem: (address, value) => {
-            new Uint8Array(instance.exports.memory.buffer)[address] = value
-            instance.exports.foo()
-        }
+        add: (a, b) => a + b
     }
 }
+
 let wasm = await WebAssembly.instantiate(wasmBinary, imports)
-instance = wasm.instance
-instance.exports.main()
+wasm.instance.exports.main()

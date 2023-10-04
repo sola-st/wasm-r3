@@ -1,14 +1,12 @@
 (module
-  (import "env" "add" (func $add (param i32 i32) (result i32)))
+  (import "env" "changeMem" (func $changeMemHost (param i32 i32)))
   (func $main (export "main")
-    i32.const 1
-    i32.const 2
-    call $add
-    drop
+    i32.const 0
+    i32.const 0
+    i32.store
+    i32.const 3
     i32.const 5
-    i32.const -4
-    call $add
-    drop
+    call $changeMemHost
   )
   (func $foo (export "foo")
     i32.const 2

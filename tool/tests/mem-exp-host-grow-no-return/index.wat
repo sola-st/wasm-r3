@@ -5,5 +5,10 @@
     i32.load
     drop
   )
+  (func $reentry (export "reentry")
+    i32.const 100000
+    i32.load
+    drop
+  )
   (memory (export "memory") 1 2)
 )
