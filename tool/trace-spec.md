@@ -18,13 +18,21 @@ type Event = Load | TableGet | ExportCall | ImportCall | ImportReturn
 ```
 
 ```typescript
-type Load = { memidx: u32, offset: u32, data: byte[] }
+type Load = { memidx: u32, offset: u32, data: byte[]}
+```
+
+```typescript
+type MemGrow = { memidx: u32, amount: u32 }
 ```
 
 As of version 2.0 of the [WebAssembly standard](https://webassembly.github.io/spec/core/intro/index.html) there is only one memory supported per module. So `memidx` will implicitly always have the value `1`. This restriction may be lifted in future versions.
 
 ```typescript
-type  TableGet = { tableidx: u32, idx: u32, ref: reftype }
+type  TableGet = { tableidx: u32, idx: u32, ref: reftype, grow: u32 }
+```
+
+```typescript
+type TableGrow = { tableidx: u32, amount: u32 }
 ```
 
 ```typescript
@@ -36,7 +44,7 @@ type  ImportCall = { funcidx: u32, module: string, name: string }
 ```
 
 ```typescript
-type  ImportReturn = { funcidx: u32, results: Vec<(iN | fN)>, memGrow: Vec<u32>, tableGrow: Vec<u32> }
+type  ImportReturn = { funcidx: u32, results: Vec<(iN | fN)> }
 ``` 
 **Note** This trace design contains more information then what is minimal necessarry for the actual implementation of a generator like for example `funcidx` in the events `ImportCall` and `ImportReturn`. This design choise simplifies and speeds up the replay generation. It increases the trace size slightly.
 
@@ -66,7 +74,15 @@ Load => "Load;" + str(memidx) + ";" + str(offset) + ";" + data
 ```
 
 ```
+MemGrow => "MemGrow;" + str(memidx) + ";" + str(amount)
+```
+
+```
 TableGet => "TableGet;" + str(tableidx) + ";" + str(idx) + ";" + str(ref)
+```
+
+```
+TableGrow => "TableGrow;" + str(tableidx) + ";" + str(amount)
 ```
 
 ```
@@ -78,7 +94,7 @@ ImportCall => "ImportCall;" + str(funcidx) + ";" + module + ";" + name
 ```
 
 ```
-ImportReturn => "ImportReturn;" + str(funcidx) + ";" + str(results) + ";" str(memGrow) + ";" + str(tableGrow)
+ImportReturn => "ImportReturn;" + str(funcidx) + ";" + str(results)
 ```
 
 ```
