@@ -15,6 +15,8 @@ type TableGet = { type: "TableGet", tableidx: number, idx: number, ref: "funcref
 
 type TableGrow = { type: 'TableGrow', tableidx: number, amount: number }
 
+type GlobalGet = { type: 'GlobalGet', globalidx: number, value: number }
+
 type ExportCall = { type: "ExportCall", names: string[], params: number[] }
 
 type ImportCall = { type: "ImportCall", funcidx: number, module: string, name: string }

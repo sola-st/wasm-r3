@@ -36,6 +36,10 @@ type TableGrow = { tableidx: u32, amount: u32 }
 ```
 
 ```typescript
+type GlobalGet = { globalidx: u32, value: iN | fN }
+```
+
+```typescript
 type  ExportCall = { names: string[], params: Vec<(iN | fN)> }
 ```
 
@@ -83,6 +87,10 @@ TableGet => "TableGet;" + str(tableidx) + ";" + str(idx) + ";" + str(ref)
 
 ```
 TableGrow => "TableGrow;" + str(tableidx) + ";" + str(amount)
+```
+
+```
+GobalGet => "GlobalGet;" + str(globalidx) + ";" + str(value)
 ```
 
 ```
