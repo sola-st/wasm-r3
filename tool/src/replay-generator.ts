@@ -79,13 +79,14 @@ function pushEvent(event: Event, state: State) {
 }
 
 function stringify(code: Code) {
-    let jsString = `const fs = await import('fs')\n`
-    jsString += `const path = await import('path')\n`
+    let jsString = `import fs from 'fs'\n`
+    jsString += `import path from 'path'\n`
+    jsString += `const wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))\n`
     jsString += `let instance\n`
     jsString += 'let imports = {}\n'
     let instanciatedModules: string[] = []
     for (let funcidx in code.imports) {
-        jsString += `${global(funcidx)} = -1\n`
+        jsString += `let ${global(funcidx)} = -1\n`
         let func = code.imports[funcidx]
         if (!instanciatedModules.includes(func.module)) {
             jsString += `imports.${func.module} = {}\n`
@@ -123,7 +124,6 @@ function stringify(code: Code) {
         jsString += '}\n'
         jsString += '}\n'
     }
-    jsString += `let wasmBinary = fs.readFileSync(path.join(__dirname, 'index.wasm')) \n`
     jsString += `let wasm = await WebAssembly.instantiate(wasmBinary, imports) \n`
     jsString += `instance = wasm.instance\n`
     for (let exp of code.calls) {

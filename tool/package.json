@@ -9,7 +9,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@types/node": "^20.7.0"
+    "@types/node": "^20.7.0",
+    "lodash": "^4.17.21"
   },
   "scripts": {
     "test": "bun ./tests/run-test.ts",

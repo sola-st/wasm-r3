@@ -1,3 +1,7 @@
+import fs from 'fs'
+import path from 'path'
+let wasmPath = path.join(import.meta.dir, 'index.wasm')
+let wasmBinary = fs.readFileSync(wasmPath)
 let instance
 let imports = {
     env: {
@@ -8,5 +12,4 @@ let imports = {
     }
 }
 let wasm = await WebAssembly.instantiate(wasmBinary, imports)
-instance = wasm.instance
-instance.exports.main()
+wasm.instance.exports.main()
