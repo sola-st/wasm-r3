@@ -5,7 +5,7 @@
 
 type Trace = WasmEvent[]
 
-type WasmEvent = Load | MemGrow | TableGet | TableGrow | ExportCall | ImportCall | ImportReturn
+type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ImportReturn
 
 type Load = { type: "Load", memidx: number, offset: number, data: Uint8Array }
 

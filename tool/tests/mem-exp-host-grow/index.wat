@@ -5,5 +5,5 @@
     i32.load
     drop
   )
-  (memory (export "memory") 1 2)
+  (memory (export "memory") 1 4)
 )
