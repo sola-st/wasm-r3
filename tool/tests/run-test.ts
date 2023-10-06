@@ -33,80 +33,77 @@ testNames = testNames.filter((n) => !filter.includes(n))
 
 // testNames = ["call-imported-different-modules", "call-imported-params"]
 
-async function run() {
-  process.stdout.write(`Executing Tests ... \n`);
-  for (let name of testNames) {
-    process.stdout.write(writeTestName(name));
-    const testPath = path.join(testDir, name);
-    const watPath = path.join(testPath, "index.wat");
-    const wasmPath = path.join(testPath, "index.wasm");
-    const wasabiRuntimePath = path.join(testPath, "index.wasabi.js");
-    const tracerPath = path.join(testDir, "../src/tracer.js");
-    const tracePath = path.join(testPath, "trace.r3");
-    const replayPath = path.join(testPath, "replay.js");
-    const replayTracePath = path.join(testPath, "replay-trace.r3");
-    const testReportPath = path.join(testPath, "report.txt");
+process.stdout.write(`Executing Tests ... \n`);
+for (let name of testNames) {
+  process.stdout.write(writeTestName(name));
+  const testPath = path.join(testDir, name);
+  const watPath = path.join(testPath, "index.wat");
+  const wasmPath = path.join(testPath, "index.wasm");
+  const wasabiRuntimePath = path.join(testPath, "index.wasabi.js");
+  const tracerPath = path.join(testDir, "../src/tracer.js");
+  const tracePath = path.join(testPath, "trace.r3");
+  const replayPath = path.join(testPath, "replay.js");
+  const replayTracePath = path.join(testPath, "replay-trace.r3");
+  const testReportPath = path.join(testPath, "report.txt");
 
-    // 1. Generate trace
-    cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
-    cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call -o ${testPath}`);
-    removeLinesWithConsole(wasabiRuntimePath)
-    revertMonkeyPatch(wasabiRuntimePath)
-    let trace = require(tracerPath).default(wasabiRuntimePath);
-    //@ts-ignore
-    delete require.cache[wasabiRuntimePath]
-    //@ts-ignore
-    delete require.cache[tracerPath]
-    try {
-      await import(path.join(testPath, "test.js"));
-    } catch (e: any) {
-      fail(e.toString(), testReportPath);
-      continue;
-    }
-    let traceString = stringify(trace);
-    fs.writeFileSync(tracePath, traceString);
-
-    // 2. Generate replay binary
-    try {
-      trace = parse(traceString)
-    } catch (e: any) {
-      fail(e.toString(), testReportPath)
-      continue
-    }
-    let replayCode
-    try {
-      replayCode = generate(trace!)
-    } catch (e: any) {
-      fail(e.toString(), testReportPath)
-      continue
-    }
-    fs.writeFileSync(replayPath, replayCode!)
-
-    // 3. Check if original trace and replay trace match
-    let replayTrace = require(tracerPath).default(wasabiRuntimePath);
-    try {
-      await import(replayPath);
-    } catch (e: any) {
-      fail(e.toString(), testReportPath);
-      continue;
-    }
-    let replayTraceString = stringify(replayTrace);
-    fs.writeFileSync(replayTracePath, replayTraceString);
-    if (replayTraceString !== traceString) {
-      let report = `[Expected]\n`;
-      report += traceString;
-      report += `\n\n`;
-      report += `[Actual]\n`;
-      report += replayTraceString;
-      fail(report, testReportPath);
-    } else {
-      process.stdout.write(`\u2713\n`);
-    }
-
+  // 1. Generate trace
+  cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
+  cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call -o ${testPath}`);
+  removeLinesWithConsole(wasabiRuntimePath)
+  revertMonkeyPatch(wasabiRuntimePath)
+  let trace = require(tracerPath).default(wasabiRuntimePath);
+  //@ts-ignore
+  delete require.cache[wasabiRuntimePath]
+  //@ts-ignore
+  delete require.cache[tracerPath]
+  try {
+    await import(path.join(testPath, "test.js"));
+  } catch (e: any) {
+    fail(e.toString(), testReportPath);
+    continue;
   }
-  process.stdout.write(`done running ${testNames.length} tests\n`);
+  let traceString = stringify(trace);
+  fs.writeFileSync(tracePath, traceString);
+
+  // 2. Generate replay binary
+  try {
+    trace = parse(traceString)
+  } catch (e: any) {
+    fail(e.toString(), testReportPath)
+    continue
+  }
+  let replayCode
+  try {
+    replayCode = generate(trace!)
+  } catch (e: any) {
+    fail(e.toString(), testReportPath)
+    continue
+  }
+  fs.writeFileSync(replayPath, replayCode!)
+
+  // 3. Check if original trace and replay trace match
+  let replayTrace = require(tracerPath).default(wasabiRuntimePath);
+  try {
+    await import(replayPath);
+  } catch (e: any) {
+    fail(e.toString(), testReportPath);
+    continue;
+  }
+  let replayTraceString = stringify(replayTrace);
+  fs.writeFileSync(replayTracePath, replayTraceString);
+  if (replayTraceString !== traceString) {
+    let report = `[Expected]\n`;
+    report += traceString;
+    report += `\n\n`;
+    report += `[Actual]\n`;
+    report += replayTraceString;
+    fail(report, testReportPath);
+  } else {
+    process.stdout.write(`\u2713\n`);
+  }
+
 }
-run();
+process.stdout.write(`done running ${testNames.length} tests\n`);
 
 function removeLinesWithConsole(filePath: string) {
   let s = fs.readFileSync(filePath, 'utf-8')
