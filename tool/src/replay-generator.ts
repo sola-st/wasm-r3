@@ -109,7 +109,7 @@ function stringify(code: Code) {
                         })
                         break
                     case 'MemGrow':
-                        jsString += `instance.exports.memory.grow(${event.amount * 2}) \n`
+                        jsString += `instance.exports.memory.grow(${event.amount}) \n`
                         break
                     case 'TableSet':
                         break

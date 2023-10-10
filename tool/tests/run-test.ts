@@ -1,9 +1,11 @@
 import fs from "fs";
 import path from "path";
 import cp from "child_process";
+import _ from 'lodash'
 import generate from "../src/replay-generator";
 import parse from "../src/trace-parse";
 import stringify from "../src/trace-stringify";
+import { Wasabi } from '../wasabi'
 
 const testDir = import.meta.dir;
 
@@ -31,12 +33,13 @@ if (process.argv.length > 2) {
 const filter = ['exported-called-param', 'mem-imp-host-mod', 'glob-imp-host-mod']
 testNames = testNames.filter((n) => !filter.includes(n))
 
-// testNames = ["call-imported-different-modules", "call-imported-params"]
+// testNames = ["export-called-multiple"]
 
 process.stdout.write(`Executing Tests ... \n`);
 for (let name of testNames) {
   process.stdout.write(writeTestName(name));
   const testPath = path.join(testDir, name);
+  const testJsPath = path.join(testPath, 'test.js')
   const watPath = path.join(testPath, "index.wat");
   const wasmPath = path.join(testPath, "index.wasm");
   const wasabiRuntimePath = path.join(testPath, "index.wasabi.js");
@@ -49,19 +52,33 @@ for (let name of testNames) {
   // 1. Generate trace
   cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
   cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call -o ${testPath}`);
+  // cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return -o ${testPath}`);
   removeLinesWithConsole(wasabiRuntimePath)
   revertMonkeyPatch(wasabiRuntimePath)
   let trace = require(tracerPath).default(wasabiRuntimePath);
+  try {
+    await import(testJsPath)
+  } catch (e: any) {
+    fail(e.toString(), testReportPath)
+    continue;
+  }
   //@ts-ignore
   delete require.cache[wasabiRuntimePath]
   //@ts-ignore
-  delete require.cache[tracerPath]
+  delete require.cache[testJsPath]
+  let detailedTrace = detailedTracer(wasabiRuntimePath)
   try {
-    await import(path.join(testPath, "test.js"));
+    await import(testJsPath)
   } catch (e: any) {
     fail(e.toString(), testReportPath);
     continue;
   }
+  //@ts-ignore
+  delete require.cache[wasabiRuntimePath]
+  //@ts-ignore
+  delete require.cache[tracerPath]
+  //@ts-ignore
+  delete require.cache[testJsPath]
   let traceString = stringify(trace);
   fs.writeFileSync(tracePath, traceString);
 
@@ -81,7 +98,7 @@ for (let name of testNames) {
   }
   fs.writeFileSync(replayPath, replayCode!)
 
-  // 3. Check if original trace and replay trace match
+  // 3. Execute replay
   let replayTrace = require(tracerPath).default(wasabiRuntimePath);
   try {
     await import(replayPath);
@@ -89,6 +106,37 @@ for (let name of testNames) {
     fail(e.toString(), testReportPath);
     continue;
   }
+  //@ts-ignore
+  delete require.cache[wasabiRuntimePath]
+  //@ts-ignore
+  delete require.cache[tracerPath]
+  //@ts-ignore
+  delete require.cache[replayPath]
+  let replayDetailedTrace = detailedTracer(wasabiRuntimePath)
+  try {
+    await import(replayPath)
+  } catch (e: any) {
+    fail(e.toString(), testReportPath);
+    continue;
+  }
+  //@ts-ignore
+  delete require.cache[wasabiRuntimePath]
+  //@ts-ignore
+  delete require.cache[tracerPath]
+  //@ts-ignore
+  delete require.cache[replayPath]
+
+  // 4. Check if the computing results of the original and replay execution match
+  if (!_.isEqual(detailedTrace, replayDetailedTrace)) {
+    let report = `[Expected]\n`;
+    report += detailedTrace.toString();
+    report += `\n\n`;
+    report += `[Actual]\n`;
+    report += replayDetailedTrace.toString();
+    fail(report, testReportPath);
+  }
+
+  // 5. Check if original trace and replay trace match
   let replayTraceString = stringify(replayTrace);
   fs.writeFileSync(replayTracePath, replayTraceString);
   if (replayTraceString !== traceString) {
@@ -101,7 +149,6 @@ for (let name of testNames) {
   } else {
     process.stdout.write(`\u2713\n`);
   }
-
 }
 process.stdout.write(`done running ${testNames.length} tests\n`);
 
@@ -150,4 +197,25 @@ function rmSafe(path: string) {
   } catch {
     // file doesnt exist, ok
   }
+}
+
+/**
+ * This function returns another trace of the program which contains additional information
+ * about the program runtime. This is used to additionally test the equivalence of the original
+ * program and the replay
+ * 
+ * TODO
+ */
+function detailedTracer(runtimePath: string) {
+  const Wasabi: Wasabi = require(runtimePath)
+  let trace: any[] = []
+  Wasabi.analysis = {
+    // return_(location, values) {
+    //   trace.push(values)
+    // },
+    // begin(location, type) {
+    //   trace.push(location)
+    // }
+  }
+  return trace
 }

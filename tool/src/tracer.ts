@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { Wasabi } from '../wasabi'
 
 export default function (runtimePath: string) {
-    const Wasabi = require(runtimePath) as Wasabi
+    const Wasabi: Wasabi = require(runtimePath)
 
     const MEM_PAGE_SIZE = 65536
 
