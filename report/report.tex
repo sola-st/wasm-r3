@@ -42,7 +42,6 @@
 \def\thesisstartdate{November 1, 2020} 
 \def\thesisenddate{April 30, 2021} 
 
-
 % -------------------------------------------------------------------------------------------------
 % Beginning of the main document body
 % -------------------------------------------------------------------------------------------------
@@ -74,6 +73,120 @@ Kurzfassung der Arbeit.
 \chapter{Introduction}
 \label{s:Introduction}
 Explain scope and structure of report.
+
+\chapter{Background}
+\section{WebAssembly}
+\section{Record and Replay}
+Software typically contains nondeterministic or nonpure behavior. We call
+behavior nonpure when the execution and output of a particular program
+depends on state and events that are independent of the running process.
+From an application perspective nonpurity expresses itself as nondeterminism
+for which reason we will use this term from now on for both types of behavior.
+This basic property signifies that the execution of the same program might
+yield different results for seperate runs. There are several applications where
+this trait leads to shortcumings and restrictions. Consider for example
+a bug that only appears with a certain probability in a nondeterministic
+fashion. In order to eliminate this bug one must locate it first by narrowing
+down to the possible locations it may appear. This process is significantly
+complicated if a developer is not able to faithfully reproduce the bug and
+instead relies on chance in order to observe it. Such problems motivated
+a category of techniques which try to record and replay the execution of
+a program to execute it deterministically with arbitrary repetitions.  
+Record and replay techniques have been extensively studied in the past,
+mostly for debugging purposes \cite{203227, Burg2013_InteractiveReplayWeb} and security analysis \cite{10.1145/844128.844148}. However this is not the only scenario in
+which such approaches could be applied in order to resolve a problem.
+The work of Richards et al. \cite{Richards2011-JavascripBenchmarks}
+represents one of the rare exceptions in that record and replay techniques
+are used for a different objective, namely
+the creation of javascript benchmarks, derived from real world browser
+applications. Replay based debuggers have been surveyed and categorised
+by Dionne et al. \cite{Dionne1996-TaxonomyDebuggers} and Cornelis et al
+\cite{Cornelis2003-TaxonomyReplay}. In the following chapters we use especially
+the taxonomy of the latter to describe the underlying concepts and constraints
+of replay systems.
+
+All record and replay approaches rely on a trace which collects input and
+outut values during the initial runtime of a specific program and provides
+the necessary informations during replay in order to repeat the original
+execution. On a lowest level programs can be viewed as streams of instructions
+each of which consumes input and produces output. In order to produce a
+faithful replay of such a program a naive approach would trace the input and
+output of each instruction and provide these values to the same instructions
+during replay. This \textit{content-based} approach has the advantage that a replay
+may be started and stopped at any program point while always preserving the
+original semantics. Despite this feature this approach is not feasable in
+practice since tracing of all inputs and outputs of each instruction would
+result in enourmus log sizes. Another approach is based on the idea captures
+the initial state of the recording execution as complete as possible and rerun
+the program based from that starting point. As the program leaves its initial
+path during reexecuting due to nondeterminism, the process will be nudged to
+the desired path through information that was additionally captured during
+the record phase. This approach is called \textit{ordering-based}.
+While implementable in practice this technique has the
+significant disadvantage over \textit{content-based} approaches in that the replay
+can only be started at the initial state which was captured during the first
+execution. Abstracting from the instruction level, record and replay can also
+be applied to more high level programs using more procedural languages instead
+of machine instructions.
+
+Since CPUs are deterministic by nature, nondeterminism gets introduced to a
+program by its surrounding. Interrupts like commands by peripheral input
+devices or dedicated input instructions that demand information from the
+surrounding system may cause the program to diverge from its usual path.
+More formally we can describe the execution of an application through the
+interaction between the deterministic application $A$ itself and the surrounding
+environment $E$. In $A$'s perspective $E$ appears like a blackbox that
+provides unpredictable values at unpredictable timings to which $A$ reacts
+in a well defined manner. Specifically there are two types of interactions
+possible. 1. $A$ may call $E$ in order to receive information that it can
+not compute by itself and 2. $E$ might send signals or interupts to $A$
+whose parameters can be arbitray. As example we can concretize this concept
+by choosing $A$ to be a user space application and $E$ an operating system.
+The application will request certain services from the operating system like
+reading a file from the filesystem via its system call interface and retrieve
+certain information about the outcome of these actions to which it reacts
+accordingly. Similarily the operating system can send interrupts to the
+application when the user uses the keyboard or mouse to issue certain commands
+which also get handled by the application. In order to create a faithful
+replay for the execution of $A$ one must record the full information exchange
+between $A$ and $E$ that triggers certain behaviors in $A$. This information
+can later be used to modify $E$ in a way to behave deterministically at
+every reexecution of the program. Possible approaches of modifying the
+enfironment are presented later in the chapter.
+% Evaluate which strategies there are to collect the trace.
+% Intrusive vs Nonintusive
+The nature of $E$ is such that
+it is devided into layers. Each layer communicates via interfaces with the
+layer directly above and below it. We call the highest level layer wich
+provides an interface to $A$ \textit{first order environment}, the layer
+directly below it \textit{second order environment}, and so on. To make this
+more clear we again consider the above example. Previousely we have been
+representing $E$ through the operating system. Infact the operating system
+which represents the \textit{first order environment} runs itself on the
+hardware with which it communicates via the instruction set architecture.
+As another example we can consider a javascript application which runs
+inside a web browser. The \textit{first order environment} here is the
+browser itself or the virtual machine that powers the execution of the
+application code which itself runs on the operating system, which again
+runs on bare hardware.
+% Explain the different strategies to modify the host environment
+% Modifying
+% Proxying
+% Replacing
+% Ignoring (Bake environment responses into A)
+
+
+
+
+\chapter{Approach}
+\section{Record}
+\section{Replay}
+
+\chapter{Implementation}
+
+\chapter{Evaluation}
+
+\chapter{Conclusion}
 
 \chapter{Great Work}
 \label{s:GreatWork}

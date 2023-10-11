@@ -1,0 +1,125 @@
+@book{Strunk-ElementsOfStyle,
+  author = {William Strunk Jr. and E. B. White},
+  title  = {The Elements of Style},
+  year   = {2000}
+}
+ 
+@book{Aho86-Compilers,
+  author    = {Alfred V. Aho and Ravi Sethi and Jeffrey D. Ullman},
+  title     = {Compilers: principles, techniques, and tools},
+  publisher = {Addison-Wesley Longman Publishing Co., Inc.},
+  year      = {1986},
+  isbn      = {0-201-10088-6}
+}
+
+@inproceedings{HerlihyMoss1993-TransactionalMemory,
+  author    = {Maurice Herlihy and J. Eliot B. Moss},
+  title     = {Transactional Memory: Architectural Support For Lock-free Data Structures},
+  booktitle = {Proc. of the 20th Intl. Symp. on Computer Architecture (ISCA'93)},
+  year      = {1993},
+  pages     = {289-300}
+}
+
+@article{FraserHanson1992-CodeGenerator,
+  author  = {Christopher Fraser and David Hanson and Todd Proebsting},
+  title   = {Engineering a Simple, Efficient Code Generator Generator},
+  journal = {ACM Letters on Programming Languages and Systems},
+  year    = {1992},
+  volume  = {1},
+  pages   = {213--226},
+  number  = {3},
+  month   = sep
+}
+
+@article{Cornelis2003-TaxonomyReplay,
+  author = {Cornelis, Frank and Georges, Andy and Christiaens, Mark and Ronsse, Michiel and Ghesquiere, Tom and De Bosschere, Koen},
+  year   = {2003},
+  month  = {01},
+  pages  = {},
+  title  = {A Taxonomy of Execution Replay Systems}
+}
+
+@article{Dionne1996-TaxonomyDebuggers,
+  author = {Dionne, Carl and Feeley, Marc and Desbiens, Jocelyn and Informatique, Alex},
+  year   = {1996},
+  month  = {09},
+  pages  = {},
+  title  = {A Taxonomy of Distributed Debuggers Based on Execution Replay}
+}
+
+@techreport{ArnoldFink2004-ArchitectureandPolicy,
+  author      = {Matthew Arnold and Stephen Fink and David Grove and Michael Hind
+                 and Peter F. Sweeney},
+  title       = {Architecture and Policy for Adaptive Optimization in Virtual Machines},
+  institution = {IBM Research Report 23429},
+  year        = {2004},
+  month       = nov
+}
+
+@inproceedings{Richards2011-JavascripBenchmarks,
+  author    = {Richards, Gregor and Gal, Andreas and Eich, Brendan and Vitek, Jan},
+  title     = {Automated Construction of JavaScript Benchmarks},
+  year      = {2011},
+  isbn      = {9781450309400},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/2048066.2048119},
+  doi       = {10.1145/2048066.2048119},
+  abstract  = {JavaScript is a highly dynamic language for web-based applications. Innovative implementation techniques for improving its speed and responsiveness have been developed in recent years. Industry benchmarks such as WebKit SunSpider are often cited as a measure of the efficacy of these techniques. However, recent studies have shown that these benchmarks fail to accurately represent the dynamic nature of modern JavaScript applications, and so may be poor predictors of real-world performance. Worse, they may guide the development of optimizations which are unhelpful for real applications. Our goal is to develop a tool and techniques to automate the creation of realistic and representative benchmarks from existing web applications. We propose a record-and-replay approach to capture JavaScript sessions which has sufficient fidelity to accurately recreate key characteristics of the original application, and at the same time is sufficiently flexible that a recording produced on one platform can be replayed on a different one. We describe JSBench, a flexible tool for workload capture and benchmark generation, and demonstrate its use in creating eight benchmarks based on popular sites. Using a variety of runtime metrics collected with instrumented versions of Firefox, Internet Explorer, and Safari, we show that workloads created by JSBench match the behavior of the original web applications.},
+  booktitle = {Proceedings of the 2011 ACM International Conference on Object Oriented Programming Systems Languages and Applications},
+  pages     = {677–694},
+  numpages  = {18},
+  keywords  = {reproduction, benchmarks, repetition},
+  location  = {Portland, Oregon, USA},
+  series    = {OOPSLA '11}
+}
+
+@article{10.1145/844128.844148,
+  author     = {Dunlap, George W. and King, Samuel T. and Cinar, Sukru and Basrai, Murtaza A. and Chen, Peter M.},
+  title      = {ReVirt: Enabling Intrusion Analysis through Virtual-Machine Logging and Replay},
+  year       = {2003},
+  issue_date = {Winter 2002},
+  publisher  = {Association for Computing Machinery},
+  address    = {New York, NY, USA},
+  volume     = {36},
+  number     = {SI},
+  issn       = {0163-5980},
+  url        = {https://doi.org/10.1145/844128.844148},
+  doi        = {10.1145/844128.844148},
+  abstract   = {Current system loggers have two problems: they depend on the integrity of the operating system being logged, and they do not save sufficient information to replay and analyze attacks that include any non-deterministic events. ReVirt removes the dependency on the target operating system by moving it into a virtual machine and logging below the virtual machine. This allows ReVirt to replay the system's execution before, during, and after an intruder compromises the system, even if the intruder replaces the target operating system. ReVirt logs enough information to replay a long-term execution of the virtual machine instruction-by-instruction. This enables it to provide arbitrarily detailed observations about what transpired on the system, even in the presence of non-deterministic attacks and executions. ReVirt adds reasonable time and space overhead. Overheads due to virtualization are imperceptible for interactive use and CPU-bound workloads, and 13--58\% for kernel-intensive workloads. Logging adds 0--8\% overhead, and logging traffic for our workloads can be stored on a single disk for several months.},
+  journal    = {SIGOPS Oper. Syst. Rev.},
+  month      = {dec},
+  pages      = {211–224},
+  numpages   = {14}
+}
+
+@inproceedings{203227,
+  author    = {Robert O{\textquoteright}Callahan and Chris Jones and Nathan Froyd and Kyle Huey and Albert Noll and Nimrod Partush},
+  title     = {Engineering Record and Replay for Deployability},
+  booktitle = {2017 USENIX Annual Technical Conference (USENIX ATC 17)},
+  year      = {2017},
+  isbn      = {978-1-931971-38-6},
+  address   = {Santa Clara, CA},
+  pages     = {377--389},
+  url       = {https://www.usenix.org/conference/atc17/technical-sessions/presentation/ocallahan},
+  publisher = {USENIX Association},
+  month     = jul
+}
+
+@inproceedings{Burg2013_InteractiveReplayWeb,
+  author    = {Burg, Brian and Bailey, Richard and Ko, Amy J. and Ernst, Michael D.},
+  title     = {Interactive Record/Replay for Web Application Debugging},
+  year      = {2013},
+  isbn      = {9781450322683},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/2501988.2502050},
+  doi       = {10.1145/2501988.2502050},
+  abstract  = {During debugging, a developer must repeatedly and manually reproduce faulty behavior in order to inspect different facets of the program's execution. Existing tools for reproducing such behaviors prevent the use of debugging aids such as breakpoints and logging, and are not designed for interactive, random-access exploration of recorded behavior. This paper presents Timelapse, a tool for quickly recording, reproducing, and debugging interactive behaviors in web applications. Developers can use Timelapse to browse, visualize, and seek within recorded program executions while simultaneously using familiar debugging tools such as breakpoints and logging. Testers and end-users can use Timelapse to demonstrate failures in situ and share recorded behaviors with developers, improving bug report quality by obviating the need for detailed reproduction steps. Timelapse is built on Dolos, a novel record/replay infrastructure that ensures deterministic execution by capturing and reusing program inputs both from the user and from external sources such as the network. Dolos introduces negligible overhead and does not interfere with breakpoints and logging. In a small user evaluation, participants used Timelapse to accelerate existing reproduction activities, but were not significantly faster or more successful in completing the larger tasks at hand. Together, the Dolos infrastructure and Timelapse developer tool support systematic bug reporting and debugging practices.},
+  booktitle = {Proceedings of the 26th Annual ACM Symposium on User Interface Software and Technology},
+  pages     = {473–484},
+  numpages  = {12},
+  keywords  = {deterministic replay, web applications, debugging},
+  location  = {St. Andrews, Scotland, United Kingdom},
+  series    = {UIST '13}
+}
