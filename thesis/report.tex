@@ -1,0 +1,208 @@
+%-------------------------------------------------------------------------------------------------
+%
+%  Skeleton for bachelor and master thesis reports at the Software Lab
+%-----------------------------------------------------------------------------------------
+%
+% USAGE:      compile with PDFLaTeX
+%
+% HISTORY:    - written by Sascha A. Stoeter <stoeter@iris.ethz.ch>, www.stoeter.com, 02.06.2004
+%             - modified by Martin Probst, 18.08.2004
+%             - extended and adapted for use at LST by Oliver Trachsel, 2007-08-21
+%             - modified for use at Software Lab by Michael Pradel, Nov 2014
+%             - modified for use at U Stuttgart by Michael Pradel, Sep 2020
+%-------------------------------------------------------------------------------------------------
+\documentclass[11pt,a4paper]{book}
+\usepackage{solareport}
+
+% -------------------------------------------------------------------------------------------------
+% Add needed packages. Some generally useful packages are listed for
+% your convenience.
+% -------------------------------------------------------------------------------------------------
+\usepackage{subfigure}                          % enable the use of subfigures
+\usepackage[thickspace,thinqspace]{SIunits}     %
+\usepackage[plainpages=false,pdfpagelabels]{hyperref}    % enable hyperlinks in pdf/ps Docs
+\usepackage{listings}                           % to embed source code
+
+% -------------------------------------------------------------------------------------------------
+% Select type of thesis
+% -------------------------------------------------------------------------------------------------
+%\def\thesistype{Bachelor}
+\def\thesistype{Master}
+
+% -------------------------------------------------------------------------------------------------
+% Set names
+% -------------------------------------------------------------------------------------------------
+\def\thesisauthor{John Doe}
+\def\thesisadvisor{} % leave empty if directly advised by Michael Pradel
+\def\studyprogram{Computer Science} % e.g., Computer Science or INFOTECH
+
+% -------------------------------------------------------------------------------------------------
+% Set dates
+% -------------------------------------------------------------------------------------------------
+\def\thesisstartdate{November 1, 2020} 
+\def\thesisenddate{April 30, 2021} 
+
+
+% -------------------------------------------------------------------------------------------------
+% Beginning of the main document body
+% -------------------------------------------------------------------------------------------------
+\begin{document}
+
+% -------------------------------------------------------------------------------------------------
+% Front matter with title page, table of contents, and abstracts 
+% -------------------------------------------------------------------------------------------------
+\frontmatter
+
+% Title page: set title
+\thesistitlepage{Thesis Title}
+
+% Abstract must not be longer than one page per language. English and
+% German abstracts are mandatory.
+\chapter*{Abstract}
+Short summary of thesis.
+
+\chapter*{Zusammenfassung}
+Kurzfassung der Arbeit.
+
+% Table of contents
+\tableofcontents
+
+% -------------------------------------------------------------------------------------------------
+% Main document body
+% -------------------------------------------------------------------------------------------------
+\mainmatter
+\chapter{Introduction}
+\label{s:Introduction}
+Explain scope and structure of report.
+
+\chapter{Great Work}
+\label{s:GreatWork}
+
+This and the following chapters detail the original work.
+
+\chapter{Examples}
+\label{s:Examples}
+
+This chapter provides some additional hints and examples for the
+layout and style of the thesis. It is worthwhile to look at the source
+file \verb|Examples.tex| for this appendix to understand how it was
+created.
+
+\section{Tables}
+
+Tables are left justified and the caption appears on top as seen in
+Table~\ref{t:Translations}.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{English} & \textbf{German}\\
+\hline
+cell phone       & Handy\\
+Diet Coke        & Coca Cola light\\
+\hline
+\end{tabular}
+\caption[Translations]{\label{t:Translations}Translations.}
+\end{table}
+
+\section{Figures}
+
+Figure~\ref{f:SOLAlogo} shows a simple figure with a single picture
+and Figure~\ref{f:SubfigureExample} shows a more complex figure
+containing subfigures.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.6\linewidth]{figures/SOLALogo}
+\caption[SOLA logo]{\label{f:SOLAlogo}SOLA logo.}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\subfigure[UStuttLogo]{\includegraphics[height=12mm]{figures/UStuttLogo}}\quad
+\subfigure[SOLALogo]{\includegraphics[height=12mm]{figures/SOLALogo}}
+\caption[Subfigure example]{\label{f:SubfigureExample}Two pictures as
+  part of a single figure through the magic of the subfigure package.}
+\end{figure}
+
+\section{Units}
+
+The SIUnits package provides nice spacing for units as demonstrated in
+Table~\ref{t:SIUnits}. Use of the package also makes it easy to change
+the style or even the unit text in the future.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Output}   & \textbf{Command}\\
+\hline
+42m               & \verb|42m|\\
+\unit{42}{\metre} & \verb|\unit{42}{\metre}|\\
+42 m              & \verb|42 m|\\
+\hline
+\end{tabular}
+\caption[Spacing for units]{\label{t:SIUnits}Spacing for units.}
+\end{table}
+
+\section{Source code}
+
+The listings package provides tools to typeset source code
+listings. It supports many programming languages and provides a lot of
+formatting options.
+
+\lstset{numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=5pt}
+\lstset{basicstyle=\ttfamily}
+\lstset{frame=tb}
+
+\begin{lstlisting}[float,caption=Example usage of the listing package,label=l:javaClass,language=Java]
+class S {
+   int f1 = 42;
+   public S(int x) {
+          f1 = x;
+   }
+}
+\end{lstlisting}
+
+Listing \ref{l:javaClass} shows an example listing. Code snippets can
+also be inserted in normal text:
+\verb$\lstinline|int f1 = 42;|$ gives \lstinline$int f1 = 42;$
+
+\section{Miscellany}
+
+\begin{description}
+
+\item[Capitalization.] When referring to a named table (such as in the
+  previous section), the word \emph{table} is capitalized. The same is
+  true for figures, chapters and sections.
+
+\item[Bibliography.] Use \verb|bibtex| to make your life easier and to
+  produce consistently formatted entries.
+
+\item[Contractions.] Avoid contractions. For instance, use ``do not''
+  rather than ``don't.''
+
+\item[Style guide.] A classic reference book on writing style is
+  Strunk's \emph{The Elements of Style} \cite{Strunk-ElementsOfStyle}.
+
+\end{description}
+
+% -------------------------------------------------------------------------------------------------
+% Appendices (if needed)
+% -------------------------------------------------------------------------------------------------
+\appendix
+\chapter{Extra Stuff}
+\label{s:ExtraStuff}
+
+Additional material such as long mathematical derivations.
+
+% -------------------------------------------------------------------------------------------------
+% Bibliography
+% -------------------------------------------------------------------------------------------------
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{report}
+
+\input{legal_issues}
+
+\end{document}
