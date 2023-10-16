@@ -4,6 +4,13 @@ export default function parse(traceString: string) {
     for (let event of events) {
         let components = event.split(';')
         switch (components[0]) {
+            case 'ImportMemory':
+                trace.push({
+                    type: components[0],
+                    module: components[1],
+                    name: components[2],
+                })
+                break
             case "ExportCall":
                 trace.push({
                     type: components[0],
@@ -29,7 +36,7 @@ export default function parse(traceString: string) {
             case "Load":
                 trace.push({
                     type: components[0],
-                    memidx: parseInt(components[1]),
+                    name: components[1],
                     offset: parseInt(components[2]),
                     data: new Uint8Array(splitList(components[3])),
                 })
@@ -37,7 +44,7 @@ export default function parse(traceString: string) {
             case "MemGrow":
                 trace.push({
                     type: components[0],
-                    memidx: parseInt(components[1]),
+                    name: components[1],
                     amount: parseInt(components[2])
                 })
                 break

@@ -30,11 +30,20 @@ export declare type Wasabi = {
         info: {
             functions: {
                 type: string,
-                import: any,
+                import: string[],
                 export: string[],
                 locals: string,
                 instrCount: number
             }[],
+            memories: {
+                import: string[] | null,
+                export: string[]
+            }[],
+            tables: {
+                import: string[] | null,
+                export: string,
+                ref_type: any
+            }
             globals: string,
             start: any,
             tableExportName: string,
@@ -45,7 +54,8 @@ export declare type Wasabi = {
         exports: {
             [name: string]: any
         },
-        table: any
+        table: WebAssembly.Table[],
+        memories: WebAssembly.Memory[],
     },
     analysis: {
         start?: (location: Location, ...args: any) => void,

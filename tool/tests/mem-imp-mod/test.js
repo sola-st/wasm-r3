@@ -3,14 +3,11 @@ import path from 'path'
 const wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))
 
 let instance
+let memory = new WebAssembly.Memory({ initial: 1 })
+new Uint8Array(memory.buffer)[1] = 1
 let imports = {
     env: {
-        changeMem: () => {
-            instance.exports.memory.grow(1)
-            let changeAddr = 100000
-            new Uint8Array(instance.exports.memory.buffer)[changeAddr] = 60000
-            instance.exports.reentry()
-        }
+        memory
     }
 }
 let wasm = await WebAssembly.instantiate(wasmBinary, imports)

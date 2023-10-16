@@ -18,21 +18,21 @@ type Event = Load | TableGet | ExportCall | ImportCall | ImportReturn
 ```
 
 ```typescript
-type Load = { memidx: u32, offset: u32, data: byte[]}
+type Load = { name: u32, offset: u32, data: byte[]}
 ```
 
 ```typescript
-type MemGrow = { memidx: u32, amount: u32 }
+type MemGrow = { name: string, amount: u32 }
 ```
 
 As of version 2.0 of the [WebAssembly standard](https://webassembly.github.io/spec/core/intro/index.html) there is only one memory supported per module. So `memidx` will implicitly always have the value `1`. This restriction may be lifted in future versions.
 
 ```typescript
-type  TableGet = { tableidx: u32, idx: u32, ref: reftype, grow: u32 }
+type  TableGet = { name: string, idx: u32, ref: reftype, grow: u32 }
 ```
 
 ```typescript
-type TableGrow = { tableidx: u32, amount: u32 }
+type TableGrow = { name: string, amount: u32 }
 ```
 
 ```typescript
@@ -74,19 +74,19 @@ Event => self + "\n"
 ```
 
 ```
-Load => "Load;" + str(memidx) + ";" + str(offset) + ";" + data
+Load => "Load;" + str(name) + ";" + str(offset) + ";" + data
 ```
 
 ```
-MemGrow => "MemGrow;" + str(memidx) + ";" + str(amount)
+MemGrow => "MemGrow;" + str(name) + ";" + str(amount)
 ```
 
 ```
-TableGet => "TableGet;" + str(tableidx) + ";" + str(idx) + ";" + str(ref)
+TableGet => "TableGet;" + str(name) + ";" + str(idx) + ";" + str(ref)
 ```
 
 ```
-TableGrow => "TableGrow;" + str(tableidx) + ";" + str(amount)
+TableGrow => "TableGrow;" + str(name) + ";" + str(amount)
 ```
 
 ```

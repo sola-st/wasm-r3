@@ -1,5 +1,5 @@
-export default function stringifyTrace(trace: any) {
-    function str(list: any) {
+export default function stringifyTrace(trace: Trace) {
+    function str(list: Iterable<any>) {
         let s = ""
         for (let l of list) {
             s += l + ","
@@ -10,10 +10,10 @@ export default function stringifyTrace(trace: any) {
     for (let t of trace) {
         switch (t.type) {
             case "Load":
-                traceString += "Load;" + t.memidx + ";" + t.offset + ";" + str(t.data)
+                traceString += "Load;" + t.name + ";" + t.offset + ";" + str(t.data)
                 break
             case 'MemGrow':
-                traceString += 'MemGrow;' + t.memidx + ';' + t.amount
+                traceString += 'MemGrow;' + t.name + ';' + t.amount
                 break
             case "TableGet":
                 traceString += "TableGet;" + t.tableidx + ";" + t.idx + ";" + t.ref
@@ -32,6 +32,9 @@ export default function stringifyTrace(trace: any) {
                 break
             case "ImportReturn":
                 traceString += "ImportReturn;" + t.funcidx + ';' + str(t.results)
+                break
+            case 'ImportMemory':
+                traceString += 'ImportMemory;' + t.module + ';' + t.name
                 break
             default:
                 throw "Invalid Trace event type"

@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import cp from "child_process";
 import _ from 'lodash'
-import generate from "../src/replay-generator";
+import Generator from "../src/replay-generator";
 import parse from "../src/trace-parse";
 import stringify from "../src/trace-stringify";
 import { Wasabi } from '../wasabi'
@@ -30,10 +30,10 @@ if (process.argv.length > 2) {
 }
 
 // ignore specific tests
-const filter = ['exported-called-param', 'mem-imp-host-mod', 'glob-imp-host-mod']
+const filter = ['exported-called-param', 'glob-imp-host-mod', 'table-exp-host-mod']
 testNames = testNames.filter((n) => !filter.includes(n))
 
-// testNames = ["export-called-multiple"]
+// testNames = ["mem-exp-host-grow-no-return"]
 
 process.stdout.write(`Executing Tests ... \n`);
 for (let name of testNames) {
@@ -51,8 +51,8 @@ for (let name of testNames) {
 
   // 1. Generate trace
   cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
-  cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call -o ${testPath}`);
-  // cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return -o ${testPath}`);
+  // cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call -o ${testPath}`);
+  cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return -o ${testPath}`);
   removeLinesWithConsole(wasabiRuntimePath)
   revertMonkeyPatch(wasabiRuntimePath)
   let trace = require(tracerPath).default(wasabiRuntimePath);
@@ -91,7 +91,7 @@ for (let name of testNames) {
   }
   let replayCode
   try {
-    replayCode = generate(trace!)
+    replayCode = new Generator().generateReplay(trace!).stringify()
   } catch (e: any) {
     fail(e.toString(), testReportPath)
     continue
@@ -126,17 +126,7 @@ for (let name of testNames) {
   //@ts-ignore
   delete require.cache[replayPath]
 
-  // 4. Check if the computing results of the original and replay execution match
-  if (!_.isEqual(detailedTrace, replayDetailedTrace)) {
-    let report = `[Expected]\n`;
-    report += detailedTrace.toString();
-    report += `\n\n`;
-    report += `[Actual]\n`;
-    report += replayDetailedTrace.toString();
-    fail(report, testReportPath);
-  }
-
-  // 5. Check if original trace and replay trace match
+  // 4. Check if original trace and replay trace match
   let replayTraceString = stringify(replayTrace);
   fs.writeFileSync(replayTracePath, replayTraceString);
   if (replayTraceString !== traceString) {
@@ -145,6 +135,20 @@ for (let name of testNames) {
     report += `\n\n`;
     report += `[Actual]\n`;
     report += replayTraceString;
+    fail(report, testReportPath);
+    continue
+  }
+
+  // 5. Check if the computing results of the original and replay execution match
+  if (!_.isEqual(detailedTrace, replayDetailedTrace)) {
+    let report = `Detailed Traces do not match! \n\n`
+    report += `How about putting a breakpoint at the testrunner to compare the traces\n`
+    report += `in the debugger, because I do not stringify them.\n\n`
+    report += `[Expected]\n`;
+    report += detailedTrace.toString();
+    report += `\n\n`;
+    report += `[Actual]\n`;
+    report += replayDetailedTrace.toString();
     fail(report, testReportPath);
   } else {
     process.stdout.write(`\u2713\n`);
@@ -162,7 +166,7 @@ function removeLinesWithConsole(filePath: string) {
 function revertMonkeyPatch(filePath: string) {
   let s = fs.readFileSync(filePath, 'utf-8')
   const lines = s.split('\n')
-  lines.splice(162, 0, 'WebAssembly.instantiate = oldInstantiate')
+  lines.splice(172, 0, 'WebAssembly.instantiate = oldInstantiate')
   fs.writeFileSync(filePath, lines.join('\n'))
 }
 
@@ -182,7 +186,7 @@ function fail(report: string, testReportPath: string) {
 }
 
 function writeTestName(name: string) {
-  const totalLength = 35;
+  const totalLength = 40;
   if (totalLength < name.length) {
     throw "Total length should be greater than or equal to the length of the initial word.";
   }
@@ -210,12 +214,15 @@ function detailedTracer(runtimePath: string) {
   const Wasabi: Wasabi = require(runtimePath)
   let trace: any[] = []
   Wasabi.analysis = {
-    // return_(location, values) {
-    //   trace.push(values)
-    // },
-    // begin(location, type) {
-    //   trace.push(location)
-    // }
+    return_(location, values) {
+      trace.push(values)
+    },
+    begin(location, type) {
+      if (type === 'function')
+        if (Wasabi.module.memories.length === 1) {
+          trace.push(_.cloneDeep(new Uint8Array(Wasabi.module.memories[0].buffer)))
+        }
+    }
   }
   return trace
 }

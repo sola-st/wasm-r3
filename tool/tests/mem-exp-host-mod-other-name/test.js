@@ -6,7 +6,7 @@ let instance
 let imports = {
     env: {
         changeMem: () => (
-            new Uint8Array(instance.exports.iromem.buffer)[1] = 1
+            new Uint8Array(instance.exports.yromem.buffer)[1] = 1
         )
     }
 }
