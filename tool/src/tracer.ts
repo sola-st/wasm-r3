@@ -9,7 +9,8 @@ export default function (runtimePath: string) {
     let trace: Trace = []
     let shadowMemories: ArrayBuffer[] = []
     let actualMemories: ArrayBuffer[] = []
-    // TODO: let shadowTables = []
+    let shadowGlobals: number[] = []
+    let shadowTables: WebAssembly.Table[] = []
 
     let init = true
     Wasabi.analysis = {
@@ -28,7 +29,11 @@ export default function (runtimePath: string) {
                 Wasabi.module.info.memories.filter(m => m.import !== null).forEach(m => {
                     trace.push({ type: 'ImportMemory', module: m.import![0], name: m.import![1] })
                 })
-                // TODO: shadowTables init
+                shadowTables = _.cloneDeep(Wasabi.module.tables)
+                Wasabi.module.info.tables.filter(t => t.import !== null).forEach(t => {
+                    trace.push({ type: 'ImportTable', module: t.import![0], name: t.import![1], reftype: 'funcref' })
+                })
+
                 init = false
             }
             if (type === "function") {
@@ -204,14 +209,28 @@ export default function (runtimePath: string) {
         // TODO: table_get
 
         global(location, op, globalIndex, value) {
+            if (op === 'global.set') {
+                shadowGlobals[globalIndex] = value
+                return
+            }
             trace.push({ type: 'GlobalGet', globalidx: globalIndex, value })
         },
 
 
         call_pre(location, targetFunc, args, indirectTableIdx) {
-            let module = Wasabi.module.info.functions[targetFunc].import[0]
-            let name = Wasabi.module.info.functions[targetFunc].import[1]
-            trace.push({ type: "ImportCall", funcidx: targetFunc, module, name })
+            let module
+            let name
+            if (targetFunc === undefined) {
+                // let lol = Wasabi.resolveTableIdx(indirectTableIdx)
+                targetFunc = Wasabi.resolveTableIdx(Wasabi.module.tables[0].get(indirectTableIdx).name)
+                if (targetFunc !== shadowTables[0].get(indirectTableIdx)) {
+                    shadowTables[0].set(indirectTableIdx, targetFunc)
+                    trace.push({ type: 'TableGet', name: getTableName(), idx: indirectTableIdx })
+                }
+            }
+            module = Wasabi.module.info.functions[targetFunc as number].import[0]
+            name = Wasabi.module.info.functions[targetFunc as number].import[1]
+            trace.push({ type: "ImportCall", funcidx: targetFunc as number, module, name })
         },
 
         call_post(location, values) {
@@ -291,6 +310,14 @@ export default function (runtimePath: string) {
             return Wasabi.module.info.memories[0].import[1]
         } else {
             return Wasabi.module.info.memories[0].export[0]
+        }
+    }
+
+    function getTableName() {
+        if (Wasabi.module.info.tables[0].import !== null) {
+            return Wasabi.module.info.tables[0].import[1]
+        } else {
+            return Wasabi.module.info.tables[0].export[0]
         }
     }
 

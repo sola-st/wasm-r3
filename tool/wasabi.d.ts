@@ -43,7 +43,7 @@ export declare type Wasabi = {
                 import: string[] | null,
                 export: string,
                 ref_type: any
-            }
+            }[],
             globals: string,
             start: any,
             tableExportName: string,
@@ -54,9 +54,10 @@ export declare type Wasabi = {
         exports: {
             [name: string]: any
         },
-        table: WebAssembly.Table[],
+        tables: WebAssembly.Table[],
         memories: WebAssembly.Memory[],
     },
+    resolveTableIdx: Function,
     analysis: {
         start?: (location: Location, ...args: any) => void,
         if_?: (location: Location, ...args: any) => void,
@@ -69,7 +70,7 @@ export declare type Wasabi = {
         unreachable?: (location: Location, ...args: any) => void,
         drop?: (location: Location, ...args: any) => void,
         select?: (location: Location, ...args: any) => void,
-        call_pre?: (location: Location, ...args: any) => void,
+        call_pre?: (location: Location, targetFunc: number | undefined, ...args: any) => void,
         call_post?: (location: Location, ...args: any) => void,
         return_?: (location: Location, ...args: any) => void,
         const_?: (location: Location, ...args: any) => void,
@@ -80,6 +81,6 @@ export declare type Wasabi = {
         memory_size?: (location: Location, ...args: any) => void,
         memory_grow?: (location: Location, ...args: any) => void,
         local?: (location: Location, ...args: any) => void,
-        global?: (location: Location, ...args: any) => void,
+        global?: (location: Location, op: 'global.get' | 'global.set', ...args: any) => void,
     }
 }

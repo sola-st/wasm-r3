@@ -34,6 +34,7 @@ const filter = ['exported-called-param', 'glob-imp-host-mod']
 testNames = testNames.filter((n) => !filter.includes(n))
 
 testNames = ["table-exp-host-mod"]
+// testNames = ["glob-imp-host-mod"]
 
 process.stdout.write(`Executing Tests ... \n`);
 for (let name of testNames) {

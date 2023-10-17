@@ -11,9 +11,9 @@ type Load = { type: "Load", name: string, offset: number, data: Uint8Array }
 
 type MemGrow = { type: 'MemGrow', name: string, amount: number }
 
-type TableGet = { type: "TableGet", tableidx: number, idx: number, ref: "funcref" | "externref" }
+type TableGet = { type: "TableGet", name: string, idx: number }
 
-type TableGrow = { type: 'TableGrow', tableidx: number, amount: number }
+type TableGrow = { type: 'TableGrow', name: string, amount: number }
 
 type GlobalGet = { type: 'GlobalGet', globalidx: number, value: number }
 
@@ -25,4 +25,4 @@ type ImportReturn = { type: "ImportReturn", funcidx: number, results: number[] }
 
 type ImportMemory = { type: 'ImportMemory', module: string, name: string}
 
-type ImportTable = { type: 'ImportTable', module: string, name: string }
+type ImportTable = { type: 'ImportTable', module: string, name: string, reftype: "funcref" | "externref" }
