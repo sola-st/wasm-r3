@@ -1,3 +1,5 @@
+import { unreachable } from "./util"
+
 type Call = { type: "Call", name: string }
 type Store = { type: "Store", memPath: { import: boolean, name: string }, addr: number, data: Uint8Array }
 type MemGrow = { type: "MemGrow", memPath: { import: boolean, name: string }, amount: number }
@@ -88,8 +90,14 @@ export default class Generator {
                         name: event.name,
                     }
                     break
+                case 'GlobalGet':
+                    throw 'Global Get not supported yet'
+                    break
+                case 'ImportTable':
+                    throw 'ImportTable not supported yet'
+                    break
                 default:
-                    throw "Not a valid trace event"
+                    unreachable(event)
             }
         })
         return this.code
@@ -212,6 +220,7 @@ class Code {
                             break
                         case 'GlobalSet':
                             break
+                        default: unreachable(event)
                     }
                 }
                 jsString += `return ${b.results[0]} \n`

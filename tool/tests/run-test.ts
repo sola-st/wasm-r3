@@ -30,10 +30,10 @@ if (process.argv.length > 2) {
 }
 
 // ignore specific tests
-const filter = ['exported-called-param', 'glob-imp-host-mod', 'table-exp-host-mod']
+const filter = ['exported-called-param', 'glob-imp-host-mod']
 testNames = testNames.filter((n) => !filter.includes(n))
 
-// testNames = ["mem-exp-host-grow-no-return"]
+testNames = ["table-exp-host-mod"]
 
 process.stdout.write(`Executing Tests ... \n`);
 for (let name of testNames) {
@@ -218,10 +218,10 @@ function detailedTracer(runtimePath: string) {
       trace.push(values)
     },
     begin(location, type) {
-      if (type === 'function')
-        if (Wasabi.module.memories.length === 1) {
-          trace.push(_.cloneDeep(new Uint8Array(Wasabi.module.memories[0].buffer)))
-        }
+      // if (type === 'function')
+      //   if (Wasabi.module.memories.length === 1) {
+      //     trace.push(_.cloneDeep(new Uint8Array(Wasabi.module.memories[0].buffer)))
+      //   }
     }
   }
   return trace

@@ -11,3 +11,5 @@ let imports = {
 let wasm = await WebAssembly.instantiate(wasmBinary, imports)
 instance = wasm.instance
 instance.exports.main(1, 2)
+instance.exports.main(3, 2)
+instance.exports.main(4, 4)

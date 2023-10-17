@@ -37,7 +37,7 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += 'ImportMemory;' + t.module + ';' + t.name
                 break
             default:
-                throw "Invalid Trace event type"
+                throw `Invalid Trace event type: ${t.type}`
         }
         traceString += "\n"
     }

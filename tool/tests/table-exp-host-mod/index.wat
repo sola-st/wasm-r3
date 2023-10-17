@@ -9,6 +9,6 @@
     i32.const 0
     call_indirect 0
   )
-  (table 2 funcref (export "table"))
+  (table (export "table") 2 2 funcref)
   (elem (i32.const 0) 0 $a $b)
 )
