@@ -9,6 +9,7 @@ export default function parse(traceString: string) {
                     type: components[0],
                     module: components[1],
                     name: components[2],
+                    pages: parseInt(components[3]),
                 })
                 break
             case "ExportCall":
@@ -51,19 +52,34 @@ export default function parse(traceString: string) {
             case "TableGet":
                 trace.push({
                     type: components[0],
-                    tableidx: parseInt(components[1]),
+                    name: components[1],
                     idx: parseInt(components[2]),
-                    ref: components[3] as "funcref" | "externref"
                 })
                 throw "TableGet not supported yet"
                 break
             case "TableGrow":
                 trace.push({
                     type: components[0],
-                    tableidx: parseInt(components[1]),
+                    name: components[1],
                     amount: parseInt(components[2])
                 })
-                throw "TableGet not supported yet"
+                throw "TableGrow not supported yet"
+                break
+            case 'GlobalGet':
+                trace.push({
+                    type: components[0],
+                    name: components[1],
+                    value: parseInt(components[2])
+                })
+                break
+            case 'ImportGlobal':
+                trace.push({
+                    type: components[0],
+                    module: components[1],
+                    name: components[2],
+                    valtype: components[3],
+                    value: parseInt(components[4]),
+                })
                 break
             default:
                 throw "Not a valid trace event"

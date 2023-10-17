@@ -3,9 +3,9 @@ import path from 'path'
 const p = path.join(import.meta.dir, 'index.wasm')
 const wasmBinary = fs.readFileSync(p)
 
-const Wasabi = require('./index.wasabi.js')
+let w = require('./index.wasabi.js')
 
-Wasabi.analysis = {
+w.analysis = {
     call_pre(location, targetFunc, args, indirectTableIdx) {
         console.log(`TAAARGETT: ${targetFunc}`)
         console.log(location, (indirectTableIdx === undefined ? "direct" : "indirect"), "call", "to func #", targetFunc, "args =", args);

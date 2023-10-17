@@ -6,7 +6,7 @@ let instance
 let imports = {
     env: {
         changeGlobal: () => (
-            instance.exports.global++
+            instance.exports.global.value++
         )
     }
 }

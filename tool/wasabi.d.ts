@@ -1,4 +1,5 @@
 type Location = { func: number, instr: number }
+type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
 
 export declare type Wasabi = {
     HOOK_NAMES: [
@@ -44,7 +45,11 @@ export declare type Wasabi = {
                 export: string,
                 ref_type: any
             }[],
-            globals: string,
+            globals: {
+                import: string[] | null,
+                export: string[],
+                valType: ValType,
+            }[],
             start: any,
             tableExportName: string,
             brTables: any[],
@@ -56,6 +61,7 @@ export declare type Wasabi = {
         },
         tables: WebAssembly.Table[],
         memories: WebAssembly.Memory[],
+        globals: WebAssembly.Global[],
     },
     resolveTableIdx: Function,
     analysis: {
@@ -70,7 +76,7 @@ export declare type Wasabi = {
         unreachable?: (location: Location, ...args: any) => void,
         drop?: (location: Location, ...args: any) => void,
         select?: (location: Location, ...args: any) => void,
-        call_pre?: (location: Location, targetFunc: number | undefined, ...args: any) => void,
+        call_pre?: (location: Location, targetFunc: number, args: number[], indirectTableIdx: number | undefined) => void,
         call_post?: (location: Location, ...args: any) => void,
         return_?: (location: Location, ...args: any) => void,
         const_?: (location: Location, ...args: any) => void,

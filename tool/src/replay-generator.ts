@@ -5,12 +5,13 @@ type Store = { type: "Store", memPath: { import: boolean, name: string }, addr: 
 type MemGrow = { type: "MemGrow", memPath: { import: boolean, name: string }, amount: number }
 type TableSet = { type: "TableSet", idx: number, addr: number, value: number }
 type TableGrow = { type: "TableGrow", idx: number, amount: number }
-type GlobalSet = { type: "GlobalSet", idx: number, value: number }
+type GlobalSet = { type: "GlobalSet", globalPath: { import: boolean, name: string }, value: number }
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type ImportObject = { module: string, name: string }
 type Function = ImportObject & { body: { results: number[], events: Event[] }[] }
-type Memory = ImportObject & {}
+type Memory = ImportObject & { pages: number }
 type Table = ImportObject & {}
+type Global = ImportObject & { valtype: string, value: number }
 type State = { callStack: Function[], lastFunc?: Function }
 
 export default class Generator {
@@ -88,13 +89,33 @@ export default class Generator {
                     this.code.memImports[event.name] = {
                         module: event.module,
                         name: event.name,
+                        pages: event.pages
                     }
                     break
                 case 'GlobalGet':
-                    throw 'Global Get not supported yet'
+                    let globalPath
+                    let globalImports = this.code.globalImports[event.name]
+                    if (globalImports !== undefined) {
+                        globalPath = { import: true, name: event.name }
+                    } else {
+                        globalPath = { import: false, name: event.name }
+                    }
+                    this.pushEvent({
+                        type: 'GlobalSet',
+                        globalPath,
+                        value: event.value
+                    })
                     break
                 case 'ImportTable':
                     throw 'ImportTable not supported yet'
+                    break
+                case 'ImportGlobal':
+                    this.code.globalImports[event.name] = {
+                        module: event.module,
+                        name: event.name,
+                        valtype: event.valtype,
+                        value: event.value,
+                    }
                     break
                 default:
                     unreachable(event)
@@ -125,12 +146,15 @@ class Code {
     funcImports: { [key: string]: Function }
     memImports: { [key: string]: Memory }
     tableImports: { [key: string]: Table }
+    globalImports: { [key: string]: Global }
     calls: string[]
     initialization: Event[]
+
     constructor() {
         this.funcImports = {}
         this.memImports = {}
         this.tableImports = {}
+        this.globalImports = {}
         this.calls = []
         this.initialization = []
     }
@@ -148,8 +172,17 @@ class Code {
                 jsString += `imports.${mem.module} = {}\n`
                 instanciatedModules.push(mem.module)
             }
-            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${1} })\n`
+            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages} })\n`
             jsString += `imports.${mem.module}.${mem.name} = ${mem.name}\n`
+        }
+        for (let globalIdx in this.globalImports) {
+            let global = this.globalImports[globalIdx]
+            if (!instanciatedModules.includes(global.module)) {
+                jsString += `imports.${global.module} = {}\n`
+                instanciatedModules.push(global.module)
+            }
+            jsString += `const ${global.name} = new WebAssembly.Global({ value: '${global.valtype}', mutable: true}, ${global.value})\n`
+            jsString += `imports.${global.module}.${global.name} = ${global.name}\n`
         }
         // TODO: initialize tables
         for (let event of this.initialization) {
@@ -176,7 +209,6 @@ class Code {
                 case 'TableGrow':
                     break
                 case 'GlobalSet':
-                    break
             }
         }
         for (let funcidx in this.funcImports) {
@@ -209,9 +241,9 @@ class Code {
                             break
                         case 'MemGrow':
                             if (event.memPath.import) {
-                                jsString += `${event.memPath.name}.grow(${event.amount}) \n`
+                                jsString += `${event.memPath.name}.grow(${event.amount})\n`
                             } else {
-                                jsString += `instance.exports.memory.grow(${event.amount}) \n`
+                                jsString += `instance.exports.memory.grow(${event.amount})\n`
                             }
                             break
                         case 'TableSet':
@@ -219,6 +251,11 @@ class Code {
                         case 'TableGrow':
                             break
                         case 'GlobalSet':
+                            if (event.globalPath.import) {
+                                jsString += `${event.globalPath.name}.value = ${event.value}\n`
+                            } else {
+                                jsString += `instance.exports.${event.globalPath.name}.value = ${event.value}\n`
+                            }
                             break
                         default: unreachable(event)
                     }

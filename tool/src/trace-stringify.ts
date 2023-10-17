@@ -16,13 +16,13 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += 'MemGrow;' + t.name + ';' + t.amount
                 break
             case "TableGet":
-                traceString += "TableGet;" + t.tableidx + ";" + t.idx + ";" + t.ref
+                traceString += "TableGet;" + t.name + ";" + t.idx
                 break
             case 'TableGrow':
-                traceString += 'TableGrow;' + t.tableidx + ';' + t.amount
+                traceString += 'TableGrow;' + t.name + ';' + t.amount
                 break
             case 'GlobalGet':
-                traceString += 'GlobalGet;' + t.globalidx + ';' + t.value
+                traceString += 'GlobalGet;' + t.name + ';' + t.value
                 break
             case "ExportCall":
                 traceString += "ExportCall;" + str(t.names)
@@ -34,7 +34,10 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += "ImportReturn;" + t.funcidx + ';' + str(t.results)
                 break
             case 'ImportMemory':
-                traceString += 'ImportMemory;' + t.module + ';' + t.name
+                traceString += 'ImportMemory;' + t.module + ';' + t.name + ';' + t.pages
+                break
+            case 'ImportGlobal':
+                traceString += 'ImportGlobal;' + t.module + ';' + t.name + ';' + t.valtype + ';' + t.value
                 break
             default:
                 throw `Invalid Trace event type: ${t.type}`

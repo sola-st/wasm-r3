@@ -30,11 +30,10 @@ if (process.argv.length > 2) {
 }
 
 // ignore specific tests
-const filter = ['exported-called-param', 'glob-imp-host-mod']
+const filter = ['exported-called-param', 'table-exp-host-mod-multiple', 'table-exp-host-mod']
 testNames = testNames.filter((n) => !filter.includes(n))
 
-testNames = ["table-exp-host-mod"]
-// testNames = ["glob-imp-host-mod"]
+// testNames = ["mem-imp-different-size"]
 
 process.stdout.write(`Executing Tests ... \n`);
 for (let name of testNames) {
@@ -45,6 +44,7 @@ for (let name of testNames) {
   const wasmPath = path.join(testPath, "index.wasm");
   const wasabiRuntimePath = path.join(testPath, "index.wasabi.js");
   const tracerPath = path.join(testDir, "../src/tracer.js");
+  // const tracerPath = path.join(testDir, "../src/wasabi1.0.tracer.js");
   const tracePath = path.join(testPath, "trace.r3");
   const replayPath = path.join(testPath, "replay.js");
   const replayTracePath = path.join(testPath, "replay-trace.r3");
@@ -53,9 +53,9 @@ for (let name of testNames) {
   // 1. Generate trace
   cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
   // cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call -o ${testPath}`);
-  cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return -o ${testPath}`);
+  cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return,global -o ${testPath}`);
   removeLinesWithConsole(wasabiRuntimePath)
-  revertMonkeyPatch(wasabiRuntimePath)
+  // revertMonkeyPatch(wasabiRuntimePath)
   let trace = require(tracerPath).default(wasabiRuntimePath);
   try {
     await import(testJsPath)
@@ -152,6 +152,7 @@ for (let name of testNames) {
     report += replayDetailedTrace.toString();
     fail(report, testReportPath);
   } else {
+    fs.writeFileSync(testReportPath, 'Test successfull')
     process.stdout.write(`\u2713\n`);
   }
 }
@@ -223,6 +224,9 @@ function detailedTracer(runtimePath: string) {
       //   if (Wasabi.module.memories.length === 1) {
       //     trace.push(_.cloneDeep(new Uint8Array(Wasabi.module.memories[0].buffer)))
       //   }
+    },
+    call_pre(locatation, targetFunc, args, indirectTableIdx) {
+      // compute call graph
     }
   }
   return trace

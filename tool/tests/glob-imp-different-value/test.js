@@ -3,12 +3,9 @@ import path from 'path'
 const wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))
 
 let instance
-const global = new WebAssembly.Global({ value: "i32", mutable: true }, 0);
+const global = new WebAssembly.Global({ value: "i32", mutable: true }, 4);
 let imports = {
     env: {
-        changeGlobal: () => {
-            global.value = 5
-        },
         global: global
     }
 }
