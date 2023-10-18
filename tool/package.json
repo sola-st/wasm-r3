@@ -14,7 +14,7 @@
     "lodash": "^4.17.21"
   },
   "scripts": {
-    "test": "bun ./tests/run-test.ts",
-    "clean-tests": "bun ./tests/run-test.ts clean"
+    "test": "bun ./tests/run-tests.ts",
+    "clean-tests": "bun ./tests/clean-tests.ts"
   }
 }

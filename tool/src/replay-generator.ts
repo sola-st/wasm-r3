@@ -29,7 +29,7 @@ export default class Generator {
                 case "ExportCall":
                     // TODO: support for export calls with arguments
                     if (this.state.callStack.length === 0) {
-                        this.code.calls.push(event.names[0])
+                        this.code.calls.push({ name: event.names[0], params: event.params })
                         break
                     }
                     this.pushEvent({ type: 'Call', name: event.names[0] })
@@ -147,7 +147,7 @@ class Code {
     memImports: { [key: string]: Memory }
     tableImports: { [key: string]: Table }
     globalImports: { [key: string]: Global }
-    calls: string[]
+    calls: { name: string, params: number[] }[]
     initialization: Event[]
 
     constructor() {
@@ -159,7 +159,7 @@ class Code {
         this.initialization = []
     }
 
-    public stringify() {
+    public toString() {
         let jsString = `import fs from 'fs'\n`
         jsString += `import path from 'path'\n`
         jsString += `const wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))\n`
@@ -268,7 +268,12 @@ class Code {
         jsString += `let wasm = await WebAssembly.instantiate(wasmBinary, imports) \n`
         jsString += `instance = wasm.instance\n`
         for (let exp of this.calls) {
-            jsString += `await instance.exports.${exp} () \n`
+            let paramsString = ''
+            for (let p of exp.params) {
+                paramsString += p + ','
+            }
+            paramsString = paramsString.slice(0, -1)
+            jsString += `await instance.exports.${exp.name}(${paramsString}) \n`
         }
         return jsString
     }

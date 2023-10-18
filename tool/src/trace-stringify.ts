@@ -25,7 +25,7 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += 'GlobalGet;' + t.name + ';' + t.value
                 break
             case "ExportCall":
-                traceString += "ExportCall;" + str(t.names)
+                traceString += "ExportCall;" + str(t.names) + ';' + str(t.params)
                 break
             case "ImportCall":
                 traceString += "ImportCall;" + t.funcidx + ';' + t.module + ";" + t.name

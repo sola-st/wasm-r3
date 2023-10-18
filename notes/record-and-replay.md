@@ -52,6 +52,8 @@ To maximize the utility of a deterministic replay scheme, it should have six des
 
 ## Jalangi
 Source: [Jalangi: a selective record-replay and dynamic analysis framework for JavaScript](https://dl.acm.org/doi/abs/10.1145/2491411.2491447)
+- Intrusive (Browser independent)
+- Shadow values are for storing metadata not for the reason we need it
 
 * Purpose: A framework for writing heavy weight dynamic analysis
 

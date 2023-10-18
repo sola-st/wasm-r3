@@ -10,7 +10,6 @@ export default function (runtimePath: string) {
 
     // shadow stuff
     let shadowMemories: ArrayBuffer[] = []
-    let actualMemories: ArrayBuffer[] = []
     let shadowGlobals: WebAssembly.Global[] = []
     let shadowTables: WebAssembly.Table[] = []
 
@@ -20,15 +19,14 @@ export default function (runtimePath: string) {
 
     Wasabi.analysis = {
 
-        begin(location, type) {
+        begin_function(location, args) {
             if (init) {
-                Wasabi.module.memories.forEach((m, i) => actualMemories[i] = m.buffer)
-                actualMemories.forEach((mem, i) => {
+                Wasabi.module.memories.forEach((mem, i) => {
                     let isImported = Wasabi.module.info.memories[i].import !== null
                     if (isImported) {
-                        shadowMemories.push(new ArrayBuffer(mem.byteLength))
+                        shadowMemories.push(new ArrayBuffer(mem.buffer.byteLength))
                     } else {
-                        shadowMemories.push(_.cloneDeep(mem))
+                        shadowMemories.push(_.cloneDeep(mem.buffer))
                     }
                 })
                 Wasabi.module.info.memories.forEach((m, i) => {
@@ -50,13 +48,11 @@ export default function (runtimePath: string) {
 
                 init = false
             }
-            if (type === "function") {
-                if (calledFunction === null) {
-                    trace.push({ type: "ExportCall", names: Wasabi.module.info.functions[location.func].export, params: [] })
-                    checkMemGrow()
-                } else {
-                    calledFunction = null
-                }
+            if (calledFunction === null) {
+                trace.push({ type: "ExportCall", names: Wasabi.module.info.functions[location.func].export, params: args })
+                checkMemGrow()
+            } else {
+                calledFunction = null
             }
         },
 
@@ -284,7 +280,7 @@ export default function (runtimePath: string) {
 
     function mem_content_equals(addr: number, numBytes: number) {
         for (let i = 0; i < numBytes; i++) {
-            if (new Uint8Array(shadowMemories[0])[addr + i] !== new Uint8Array(actualMemories[0])[addr + i]) {
+            if (new Uint8Array(shadowMemories[0])[addr + i] !== new Uint8Array(Wasabi.module.memories[0].buffer)[addr + i]) {
                 return false
             }
         }
@@ -300,7 +296,7 @@ export default function (runtimePath: string) {
     function get_actual_mem(addr: number, numBytes: number): Uint8Array {
         let uint1Array = new Uint8Array(numBytes)
         for (let i = 0; i < numBytes; i++) {
-            uint1Array[i] = new Uint8Array(actualMemories[0])[addr + i]
+            uint1Array[i] = new Uint8Array(Wasabi.module.memories[0].buffer)[addr + i]
         }
         return uint1Array
     }
@@ -314,11 +310,9 @@ export default function (runtimePath: string) {
     }
 
     function checkMemGrow() {
-        let memoryWasGrown = actualMemories[0] && actualMemories[0].byteLength === 0
-        if (memoryWasGrown) {
-            Wasabi.module.memories.forEach((m, i) => actualMemories[i] = m.buffer)
+        if (Wasabi.module.memories[0]?.buffer && Wasabi.module.memories[0].buffer.byteLength !== shadowMemories[0].byteLength) {
             let memGrow: any = {}
-            let amount = actualMemories[0].byteLength / MEM_PAGE_SIZE - shadowMemories[0].byteLength / MEM_PAGE_SIZE
+            let amount = Wasabi.module.memories[0].buffer.byteLength / MEM_PAGE_SIZE - shadowMemories[0].byteLength / MEM_PAGE_SIZE
             memGrow[0] = amount
             growShadowMem(amount)
             trace.push({ type: 'MemGrow', name: getMemName(), amount })
