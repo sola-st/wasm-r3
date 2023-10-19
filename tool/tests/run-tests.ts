@@ -17,11 +17,11 @@ if (process.argv.length > 2) {
 }
 
 // ignore specific tests
-const filter = ['exported-called-param', 'table-exp-host-mod-multiple', 'table-exp-host-mod']
+const filter = ['table-exp-host-mod-multiple', 'table-exp-host-mod', 'call-indirect']
 testNames = testNames.filter((n) => !filter.includes(n))
 
 // if you want to run a specific test just uncomment below line and put your test
-// testNames = ["call-imported-params"]
+// testNames = ['rust01']
 
 process.stdout.write(`Executing Tests ... \n`);
 for (let name of testNames) {
@@ -32,12 +32,24 @@ for (let name of testNames) {
   const wasmPath = path.join(testPath, "index.wasm");
   const wasabiRuntimePath = path.join(testPath, "index.wasabi.js");
   const tracePath = path.join(testPath, "trace.r3");
+  const callGraphPath = path.join(testPath, "call-graph.txt");
   const replayPath = path.join(testPath, "replay.js");
   const replayTracePath = path.join(testPath, "replay-trace.r3");
+  const replayCallGraphPath = path.join(testPath, "replay-call-graph.txt");
   const testReportPath = path.join(testPath, "report.txt");
 
   // 1. Instrument with Wasabi !!Please use the newest version
-  cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
+  const indexRsPath = path.join(testPath, 'index.rs')
+  const indexCPath = path.join(testPath, 'index.c')
+  if (fileExists(indexRsPath)) {
+    cp.execSync(`rustc --crate-type cdylib ${indexRsPath} --target wasm32-unknown-unknown --crate-type cdylib -o ${wasmPath}`)
+    cp.execSync(`wasm2wat ${wasmPath} -o ${watPath}`)
+  } else if (fileExists(indexCPath)) {
+
+  } else {
+    cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
+  }
+  // cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
   // cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call,memory_grow -o ${testPath}`);
   cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return,global,memory_grow -o ${testPath}`);
 
@@ -61,6 +73,7 @@ for (let name of testNames) {
     continue;
   }
   deleteRequireCaches()
+  fs.writeFileSync(callGraphPath, stringifyCallGraph(callGraph))
 
   // 3. Generate replay binary
   try {
@@ -88,6 +101,7 @@ for (let name of testNames) {
   }
   deleteRequireCaches()
   let replayTraceString = stringify(replayTrace);
+  fs.writeFileSync(replayTracePath, replayTraceString);
 
   let replayCallGraph = callGraphConstructor(wasabiRuntimePath)
   try {
@@ -97,9 +111,9 @@ for (let name of testNames) {
     continue;
   }
   deleteRequireCaches()
+  fs.writeFileSync(replayCallGraphPath, stringifyCallGraph(replayCallGraph))
 
   // 5. Check if original trace and replay trace match
-  fs.writeFileSync(replayTracePath, replayTraceString);
   if (replayTraceString !== traceString) {
     let report = `[Expected]\n`;
     report += traceString;
@@ -145,6 +159,19 @@ function writeTestName(name: string) {
   const spacesLength = totalLength - name.length;
   const spaces = " ".repeat(spacesLength);
   return `${name}${spaces}`;
+}
+
+function fileExists(filePath: string) {
+  try {
+    fs.accessSync(filePath); // This will throw an error if the file doesn't exist
+    return true;
+  } catch (error: any) {
+    if (error.code === 'ENOENT') {
+      return false;
+    } else {
+      throw error; // Handle other errors appropriately
+    }
+  }
 }
 
 type FromInit = { funcidx: 'h', host: true }

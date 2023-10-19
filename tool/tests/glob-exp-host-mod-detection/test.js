@@ -5,9 +5,10 @@ const wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))
 let instance
 let imports = {
     env: {
-        changeGlobal: () => (
-            instance.exports.global.value++
-        )
+        changeGlobal: (value) => {
+            instance.exports.global.value = value
+            instance.exports.foo()
+        }
     }
 }
 let wasm = await WebAssembly.instantiate(wasmBinary, imports)

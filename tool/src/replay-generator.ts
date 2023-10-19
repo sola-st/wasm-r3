@@ -5,7 +5,7 @@ type Store = { type: "Store", memPath: { import: boolean, name: string }, addr: 
 type MemGrow = { type: "MemGrow", memPath: { import: boolean, name: string }, amount: number }
 type TableSet = { type: "TableSet", idx: number, addr: number, value: number }
 type TableGrow = { type: "TableGrow", idx: number, amount: number }
-type GlobalSet = { type: "GlobalSet", globalPath: { import: boolean, name: string }, value: number }
+type GlobalSet = { type: "GlobalSet", globalPath: { import: boolean, name: string }, value: number, bigInt: boolean }
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type ImportObject = { module: string, name: string }
 type Function = ImportObject & { body: { results: number[], events: Event[] }[] }
@@ -35,16 +35,12 @@ export default class Generator {
                     this.pushEvent({ type: 'Call', name: event.names[0] })
                     break
                 case "ImportCall":
-                    if (this.code.funcImports[event.funcidx] === undefined) {
-                        this.code.funcImports[event.funcidx] = {
-                            module: event.module,
-                            name: event.name,
-                            body: [{ results: [], events: [] }],
-                        }
-                    } else {
-                        this.code.funcImports[event.funcidx].body.push({ results: [], events: [] })
-                    }
-                    this.state.callStack.push(this.code.funcImports[event.funcidx])
+                    // if (this.code.funcImports[event.idx] === undefined) {
+                    //     throw 'There shoudl be already the imported function'
+                    // } else {
+                    this.code.funcImports[event.idx].body.push({ results: [], events: [] })
+                    // }
+                    this.state.callStack.push(this.code.funcImports[event.idx])
                     break
                 case "ImportReturn":
                     this.state.lastFunc = this.state.callStack.pop()!
@@ -52,7 +48,7 @@ export default class Generator {
                     break
                 case "Load":
                     let memPath
-                    let memImports = this.code.memImports[event.name]
+                    let memImports = this.code.memImports[event.idx]
                     if (memImports !== undefined) {
                         memPath = { import: true, name: event.name }
                     } else {
@@ -67,7 +63,7 @@ export default class Generator {
                     break
                 case 'MemGrow':
                     let memPath2
-                    let memImports2 = this.code.memImports[event.name]
+                    let memImports2 = this.code.memImports[event.idx]
                     if (memImports2 !== undefined) {
                         memPath2 = { import: true, name: event.name }
                     } else {
@@ -86,7 +82,7 @@ export default class Generator {
                     throw "TableGet not supported yet"
                     break
                 case 'ImportMemory':
-                    this.code.memImports[event.name] = {
+                    this.code.memImports[event.idx] = {
                         module: event.module,
                         name: event.name,
                         pages: event.pages
@@ -94,7 +90,7 @@ export default class Generator {
                     break
                 case 'GlobalGet':
                     let globalPath
-                    let globalImports = this.code.globalImports[event.name]
+                    let globalImports = this.code.globalImports[event.idx]
                     if (globalImports !== undefined) {
                         globalPath = { import: true, name: event.name }
                     } else {
@@ -103,18 +99,26 @@ export default class Generator {
                     this.pushEvent({
                         type: 'GlobalSet',
                         globalPath,
-                        value: event.value
+                        value: event.value,
+                        bigInt: event.valtype === 'i64'
                     })
                     break
                 case 'ImportTable':
                     throw 'ImportTable not supported yet'
                     break
                 case 'ImportGlobal':
-                    this.code.globalImports[event.name] = {
+                    this.code.globalImports[event.idx] = {
                         module: event.module,
                         name: event.name,
                         valtype: event.valtype,
                         value: event.value,
+                    }
+                    break
+                case 'ImportFunc':
+                    this.code.funcImports[event.idx] = {
+                        module: event.module,
+                        name: event.name,
+                        body: []
                     }
                     break
                 default:
@@ -254,7 +258,7 @@ class Code {
                             if (event.globalPath.import) {
                                 jsString += `${event.globalPath.name}.value = ${event.value}\n`
                             } else {
-                                jsString += `instance.exports.${event.globalPath.name}.value = ${event.value}\n`
+                                jsString += `instance.exports.${event.globalPath.name}.value = ${event.bigInt ? `BigInt(${event.value})` : event.value}\n`
                             }
                             break
                         default: unreachable(event)

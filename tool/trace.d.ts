@@ -5,26 +5,32 @@
 
 type Trace = WasmEvent[]
 
-type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ImportReturn | ImportMemory | ImportTable | ImportGlobal
+type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ImportReturn | ImportMemory | ImportTable | ImportGlobal | ImportFunc
 
-type Load = { type: "Load", name: string, offset: number, data: Uint8Array }
+type Load = { type: "Load", idx: number, name: string, offset: number, data: Uint8Array }
 
-type MemGrow = { type: 'MemGrow', name: string, amount: number }
+type MemGrow = { type: 'MemGrow', idx: number,name: string, amount: number }
 
-type TableGet = { type: "TableGet", name: string, idx: number }
+type TableGet = { type: "TableGet", tableidx: number, name: string, idx: number }
 
-type TableGrow = { type: 'TableGrow', name: string, amount: number }
+type TableGrow = { type: 'TableGrow', idx: number, name: string, amount: number }
 
-type GlobalGet = { type: 'GlobalGet', name: string, value: number }
+type GlobalGet = { type: 'GlobalGet', idx: number, name: string, value: number, valtype: ValType }
 
 type ExportCall = { type: "ExportCall", names: string[], params: number[] }
 
-type ImportCall = { type: "ImportCall", funcidx: number, module: string, name: string }
+type ImportCall = { type: "ImportCall", idx: number, name: string }
 
-type ImportReturn = { type: "ImportReturn", funcidx: number, results: number[] }
+type ImportReturn = { type: "ImportReturn", idx: number, name: string, results: number[] }
 
-type ImportMemory = { type: 'ImportMemory', module: string, name: string, pages: number }
+type ImportMemory = { type: 'ImportMemory', idx: number, module: string, name: string, pages: number }
 
-type ImportTable = { type: 'ImportTable', module: string, name: string, reftype: "funcref" | "externref" }
+type ImportTable = { type: 'ImportTable', idx: number, module: string, name: string, reftype: "funcref" | "externref" }
 
-type ImportGlobal = { type: 'ImportGlobal', module: string, name: string, valtype: string, value: number }
+type ImportGlobal = { type: 'ImportGlobal', idx: number, module: string, name: string, valtype: ValType, value: number }
+
+type ImportFunc = { type: 'ImportFunc', idx: number, module: string, name: string }
+
+
+
+type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'

@@ -10,6 +10,9 @@ w.analysis = {
         console.log(`TAAARGETT: ${targetFunc}`)
         console.log(location, (indirectTableIdx === undefined ? "direct" : "indirect"), "call", "to func #", targetFunc, "args =", args);
     },
+    begin_function() {
+
+    }
 };
 
 (async function () {

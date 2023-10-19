@@ -1,3 +1,5 @@
+import { unreachable } from "./util"
+
 export default function stringifyTrace(trace: Trace) {
     function str(list: Iterable<any>) {
         let s = ""
@@ -10,37 +12,43 @@ export default function stringifyTrace(trace: Trace) {
     for (let t of trace) {
         switch (t.type) {
             case "Load":
-                traceString += "Load;" + t.name + ";" + t.offset + ";" + str(t.data)
+                traceString += "Load" + ';' + t.idx + ';' + t.name + ";" + t.offset + ";" + str(t.data)
                 break
             case 'MemGrow':
-                traceString += 'MemGrow;' + t.name + ';' + t.amount
+                traceString += 'MemGrow' + ';' + t.idx + ';' + t.name + ';' + t.amount
                 break
             case "TableGet":
-                traceString += "TableGet;" + t.name + ";" + t.idx
+                traceString += "TableGet" + ';' + t.tableidx + ';' + t.name + ";" + t.idx
                 break
             case 'TableGrow':
-                traceString += 'TableGrow;' + t.name + ';' + t.amount
+                traceString += 'TableGrow' + ';' + t.idx + ';' + t.name + ';' + t.amount
                 break
             case 'GlobalGet':
-                traceString += 'GlobalGet;' + t.name + ';' + t.value
+                traceString += 'GlobalGet' + ';' + t.idx + ';' + t.name + ';' + t.value + ';' + t.valtype
                 break
             case "ExportCall":
-                traceString += "ExportCall;" + str(t.names) + ';' + str(t.params)
+                traceString += "ExportCall" + ';' + str(t.names) + ';' + str(t.params)
                 break
             case "ImportCall":
-                traceString += "ImportCall;" + t.funcidx + ';' + t.module + ";" + t.name
+                traceString += "ImportCall" + ';' + t.idx + ';' + t.name
                 break
             case "ImportReturn":
-                traceString += "ImportReturn;" + t.funcidx + ';' + str(t.results)
+                traceString += "ImportReturn" + ';' + t.idx + ';' + t.name + ';' + str(t.results)
                 break
             case 'ImportMemory':
-                traceString += 'ImportMemory;' + t.module + ';' + t.name + ';' + t.pages
+                traceString += 'ImportMemory' + ';' + t.idx + ';' + t.module + ';' + t.name + ';' + t.pages
                 break
             case 'ImportGlobal':
-                traceString += 'ImportGlobal;' + t.module + ';' + t.name + ';' + t.valtype + ';' + t.value
+                traceString += 'ImportGlobal' + ';' + t.idx + ';' + t.module + ';' + t.name + ';' + t.valtype + ';' + t.value
+                break
+            case 'ImportFunc':
+                traceString += 'ImportFunc' + ';' + t.idx + ';' + t.module + ';' + t.name
+                break
+            case 'ImportTable':
+                traceString + 'ImportTable' + ';' + t.idx + ';' + t.module + ';' + t.type + ';' + t.reftype
                 break
             default:
-                throw `Invalid Trace event type: ${t.type}`
+                unreachable(t)
         }
         traceString += "\n"
     }

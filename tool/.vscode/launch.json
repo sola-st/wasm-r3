@@ -9,28 +9,10 @@
             "internalConsoleOptions": "neverOpen",
             "request": "launch",
             "name": "Debug File",
-            "program": "./tests/run-test.ts",
+            "program": "./tests/run-tests.ts",
             "cwd": "${workspaceFolder}",
             "stopOnEntry": false,
             "watchMode": false
-        },
-        {
-            "type": "bun",
-            "internalConsoleOptions": "neverOpen",
-            "request": "launch",
-            "name": "Run File",
-            "program": "${file}",
-            "cwd": "${workspaceFolder}",
-            "noDebug": true,
-            "watchMode": false
-        },
-        {
-            "type": "bun",
-            "internalConsoleOptions": "neverOpen",
-            "request": "attach",
-            "name": "Attach Bun",
-            "url": "ws://localhost:6499/",
-            "stopOnEntry": false
         }
     ]
 }

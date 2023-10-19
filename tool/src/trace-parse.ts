@@ -7,9 +7,10 @@ export default function parse(traceString: string) {
             case 'ImportMemory':
                 trace.push({
                     type: components[0],
-                    module: components[1],
-                    name: components[2],
-                    pages: parseInt(components[3]),
+                    idx: parseInt(components[1]),
+                    module: components[2],
+                    name: components[3],
+                    pages: parseInt(components[4]),
                 })
                 break
             case "ExportCall":
@@ -22,63 +23,78 @@ export default function parse(traceString: string) {
             case "ImportCall":
                 trace.push({
                     type: components[0],
-                    funcidx: parseInt(components[1]),
-                    module: components[2],
-                    name: components[3],
+                    idx: parseInt(components[1]),
+                    name: components[2]
                 })
                 break
             case "ImportReturn":
                 trace.push({
                     type: components[0],
-                    funcidx: parseInt(components[1]),
-                    results: splitList(components[2]),
+                    idx: parseInt(components[1]),
+                    name: components[2],
+                    results: splitList(components[3]),
                 })
                 break
             case "Load":
                 trace.push({
                     type: components[0],
-                    name: components[1],
-                    offset: parseInt(components[2]),
-                    data: new Uint8Array(splitList(components[3])),
+                    idx: parseInt(components[1]),
+                    name: components[2],
+                    offset: parseInt(components[3]),
+                    data: new Uint8Array(splitList(components[4])),
                 })
                 break
             case "MemGrow":
                 trace.push({
                     type: components[0],
-                    name: components[1],
-                    amount: parseInt(components[2])
+                    idx: parseInt(components[1]),
+                    name: components[2],
+                    amount: parseInt(components[3])
                 })
                 break
             case "TableGet":
                 trace.push({
                     type: components[0],
-                    name: components[1],
-                    idx: parseInt(components[2]),
+                    tableidx: parseInt(components[1]),
+                    name: components[2],
+                    idx: parseInt(components[3]),
                 })
                 throw "TableGet not supported yet"
                 break
             case "TableGrow":
                 trace.push({
                     type: components[0],
-                    name: components[1],
-                    amount: parseInt(components[2])
+                    idx: parseInt(components[1]),
+                    name: components[2],
+                    amount: parseInt(components[3])
                 })
                 throw "TableGrow not supported yet"
                 break
             case 'GlobalGet':
                 trace.push({
                     type: components[0],
-                    name: components[1],
-                    value: parseInt(components[2])
+                    idx: parseInt(components[1]),
+                    name: components[2],
+                    value: parseInt(components[3]),
+                    valtype: components[4] as ValType,
                 })
                 break
             case 'ImportGlobal':
                 trace.push({
                     type: components[0],
-                    module: components[1],
-                    name: components[2],
-                    valtype: components[3],
-                    value: parseInt(components[4]),
+                    idx: parseInt(components[1]),
+                    module: components[2],
+                    name: components[3],
+                    valtype: components[4] as ValType,
+                    value: parseInt(components[5]),
+                })
+                break
+            case 'ImportFunc':
+                trace.push({
+                    type: components[0],
+                    idx: parseInt(components[1]),
+                    module: components[2],
+                    name: components[3],
                 })
                 break
             default:

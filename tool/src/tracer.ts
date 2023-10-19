@@ -10,7 +10,7 @@ export default function (runtimePath: string) {
 
     // shadow stuff
     let shadowMemories: ArrayBuffer[] = []
-    let shadowGlobals: WebAssembly.Global[] = []
+    let shadowGlobals: number[] = []
     let shadowTables: WebAssembly.Table[] = []
 
     // helpers
@@ -29,20 +29,26 @@ export default function (runtimePath: string) {
                         shadowMemories.push(_.cloneDeep(mem.buffer))
                     }
                 })
-                Wasabi.module.info.memories.forEach((m, i) => {
+                Wasabi.module.info.memories.forEach((m, idx) => {
                     if (m.import !== null) {
-                        trace.push({ type: 'ImportMemory', module: m.import![0], name: m.import![1], pages: Wasabi.module.memories[i].buffer.byteLength / MEM_PAGE_SIZE })
+                        trace.push({ type: 'ImportMemory', module: m.import[0], name: m.import[1], pages: Wasabi.module.memories[idx].buffer.byteLength / MEM_PAGE_SIZE, idx })
                     }
                 })
                 shadowTables = _.cloneDeep(Wasabi.module.tables)
-                Wasabi.module.info.tables.filter(t => t.import !== null).forEach(t => {
-                    throw Error('Bro! Size needs to be done')
-                    trace.push({ type: 'ImportTable', module: t.import![0], name: t.import![1], reftype: 'funcref' })
+                Wasabi.module.info.tables.forEach((t, idx) => {
+                    if (t.import !== null) {
+                        trace.push({ type: 'ImportTable', module: t.import![0], name: t.import![1], reftype: 'funcref', idx, size: Wasabi.module.tables[idx].length })
+                    }
                 })
-                shadowGlobals = _.cloneDeep(Wasabi.module.globals)
-                Wasabi.module.info.globals.forEach((g, i) => {
+                shadowGlobals = _.cloneDeep(Wasabi.module.globals.map(g => g.value))
+                Wasabi.module.info.globals.forEach((g, idx) => {
                     if (g.import !== null) {
-                        trace.push({ type: 'ImportGlobal', module: g.import![0], name: g.import![1], valtype: g.valType, value: Wasabi.module.globals[i].value })
+                        trace.push({ type: 'ImportGlobal', module: g.import[0], name: g.import[1], valtype: g.valType, value: Wasabi.module.globals[idx].value, idx })
+                    }
+                })
+                Wasabi.module.info.functions.forEach((f, idx) => {
+                    if (f.import !== null) {
+                        trace.push({ type: 'ImportFunc', module: f.import![0], name: f.import[1], idx })
                     }
                 })
 
@@ -215,16 +221,17 @@ export default function (runtimePath: string) {
                     throw `instruction ${op} not supported`
                 // TODO: Support all loads
             }
-            trace.push({ type: "Load", name: getMemName(), offset: addr, data })
+            trace.push({ type: "Load", name: getMemName(), offset: addr, data, idx: 0 })
         },
 
         global(location, op, globalIndex, value) {
             if (op === 'global.set') {
-                shadowGlobals[globalIndex].value = value
+                shadowGlobals[globalIndex] = value
                 return
             }
-            if (shadowGlobals[globalIndex].value !== value) {
-                trace.push({ type: 'GlobalGet', name: getGlobalName(globalIndex), value })
+            if (shadowGlobals[globalIndex] !== value) {
+                let valtype = Wasabi.module.info.globals[globalIndex].valType
+                trace.push({ type: 'GlobalGet', name: getGlobalName(globalIndex), value, valtype, idx: globalIndex })
             }
         },
 
@@ -244,26 +251,29 @@ export default function (runtimePath: string) {
                 calledFunction = targetFunc;
                 return
             }
-            let module = Wasabi.module.info.functions[targetFunc].import[0]
+            // let module = Wasabi.module.info.functions[targetFunc].import[0]
             let name = Wasabi.module.info.functions[targetFunc].import[1]
-            trace.push({ type: "ImportCall", funcidx: targetFunc, module, name })
+            trace.push({ type: "ImportCall", name, idx: targetFunc })
         },
 
         call_post(location, values) {
-            let funcidx
+            let name
+            let idx
             for (let i = trace.length - 1; i >= 0; i--) {
                 if (trace[i].type === 'ImportCall') {
-                    funcidx = (trace[i] as ImportCall).funcidx
+                    name = (trace[i] as ImportCall).name
+                    idx = (trace[i] as ImportCall).idx
                     break
                 }
             }
-            if (funcidx === undefined) {
+            if (name === undefined || idx === undefined) {
                 return
             }
             let importReturn: ImportReturn = {
                 type: "ImportReturn",
-                funcidx,
+                name,
                 results: values,
+                idx
             }
             trace.push(importReturn)
             checkMemGrow()
@@ -315,7 +325,7 @@ export default function (runtimePath: string) {
             let amount = Wasabi.module.memories[0].buffer.byteLength / MEM_PAGE_SIZE - shadowMemories[0].byteLength / MEM_PAGE_SIZE
             memGrow[0] = amount
             growShadowMem(amount)
-            trace.push({ type: 'MemGrow', name: getMemName(), amount })
+            trace.push({ type: 'MemGrow', name: getMemName(), amount, idx: 0 })
         }
     }
 
