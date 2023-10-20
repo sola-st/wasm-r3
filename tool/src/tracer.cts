@@ -1,8 +1,9 @@
 import _ from 'lodash'
-import { Wasabi } from '../wasabi'
+import { Wasabi } from '../wasabi.cjs'
+import { Trace, ImportCall, ImportReturn } from './trace.cjs'
 
-export default function (runtimePath: string) {
-    const Wasabi: Wasabi = require(runtimePath)
+export default async function (runtimePath: string) {
+    let Wasabi: Wasabi = require(runtimePath)
 
     const MEM_PAGE_SIZE = 65536
 

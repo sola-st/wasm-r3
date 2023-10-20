@@ -3,14 +3,15 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
-    "bun-types": "latest"
+    "@types/node": "^20.8.7",
+    "bun-types": "latest",
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
     "@types/lodash": "^4.14.199",
-    "@types/node": "^20.7.0",
     "lodash": "^4.17.21"
   },
   "scripts": {

@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { getDirectoryNames } from './test-utils';
+import { getDirectoryNames } from './test-utils.cjs';
 
-const testDir = import.meta.dir;
+const testDir = path.join(process.cwd(), 'tests');
 
 let testNames = getDirectoryNames(testDir);
 for (let name of testNames) {

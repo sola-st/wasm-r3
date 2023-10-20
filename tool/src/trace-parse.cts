@@ -1,3 +1,5 @@
+import { Trace, ValType } from './trace.cjs'
+
 export default function parse(traceString: string) {
     let trace: Trace = []
     let events = traceString.trim().split('\n')

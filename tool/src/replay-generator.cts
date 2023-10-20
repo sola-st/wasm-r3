@@ -1,4 +1,5 @@
-import { unreachable } from "./util"
+import { unreachable } from "./util.cjs"
+import { Trace } from "./trace.cjs"
 
 type Call = { type: "Call", name: string }
 type Store = { type: "Store", memPath: { import: boolean, name: string }, addr: number, data: Uint8Array }
