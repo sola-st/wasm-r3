@@ -1,56 +1,63 @@
 import { unreachable } from "./util"
 
 export default function stringifyTrace(trace: Trace) {
-    function str(list: Iterable<any>) {
-        let s = ""
-        for (let l of list) {
-            s += l + ","
-        }
-        return s.slice(0, -1)
-    }
     let traceString = ""
-    for (let t of trace) {
-        switch (t.type) {
+    for (let e of trace) {
+        switch (e.type) {
             case "Load":
-                traceString += "Load" + ';' + t.idx + ';' + t.name + ";" + t.offset + ";" + str(t.data)
+                traceString += stringifyEvent(e.type, e.idx, e.name, e.offset, str(e.data))
                 break
             case 'MemGrow':
-                traceString += 'MemGrow' + ';' + t.idx + ';' + t.name + ';' + t.amount
+            case 'TableGrow':
+                traceString += stringifyEvent(e.type, e.idx, e.name, e.amount)
                 break
             case "TableGet":
-                traceString += "TableGet" + ';' + t.tableidx + ';' + t.name + ";" + t.idx
-                break
-            case 'TableGrow':
-                traceString += 'TableGrow' + ';' + t.idx + ';' + t.name + ';' + t.amount
+                traceString += stringifyEvent(e.type, e.tableidx, e.name, e.idx)
                 break
             case 'GlobalGet':
-                traceString += 'GlobalGet' + ';' + t.idx + ';' + t.name + ';' + t.value + ';' + t.valtype
+                traceString += stringifyEvent(e.type, e.idx, e.name, e.value, e.valtype)
                 break
             case "ExportCall":
-                traceString += "ExportCall" + ';' + str(t.names) + ';' + str(t.params)
+                traceString += stringifyEvent(e.type, str(e.names), str(e.params))
                 break
             case "ImportCall":
-                traceString += "ImportCall" + ';' + t.idx + ';' + t.name
+                traceString += stringifyEvent(e.type, e.idx, e.name)
                 break
             case "ImportReturn":
-                traceString += "ImportReturn" + ';' + t.idx + ';' + t.name + ';' + str(t.results)
+                traceString += stringifyEvent(e.type, e.idx, e.name, str(e.results))
                 break
             case 'ImportMemory':
-                traceString += 'ImportMemory' + ';' + t.idx + ';' + t.module + ';' + t.name + ';' + t.pages
+                traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.pages)
                 break
             case 'ImportGlobal':
-                traceString += 'ImportGlobal' + ';' + t.idx + ';' + t.module + ';' + t.name + ';' + t.valtype + ';' + t.value
+                traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.valtype, e.value)
                 break
             case 'ImportFunc':
-                traceString += 'ImportFunc' + ';' + t.idx + ';' + t.module + ';' + t.name
+                traceString += stringifyEvent(e.type, e.idx, e.module, e.name)
                 break
             case 'ImportTable':
-                traceString + 'ImportTable' + ';' + t.idx + ';' + t.module + ';' + t.type + ';' + t.reftype
+                traceString += stringifyEvent(e.type, e.idx, e.module, e.type, e.reftype)
                 break
             default:
-                unreachable(t)
+                unreachable(e)
         }
         traceString += "\n"
     }
     return traceString
+}
+
+function stringifyEvent(...fields: (string | number)[]) {
+    let eventString = ''
+    for (let field of fields) {
+        eventString += field + ';'
+    }
+    return eventString.slice(0, -1)
+}
+
+function str(list: Iterable<any>) {
+    let s = ""
+    for (let l of list) {
+        s += l + ","
+    }
+    return s.slice(0, -1)
 }

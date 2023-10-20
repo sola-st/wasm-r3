@@ -203,26 +203,26 @@ let Wasabi = {
     WebAssembly.Instance = newInstance;
 }
 
-Wasabi.module.info = {"functions":[{"type":"|","import":null,"export":[],"locals":"","instrCount":1},{"type":"|","import":null,"export":["main"],"locals":"","instrCount":3}],"globals":[],"start":null,"tables":[{"import":null,"export":["__wasabi_table0"],"refType":"funcref"}],"memories":[],"tableExportNames":["__wasabi_table0"],"memoryExportNames":[],"globalExportNames":[],"brTables":[],"originalFunctionImportsCount":0};
+Wasabi.module.info = {"functions":[{"type":"|","import":["env","a"],"export":[],"locals":"","instrCount":0},{"type":"|","import":null,"export":["main"],"locals":"","instrCount":3}],"globals":[],"start":null,"tables":[{"import":null,"export":["__wasabi_table0"],"refType":"funcref"}],"memories":[],"tableExportNames":["__wasabi_table0"],"memoryExportNames":[],"globalExportNames":[],"brTables":[],"originalFunctionImportsCount":1};
 
 Wasabi.module.lowlevelHooks = {
 "begin_function": function (func, instr, ) {
     Wasabi.analysis.begin_function({func, instr}, []);
 },
-"return": function (func, instr, ) {
-    Wasabi.analysis.return_({func, instr}, []);
-},
 "i32_const": function (func, instr, value) {
     Wasabi.analysis.const_({func, instr}, "i32.const", value);
-},
-"end_function": function (func, instr, ) {
-    Wasabi.analysis.end({func, instr}, "function", {func, instr: -1});
 },
 "call_indirect": function (func, instr, tableIndex, elemIdx) {
     Wasabi.analysis.call_pre({func, instr}, Wasabi.resolveTableIdx(tableIndex, elemIdx), [], elemIdx);
 },
 "call_post": function (func, instr, ) {
     Wasabi.analysis.call_post({func, instr}, []);
+},
+"return": function (func, instr, ) {
+    Wasabi.analysis.return_({func, instr}, []);
+},
+"end_function": function (func, instr, ) {
+    Wasabi.analysis.end({func, instr}, "function", {func, instr: -1});
 },
 };
 

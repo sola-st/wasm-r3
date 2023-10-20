@@ -63,7 +63,7 @@ export default function (runtimePath: string) {
         },
 
         store(location, op, memarg, value) {
-            let addr = memarg.addr
+            let addr = memarg.addr + memarg.offset
             let data
             switch (op) {
                 case 'i32.store':

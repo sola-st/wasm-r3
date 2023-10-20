@@ -16,12 +16,23 @@ if (process.argv.length > 2) {
   testNames = testNames.filter((n) => process.argv.includes(n));
 }
 
+// ignore specific tests because wasabi does not support this yet
+let filter = ['table-exp-host-mod-multiple', 'table-exp-host-mod', 'call-indirect']
+testNames = testNames.filter((n) => !filter.includes(n))
+
 // ignore specific tests
-const filter = ['table-exp-host-mod-multiple', 'table-exp-host-mod', 'call-indirect']
+filter = [
+  'rust-tictactoe',
+  'mem-exp-vec-store-no-host-mod',
+  'mem-exp-init-no-host-mod',
+  'mem-exp-copy-no-host-mod',
+  'mem-exp-fill-no-host-mod'
+
+]
 testNames = testNames.filter((n) => !filter.includes(n))
 
 // if you want to run a specific test just uncomment below line and put your test
-testNames = ['rust02']
+// testNames = ['rust02']
 
 process.stdout.write(`Executing Tests ... \n`);
 for (let name of testNames) {

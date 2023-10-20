@@ -17,7 +17,11 @@ w.analysis = {
 
 (async function () {
     let instance
-    let imports = {}
+    let imports = {
+        env: {
+            a: () => {}
+        }
+    }
     let wasm = await WebAssembly.instantiate(wasmBinary, imports)
     instance = wasm.instance
     instance.exports.main()

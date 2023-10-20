@@ -25,7 +25,7 @@ type ImportReturn = { type: "ImportReturn", idx: number, name: string, results: 
 
 type ImportMemory = { type: 'ImportMemory', idx: number, module: string, name: string, pages: number }
 
-type ImportTable = { type: 'ImportTable', idx: number, module: string, name: string, reftype: "funcref" | "externref" }
+type ImportTable = { type: 'ImportTable', idx: number, module: string, name: string, reftype: "funcref" | "externref", size: number }
 
 type ImportGlobal = { type: 'ImportGlobal', idx: number, module: string, name: string, valtype: ValType, value: number }
 

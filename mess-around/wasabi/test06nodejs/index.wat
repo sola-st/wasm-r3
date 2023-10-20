@@ -1,5 +1,5 @@
 (module
-    (func $a)
+    (import "env" "a" (func $a))
     (func $main (export "main")
     i32.const 0
     call_indirect)

@@ -1,5 +1,7 @@
 type Location = { func: number, instr: number }
 type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
+type MemArg = { addr: number, align: number, offset: number }
+type GlobalOp = 'global.set' | 'global.get'
 
 export declare type Wasabi = {
     HOOK_NAMES: [
@@ -83,11 +85,11 @@ export declare type Wasabi = {
         const_?: (location: Location, ...args: any) => void,
         unary?: (location: Location, ...args: any) => void,
         binary?: (location: Location, ...args: any) => void,
-        load?: (location: Location, ...args: any) => void,
-        store?: (location: Location, ...args: any) => void,
+        load?: (location: Location, op: string, memarg: MemArg, ...args: any) => void,
+        store?: (location: Location, op: string, memarg: MemArg, ...args: any) => void,
         memory_size?: (location: Location, ...args: any) => void,
         memory_grow?: (location: Location, ...args: any) => void,
         local?: (location: Location, ...args: any) => void,
-        global?: (location: Location, op: 'global.get' | 'global.set', ...args: any) => void,
+        global?: (location: Location, op: GlobalOp, ...args: any) => void,
     }
 }
