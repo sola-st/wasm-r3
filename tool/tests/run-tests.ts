@@ -21,7 +21,7 @@ const filter = ['table-exp-host-mod-multiple', 'table-exp-host-mod', 'call-indir
 testNames = testNames.filter((n) => !filter.includes(n))
 
 // if you want to run a specific test just uncomment below line and put your test
-// testNames = ['rust01']
+testNames = ['rust02']
 
 process.stdout.write(`Executing Tests ... \n`);
 for (let name of testNames) {

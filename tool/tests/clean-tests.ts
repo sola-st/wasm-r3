@@ -16,6 +16,9 @@ for (let name of testNames) {
     rmSafe(path.join(testPath, "replay.js"));
     rmSafe(path.join(testPath, "report.txt"));
     rmSafe(path.join(testPath, "long.js"));
+    rmSafe(path.join(testPath, "call-graph.txt"));
+    rmSafe(path.join(testPath, "replay-call-graph.txt"));
+    rmSafe(path.join(testPath, "long.js"));
 }
 
 function rmSafe(path: string) {
