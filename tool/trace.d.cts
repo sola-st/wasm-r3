@@ -9,9 +9,9 @@ export type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | Expo
 
 export type Load = { type: "Load", idx: number, name: string, offset: number, data: Uint8Array }
 
-export type MemGrow = { type: 'MemGrow', idx: number,name: string, amount: number }
+export type MemGrow = { type: 'MemGrow', idx: number, name: string, amount: number }
 
-export type TableGet = { type: "TableGet", tableidx: number, name: string, idx: number }
+export type TableGet = { type: "TableGet", tableidx: number, name: string, idx: number, funcidx: number }
 
 export type TableGrow = { type: 'TableGrow', idx: number, name: string, amount: number }
 

@@ -13,6 +13,18 @@
             "cwd": "${workspaceFolder}",
             "stopOnEntry": false,
             "watchMode": false
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Tests",
+            "program": "./dist/tests/run-tests.cjs",
+            "cwd": "${workspaceFolder}",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ], // Specify the location of your JavaScript files
+            "runtimeExecutable": "node",
         }
     ]
 }

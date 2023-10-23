@@ -18,11 +18,11 @@ async function run() {
   }
 
   // ignore specific tests because wasabi does not support this yet
-  let filter = ['table-exp-host-mod-multiple', 'table-exp-host-mod', 'call-indirect']
-  testNames = testNames.filter((n) => !filter.includes(n))
+  // let filter = ['table-exp-host-mod-multiple', 'table-exp-host-mod', 'call-indirect']
+  // testNames = testNames.filter((n) => !filter.includes(n))
 
   // ignore specific tests
-  filter = [
+  let filter2 = [
     'rust-tictactoe',
     'mem-exp-vec-store-no-host-mod',
     'mem-exp-init-no-host-mod',
@@ -30,10 +30,10 @@ async function run() {
     'mem-exp-fill-no-host-mod'
 
   ]
-  testNames = testNames.filter((n) => !filter.includes(n))
+  testNames = testNames.filter((n) => !filter2.includes(n))
 
   // if you want to run a specific test just uncomment below line and put your test
-  // testNames = ['call-imported']
+  testNames = ['table-exp-host-mod', 'table-exp-host-mod-multiple', 'call-indirect']
 
   process.stdout.write(`Executing Tests ... \n`);
   for (let name of testNames) {
@@ -64,7 +64,8 @@ async function run() {
     }
     // cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
     // cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call,memory_grow -o ${testPath}`);
-    cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return,global,memory_grow -o ${testPath}`, { stdio: 'ignore' });
+    // cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return,global,memory_grow,table_get,table_set -o ${testPath}`, { stdio: 'ignore' });
+    cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node -o ${testPath}`, { stdio: 'ignore' });
     fs.renameSync(wasabiRuntimePathJS, wasabiRuntimePath)
     fs.renameSync(path.join(testPath, 'long.js'), path.join(testPath, 'long.cjs'))
     modifyRuntime(wasabiRuntimePath)
@@ -130,15 +131,15 @@ async function run() {
     // fs.writeFileSync(replayCallGraphPath, stringifyCallGraph(replayCallGraph))
 
     // 5. Check if original trace and replay trace match
-    // if (replayTraceString !== traceString) {
-    //   let report = `[Expected]\n`;
-    //   report += traceString;
-    //   report += `\n\n`;
-    //   report += `[Actual]\n`;
-    //   report += replayTraceString;
-    //   fail(report, testReportPath);
-    //   continue
-    // }
+    if (replayTraceString !== traceString) {
+      let report = `[Expected]\n`;
+      report += traceString;
+      report += `\n\n`;
+      report += `[Actual]\n`;
+      report += replayTraceString;
+      fail(report, testReportPath);
+      continue
+    }
 
     // 6. Check if the computing results of the original and replay execution match
     // if (!_.isEqual(callGraph, replayCallGraph)) {

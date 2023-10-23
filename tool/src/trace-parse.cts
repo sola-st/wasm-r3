@@ -1,4 +1,4 @@
-import { Trace, ValType } from './trace.cjs'
+import { Trace, ValType } from '../trace.d.cjs'
 
 export default function parse(traceString: string) {
     let trace: Trace = []
@@ -60,8 +60,8 @@ export default function parse(traceString: string) {
                     tableidx: parseInt(components[1]),
                     name: components[2],
                     idx: parseInt(components[3]),
+                    funcidx: parseInt(components[4]),
                 })
-                throw "TableGet not supported yet"
                 break
             case "TableGrow":
                 trace.push({

@@ -7,7 +7,7 @@ let instance
 let imports = {
     env: {
         changeTable: () => (
-            instance.exports.table.set(0, 2)
+            instance.exports.table.set(0, instance.exports.foo)
         ),
         a: () => 1,
         b: () => 2,

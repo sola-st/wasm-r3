@@ -27,7 +27,13 @@ export declare type Wasabi = {
         "memory_size",
         "memory_grow",
         "local",
-        "global"
+        "global",
+        "memory_fill",
+        "memory_copy",
+        "memory_init",
+        "table_size",
+        "table_copy",
+        "table_init",
     ],
     module: {
         info: {
@@ -73,7 +79,7 @@ export declare type Wasabi = {
         br_if?: (location: Location, ...args: any) => void,
         br_table?: (location: Location, ...args: any) => void,
         begin?: (location: Location, ...args: any) => void,
-        begin_function?: (location: Location, args: number[]) => void, 
+        begin_function?: (location: Location, args: number[]) => void,
         end?: (location: Location, ...args: any) => void,
         nop?: (location: Location, ...args: any) => void,
         unreachable?: (location: Location, ...args: any) => void,
@@ -91,5 +97,15 @@ export declare type Wasabi = {
         memory_grow?: (location: Location, ...args: any) => void,
         local?: (location: Location, ...args: any) => void,
         global?: (location: Location, op: GlobalOp, ...args: any) => void,
+        memory_fill?: (location: Location, index: number, value: number, length: number) => void,
+        memory_copy?: (location: Location, destination: number, source: number, length: number) => void,
+        memory_init?: (location: Location, destination: number, source: number, length: number) => void,
+        table_size?: (location: Location, currentSizeEntries: number) => void,
+        table_copy?: (location: Location, destination: number, source: number, length: number) => void,
+        table_init?: (location: Location, destination: number, source: number, length: number) => void,
+        table_get?: (location: Location, index: number, value: any) => void,
+        table_set?: (location: Location, index: number, value: any) => void,
+        table_grow?: (location: Location, n: any, val: number, previousElement: number) => void,
+        table_fill?: (location: Location, index: number, value: any, length: number) => void,
     }
 }

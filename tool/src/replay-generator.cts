@@ -1,10 +1,10 @@
 import { unreachable } from "./util.cjs"
-import { Trace } from "./trace.cjs"
+import { Trace } from "../trace.d.cjs"
 
 type Call = { type: "Call", name: string }
 type Store = { type: "Store", memPath: { import: boolean, name: string }, addr: number, data: Uint8Array }
 type MemGrow = { type: "MemGrow", memPath: { import: boolean, name: string }, amount: number }
-type TableSet = { type: "TableSet", idx: number, addr: number, value: number }
+type TableSet = { type: "TableSet", tablePath: { import: boolean, name: string }, idx: number, value: number }
 type TableGrow = { type: "TableGrow", idx: number, amount: number }
 type GlobalSet = { type: "GlobalSet", globalPath: { import: boolean, name: string }, value: number, bigInt: boolean }
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
@@ -77,7 +77,19 @@ export default class Generator {
                     })
                     break
                 case "TableGet":
-                    throw "TableGet not supported yet"
+                    let tablePath
+                    let tableImports = this.code.tableImports[event.tableidx]
+                    if (tableImports !== undefined) {
+                        tablePath = { import: true, name: event.name }
+                    } else {
+                        tablePath = { import: false, name: event.name }
+                    }
+                    this.pushEvent({
+                        type: 'TableSet',
+                        tablePath,
+                        idx: event.idx,
+                        value: event.funcidx,
+                    })
                     break
                 case "TableGrow":
                     throw "TableGet not supported yet"

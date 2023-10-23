@@ -1,5 +1,5 @@
 import { unreachable } from "./util.cjs"
-import { Trace } from "./trace.cjs"
+import { Trace } from "../trace.d.cjs"
 
 export default function stringifyTrace(trace: Trace) {
     let traceString = ""
@@ -13,7 +13,7 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += stringifyEvent(e.type, e.idx, e.name, e.amount)
                 break
             case "TableGet":
-                traceString += stringifyEvent(e.type, e.tableidx, e.name, e.idx)
+                traceString += stringifyEvent(e.type, e.tableidx, e.name, e.idx, e.funcidx)
                 break
             case 'GlobalGet':
                 traceString += stringifyEvent(e.type, e.idx, e.name, e.value, e.valtype)

@@ -10,6 +10,9 @@
     i32.const 0
     (call_indirect (result i32))
   )
+  (func (export "foo") (result i32)
+    i32.const 3
+  )
   (table (export "table") 2 2 funcref)
   (elem (i32.const 0) $a $b)
 )
