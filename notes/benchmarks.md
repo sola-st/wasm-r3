@@ -47,6 +47,7 @@ Tradeofspace between Relevancy and the rest
 ## Libsodium Webassembly Benchmark
 [Github](https://github.com/jedisct1/webassembly-benchmarks)
 [Benchmarks should be here in the 1.0.18-stable](https://download.libsodium.org/libsodium/releases/)
+- type is probably kernel
 
 ## PSDF Kit
 [PSDF](https://pspdfkit.com/blog/2018/a-real-world-webassembly-benchmark/)
@@ -55,6 +56,7 @@ Tradeofspace between Relevancy and the rest
 ## Wasmboy Benchmarking tool
 [Web](https://wasmboy.app/benchmark/)
 - Compares wasm to javascript
+- type is probably application, but the application itelf is only there for benchmarking lol
 
 ## New Kid on the Web
 Source: [New Kid on the Web: A Study on the Prevalence of WebAssembly in the Wild](https://link.springer.com/chapter/10.1007/978-3-030-22038-9_2)
@@ -68,14 +70,17 @@ Source: [New Kid on the Web: A Study on the Prevalence of WebAssembly in the Wil
 [Spec CPU](https://www.spec.org/cpu2017/)
 - Can you compile stuff from them to wasm??
 - Executable Benchmark Suite 
+- Type is probably Kernel
 
 ## PolyBench
 [PolyBench/C](https://web.cse.ohio-state.edu/~pouchet.2/software/polybench/)
 - This is a c benchmark but you can compile it to wasm. They have done it here: [Understanding Performance of Wasm](https://dl.acm.org/doi/abs/10.1145/3487552.3487827)
+- Type is probably Kernel
 
 ## CHStone
 [CHStone: A benchmark program suite for practical C-based high-level synthesis](https://ieeexplore.ieee.org/document/4541637)
 - This is a c benchmark but you can compile it to wasm. They have done it here: [Understanding Performance of Wasm](https://dl.acm.org/doi/abs/10.1145/3487552.3487827
+- Type is probably Kernel
 
 ## Dacapo Suite
 [Dacapo](https://www.dacapobench.org)
@@ -86,3 +91,7 @@ Source: [New Kid on the Web: A Study on the Prevalence of WebAssembly in the Wil
 [Github](https://github.com/WebAssembly/benchmarks/tree/main)
 - Crappy repo by Ben Titzer
 - There is a nice classification of Benchmarks (Microbenchmark, Kernel, Application, Domain specific)
+
+## Sightglass
+[Github](https://github.com/bytecodealliance/sightglass)
+Explicitly designed for Wasmtime and cranelift

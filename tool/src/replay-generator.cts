@@ -167,7 +167,8 @@ class Code {
     public toString() {
         let jsString = `import fs from 'fs'\n`
         jsString += `import path from 'path'\n`
-        jsString += `const wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))\n`
+        jsString += `const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n`
+        jsString += `const wasmBinary = fs.readFileSync(p)\n`
         jsString += `let instance\n`
         jsString += 'let imports = {}\n'
         let instanciatedModules: string[] = []

@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
-const wasmBinary = fs.readFileSync(path.join(import.meta.dir, 'index.wasm'))
+const wasmPath = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')
+const wasmBinary = fs.readFileSync(wasmPath)
 
 let imports = {
     env: {
