@@ -13,7 +13,7 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += stringifyEvent(e.type, e.idx, e.name, e.amount)
                 break
             case "TableGet":
-                traceString += stringifyEvent(e.type, e.tableidx, e.name, e.idx, e.funcidx)
+                traceString += stringifyEvent(e.type, e.tableidx, e.name, e.idx, e.funcidx, e.funcName)
                 break
             case 'GlobalGet':
                 traceString += stringifyEvent(e.type, e.idx, e.name, e.value, e.valtype)
@@ -37,7 +37,7 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += stringifyEvent(e.type, e.idx, e.module, e.name)
                 break
             case 'ImportTable':
-                traceString += stringifyEvent(e.type, e.idx, e.module, e.type, e.reftype)
+                traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.initial, e.element)
                 break
             default:
                 unreachable(e)

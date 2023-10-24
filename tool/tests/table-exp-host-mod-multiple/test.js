@@ -7,17 +7,13 @@ let instance
 let imports = {
     env1: {
         changeTable1: () => (
-            instance.exports.table1.set(0, 2)
-        ),
-        a: () => 1,
-        b: () => 2,
+            instance.exports.table1.set(0, instance.exports.d)
+        )
     },
     env2: {
         changeTable2: () => (
-            instance.exports.table.set(0, 2)
-        ),
-        a: () => 3,
-        b: () => 4,
+            instance.exports.table2.set(0, instance.exports.a)
+        )
     }
 }
 let wasm = await WebAssembly.instantiate(wasmBinary, imports)

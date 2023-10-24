@@ -1,4 +1,4 @@
-import { Trace, ValType } from '../trace.d.cjs'
+import { Trace, ValType, RefType } from '../trace.d.cjs'
 
 export default function parse(traceString: string) {
     let trace: Trace = []
@@ -61,6 +61,7 @@ export default function parse(traceString: string) {
                     name: components[2],
                     idx: parseInt(components[3]),
                     funcidx: parseInt(components[4]),
+                    funcName: components[5],
                 })
                 break
             case "TableGrow":
@@ -70,7 +71,6 @@ export default function parse(traceString: string) {
                     name: components[2],
                     amount: parseInt(components[3])
                 })
-                throw "TableGrow not supported yet"
                 break
             case 'GlobalGet':
                 trace.push({
@@ -99,8 +99,18 @@ export default function parse(traceString: string) {
                     name: components[3],
                 })
                 break
+            case 'ImportTable':
+                trace.push({
+                    type: components[0],
+                    idx: parseInt(components[1]),
+                    module: components[2],
+                    name: components[3],
+                    initial: parseInt(components[4]),
+                    element: components[5] as 'anyfunc'
+                })
+                break
             default:
-                throw "Not a valid trace event"
+                throw new Error(`${components[0]}: Not a valid trace event`)
         }
     }
     return trace

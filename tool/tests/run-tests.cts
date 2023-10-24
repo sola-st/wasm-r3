@@ -27,13 +27,14 @@ async function run() {
     'mem-exp-vec-store-no-host-mod',
     'mem-exp-init-no-host-mod',
     'mem-exp-copy-no-host-mod',
-    'mem-exp-fill-no-host-mod'
-
+    'mem-exp-fill-no-host-mod',
+    'mem-exp-host-mod-load-vec',
+    'table-imp-init-max',
   ]
   testNames = testNames.filter((n) => !filter2.includes(n))
 
   // if you want to run a specific test just uncomment below line and put your test
-  testNames = ['table-exp-host-mod', 'table-exp-host-mod-multiple', 'call-indirect']
+  // testNames = ['table-exp-host-mod-multiple']
 
   process.stdout.write(`Executing Tests ... \n`);
   for (let name of testNames) {
@@ -65,7 +66,8 @@ async function run() {
     // cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
     // cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call,memory_grow -o ${testPath}`);
     // cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return,global,memory_grow,table_get,table_set -o ${testPath}`, { stdio: 'ignore' });
-    cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node -o ${testPath}`, { stdio: 'ignore' });
+    const wasabiCommand = `cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node -o ${testPath}`
+    cp.execSync(wasabiCommand, { stdio: 'ignore' });
     fs.renameSync(wasabiRuntimePathJS, wasabiRuntimePath)
     fs.renameSync(path.join(testPath, 'long.js'), path.join(testPath, 'long.cjs'))
     modifyRuntime(wasabiRuntimePath)
@@ -76,7 +78,7 @@ async function run() {
     try {
       await import(testJsPath)
     } catch (e: any) {
-      fail(e.toString(), testReportPath)
+      fail(e.stack, testReportPath)
       continue;
     }
     deleteRequireCaches()
@@ -87,7 +89,7 @@ async function run() {
     try {
       await import(testJsPath)
     } catch (e: any) {
-      fail(e.toString(), testReportPath);
+      fail(e.stack, testReportPath);
       continue;
     }
     fs.writeFileSync(callGraphPath, stringifyCallGraph(callGraph))
@@ -97,14 +99,14 @@ async function run() {
     try {
       trace = parse(traceString)
     } catch (e: any) {
-      fail(e.toString(), testReportPath)
+      fail(e.stack, testReportPath)
       continue
     }
     let replayCode
     try {
       replayCode = new Generator().generateReplay(trace).toString()
     } catch (e: any) {
-      fail(e.toString(), testReportPath)
+      fail(e.stack, testReportPath)
       continue
     }
     fs.writeFileSync(replayPath, replayCode)
@@ -114,7 +116,7 @@ async function run() {
     try {
       await import(replayPath);
     } catch (e: any) {
-      fail(e.toString(), testReportPath);
+      fail(e.stack, testReportPath);
       continue;
     }
     deleteRequireCaches()
@@ -125,7 +127,7 @@ async function run() {
     // try {
     //   await import(replayPath)
     // } catch (e: any) {
-    //   fail(e.toString(), testReportPath);
+    //   fail(e.stack, testReportPath);
     //   continue;
     // }
     // fs.writeFileSync(replayCallGraphPath, stringifyCallGraph(replayCallGraph))
@@ -214,6 +216,7 @@ function callGraphConstructor(runtimePath: string) {
   let inHost: boolean | null = null
   let callGraph: CallGraph = []
   const Wasabi: Wasabi = require(runtimePath)
+  // delete (require as NodeJS.Require & { cache: any }).cache[runtimePath]
   Wasabi.analysis = {
     call_pre(locatation, targetFunc, args, indirectTableIdx) {
       inHost = Wasabi.module.info.functions.filter(f => f.import !== null).length <= locatation.func

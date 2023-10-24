@@ -11,7 +11,7 @@ export type Load = { type: "Load", idx: number, name: string, offset: number, da
 
 export type MemGrow = { type: 'MemGrow', idx: number, name: string, amount: number }
 
-export type TableGet = { type: "TableGet", tableidx: number, name: string, idx: number, funcidx: number }
+export type TableGet = { type: "TableGet", tableidx: number, name: string, idx: number, funcidx: number, funcName: string }
 
 export type TableGrow = { type: 'TableGrow', idx: number, name: string, amount: number }
 
@@ -25,7 +25,7 @@ export type ImportReturn = { type: "ImportReturn", idx: number, name: string, re
 
 export type ImportMemory = { type: 'ImportMemory', idx: number, module: string, name: string, pages: number }
 
-export type ImportTable = { type: 'ImportTable', idx: number, module: string, name: string, reftype: "funcref" | "externref", size: number }
+export type ImportTable = { type: 'ImportTable', idx: number, module: string, name: string } & WebAssembly.TableDescriptor
 
 export type ImportGlobal = { type: 'ImportGlobal', idx: number, module: string, name: string, valtype: ValType, value: number }
 
@@ -34,3 +34,4 @@ export type ImportFunc = { type: 'ImportFunc', idx: number, module: string, name
 
 
 export type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
+export type RefType = 'funcref' | 'externref'

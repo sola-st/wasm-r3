@@ -2,6 +2,7 @@ type Location = { func: number, instr: number }
 type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
 type MemArg = { addr: number, align: number, offset: number }
 type GlobalOp = 'global.set' | 'global.get'
+type StoreOp = 'i32.store' | 'i32.store8' // continue
 
 export declare type Wasabi = {
     HOOK_NAMES: [

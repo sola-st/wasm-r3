@@ -4,14 +4,14 @@ import { Trace } from "../trace.d.cjs"
 type Call = { type: "Call", name: string }
 type Store = { type: "Store", memPath: { import: boolean, name: string }, addr: number, data: Uint8Array }
 type MemGrow = { type: "MemGrow", memPath: { import: boolean, name: string }, amount: number }
-type TableSet = { type: "TableSet", tablePath: { import: boolean, name: string }, idx: number, value: number }
-type TableGrow = { type: "TableGrow", idx: number, amount: number }
+type TableSet = { type: "TableSet", tablePath: { import: boolean, name: string }, idx: number, funcPath: { import: boolean, name: string } }
+type TableGrow = { type: "TableGrow", tablePath: { import: boolean, name: string }, idx: number, amount: number }
 type GlobalSet = { type: "GlobalSet", globalPath: { import: boolean, name: string }, value: number, bigInt: boolean }
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type ImportObject = { module: string, name: string }
 type Function = ImportObject & { body: { results: number[], events: Event[] }[] }
 type Memory = ImportObject & { pages: number }
-type Table = ImportObject & {}
+type Table = ImportObject & WebAssembly.TableDescriptor
 type Global = ImportObject & { valtype: string, value: number }
 type State = { callStack: Function[], lastFunc?: Function }
 
@@ -44,7 +44,7 @@ export default class Generator {
                     this.state.callStack.push(this.code.funcImports[event.idx])
                     break
                 case "ImportReturn":
-                    this.state.lastFunc = this.state.callStack.pop()!
+                    this.state.lastFunc = this.state.callStack.pop()
                     this.state.lastFunc.body.slice(-1)[0].results = event.results
                     break
                 case "Load":
@@ -84,15 +84,34 @@ export default class Generator {
                     } else {
                         tablePath = { import: false, name: event.name }
                     }
+                    let funcPath
+                    let funcImports = this.code.funcImports[event.funcidx]
+                    if (funcImports !== undefined) {
+                        funcPath = { import: true, name: event.funcName }
+                    } else {
+                        funcPath = { import: false, name: event.funcName }
+                    }
                     this.pushEvent({
                         type: 'TableSet',
                         tablePath,
                         idx: event.idx,
-                        value: event.funcidx,
+                        funcPath,
                     })
                     break
                 case "TableGrow":
-                    throw "TableGet not supported yet"
+                    let tablePath2
+                    let tableImports2 = this.code.tableImports[event.idx]
+                    if (tableImports2 !== undefined) {
+                        tablePath2 = { import: true, name: event.name }
+                    } else {
+                        tablePath2 = { import: false, name: event.name }
+                    }
+                    this.pushEvent({
+                        type: event.type,
+                        tablePath: tablePath2,
+                        idx: event.idx,
+                        amount: event.amount
+                    })
                     break
                 case 'ImportMemory':
                     this.code.memImports[event.idx] = {
@@ -117,7 +136,13 @@ export default class Generator {
                     })
                     break
                 case 'ImportTable':
-                    throw 'ImportTable not supported yet'
+                    this.code.tableImports[event.idx] = {
+                        module: event.module,
+                        name: event.name,
+                        element: event.element,
+                        initial: event.initial,
+                        maximum: event.maximum,
+                    }
                     break
                 case 'ImportGlobal':
                     this.code.globalImports[event.idx] = {
@@ -202,6 +227,15 @@ class Code {
             jsString += `const ${global.name} = new WebAssembly.Global({ value: '${global.valtype}', mutable: true}, ${global.value})\n`
             jsString += `imports.${global.module}.${global.name} = ${global.name}\n`
         }
+        for (let tableidx in this.tableImports) {
+            let table = this.tableImports[tableidx]
+            if (!instanciatedModules.includes(table.module)) {
+                jsString += `imports.${table.module} = {}\n`
+                instanciatedModules.push(table.module)
+            }
+            jsString += `const ${table.name} = new WebAssembly.Table({ initial: ${table.initial}, element: '${table.element}'})\n`
+            jsString += `imports.${table.module}.${table.name} = ${table.name}\n`
+        }
         // TODO: initialize tables
         for (let event of this.initialization) {
             switch (event.type) {
@@ -217,12 +251,23 @@ class Code {
                     break
                 case 'MemGrow':
                     if (event.memPath.import) {
-                        jsString += `${event.memPath.name}.grow(${event.amount}) \n`
+                        jsString += `${event.memPath.name}.grow(${event.amount})\n`
                     } else {
-                        jsString += `instance.exports.memory.grow(${event.amount}) \n`
+                        jsString += `instance.exports.memory.grow(${event.amount})\n`
                     }
                     break
                 case 'TableSet':
+                    let func
+                    if (event.funcPath.import) {
+                        func = `${event.funcPath.name}`
+                    } else {
+                        func = `instance.exports.${event.funcPath.name}`
+                    }
+                    if (event.tablePath.import) {
+                        jsString += `${event.tablePath.name}.set(${event.idx}, ${func})\n`
+                    } else {
+                        jsString += `instance.exports.${event.tablePath.name}.set(${event.idx}, ${func})\n`
+                    }
                     break
                 case 'TableGrow':
                     break
@@ -261,12 +306,28 @@ class Code {
                             if (event.memPath.import) {
                                 jsString += `${event.memPath.name}.grow(${event.amount})\n`
                             } else {
-                                jsString += `instance.exports.memory.grow(${event.amount})\n`
+                                jsString += `instance.exports.${event.memPath.name}.grow(${event.amount})\n`
                             }
                             break
                         case 'TableSet':
+                            let func
+                            if (event.funcPath.import) {
+                                func = `${event.funcPath.name}`
+                            } else {
+                                func = `instance.exports.${event.funcPath.name}`
+                            }
+                            if (event.tablePath.import) {
+                                jsString += `${event.tablePath.name}.set(${event.idx}, ${func})\n`
+                            } else {
+                                jsString += `instance.exports.${event.tablePath.name}.set(${event.idx}, ${func})\n`
+                            }
                             break
                         case 'TableGrow':
+                            if (event.tablePath.import) {
+                                jsString += `${event.tablePath.name}.grow(${event.amount})\n`
+                            } else {
+                                jsString += `instance.exports.${event.tablePath.name}.grow(${event.amount})\n`
+                            }
                             break
                         case 'GlobalSet':
                             if (event.globalPath.import) {

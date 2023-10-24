@@ -6,14 +6,11 @@ const wasmBinary = fs.readFileSync(wasmPath)
 let instance
 let imports = {
     env: {
-        changeTable: () => (
-            instance.exports.table.set(0, instance.exports.foo)
-        ),
-        changeTable2: () => (
-            instance.exports.table.set(0, instance.exports.bar)
-        ),
-        a: () => 1,
-        b: () => 2,
+        changeTable: () => {
+            instance.exports.table.grow(2)
+            instance.exports.table.set(3, instance.exports.foo)
+            return 3
+        },
     }
 }
 let wasm = await WebAssembly.instantiate(wasmBinary, imports)

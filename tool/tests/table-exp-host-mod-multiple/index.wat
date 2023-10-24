@@ -1,28 +1,36 @@
 (module
   (import "env1" "changeTable1" (func $changeTable1))
   (import "env2" "changeTable2" (func $changeTable2))
-  (import "env1" "a" (func $a (result i32)))
-  (import "env1" "b" (func $b (result i32)))
-  (import "env2" "c" (func $c (result i32)))
-  (import "env2" "d" (func $d (result i32)))
   (func $main1 (export "main1") (result i32)
     i32.const 0
-    (call_indirect 0 (result i32))
+    (call_indirect $table1 (result i32))
     drop
     call $changeTable1
     i32.const 0
-    (call_indirect 0 (result i32))
+    (call_indirect $table1 (result i32))
   )
   (func $main2 (export "main2") (result i32)
     i32.const 0
-    (call_indirect 1 (result i32))
+    (call_indirect $table2 (result i32))
     drop
     call $changeTable2
     i32.const 0
-    (call_indirect 1 (result i32))
+    (call_indirect $table2 (result i32))
   )
-  (table (export "table1") 3 3 funcref)
-  (elem (i32.const 0) 0 $a $b)
-  (table (export "table2") 3 3 funcref)
-  (elem (i32.const 0) 0 $c $d)
+  (func $a (export "a") (result i32)
+    i32.const 1
+  )
+  (func $b (export "b") (result i32)
+    i32.const 2
+  )
+  (func $c (export "c") (result i32)
+    i32.const 3
+  )
+  (func $d (export "d") (result i32)
+    i32.const 4
+  )
+  (table $table1 (export "table1") 2 2 funcref)
+  (elem $elem1 (table $table1) (i32.const 0) $a $b)
+  (table $table2 (export "table2") 2 2 funcref)
+  (elem $elem2 (table $table2) (i32.const 0) $c $d)
 )

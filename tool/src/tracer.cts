@@ -4,9 +4,9 @@ import { Trace, ImportCall, ImportReturn } from '../trace.d.cjs'
 
 export default function (runtimePath: string) {
     let Wasabi: Wasabi = require(runtimePath)
-    
+
     const MEM_PAGE_SIZE = 65536
-    
+
     let trace: Trace = []
 
     // shadow stuff
@@ -44,7 +44,7 @@ export default function (runtimePath: string) {
                 })
                 Wasabi.module.info.tables.forEach((t, idx) => {
                     if (t.import !== null) {
-                        trace.push({ type: 'ImportTable', module: t.import![0], name: t.import![1], reftype: 'funcref', idx, size: Wasabi.module.tables[idx].length })
+                        trace.push({ type: 'ImportTable', module: t.import![0], name: t.import![1], element: 'anyfunc', idx, initial: Wasabi.module.tables[idx].length })
                     }
                 })
                 shadowGlobals = _.cloneDeep(Wasabi.module.globals.map(g => g.value))
@@ -64,6 +64,7 @@ export default function (runtimePath: string) {
             if (calledFunction === null) {
                 trace.push({ type: "ExportCall", names: Wasabi.module.info.functions[location.func].export, params: args })
                 checkMemGrow()
+                checkTableGrow()
             } else {
                 calledFunction = null
             }
@@ -110,7 +111,7 @@ export default function (runtimePath: string) {
                     set_shadow_memory(data, addr, 8)
                     break;
                 default:
-                    throw `instruction ${op} not supported`
+                    throw new Error(`instruction ${op} not supported`)
                 // TODO: support for remaining store instructions
             }
         },
@@ -225,7 +226,7 @@ export default function (runtimePath: string) {
                     set_shadow_memory(data, addr, 8)
                     break
                 default:
-                    throw `instruction ${op} not supported`
+                    throw new Error(`instruction ${op} not supported`)
                 // TODO: Support all loads
             }
             trace.push({ type: "Load", name: getMemName(), offset: addr, data, idx: 0 })
@@ -244,20 +245,18 @@ export default function (runtimePath: string) {
 
 
         call_pre(location, targetFunc, args, indirectTableIdx) {
-            // let module
-            // let name
-            // if (targetFunc === undefined) {
-            //     // let lol = Wasabi.resolveTableIdx(indirectTableIdx)
-            //     targetFunc = Wasabi.resolveTableIdx(Wasabi.module.tables[0].get(indirectTableIdx).name)
-            //     if (targetFunc !== shadowTables[0].get(indirectTableIdx)) {
-            //         shadowTables[0].set(indirectTableIdx, targetFunc)
-            //         trace.push({ type: 'TableGet', name: getTableName(), idx: indirectTableIdx })
-            //     }
-            // }
             if (indirectTableIdx !== undefined) {
                 if (!_.isEqual(shadowTables[0].get(indirectTableIdx), Wasabi.module.tables[0].get(indirectTableIdx))) {
-                    trace.push({ type: 'TableGet', tableidx: 0, name: getTableName(), idx: indirectTableIdx, funcidx: parseInt(Wasabi.module.tables[0].get(indirectTableIdx).name) })
+                    trace.push({ type: 'TableGet', tableidx: 0, name: getTableName(), idx: indirectTableIdx, funcidx: targetFunc, funcName: getFuncName(targetFunc) })
                     shadowTables[0].set(0, Wasabi.module.tables[0].get(indirectTableIdx))
+                    let name
+                    if (Wasabi.module.info.functions[targetFunc].import === null) {
+                        calledFunction = targetFunc
+                        return
+                    } else {
+                        name = Wasabi.module.info.functions[targetFunc].import[1]
+                    }
+                    trace.push({ type: "ImportCall", name, idx: targetFunc })
                 }
             }
             if (Wasabi.module.info.functions[targetFunc].import === null) {
@@ -272,8 +271,16 @@ export default function (runtimePath: string) {
         call_post(location, values) {
             let name
             let idx
+            let returnCounter = 0
             for (let i = trace.length - 1; i >= 0; i--) {
+                if (trace[i].type === 'ImportReturn') {
+                    returnCounter++
+                }
                 if (trace[i].type === 'ImportCall') {
+                    if (returnCounter > 0) {
+                        returnCounter--
+                        continue
+                    }
                     name = (trace[i] as ImportCall).name
                     idx = (trace[i] as ImportCall).idx
                     break
@@ -290,16 +297,16 @@ export default function (runtimePath: string) {
             }
             trace.push(importReturn)
             checkMemGrow()
-            // TODO: check if table needs to be grown and grow it
+            checkTableGrow()
         },
 
         table_set(location, index, value) {
-            shadowTables[0].set(0, value)
+            shadowTables[0].set(index, value)
         },
-        
+
         table_get(location, index, value) {
             if (!_.isEqual(shadowTables[0].get(index), Wasabi.module.tables[0].get(index))) {
-                trace.push({ type: 'TableGet', tableidx: 0, name: getTableName(), idx: index, funcidx: parseInt(Wasabi.module.tables[0].get(index).name) })
+                trace.push({ type: 'TableGet', tableidx: 0, name: getTableName(), idx: index, funcidx: parseInt(Wasabi.module.tables[0].get(index).name), funcName: getFuncName(parseInt(Wasabi.module.tables[0].get(index).name) - Object.keys(Wasabi.module.lowlevelHooks).length) })
                 shadowTables[0].set(0, value)
             }
         }
@@ -343,13 +350,31 @@ export default function (runtimePath: string) {
         shadowMemories[0] = newShadow
     }
 
+    function growShadowTable(amount: number) {
+        const newShadow = new WebAssembly.Table({ initial: Wasabi.module.tables[0].length + amount, element: 'anyfunc' })
+        for (let i = 0; i < Wasabi.module.tables[0].length; i++) {
+            newShadow.set(i, Wasabi.module.tables[0].get(i))
+        }
+        shadowTables[0] = newShadow
+    }
+
     function checkMemGrow() {
-        if (Wasabi.module.memories[0]?.buffer && Wasabi.module.memories[0].buffer.byteLength !== shadowMemories[0].byteLength) {
+        if (Wasabi.module.memories[0]?.buffer !== undefined && Wasabi.module.memories[0].buffer.byteLength !== shadowMemories[0].byteLength) {
             let memGrow: any = {}
             let amount = Wasabi.module.memories[0].buffer.byteLength / MEM_PAGE_SIZE - shadowMemories[0].byteLength / MEM_PAGE_SIZE
             memGrow[0] = amount
             growShadowMem(amount)
             trace.push({ type: 'MemGrow', name: getMemName(), amount, idx: 0 })
+        }
+    }
+
+    function checkTableGrow() {
+        if (Wasabi.module.tables[0] !== undefined && Wasabi.module.tables[0].length !== shadowTables[0].length) {
+            let tableGrow: any = {}
+            let amount = Wasabi.module.tables[0].length - shadowTables[0].length
+            tableGrow[0] = amount
+            growShadowTable(amount)
+            trace.push({ type: 'TableGrow', name: getTableName(), amount, idx: 0 })
         }
     }
 
@@ -371,9 +396,17 @@ export default function (runtimePath: string) {
 
     function getGlobalName(idx: number) {
         if (Wasabi.module.info.globals[idx].import !== null) {
-            return Wasabi.module.info.globals[idx].import![1]
+            return Wasabi.module.info.globals[idx].import[1]
         } else {
             return Wasabi.module.info.globals[idx].export[0]
+        }
+    }
+
+    function getFuncName(idx: number) {
+        if (Wasabi.module.info.functions[idx].import !== null) {
+            return Wasabi.module.info.functions[idx].import[1]
+        } else {
+            return Wasabi.module.info.functions[idx].export[0]
         }
     }
 
