@@ -34,7 +34,7 @@ async function run() {
   testNames = testNames.filter((n) => !filter2.includes(n))
 
   // if you want to run a specific test just uncomment below line and put your test
-  // testNames = ['table-exp-host-mod-multiple']
+  testNames = ['mem-exp-host-mod-location-reentry']
 
   process.stdout.write(`Executing Tests ... \n`);
   for (let name of testNames) {
@@ -218,7 +218,7 @@ function callGraphConstructor(runtimePath: string) {
   const Wasabi: Wasabi = require(runtimePath)
   // delete (require as NodeJS.Require & { cache: any }).cache[runtimePath]
   Wasabi.analysis = {
-    call_pre(locatation, targetFunc, args, indirectTableIdx) {
+    call_pre(locatation, op, targetFunc, args, tableTarget) {
       inHost = Wasabi.module.info.functions.filter(f => f.import !== null).length <= locatation.func
       if (inHost) {
         let from: FromWasm = {

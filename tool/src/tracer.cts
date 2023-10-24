@@ -70,8 +70,8 @@ export default function (runtimePath: string) {
             }
         },
 
-        store(location, op, memarg, value) {
-            let addr = memarg.addr + memarg.offset
+        store(location, op, target, memarg, value) {
+            let addr = target.addr + memarg.offset
             let data
             switch (op) {
                 case 'i32.store':
@@ -118,12 +118,12 @@ export default function (runtimePath: string) {
 
         // TODO: bulk memory instructions
 
-        memory_grow(location, byPages, previousSizePages) {
+        memory_grow(location, memIdx, byPages, previousSizePages) {
             growShadowMem(byPages)
         },
 
-        load(location, op, memarg, value) {
-            let addr = memarg.addr
+        load(location, op, target, memarg, value) {
+            let addr = target.addr
             let shadow
             let data
             switch (op) {
@@ -244,8 +244,9 @@ export default function (runtimePath: string) {
         },
 
 
-        call_pre(location, targetFunc, args, indirectTableIdx) {
-            if (indirectTableIdx !== undefined) {
+        call_pre(location, op, targetFunc, args, tableTarget) {
+            if (tableTarget !== undefined) {
+                let indirectTableIdx = tableTarget.elemIdx
                 if (!_.isEqual(shadowTables[0].get(indirectTableIdx), Wasabi.module.tables[0].get(indirectTableIdx))) {
                     trace.push({ type: 'TableGet', tableidx: 0, name: getTableName(), idx: indirectTableIdx, funcidx: targetFunc, funcName: getFuncName(targetFunc) })
                     shadowTables[0].set(0, Wasabi.module.tables[0].get(indirectTableIdx))
@@ -300,11 +301,12 @@ export default function (runtimePath: string) {
             checkTableGrow()
         },
 
-        table_set(location, index, value) {
-            shadowTables[0].set(index, value)
+        table_set(location, target, value) {
+            shadowTables[0].set(target.elemIdx, value)
         },
 
-        table_get(location, index, value) {
+        table_get(location, target, value) {
+            let index = target.elemIdx
             if (!_.isEqual(shadowTables[0].get(index), Wasabi.module.tables[0].get(index))) {
                 trace.push({ type: 'TableGet', tableidx: 0, name: getTableName(), idx: index, funcidx: parseInt(Wasabi.module.tables[0].get(index).name), funcName: getFuncName(parseInt(Wasabi.module.tables[0].get(index).name) - Object.keys(Wasabi.module.lowlevelHooks).length) })
                 shadowTables[0].set(0, value)
