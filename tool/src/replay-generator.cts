@@ -1,18 +1,19 @@
 import { unreachable } from "./util.cjs"
 import { Trace } from "../trace.d.cjs"
 
+type ImpExp = { import: boolean, name: string }
 type Call = { type: "Call", name: string }
-type Store = { type: "Store", memPath: { import: boolean, name: string }, addr: number, data: Uint8Array }
-type MemGrow = { type: "MemGrow", memPath: { import: boolean, name: string }, amount: number }
-type TableSet = { type: "TableSet", tablePath: { import: boolean, name: string }, idx: number, funcPath: { import: boolean, name: string } }
-type TableGrow = { type: "TableGrow", tablePath: { import: boolean, name: string }, idx: number, amount: number }
-type GlobalSet = { type: "GlobalSet", globalPath: { import: boolean, name: string }, value: number, bigInt: boolean }
+type Store = { type: "Store", addr: number, data: Uint8Array } & ImpExp
+type MemGrow = { type: "MemGrow", amount: number } & ImpExp
+type TableSet = { type: "TableSet", idx: number, funcImport: boolean, funcName: string } & ImpExp
+type TableGrow = { type: "TableGrow", idx: number, amount: number } & ImpExp
+type GlobalSet = { type: "GlobalSet", value: number, bigInt: boolean } & ImpExp
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
-type ImportObject = { module: string, name: string }
-type Function = ImportObject & { body: { results: number[], events: Event[] }[] }
-type Memory = ImportObject & { pages: number }
-type Table = ImportObject & WebAssembly.TableDescriptor
-type Global = ImportObject & { valtype: string, value: number }
+type Import = { module: string, name: string }
+type Function = Import & { body: { results: number[], events: Event[] }[] }
+type Memory = Import & { pages: number }
+type Table = Import & WebAssembly.TableDescriptor
+type Global = Import & { valtype: string, value: number }
 type State = { callStack: Function[], lastFunc?: Function }
 
 export default class Generator {
@@ -28,7 +29,6 @@ export default class Generator {
         trace.forEach((event) => {
             switch (event.type) {
                 case "ExportCall":
-                    // TODO: support for export calls with arguments
                     if (this.state.callStack.length === 0) {
                         this.code.calls.push({ name: event.name, params: event.params })
                         break
@@ -36,11 +36,7 @@ export default class Generator {
                     this.pushEvent({ type: 'Call', name: event.name })
                     break
                 case "ImportCall":
-                    // if (this.code.funcImports[event.idx] === undefined) {
-                    //     throw 'There shoudl be already the imported function'
-                    // } else {
                     this.code.funcImports[event.idx].body.push({ results: [], events: [] })
-                    // }
                     this.state.callStack.push(this.code.funcImports[event.idx])
                     break
                 case "ImportReturn":
@@ -48,72 +44,43 @@ export default class Generator {
                     this.state.lastFunc.body.slice(-1)[0].results = event.results
                     break
                 case "Load":
-                    let memPath
-                    let memImports = this.code.memImports[event.idx]
-                    if (memImports !== undefined) {
-                        memPath = { import: true, name: event.name }
-                    } else {
-                        memPath = { import: false, name: event.name }
-                    }
                     this.pushEvent({
                         type: 'Store',
-                        memPath,
+                        import: this.code.memImports[event.idx] !== undefined,
+                        name: event.name,
                         addr: event.offset,
                         data: event.data,
                     })
                     break
                 case 'MemGrow':
-                    let memPath2
-                    let memImports2 = this.code.memImports[event.idx]
-                    if (memImports2 !== undefined) {
-                        memPath2 = { import: true, name: event.name }
-                    } else {
-                        memPath2 = { import: false, name: event.name }
-                    }
                     this.pushEvent({
                         type: event.type,
-                        memPath: memPath2,
+                        import: this.code.memImports[event.idx] !== undefined,
+                        name: event.name,
                         amount: event.amount
                     })
                     break
                 case "TableGet":
-                    let tablePath
-                    let tableImports = this.code.tableImports[event.tableidx]
-                    if (tableImports !== undefined) {
-                        tablePath = { import: true, name: event.name }
-                    } else {
-                        tablePath = { import: false, name: event.name }
-                    }
-                    let funcPath
-                    let funcImports = this.code.funcImports[event.funcidx]
-                    if (funcImports !== undefined) {
-                        funcPath = { import: true, name: event.funcName }
-                    } else {
-                        funcPath = { import: false, name: event.funcName }
-                    }
                     this.pushEvent({
                         type: 'TableSet',
-                        tablePath,
+                        import: this.code.tableImports[event.tableidx] !== undefined,
+                        name: event.name,
                         idx: event.idx,
-                        funcPath,
+                        funcImport: this.code.funcImports[event.funcidx] !== undefined,
+                        funcName: event.funcName
                     })
                     break
                 case "TableGrow":
-                    let tablePath2
-                    let tableImports2 = this.code.tableImports[event.idx]
-                    if (tableImports2 !== undefined) {
-                        tablePath2 = { import: true, name: event.name }
-                    } else {
-                        tablePath2 = { import: false, name: event.name }
-                    }
                     this.pushEvent({
                         type: event.type,
-                        tablePath: tablePath2,
+                        import: this.code.tableImports[event.idx] !== undefined,
+                        name: event.name,
                         idx: event.idx,
                         amount: event.amount
                     })
                     break
                 case 'ImportMemory':
+                    this.addModule(event)
                     this.code.memImports[event.idx] = {
                         module: event.module,
                         name: event.name,
@@ -121,21 +88,16 @@ export default class Generator {
                     }
                     break
                 case 'GlobalGet':
-                    let globalPath
-                    let globalImports = this.code.globalImports[event.idx]
-                    if (globalImports !== undefined) {
-                        globalPath = { import: true, name: event.name }
-                    } else {
-                        globalPath = { import: false, name: event.name }
-                    }
                     this.pushEvent({
                         type: 'GlobalSet',
-                        globalPath,
+                        import: this.code.globalImports[event.idx] !== undefined,
+                        name: event.name,
                         value: event.value,
                         bigInt: event.valtype === 'i64'
                     })
                     break
                 case 'ImportTable':
+                    this.addModule(event)
                     this.code.tableImports[event.idx] = {
                         module: event.module,
                         name: event.name,
@@ -145,6 +107,7 @@ export default class Generator {
                     }
                     break
                 case 'ImportGlobal':
+                    this.addModule(event)
                     this.code.globalImports[event.idx] = {
                         module: event.module,
                         name: event.name,
@@ -153,6 +116,7 @@ export default class Generator {
                     }
                     break
                 case 'ImportFunc':
+                    this.addModule(event)
                     this.code.funcImports[event.idx] = {
                         module: event.module,
                         name: event.name,
@@ -182,6 +146,12 @@ export default class Generator {
         }
         stackTop.events.push(event)
     }
+
+    private addModule(event: Import) {
+        if (!this.code.modules.includes(event.module)) {
+            this.code.modules.push(event.module)
+        }
+    }
 }
 
 class Code {
@@ -191,6 +161,7 @@ class Code {
     globalImports: { [key: string]: Global }
     calls: { name: string, params: number[] }[]
     initialization: Event[]
+    modules: string[]
 
     constructor() {
         this.funcImports = {}
@@ -199,6 +170,7 @@ class Code {
         this.globalImports = {}
         this.calls = []
         this.initialization = []
+        this.modules = []
     }
 
     public toString() {
@@ -208,79 +180,51 @@ class Code {
         jsString += `const wasmBinary = fs.readFileSync(p)\n`
         jsString += `let instance\n`
         jsString += 'let imports = {}\n'
-        let instanciatedModules: string[] = []
+
+        // Init modules
+        for (let module of this.modules) {
+            jsString += `imports.${module} = {}\n`
+        }
+        // Init memories
         for (let memidx in this.memImports) {
             let mem = this.memImports[memidx]
-            if (!instanciatedModules.includes(mem.module)) {
-                jsString += `imports.${mem.module} = {}\n`
-                instanciatedModules.push(mem.module)
-            }
             jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages} })\n`
             jsString += `imports.${mem.module}.${mem.name} = ${mem.name}\n`
         }
+        // Init globals
         for (let globalIdx in this.globalImports) {
             let global = this.globalImports[globalIdx]
-            if (!instanciatedModules.includes(global.module)) {
-                jsString += `imports.${global.module} = {}\n`
-                instanciatedModules.push(global.module)
-            }
             jsString += `const ${global.name} = new WebAssembly.Global({ value: '${global.valtype}', mutable: true}, ${global.value})\n`
+            jsString += `${global.name}.value = ${global.value}\n`
             jsString += `imports.${global.module}.${global.name} = ${global.name}\n`
         }
+        // Init tables
         for (let tableidx in this.tableImports) {
             let table = this.tableImports[tableidx]
-            if (!instanciatedModules.includes(table.module)) {
-                jsString += `imports.${table.module} = {}\n`
-                instanciatedModules.push(table.module)
-            }
             jsString += `const ${table.name} = new WebAssembly.Table({ initial: ${table.initial}, element: '${table.element}'})\n`
             jsString += `imports.${table.module}.${table.name} = ${table.name}\n`
         }
-        // TODO: initialize tables
+        // Init entity states
         for (let event of this.initialization) {
             switch (event.type) {
                 case 'Store':
-                    event.data.forEach((byte, j) => {
-                        event = event as Store
-                        if (event.memPath.import) {
-                            jsString += `new Uint8Array(${event.memPath.name}.buffer)[${event.addr + j}] = ${byte}\n`
-                        } else {
-                            jsString += `new Uint8Array(instance.exports.${event.memPath.name}.buffer)[${event.addr + j}] = ${byte}\n`
-                        }
-                    })
+                    jsString += this.storeEvent(event)
                     break
                 case 'MemGrow':
-                    if (event.memPath.import) {
-                        jsString += `${event.memPath.name}.grow(${event.amount})\n`
-                    } else {
-                        jsString += `instance.exports.memory.grow(${event.amount})\n`
-                    }
+                    jsString += this.memGrowEvent(event)
                     break
                 case 'TableSet':
-                    let func
-                    if (event.funcPath.import) {
-                        func = `${event.funcPath.name}`
-                    } else {
-                        func = `instance.exports.${event.funcPath.name}`
-                    }
-                    if (event.tablePath.import) {
-                        jsString += `${event.tablePath.name}.set(${event.idx}, ${func})\n`
-                    } else {
-                        jsString += `instance.exports.${event.tablePath.name}.set(${event.idx}, ${func})\n`
-                    }
+                    jsString += this.tableSetEvent(event)
                     break
                 case 'TableGrow':
+                    jsString += this.tableGrowEvent(event)
                     break
-                case 'GlobalSet':
             }
         }
+        // Imported functions
         for (let funcidx in this.funcImports) {
             jsString += `let ${global(funcidx)} = -1\n`
             let func = this.funcImports[funcidx]
-            if (!instanciatedModules.includes(func.module)) {
-                jsString += `imports.${func.module} = {}\n`
-                instanciatedModules.push(func.module)
-            }
             jsString += `imports.${func.module}.${func.name} = `
             jsString += `() => {\n`
             jsString += `${global(funcidx)}++\n`
@@ -293,48 +237,19 @@ class Code {
                             jsString += `instance.exports.${event.name}()\n`
                             break
                         case 'Store':
-                            event.data.forEach((byte, j) => {
-                                event = event as Store
-                                if (event.memPath.import) {
-                                    jsString += `new Uint8Array(${event.memPath.name}.buffer)[${event.addr + j}] = ${byte}\n`
-                                } else {
-                                    jsString += `new Uint8Array(instance.exports.${event.memPath.name}.buffer)[${event.addr + j}] = ${byte}\n`
-                                }
-                            })
+                            jsString += this.storeEvent(event)
                             break
                         case 'MemGrow':
-                            if (event.memPath.import) {
-                                jsString += `${event.memPath.name}.grow(${event.amount})\n`
-                            } else {
-                                jsString += `instance.exports.${event.memPath.name}.grow(${event.amount})\n`
-                            }
+                            jsString += this.memGrowEvent(event)
                             break
                         case 'TableSet':
-                            let func
-                            if (event.funcPath.import) {
-                                func = `${event.funcPath.name}`
-                            } else {
-                                func = `instance.exports.${event.funcPath.name}`
-                            }
-                            if (event.tablePath.import) {
-                                jsString += `${event.tablePath.name}.set(${event.idx}, ${func})\n`
-                            } else {
-                                jsString += `instance.exports.${event.tablePath.name}.set(${event.idx}, ${func})\n`
-                            }
+                            jsString += this.tableSetEvent(event)
                             break
                         case 'TableGrow':
-                            if (event.tablePath.import) {
-                                jsString += `${event.tablePath.name}.grow(${event.amount})\n`
-                            } else {
-                                jsString += `instance.exports.${event.tablePath.name}.grow(${event.amount})\n`
-                            }
+                            jsString += this.tableGrowEvent(event)
                             break
                         case 'GlobalSet':
-                            if (event.globalPath.import) {
-                                jsString += `${event.globalPath.name}.value = ${event.value}\n`
-                            } else {
-                                jsString += `instance.exports.${event.globalPath.name}.value = ${event.bigInt ? `BigInt(${event.value})` : event.value}\n`
-                            }
+                            jsString += this.globalSet(event)
                             break
                         default: unreachable(event)
                     }
@@ -353,6 +268,65 @@ class Code {
             }
             paramsString = paramsString.slice(0, -1)
             jsString += `await instance.exports.${exp.name}(${paramsString}) \n`
+        }
+        return jsString
+    }
+
+    private storeEvent(event: Store) {
+        let jsString = ''
+        event.data.forEach((byte, j) => {
+            event = event as Store
+            if (event.import) {
+                jsString += `new Uint8Array(${event.name}.buffer)[${event.addr + j}] = ${byte}\n`
+            } else {
+                jsString += `new Uint8Array(instance.exports.${event.name}.buffer)[${event.addr + j}] = ${byte}\n`
+            }
+        })
+        return jsString
+    }
+
+    private memGrowEvent(event: MemGrow) {
+        let jsString = ''
+        if (event.import) {
+            jsString += `${event.name}.grow(${event.amount})\n`
+        } else {
+            jsString += `instance.exports.${event.name}.grow(${event.amount})\n`
+        }
+        return jsString
+    }
+
+    private tableSetEvent(event: TableSet) {
+        let jsString = ''
+        if (event.import) {
+            jsString += `${event.name}.set(${event.idx}, `
+        } else {
+            jsString += `instance.exports.${event.name}.set(${event.idx}, `
+        }
+        if (event.funcImport) {
+            jsString += `${event.funcName}`
+        } else {
+            jsString += `instance.exports.${event.funcName}`
+        }
+        jsString += `)\n`
+        return jsString
+    }
+
+    private tableGrowEvent(event: TableGrow) {
+        let jsString = ''
+        if (event.import) {
+            jsString += `${event.name}.grow(${event.amount})\n`
+        } else {
+            jsString += `instance.exports.${event.name}.grow(${event.amount})\n`
+        }
+        return jsString
+    }
+
+    private globalSet(event: GlobalSet) {
+        let jsString = ''
+        if (event.import) {
+            jsString += `${event.name}.value = ${event.value}\n`
+        } else {
+            jsString += `instance.exports.${event.name}.value = ${event.bigInt ? `BigInt(${event.value})` : event.value}\n`
         }
         return jsString
     }

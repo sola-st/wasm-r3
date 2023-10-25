@@ -23,15 +23,16 @@ export type ImportCall = { type: "ImportCall", idx: number, name: string }
 
 export type ImportReturn = { type: "ImportReturn", idx: number, name: string, results: number[] }
 
-export type ImportMemory = { type: 'ImportMemory', idx: number, module: string, name: string, pages: number }
+export type ImportMemory = { type: 'ImportMemory', idx: number, pages: number } & Import
 
-export type ImportTable = { type: 'ImportTable', idx: number, module: string, name: string } & WebAssembly.TableDescriptor
+export type ImportTable = { type: 'ImportTable', idx: number } & WebAssembly.TableDescriptor & Import
 
-export type ImportGlobal = { type: 'ImportGlobal', idx: number, module: string, name: string, valtype: ValType, value: number }
+export type ImportGlobal = { type: 'ImportGlobal', idx: number, valtype: ValType, value: number } & Import
 
-export type ImportFunc = { type: 'ImportFunc', idx: number, module: string, name: string }
+export type ImportFunc = { type: 'ImportFunc', idx: number } & Import
 
 
 
 export type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
 export type RefType = 'funcref' | 'externref'
+export type Import = { module: string, name: string }
