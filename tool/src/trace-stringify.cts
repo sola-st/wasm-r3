@@ -19,7 +19,7 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += stringifyEvent(e.type, e.idx, e.name, e.value, e.valtype)
                 break
             case "ExportCall":
-                traceString += stringifyEvent(e.type, str(e.names), str(e.params))
+                traceString += stringifyEvent(e.type, e.name, str(e.params))
                 break
             case "ImportCall":
                 traceString += stringifyEvent(e.type, e.idx, e.name)

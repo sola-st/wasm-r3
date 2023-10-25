@@ -18,7 +18,7 @@ export default function parse(traceString: string) {
             case "ExportCall":
                 trace.push({
                     type: components[0],
-                    names: components[1]?.split(','),
+                    name: components[1],
                     params: splitList(components[2])
                 })
                 break

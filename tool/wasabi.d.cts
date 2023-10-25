@@ -1,10 +1,17 @@
-type Location = { func: number, instr: number }
-type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
-type GlobalOp = 'global.set' | 'global.get'
-type StoreOp = 'i32.store' | 'i32.store8' // continue
-type MemTarget = { memIdx: number, addr: number }
-type MemArg = { align: number, offset: number }
-type TableTarget = { tableIdx: number, elemIdx: number }
+export type Location = { func: number, instr: number }
+export type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
+export type GlobalOp = 'global.set' | 'global.get'
+export type LocalOp = 'local.get' | 'local.set' | 'local.tee'
+export type StoreOp = 'i32.store' | 'i32.store8' | 'i32.store16' | 'i64.store' | 'i64.store8' | 'i64.store16' | 'i64.store32' | 'f32.store' | 'f64.store'
+export type LoadOp = 'i32.load' | "i32.load8_s" | 'i32.load8_u' | 'i32.load16_s' | 'i32.load16_u' | 'i64.load' | 'i64.load8_s' | 'i64.load8_u' | 'i64.load16_s' | 'i64.load16_u' | 'i64.load32_s' | 'i64.load32_u' | 'f32.load' | 'f64.load'
+export type MemTarget = { memIdx: number, addr: number }
+export type MemArg = { align: number, offset: number }
+export type TableTarget = { tableIdx: number, elemIdx: number }
+export type BranchTarget = { label: number, location: Location }
+export type BlockType = 'function' | 'block' | 'loop' | 'if' | 'else'
+export type UnaryOp = string // todo
+export type BinaryOp = string // todo
+export type ImpExp = { import: string[] | null, export: string }
 
 export declare type Wasabi = {
     HOOK_NAMES: [
@@ -40,27 +47,14 @@ export declare type Wasabi = {
     ],
     module: {
         info: {
-            functions: {
+            functions: (ImpExp & {
                 type: string,
-                import: string[],
-                export: string[],
                 locals: string,
                 instrCount: number
-            }[],
-            memories: {
-                import: string[] | null,
-                export: string[]
-            }[],
-            tables: {
-                import: string[] | null,
-                export: string,
-                ref_type: any
-            }[],
-            globals: {
-                import: string[] | null,
-                export: string[],
-                valType: ValType,
-            }[],
+            })[],
+            memories: ImpExp[],
+            tables: (ImpExp & { ref_type: any })[],
+            globals: (ImpExp & { valType: ValType })[],
             start: any,
             tableExportName: string,
             brTables: any[],
@@ -76,30 +70,30 @@ export declare type Wasabi = {
     },
     resolveTableIdx: Function,
     analysis: {
-        start?: (location: Location, ...args: any) => void,
-        if_?: (location: Location, ...args: any) => void,
-        br?: (location: Location, ...args: any) => void,
-        br_if?: (location: Location, ...args: any) => void,
-        br_table?: (location: Location, ...args: any) => void,
-        begin?: (location: Location, ...args: any) => void,
+        start?: (location: Location) => void,
+        if_?: (location: Location, condition: boolean) => void,
+        br?: (location: Location, target: BranchTarget) => void,
+        br_if?: (location: Location, conditionalTarget: BranchTarget, condition: boolean) => void,
+        br_table?: (location: Location, table: any, defaultTarget: any, tableIdx: number) => void, // this needs to be extended for wasm 2.0 as well to support multiple tables
+        begin?: (location: Location, type: BlockType) => void,
         begin_function?: (location: Location, args: number[]) => void,
-        end?: (location: Location, ...args: any) => void,
-        nop?: (location: Location, ...args: any) => void,
-        unreachable?: (location: Location, ...args: any) => void,
-        drop?: (location: Location, ...args: any) => void,
-        select?: (location: Location, ...args: any) => void,
-        call_pre?: (location: Location, op: 'call' | 'call_indirect', targetFunc: number, args: number[], tableTarget: TableTarget | undefined) => void,
-        call_post?: (location: Location, values: number[]) => void,
-        return_?: (location: Location, ...args: any) => void,
-        const_?: (location: Location, ...args: any) => void,
-        unary?: (location: Location, ...args: any) => void,
-        binary?: (location: Location, ...args: any) => void,
-        load?: (location: Location, op: string, target: MemTarget, memarg: MemArg, ...args: any) => void,
-        store?: (location: Location, op: string, target: MemTarget, memarg: MemArg, ...args: any) => void,
-        memory_size?: (location: Location, memoryIndex: number, ...args: any) => void,
-        memory_grow?: (location: Location, memoryIndex: number, ...args: any) => void,
-        local?: (location: Location, ...args: any) => void,
-        global?: (location: Location, op: GlobalOp, ...args: any) => void,
+        end?: (location: Location, type: BlockType, beginLocation: Location, ifLocation: Location) => void,
+        nop?: (location: Location) => void,
+        unreachable?: (location: Location) => void,
+        drop?: (location: Location, value: any) => void,
+        select?: (location: Location, condition: boolean, first: any, second: any) => void,
+        call_pre?: (location: Location, op: 'call' | 'call_indirect', targetFunc: number, args: number[], tableTarget: TableTarget | undefined) => void, // is number correct here? Or can ther be other types
+        call_post?: (location: Location, values: number[]) => void, // is number correct here? Or can there be other types
+        return_?: (location: Location, values: number[]) => void, // is number correct here? Or can there be other types
+        const_?: (location: Location, op: 'i32.const' | 'i64.const' | 'f32.const' | 'f64.const', value: number) => void,
+        unary?: (location: Location, op: UnaryOp, input: any, result: any) => void,
+        binary?: (location: Location, op: BinaryOp, first: any, second: any, result: any) => void,
+        load?: (location: Location, op: LoadOp, target: MemTarget, memarg: MemArg, value: any) => void,
+        store?: (location: Location, op: StoreOp, target: MemTarget, memarg: MemArg, result: any) => void,
+        memory_size?: (location: Location, memoryIndex: number, currentSizePages: number) => void,
+        memory_grow?: (location: Location, memoryIndex: number, byPages: number, previousSizePages: number) => void,
+        local?: (location: Location, op: LocalOp, localidx: number, value: any) => void,
+        global?: (location: Location, op: GlobalOp, globalIndex: number, value: any) => void,
         memory_fill?: (location: Location, target: MemTarget, value: number, length: number) => void,
         memory_copy?: (location: Location, destination: MemTarget, source: MemTarget, length: number) => void,
         memory_init?: (location: Location, destination: MemTarget, source: MemTarget, length: number) => void,

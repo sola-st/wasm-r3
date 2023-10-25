@@ -30,10 +30,10 @@ export default class Generator {
                 case "ExportCall":
                     // TODO: support for export calls with arguments
                     if (this.state.callStack.length === 0) {
-                        this.code.calls.push({ name: event.names[0], params: event.params })
+                        this.code.calls.push({ name: event.name, params: event.params })
                         break
                     }
-                    this.pushEvent({ type: 'Call', name: event.names[0] })
+                    this.pushEvent({ type: 'Call', name: event.name })
                     break
                 case "ImportCall":
                     // if (this.code.funcImports[event.idx] === undefined) {

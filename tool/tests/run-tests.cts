@@ -34,7 +34,7 @@ async function run() {
   testNames = testNames.filter((n) => !filter2.includes(n))
 
   // if you want to run a specific test just uncomment below line and put your test
-  testNames = ['mem-exp-host-mod-location-reentry']
+  // testNames = ['rust-game-of-life']
 
   process.stdout.write(`Executing Tests ... \n`);
   for (let name of testNames) {

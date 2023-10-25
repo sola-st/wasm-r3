@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import { Wasabi } from '../wasabi.cjs'
-import { Trace, ImportCall, ImportReturn } from '../trace.d.cjs'
+import { StoreOp, LoadOp, Wasabi, ImpExp } from '../wasabi.cjs'
+import { Trace } from '../trace.d.cjs'
 
 export default function (runtimePath: string) {
     let Wasabi: Wasabi = require(runtimePath)
@@ -15,402 +15,222 @@ export default function (runtimePath: string) {
     let shadowTables: WebAssembly.Table[] = []
 
     // helpers
-    let init = true
-    let calledFunction: number | null = null
+    let first_entry = true
+    let currentWasmFunc: number | null = null
+    let extCallStack: { name: string, idx: number }[] = []
 
     Wasabi.analysis = {
 
         begin_function(location, args) {
-            if (init) {
-                Wasabi.module.memories.forEach((mem, i) => {
-                    let isImported = Wasabi.module.info.memories[i].import !== null
-                    if (isImported) {
-                        shadowMemories.push(new ArrayBuffer(mem.buffer.byteLength))
-                    } else {
-                        shadowMemories.push(_.cloneDeep(mem.buffer))
-                    }
-                })
-                Wasabi.module.info.memories.forEach((m, idx) => {
-                    if (m.import !== null) {
-                        trace.push({ type: 'ImportMemory', module: m.import[0], name: m.import[1], pages: Wasabi.module.memories[idx].buffer.byteLength / MEM_PAGE_SIZE, idx })
-                    }
-                })
-                // shadowTables = _.cloneDeep(Wasabi.module.tables)
-                Wasabi.module.tables.forEach((t, i) => {
-                    shadowTables.push(new WebAssembly.Table({ initial: Wasabi.module.tables[i].length, element: 'anyfunc' }))
-                    for (let y = 0; y < Wasabi.module.tables[i].length; y++) {
-                        shadowTables[i].set(y, t.get(y))
-                    }
-                })
-                Wasabi.module.info.tables.forEach((t, idx) => {
-                    if (t.import !== null) {
-                        trace.push({ type: 'ImportTable', module: t.import![0], name: t.import![1], element: 'anyfunc', idx, initial: Wasabi.module.tables[idx].length })
-                    }
-                })
-                shadowGlobals = _.cloneDeep(Wasabi.module.globals.map(g => g.value))
-                Wasabi.module.info.globals.forEach((g, idx) => {
-                    if (g.import !== null) {
-                        trace.push({ type: 'ImportGlobal', module: g.import[0], name: g.import[1], valtype: g.valType, value: Wasabi.module.globals[idx].value, idx })
-                    }
-                })
-                Wasabi.module.info.functions.forEach((f, idx) => {
-                    if (f.import !== null) {
-                        trace.push({ type: 'ImportFunc', module: f.import![0], name: f.import[1], idx })
-                    }
-                })
-
-                init = false
+            if (first_entry) {
+                init()
+                first_entry = false
             }
-            if (calledFunction === null) {
-                trace.push({ type: "ExportCall", names: Wasabi.module.info.functions[location.func].export, params: args })
+            if (currentWasmFunc === null) {
+                trace.push({ type: "ExportCall", name: Wasabi.module.info.functions[location.func].export, params: args })
                 checkMemGrow()
                 checkTableGrow()
             } else {
-                calledFunction = null
+                currentWasmFunc = null
             }
         },
 
         store(location, op, target, memarg, value) {
             let addr = target.addr + memarg.offset
-            let data
-            switch (op) {
-                case 'i32.store':
-                    data = get_actual_mem(addr, 4)
-                    set_shadow_memory(data, addr, 4)
-                    break;
-                case 'i32.store8':
-                    data = get_actual_mem(addr, 4)
-                    set_shadow_memory(data, addr, 1)
-                    break;
-                case 'i32.store16':
-                    data = get_actual_mem(addr, 4)
-                    set_shadow_memory(data, addr, 2)
-                    break;
-                case 'i64.store':
-                    data = get_actual_mem(addr, 8)
-                    set_shadow_memory(data, addr, 8)
-                    break;
-                case 'i64.store8':
-                    data = get_actual_mem(addr, 8)
-                    set_shadow_memory(data, addr, 1)
-                    break;
-                case 'i64.store16':
-                    data = get_actual_mem(addr, 8)
-                    set_shadow_memory(data, addr, 2)
-                    break;
-                case 'i64.store32':
-                    data = get_actual_mem(addr, 8)
-                    set_shadow_memory(data, addr, 4)
-                    break;
-                case 'f32.store':
-                    data = get_actual_mem(addr, 4)
-                    set_shadow_memory(data, addr, 4)
-                    break;
-                case 'f64.store':
-                    data = get_actual_mem(addr, 8)
-                    set_shadow_memory(data, addr, 8)
-                    break;
-                default:
-                    throw new Error(`instruction ${op} not supported`)
-                // TODO: support for remaining store instructions
-            }
+            let byteLength = getByteLength(op)
+            let data = get_actual_mem(target.memIdx, addr, byteLength)
+            set_shadow_memory(target.memIdx, addr, data)
         },
 
-        // TODO: bulk memory instructions
-
         memory_grow(location, memIdx, byPages, previousSizePages) {
-            growShadowMem(byPages)
+            growShadowMem(memIdx, byPages)
         },
 
         load(location, op, target, memarg, value) {
             let addr = target.addr
-            let shadow
-            let data
-            switch (op) {
-                case 'i32.load':
-                    if (mem_content_equals(addr, 4)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 4)
-                    set_shadow_memory(data, addr, 4)
-                    break
-                case 'i32.load8_s':
-                    if (mem_content_equals(addr, 1)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 1)
-                    set_shadow_memory(data, addr, 1)
-                    break
-                case 'i32.load8_u':
-                    if (mem_content_equals(addr, 1)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 1)
-                    set_shadow_memory(data, addr, 1)
-                    break
-                case 'i32.load16_s':
-                    if (mem_content_equals(addr, 2)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 2)
-                    set_shadow_memory(data, addr, 2)
-                    break
-                case 'i32.load16_u':
-                    if (mem_content_equals(addr, 2)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 2)
-                    set_shadow_memory(data, addr, 2)
-                    break
-                case 'i64.load':
-                    if (mem_content_equals(addr, 8)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 8)
-                    set_shadow_memory(data, addr, 8)
-                    break
-                case 'i64.load8_s':
-                    if (mem_content_equals(addr, 1)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 1)
-                    set_shadow_memory(data, addr, 1)
-                    break
-                case 'i64.load8_u':
-                    if (mem_content_equals(addr, 1)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 1)
-                    set_shadow_memory(data, addr, 1)
-                    break
-                case 'i64.load16_s':
-                    if (mem_content_equals(addr, 2)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 2)
-                    set_shadow_memory(data, addr, 2)
-                    break
-                case 'i64.load16_u':
-                    if (mem_content_equals(addr, 2)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 2)
-                    set_shadow_memory(data, addr, 2)
-                    break
-                case 'i64.load32_s':
-                    if (mem_content_equals(addr, 4)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 4)
-                    set_shadow_memory(data, addr, 4)
-                    break
-                case 'i64.load32_u':
-                    if (mem_content_equals(addr, 4)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 4)
-                    set_shadow_memory(data, addr, 4)
-                    break
-                case 'f32.load':
-                    if (mem_content_equals(addr, 4)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 4)
-                    set_shadow_memory(data, addr, 4)
-                    break
-                case 'f64.load':
-                    if (mem_content_equals(addr, 8)) {
-                        return
-                    }
-                    data = get_actual_mem(addr, 8)
-                    set_shadow_memory(data, addr, 8)
-                    break
-                default:
-                    throw new Error(`instruction ${op} not supported`)
-                // TODO: Support all loads
+            let numType = getByteLength(op)
+            if (mem_content_equals(target.memIdx, addr, numType)) {
+                return
             }
-            trace.push({ type: "Load", name: getMemName(), offset: addr, data, idx: 0 })
+            let data = get_actual_mem(target.memIdx, addr, numType)
+            set_shadow_memory(target.memIdx, addr, data)
+            trace.push({ type: "Load", name: getName(Wasabi.module.info.memories[target.memIdx]), offset: addr, data, idx: 0 })
         },
 
-        global(location, op, globalIndex, value) {
+        global(location, op, idx, value) {
             if (op === 'global.set') {
-                shadowGlobals[globalIndex] = value
+                shadowGlobals[idx] = value
                 return
             }
-            if (shadowGlobals[globalIndex] !== value) {
-                let valtype = Wasabi.module.info.globals[globalIndex].valType
-                trace.push({ type: 'GlobalGet', name: getGlobalName(globalIndex), value, valtype, idx: globalIndex })
+            let globalInfo = Wasabi.module.info.globals[idx]
+            if (shadowGlobals[idx] !== value) {
+                let valtype = globalInfo.valType
+                trace.push({ type: 'GlobalGet', name: getName(globalInfo), value, valtype, idx })
             }
         },
 
-
-        call_pre(location, op, targetFunc, args, tableTarget) {
-            if (tableTarget !== undefined) {
-                let indirectTableIdx = tableTarget.elemIdx
-                if (!_.isEqual(shadowTables[0].get(indirectTableIdx), Wasabi.module.tables[0].get(indirectTableIdx))) {
-                    trace.push({ type: 'TableGet', tableidx: 0, name: getTableName(), idx: indirectTableIdx, funcidx: targetFunc, funcName: getFuncName(targetFunc) })
-                    shadowTables[0].set(0, Wasabi.module.tables[0].get(indirectTableIdx))
-                    let name
-                    if (Wasabi.module.info.functions[targetFunc].import === null) {
-                        calledFunction = targetFunc
-                        return
-                    } else {
-                        name = Wasabi.module.info.functions[targetFunc].import[1]
-                    }
-                    trace.push({ type: "ImportCall", name, idx: targetFunc })
-                }
+        call_pre(location, op, funcidx, args, tableTarget) {
+            let funcImport = Wasabi.module.info.functions[funcidx].import
+            if (op === 'call_indirect') {
+                tableGetEvent(tableTarget.tableIdx, tableTarget.elemIdx)
             }
-            if (Wasabi.module.info.functions[targetFunc].import === null) {
-                calledFunction = targetFunc;
+            if (funcImport === null) {
+                currentWasmFunc = funcidx;
                 return
             }
-            // let module = Wasabi.module.info.functions[targetFunc].import[0]
-            let name = Wasabi.module.info.functions[targetFunc].import[1]
-            trace.push({ type: "ImportCall", name, idx: targetFunc })
+            let name = funcImport[1]
+            extCallStack.push({ name, idx: funcidx })
+            trace.push({ type: "ImportCall", name, idx: funcidx })
         },
 
-        call_post(location, values) {
-            let name
-            let idx
-            let returnCounter = 0
-            for (let i = trace.length - 1; i >= 0; i--) {
-                if (trace[i].type === 'ImportReturn') {
-                    returnCounter++
-                }
-                if (trace[i].type === 'ImportCall') {
-                    if (returnCounter > 0) {
-                        returnCounter--
-                        continue
-                    }
-                    name = (trace[i] as ImportCall).name
-                    idx = (trace[i] as ImportCall).idx
-                    break
-                }
-            }
-            if (name === undefined || idx === undefined) {
+        call_post(location, results) {
+            let func = extCallStack.pop()
+            if (func === undefined) {
                 return
             }
-            let importReturn: ImportReturn = {
-                type: "ImportReturn",
-                name,
-                results: values,
-                idx
-            }
-            trace.push(importReturn)
+            trace.push({ type: 'ImportReturn', name: func.name, results, idx: func.idx })
             checkMemGrow()
             checkTableGrow()
         },
 
         table_set(location, target, value) {
-            shadowTables[0].set(target.elemIdx, value)
+            shadowTables[target.tableIdx].set(target.elemIdx, value)
         },
 
         table_get(location, target, value) {
-            let index = target.elemIdx
-            if (!_.isEqual(shadowTables[0].get(index), Wasabi.module.tables[0].get(index))) {
-                trace.push({ type: 'TableGet', tableidx: 0, name: getTableName(), idx: index, funcidx: parseInt(Wasabi.module.tables[0].get(index).name), funcName: getFuncName(parseInt(Wasabi.module.tables[0].get(index).name) - Object.keys(Wasabi.module.lowlevelHooks).length) })
-                shadowTables[0].set(0, value)
+            tableGetEvent(target.tableIdx, target.elemIdx)
+        }
+    }
+
+    function init() {
+        // Init Memories
+        Wasabi.module.memories.forEach((mem, i) => {
+            let isImported = Wasabi.module.info.memories[i].import !== null
+            if (isImported) {
+                shadowMemories.push(new ArrayBuffer(mem.buffer.byteLength))
+            } else {
+                shadowMemories.push(_.cloneDeep(mem.buffer))
             }
+        })
+        Wasabi.module.info.memories.forEach((m, idx) => {
+            if (m.import !== null) {
+                trace.push({ type: 'ImportMemory', module: m.import[0], name: m.import[1], pages: Wasabi.module.memories[idx].buffer.byteLength / MEM_PAGE_SIZE, idx })
+            }
+        })
+        // Init Tables
+        Wasabi.module.tables.forEach((t, i) => {
+            shadowTables.push(new WebAssembly.Table({ initial: Wasabi.module.tables[i].length, element: 'anyfunc' }))
+            for (let y = 0; y < Wasabi.module.tables[i].length; y++) {
+                shadowTables[i].set(y, t.get(y))
+            }
+        })
+        Wasabi.module.info.tables.forEach((t, idx) => {
+            if (t.import !== null) {
+                trace.push({ type: 'ImportTable', module: t.import![0], name: t.import![1], element: 'anyfunc', idx, initial: Wasabi.module.tables[idx].length })
+            }
+        })
+        // Init Globals
+        shadowGlobals = _.cloneDeep(Wasabi.module.globals.map(g => g.value))
+        Wasabi.module.info.globals.forEach((g, idx) => {
+            if (g.import !== null) {
+                trace.push({ type: 'ImportGlobal', module: g.import[0], name: g.import[1], valtype: g.valType, value: Wasabi.module.globals[idx].value, idx })
+            }
+        })
+        // Init Functions
+        Wasabi.module.info.functions.forEach((f, idx) => {
+            if (f.import !== null) {
+                trace.push({ type: 'ImportFunc', module: f.import![0], name: f.import[1], idx })
+            }
+        })
+    }
+
+    function set_shadow_memory(memIdx: number, addr: number, data: Uint8Array) {
+        for (let i = 0; i < data.length; i++) {
+            let shadowArray = new Uint8Array(shadowMemories[memIdx])
+            shadowArray[addr + i] = data[i]
         }
     }
 
-    function set_shadow_memory(data: Uint8Array, address: number, numBytes: number) {
+    function mem_content_equals(memIdx: number, addr: number, numBytes: number) {
         for (let i = 0; i < numBytes; i++) {
-            let shadowArray = new Uint8Array(shadowMemories[0])
-            shadowArray[address + i] = data[i]
-        }
-    }
-
-    function mem_content_equals(addr: number, numBytes: number) {
-        for (let i = 0; i < numBytes; i++) {
-            if (new Uint8Array(shadowMemories[0])[addr + i] !== new Uint8Array(Wasabi.module.memories[0].buffer)[addr + i]) {
+            if (new Uint8Array(shadowMemories[memIdx])[addr + i] !== new Uint8Array(Wasabi.module.memories[0].buffer)[addr + i]) {
                 return false
             }
         }
         return true
     }
 
-    /**
-     * Get the contents of the actual memory
-     * @param {*} addr offset
-     * @param {*} numBits how many Bits to read
-     * @returns Memory is organized in little endian, so is the return value
-     */
-    function get_actual_mem(addr: number, numBytes: number): Uint8Array {
+    function get_actual_mem(memIdx: number, addr: number, numBytes: number): Uint8Array {
         let uint1Array = new Uint8Array(numBytes)
         for (let i = 0; i < numBytes; i++) {
-            uint1Array[i] = new Uint8Array(Wasabi.module.memories[0].buffer)[addr + i]
+            uint1Array[i] = new Uint8Array(Wasabi.module.memories[memIdx].buffer)[addr + i]
         }
         return uint1Array
     }
 
-    function growShadowMem(byPages: number) {
-        const newShadow = new ArrayBuffer(shadowMemories[0].byteLength + byPages * MEM_PAGE_SIZE)
-        new Uint8Array(shadowMemories[0]).forEach((b, i) => {
+    function tableGetEvent(tableidx: number, idx: number) {
+        let table = Wasabi.module.tables[tableidx]
+        let shadowTable = shadowTables[tableidx]
+        if (!_.isEqual(shadowTable.get(idx), table.get(idx))) {
+            let name = getName(Wasabi.module.info.tables[tableidx])
+            let funcidx = parseInt(table.get(idx).name)
+            let funcName = getName(Wasabi.module.info.functions[parseInt(table.get(idx).name) - Object.keys(Wasabi.module.lowlevelHooks).length])
+            trace.push({ type: 'TableGet', tableidx, name, idx, funcidx, funcName })
+            shadowTables[0].set(0, table.get(idx))
+        }
+    }
+
+    function growShadowMem(memIdx, byPages: number) {
+        const newShadow = new ArrayBuffer(shadowMemories[memIdx].byteLength + byPages * MEM_PAGE_SIZE)
+        new Uint8Array(shadowMemories[memIdx]).forEach((b, i) => {
             new Uint8Array(newShadow)[i] = b
         })
         shadowMemories[0] = newShadow
     }
 
-    function growShadowTable(amount: number) {
+    function growShadowTable(tableIdx, amount: number) {
         const newShadow = new WebAssembly.Table({ initial: Wasabi.module.tables[0].length + amount, element: 'anyfunc' })
-        for (let i = 0; i < Wasabi.module.tables[0].length; i++) {
-            newShadow.set(i, Wasabi.module.tables[0].get(i))
+        for (let i = 0; i < Wasabi.module.tables[tableIdx].length; i++) {
+            newShadow.set(i, Wasabi.module.tables[tableIdx].get(i))
         }
         shadowTables[0] = newShadow
     }
 
     function checkMemGrow() {
-        if (Wasabi.module.memories[0]?.buffer !== undefined && Wasabi.module.memories[0].buffer.byteLength !== shadowMemories[0].byteLength) {
-            let memGrow: any = {}
-            let amount = Wasabi.module.memories[0].buffer.byteLength / MEM_PAGE_SIZE - shadowMemories[0].byteLength / MEM_PAGE_SIZE
-            memGrow[0] = amount
-            growShadowMem(amount)
-            trace.push({ type: 'MemGrow', name: getMemName(), amount, idx: 0 })
-        }
+        Wasabi.module.memories.forEach((mem, idx) => {
+            if (mem.buffer.byteLength !== shadowMemories[idx].byteLength) {
+                let memGrow: any = {}
+                let amount = mem.buffer.byteLength / MEM_PAGE_SIZE - shadowMemories[idx].byteLength / MEM_PAGE_SIZE
+                memGrow[idx] = amount
+                growShadowMem(idx, amount)
+                trace.push({ type: 'MemGrow', name: getName(Wasabi.module.info.memories[idx]), amount, idx })
+            }
+        })
     }
 
     function checkTableGrow() {
-        if (Wasabi.module.tables[0] !== undefined && Wasabi.module.tables[0].length !== shadowTables[0].length) {
-            let tableGrow: any = {}
-            let amount = Wasabi.module.tables[0].length - shadowTables[0].length
-            tableGrow[0] = amount
-            growShadowTable(amount)
-            trace.push({ type: 'TableGrow', name: getTableName(), amount, idx: 0 })
-        }
-    }
-
-    function getMemName() {
-        if (Wasabi.module.info.memories[0].import !== null) {
-            return Wasabi.module.info.memories[0].import[1]
-        } else {
-            return Wasabi.module.info.memories[0].export[0]
-        }
-    }
-
-    function getTableName() {
-        if (Wasabi.module.info.tables[0].import !== null) {
-            return Wasabi.module.info.tables[0].import[1]
-        } else {
-            return Wasabi.module.info.tables[0].export[0]
-        }
-    }
-
-    function getGlobalName(idx: number) {
-        if (Wasabi.module.info.globals[idx].import !== null) {
-            return Wasabi.module.info.globals[idx].import[1]
-        } else {
-            return Wasabi.module.info.globals[idx].export[0]
-        }
-    }
-
-    function getFuncName(idx: number) {
-        if (Wasabi.module.info.functions[idx].import !== null) {
-            return Wasabi.module.info.functions[idx].import[1]
-        } else {
-            return Wasabi.module.info.functions[idx].export[0]
-        }
+        Wasabi.module.tables.forEach((t, idx) => {
+            if (t.length !== shadowTables[idx].length) {
+                let tableGrow: any = {}
+                let amount = Wasabi.module.tables[idx].length - shadowTables[idx].length
+                tableGrow[idx] = amount
+                growShadowTable(idx, amount)
+                trace.push({ type: 'TableGrow', name: getName(Wasabi.module.info.tables[0]), amount, idx })
+            }
+        })
     }
 
     return trace
+}
+
+function getName(entity: ImpExp) {
+    if (entity.import !== null) {
+        return entity.import[1]
+    } else {
+        return entity.export[0]
+    }
+}
+
+function getByteLength(instr: StoreOp | LoadOp) {
+    return parseInt(instr.substring(1, 3)) / 8
 }
