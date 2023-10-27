@@ -12,13 +12,15 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.199",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "playwright": "^1.39.0"
   },
   "scripts": {
     "test-bun": "bun ./tests/run-tests.cts",
     "clean-tests-bun": "bun ./tests/clean-tests.cts",
     "build": "tsc",
     "test": "npm run build && node ./dist/tests/run-tests.cjs",
-    "clean-tests": "node ./dist/tests/clean-tests.cjs"
+    "clean-tests": "node ./dist/tests/clean-tests.cjs",
+    "instrument": "npm run build && node ./dist/src/instrumenter.cjs"
   }
 }

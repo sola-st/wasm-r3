@@ -12,5 +12,13 @@ def response(flow: http.HTTPFlow):
         subprocess.run("cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run -- /Users/jakob/Desktop/wasm-r3/tool/instrumenter/pspdf.wasm -o /Users/jakob/Desktop/wasm-r3/tool/instrumenter/", shell=True)
         print('done instrumenting')
         # subprocess.run('wasm2wat pspdf.wasm -o pspdf.wat', shell=True)
+        buffer = bytearray()
         with open('pspdf.wasm', "rb") as file:
-            flow.response.content = file.read()
+            print('open buffer')
+            buffer = file.read()
+            print('read buffer into variable')
+        with open('test.wasm', 'wb') as file:
+            file.write(buffer)
+        print('close file and try to put buffer in response') 
+        flow.response.content = buffer
+        print('added buffer to resonse')

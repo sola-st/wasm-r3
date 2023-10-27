@@ -25,6 +25,18 @@
                 "${workspaceFolder}/dist/**/*.js"
             ], // Specify the location of your JavaScript files
             "runtimeExecutable": "node",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Instrumenter",
+            "program": "./dist/src/instrumenter.cjs",
+            "cwd": "${workspaceFolder}",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ], // Specify the location of your JavaScript files
+            "runtimeExecutable": "node",
         }
     ]
 }
