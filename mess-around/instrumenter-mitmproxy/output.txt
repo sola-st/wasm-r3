@@ -1,0 +1,5 @@
+https://web-preview-server.pspdfkit.com/pspdfkit-lib/pspdfkit-14b6e0c244427f64.wasm application/wasm
+https://web-preview-server.pspdfkit.com/pspdfkit-lib/pspdfkit-14b6e0c244427f64.wasm application/wasm
+https://web-preview-server.pspdfkit.com/pspdfkit-lib/pspdfkit-14b6e0c244427f64.wasm application/wasm
+https://web-preview-server.pspdfkit.com/pspdfkit-lib/pspdfkit-14b6e0c244427f64.wasm application/wasm
+https://web-preview-server.pspdfkit.com/pspdfkit-lib/pspdfkit-14b6e0c244427f64.wasm application/wasm

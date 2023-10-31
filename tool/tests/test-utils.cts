@@ -1,4 +1,4 @@
-import fs from 'fs'
+const fs = require('fs')
 
 export function getDirectoryNames(folderPath: string) {
     const entries = fs.readdirSync(folderPath, { withFileTypes: true });

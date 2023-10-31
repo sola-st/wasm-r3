@@ -37,6 +37,18 @@
                 "${workspaceFolder}/dist/**/*.js"
             ], // Specify the location of your JavaScript files
             "runtimeExecutable": "node",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Wasabi Performance",
+            "program": "./wasabi-performance/instrumenter.js",
+            "cwd": "${workspaceFolder}",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ], // Specify the location of your JavaScript files
+            "runtimeExecutable": "node",
         }
     ]
 }

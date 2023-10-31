@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import cp from "child_process";
-import _ from 'lodash'
+const fs = require("fs")
+const path = require("path")
+const cp = require("child_process")
+const _ = require('lodash')
 import Generator from "../src/replay-generator.cjs";
 import parse from "../src/trace-parse.cjs";
 import stringify from "../src/trace-stringify.cjs";
@@ -9,7 +9,7 @@ import { Wasabi } from '../wasabi.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
 
 async function run() {
-  const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
+  const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer-node.cjs");
 
   let testNames = getDirectoryNames(path.join(process.cwd(), 'tests'));
   // parse cli arguments, you can specify the specific testcases you want to run
@@ -66,7 +66,8 @@ async function run() {
     // cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
     // cp.execSync(`wasabi ${wasmPath} --node --hooks=begin,store,load,call,memory_grow -o ${testPath}`);
     // cp.execSync(`cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node --hooks=begin,store,load,call,return,global,memory_grow,table_get,table_set -o ${testPath}`, { stdio: 'ignore' });
-    const wasabiCommand = `cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node -o ${testPath}`
+    // const wasabiCommand = `cd /Users/jakob/Desktop/wasabi-fork/crates/wasabi && cargo run ${wasmPath} --node -o ${testPath}`
+    const wasabiCommand = `wasabi ${wasmPath} --node -o ${testPath}`
     cp.execSync(wasabiCommand, { stdio: 'ignore' });
     fs.renameSync(wasabiRuntimePathJS, wasabiRuntimePath)
     fs.renameSync(path.join(testPath, 'long.js'), path.join(testPath, 'long.cjs'))

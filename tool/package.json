@@ -18,8 +18,9 @@
   "scripts": {
     "test-bun": "bun ./tests/run-tests.cts",
     "clean-tests-bun": "bun ./tests/clean-tests.cts",
-    "build": "tsc",
-    "test": "npm run build && node ./dist/tests/run-tests.cjs",
+    "build": "node ./build.js",
+    "test": "npm run build && npm run test-no-build",
+    "test-no-build": "node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
     "instrument": "npm run build && node ./dist/src/instrumenter.cjs"
   }

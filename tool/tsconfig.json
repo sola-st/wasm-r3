@@ -9,8 +9,7 @@
   },
   "include": [
     "src/**/*",
-    "tests/*.ts",
-    "tests/run-tests.cts",
-    "tests/clean-tests.cts"
-, "tests/test-utils.cts"  ],
+    "tests/**/*",
+    "global.d.ts",
+  ],
 }

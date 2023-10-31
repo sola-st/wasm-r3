@@ -13,7 +13,7 @@ export type UnaryOp = string // todo
 export type BinaryOp = string // todo
 export type ImpExp = { import: string[] | null, export: string }
 
-export declare type Wasabi = {
+export type Wasabi = {
     HOOK_NAMES: [
         "start",
         "if_",

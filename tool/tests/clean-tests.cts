@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+const fs = require('fs')
+const path = require('path')
 import { getDirectoryNames } from './test-utils.cjs';
 
 const testDir = path.join(process.cwd(), 'tests');
