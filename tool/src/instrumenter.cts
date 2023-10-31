@@ -3,6 +3,7 @@ import fs from 'fs'
 import cp from 'child_process'
 import readline from 'readline'
 import { Trace } from '../trace.cjs'
+import express from 'express'
 
 async function intercept(route: Route) {
   const response = await route.fetch();
@@ -81,17 +82,54 @@ export default async function record(url: string) {
   });
   const page = await browser.newPage();
 
+  // const loadAndRunWasm = () => {
+  //   fetch('/Users/jakob/Desktop/wasm-r3/tool/src/pkg/wasabi_bg.wasm') // Replace with the actual path to your Wasm file
+  //     .then(response => response.arrayBuffer())
+  //     .then(bytes => WebAssembly.instantiate(bytes))
+  //     .then(result => {
+  //       const exports = result.instance.exports;
+  //       // Now you can use the exported functions and objects from the Wasm module
+  //       console.log(exports);
+  //     })
+  //     .catch(error => {
+  //       console.error('Failed to load and run the Wasm module:', error);
+  //     });
+  // };
+
+  // Execute the JavaScript function in the page context using page.addInitScript
+  // await page.addInitScript({ content: `(${loadAndRunWasm.toString()})();` });
+
+  // await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/pkg/wasabi.js' })
   await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/replaceInstantiate.js' })
+
+  const app = express();
+  const port = 3000
+  const fileDirectory = '/Users/jakob/Desktop/wasm-r3/tool/src/pkg'
+  // app.use((req, res, next) => {
+  //   res.setHeader('Content-Security-Policy', "connect-src 'self' localhost data.bitstorm.org");
+  //   next();
+  // });
+  app.use(express.static(fileDirectory))
+  const server = app.listen(port)
+
 
   await page.goto(url);
   await page.setViewportSize({ width: 2000, height: 800 })
+  // await page.addScriptTag({
+  //   path: '/Users/jakob/Desktop/wasm-r3/tool/src/test.js',
+  //   type: 'module',
+  // })
   // await page.evaluate(replaceInstanciate)
   // await page.evaluate(() => WebAssembly.instantiate(new ArrayBuffer(4)))
+  // await page.evaluate(() => {
+  //   const meta = document.createElement('meta');
+  //   meta.setAttribute('http-equiv', 'Content-Security-Policy');
+  //   meta.setAttribute('content', "connect-src 'self' localhost data.bitstorm.org");
+  //   document.head.appendChild(meta);
+  // });
   const res = await askQuestion('')
   const trace: Trace = await page.evaluate(() => trace);
   rl.close()
   browser.close()
   return trace
 }
-
-

@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.199",
+    "express": "^4.18.2",
+    "hello-world-npm": "^1.1.1",
     "lodash": "^4.17.21",
     "playwright": "^1.39.0"
   },
