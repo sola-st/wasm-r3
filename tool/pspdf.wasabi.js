@@ -252,11 +252,11 @@ Wasabi.module.lowlevelHooks = {
 "begin_function_ii": function (func, instr, arg0, arg1) {
     Wasabi.analysis.begin_function({func, instr}, [arg0, arg1]);
 },
-"i32_const": function (func, instr, value) {
-    Wasabi.analysis.const_({func, instr}, "i32.const", value);
-},
 "begin_function_iii": function (func, instr, arg0, arg1, arg2) {
     Wasabi.analysis.begin_function({func, instr}, [arg0, arg1, arg2]);
+},
+"i32_const": function (func, instr, value) {
+    Wasabi.analysis.const_({func, instr}, "i32.const", value);
 },
 "i32_store": function (func, instr, memIdx, offset, align, addr, value) {
     Wasabi.analysis.store({func, instr}, "i32.store", {memIdx, addr}, {offset, align}, value);
@@ -276,38 +276,32 @@ Wasabi.module.lowlevelHooks = {
 "i32_le_s": function (func, instr, input0, input1, result0) {
     Wasabi.analysis.binary({func, instr}, "i32.le_s", input0, input1, result0);
 },
+"br_if": function (func, instr, condition, targetLabel, targetInstr) {
+    Wasabi.analysis.br_if({func, instr}, {label: targetLabel, location: {func, instr: targetInstr}}, condition !== 0);
+},
 "local_get_i": function (func, instr, index, value) {
     Wasabi.analysis.local({func, instr}, "local.get", index, value);
 },
 "i32_gt_s": function (func, instr, input0, input1, result0) {
     Wasabi.analysis.binary({func, instr}, "i32.gt_s", input0, input1, result0);
 },
-"br_if": function (func, instr, condition, targetLabel, targetInstr) {
-    Wasabi.analysis.br_if({func, instr}, {label: targetLabel, location: {func, instr: targetInstr}}, condition !== 0);
-},
 "end_block": function (func, instr, beginInstr) {
     Wasabi.analysis.end({func, instr}, "block", {func, instr: beginInstr});
+},
+"i32_eqz": function (func, instr, input0, result0) {
+    Wasabi.analysis.unary({func, instr}, "i32.eqz", input0, result0);
 },
 "begin_loop": function (func, instr, ) {
     Wasabi.analysis.begin({func, instr}, "loop");
 },
-"i32_eqz": function (func, instr, input0, result0) {
-    Wasabi.analysis.unary({func, instr}, "i32.eqz", input0, result0);
+"i32_mul": function (func, instr, input0, input1, result0) {
+    Wasabi.analysis.binary({func, instr}, "i32.mul", input0, input1, result0);
 },
 "i32_shl": function (func, instr, input0, input1, result0) {
     Wasabi.analysis.binary({func, instr}, "i32.shl", input0, input1, result0);
 },
 "i32_add": function (func, instr, input0, input1, result0) {
     Wasabi.analysis.binary({func, instr}, "i32.add", input0, input1, result0);
-},
-"call_ii": function (func, instr, targetFunc, arg0, arg1) {
-    Wasabi.analysis.call_pre({func, instr}, "call", targetFunc, [arg0, arg1]);
-},
-"call_post": function (func, instr, ) {
-    Wasabi.analysis.call_post({func, instr}, []);
-},
-"i32_mul": function (func, instr, input0, input1, result0) {
-    Wasabi.analysis.binary({func, instr}, "i32.mul", input0, input1, result0);
 },
 "i32_eq": function (func, instr, input0, input1, result0) {
     Wasabi.analysis.binary({func, instr}, "i32.eq", input0, input1, result0);
@@ -330,14 +324,20 @@ Wasabi.module.lowlevelHooks = {
 "br": function (func, instr, targetLabel, targetInstr) {
     Wasabi.analysis.br({func, instr}, {label: targetLabel, location: {func, instr: targetInstr}});
 },
-"i32_ne": function (func, instr, input0, input1, result0) {
-    Wasabi.analysis.binary({func, instr}, "i32.ne", input0, input1, result0);
+"call_ii": function (func, instr, targetFunc, arg0, arg1) {
+    Wasabi.analysis.call_pre({func, instr}, "call", targetFunc, [arg0, arg1]);
+},
+"call_post": function (func, instr, ) {
+    Wasabi.analysis.call_post({func, instr}, []);
 },
 "return": function (func, instr, ) {
     Wasabi.analysis.return_({func, instr}, []);
 },
 "end_function": function (func, instr, ) {
     Wasabi.analysis.end({func, instr}, "function", {func, instr: -1});
+},
+"i32_ne": function (func, instr, input0, input1, result0) {
+    Wasabi.analysis.binary({func, instr}, "i32.ne", input0, input1, result0);
 },
 "begin_else": function (func, instr, ifInstr) {
     Wasabi.analysis.begin({func, instr}, "else", {func, instr: ifInstr});

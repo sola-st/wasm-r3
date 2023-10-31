@@ -35,23 +35,63 @@ async function askQuestion(question: string) {
   });
 }
 
+
+async function replaceInstanciate() {
+  let original_instantiate = WebAssembly.instantiate;
+  function instrument(buffer: BufferSource) {
+    // fs.writeFileSync('./pspdf.wasm', buffer as NodeJS.ArrayBufferView)
+    // cp.execSync("wasabi /Users/jakob/Desktop/wasm-r3/tool/pspdf.wasm -o /Users/jakob/Desktop/wasm-r3/tool/")
+    console.log(buffer)
+    return buffer
+  }
+
+  WebAssembly.instantiate = function (buffer: BufferSource) {
+    console.log('WebAssembly.instantiate')
+    buffer = instrument(buffer)
+    return original_instantiate.call(WebAssembly, ...arguments);
+  };
+  // replace instantiateStreaming
+  WebAssembly.instantiateStreaming = async function (source, obj) {
+    console.log('WebAssembly.instantiateStreaming')
+    let response = await source;
+    let body = await response.arrayBuffer();
+    return WebAssembly.instantiate(body, obj);
+  }
+  //replace compile
+  let original_compile = WebAssembly.compile;
+  WebAssembly.compile = function (buffer) {
+    console.log('WebAssembly.commpile')
+    buffer = instrument(buffer)
+    return original_compile.call(WebAssembly, ...arguments);
+  };
+  // replace compileStreaming
+  WebAssembly.compileStreaming = async function (source) {
+    console.log('WebAssembly.compileStreaming')
+    let response = await source;
+    let body = await response.arrayBuffer();
+    return WebAssembly.compile(body);
+  };
+}
+
 export default async function record(url: string) {
   const browser = await chromium.launch({
     headless: false,
-    channel: '118.0.5993.117',
+    devtools: true,
+    // channel: 'chrome-118.0.5993.117',
   });
   const page = await browser.newPage();
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/runtime.js' })
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/lodash.js' })
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/dist/src/tracer.cjs' })
-  await page.route('**/*', intercept)
+
+  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/replaceInstantiate.js' })
+
   await page.goto(url);
+  await page.setViewportSize({ width: 2000, height: 800 })
+  // await page.evaluate(replaceInstanciate)
+  // await page.evaluate(() => WebAssembly.instantiate(new ArrayBuffer(4)))
   const res = await askQuestion('')
   const trace: Trace = await page.evaluate(() => trace);
   rl.close()
   browser.close()
   return trace
 }
-
 
 
