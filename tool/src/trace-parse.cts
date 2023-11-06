@@ -43,7 +43,7 @@ export default function parse(traceString: string) {
                     idx: parseInt(components[1]),
                     name: components[2],
                     offset: parseInt(components[3]),
-                    data: new Uint8Array(splitList(components[4])),
+                    data: splitList(components[4]),
                 })
                 break
             case "MemGrow":

@@ -1,9 +1,6 @@
 import { Route, chromium } from 'playwright'
-import fs from 'fs'
-import cp from 'child_process'
 import readline from 'readline'
 import { Trace } from '../trace.cjs'
-import express from 'express'
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -21,22 +18,22 @@ async function askQuestion(question: string) {
 export default async function record(url: string) {
   const browser = await chromium.launch({
     headless: false,
-    devtools: true,
-    // channel: 'chrome-118.0.5993.117',
   });
   const page = await browser.newPage();
 
   await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/long.js' })
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/runtime.js' })
   await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/lodash.js' })
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/dist/src/tracer.cjs' })
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/replaceInstantiate.js' })
+  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/dist/runtime.js' })
 
   await page.goto(url);
-  await page.setViewportSize({ width: 2000, height: 800 })
+  console.log(`Record is running. Enter 'Stop' to stop recording.`)
   const res = await askQuestion('')
   const trace: Trace = await page.evaluate(() => trace);
+  trace.forEach(event => event.type === 'Load' && Array.from(event.data))
+  const originalWasmBuffer: number[] = await page.evaluate(() => {
+    return Array.from(new Uint8Array(originalWasmBuffer))
+  });
   rl.close()
   browser.close()
-  return trace
+  return { binary: originalWasmBuffer, trace }
 }

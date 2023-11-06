@@ -5,6 +5,7 @@
   "devDependencies": {
     "@types/node": "^20.8.7",
     "bun-types": "latest",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
@@ -19,7 +20,7 @@
   "scripts": {
     "test-bun": "bun ./tests/run-tests.cts",
     "clean-tests-bun": "bun ./tests/clean-tests.cts",
-    "build": "node ./build.js",
+    "build": "node --loader ts-node/esm ./build.ts",
     "test": "npm run build && npm run test-no-build",
     "test-no-build": "node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",

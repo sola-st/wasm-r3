@@ -7,7 +7,7 @@ export type Trace = WasmEvent[]
 
 export type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ImportReturn | ImportMemory | ImportTable | ImportGlobal | ImportFunc
 
-export type Load = { type: "Load", idx: number, name: string, offset: number, data: Uint8Array }
+export type Load = { type: "Load", idx: number, name: string, offset: number, data: number[] }
 
 export type MemGrow = { type: 'MemGrow', idx: number, name: string, amount: number }
 

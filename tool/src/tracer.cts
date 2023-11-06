@@ -18,6 +18,32 @@ let currentWasmFunc: number | null = null
 let extCallStack: { name: string, idx: number }[] = []
 
 Wasabi.analysis = {
+    start(location) { },
+    nop(location) { },
+    unreachable(location) { },
+    if_(location, condition) { },
+    br(location, target) { },
+    br_if(location, conditionalTarget, condition) { },
+    br_table(location, table, defaultTarget, tableIdx) { },
+    begin(location, type) { },
+    end(location, type, beginLocation, ifLocation) { },
+    drop(location, value) { },
+    select(location, cond, first, second) { },
+    return_(location, values) { },
+    const_(location, op, value) { },
+    unary(location, op, input, result) { },
+    binary(location, op, first, second, result) { },
+    memory_size(location, memoryIdx, currentSizePages) { },
+    local(location, op, localIndex, value) { },
+    global(location, op, globalIndex, value) { },
+    memory_fill(location, index, value, length) { },
+    memory_copy(location, destination, source, length) { },
+    memory_init(location, destination, source, length) { },
+    table_size(location, currentSizeEntries) { },
+    table_copy(location, destination, source, length) { },
+    table_init(location, destination, source, length) { },
+    table_grow(location, n, val, previusElement) { },
+    table_fill(location, index, value, length) { },
 
     begin_function(location, args) {
         if (first_entry) {
@@ -167,12 +193,12 @@ function mem_content_equals(memIdx: number, addr: number, numBytes: number) {
     return true
 }
 
-function get_actual_mem(memIdx: number, addr: number, numBytes: number): Uint8Array {
-    let uint1Array = new Uint8Array(numBytes)
+function get_actual_mem(memIdx: number, addr: number, numBytes: number): number[] {
+    let data = []
     for (let i = 0; i < numBytes; i++) {
-        uint1Array[i] = new Uint8Array(Wasabi.module.memories[memIdx].buffer)[addr + i]
+        data.push(new Uint8Array(Wasabi.module.memories[memIdx].buffer)[addr + i])
     }
-    return uint1Array
+    return data
 }
 
 function tableGetEvent(tableidx: number, idx: number) {

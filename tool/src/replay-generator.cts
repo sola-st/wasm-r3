@@ -3,7 +3,7 @@ import { Trace } from "../trace.d.cjs"
 
 type ImpExp = { import: boolean, name: string }
 type Call = { type: "Call", name: string }
-type Store = { type: "Store", addr: number, data: Uint8Array } & ImpExp
+type Store = { type: "Store", addr: number, data: number[] } & ImpExp
 type MemGrow = { type: "MemGrow", amount: number } & ImpExp
 type TableSet = { type: "TableSet", idx: number, funcImport: boolean, funcName: string } & ImpExp
 type TableGrow = { type: "TableGrow", idx: number, amount: number } & ImpExp
@@ -188,7 +188,7 @@ class Code {
         // Init memories
         for (let memidx in this.memImports) {
             let mem = this.memImports[memidx]
-            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages} })\n`
+            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages}, maximum: ${mem.pages/*This is wrong. You need to traxe the actual maximum here*/} })\n`
             jsString += `imports.${mem.module}.${mem.name} = ${mem.name}\n`
         }
         // Init globals

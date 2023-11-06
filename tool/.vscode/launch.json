@@ -41,14 +41,19 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Wasabi Performance",
-            "program": "./wasabi-performance/instrumenter.js",
+            "name": "Debug Record",
+            "program": "./dist/src/cli/main.cjs",
             "cwd": "${workspaceFolder}",
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ], // Specify the location of your JavaScript files
             "runtimeExecutable": "node",
+            "args": [
+                "record",
+                "https://playgameoflife.com",
+                "life.r3"
+            ]
         }
     ]
 }

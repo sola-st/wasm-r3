@@ -129,6 +129,8 @@ execution. Abstracting from the instruction level, record and replay can also
 be applied to more high level programs using more procedural languages instead
 of machine instructions.
 
+\subsection{Environment and Application}
+
 Since CPUs are deterministic by nature, nondeterminism gets introduced to a
 program by its surrounding. Interrupts like commands by peripheral input
 devices or dedicated input instructions that demand information from the
@@ -151,17 +153,15 @@ which also get handled by the application. In order to create a faithful
 replay for the execution of $A$ one must record the full information exchange
 between $A$ and $E$ that triggers certain behaviors in $A$. This information
 can later be used to modify $E$ in a way to behave deterministically at
-every reexecution of the program. Possible approaches of modifying the
-enfironment are presented later in the chapter.
-% Evaluate which strategies there are to collect the trace.
-% Intrusive vs Nonintusive
+every reexecution of the program.
+
 The nature of $E$ is such that
 it is devided into layers. Each layer communicates via interfaces with the
 layer directly above and below it. We call the highest level layer wich
 provides an interface to $A$ \textit{first order environment}, the layer
 directly below it \textit{second order environment}, and so on. To make this
 more clear we again consider the above example. Previousely we have been
-representing $E$ through the operating system. Infact the operating system
+representing $E$ through the operating system. In fact the operating system
 which represents the \textit{first order environment} runs itself on the
 hardware with which it communicates via the instruction set architecture.
 As another example we can consider a javascript application which runs
@@ -175,7 +175,30 @@ runs on bare hardware.
 % Replacing
 % Ignoring (Bake environment responses into A)
 
+\subsection{Collecting runtime information}
 
+To create a faithull replay of a program execution one must record all information
+exchanged between the application and the environement. The information typically
+gets collected in a trace which contains an entry for each relevant event that
+happens during program execution and its
+asossiated values. The system can then use this Data during replay in order to 
+provide the same parameters to $A$ as they where observed during record. Traces of
+this kind can grow to large sizes which motivates its optimisation and compression
+in order to keep the memory usage on a reasonable level.
+
+To collect traces one must measure certain attributes of the program during runtime.
+In other words we require a method which is able to observe and safe the for replay
+relevant events. This goal can be archived in two ways. Medicine destinguishes
+between measuring instruments that look inside a patient vs those that do not.
+Similarily we can decide between instrumentation on the source code level vs
+instrumentation inside of the environment. Some articles call these different
+approaches \textit{invasive} and \textit{non-invasive} \cite{janes2023open}, while
+others call them \textit{intrusive} and \textit{non-intrusive} respecively \cite{Flexible Non-intrusive Dynamic Instrumentation for WebAssembly}.
+In the following we will stick to the latter terminology. To instrument an application 
+intrusively an instrumenter adds additional instructions to its source or byte code
+which observes and transferes the desired information without altering the progams
+semantics. % Now describe the advantages of intrusive
+% Nonintusive
 
 
 \chapter{Approach}

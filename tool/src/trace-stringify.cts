@@ -1,5 +1,5 @@
 import { unreachable } from "./util.cjs"
-import { Trace } from "../trace.d.cjs"
+import { Load, Trace } from "../trace.d.cjs"
 
 export default function stringifyTrace(trace: Trace) {
     let traceString = ""
