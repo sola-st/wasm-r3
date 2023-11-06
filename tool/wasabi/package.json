@@ -1,0 +1,17 @@
+{
+  "name": "wasabi_js",
+  "collaborators": [
+    "Doehyun Baek <doehyunbaek@gmail.com>"
+  ],
+  "version": "0.3.0",
+  "files": [
+    "wasabi_js_bg.wasm",
+    "wasabi_js.js",
+    "wasabi_js.d.ts"
+  ],
+  "module": "wasabi_js.js",
+  "types": "wasabi_js.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
