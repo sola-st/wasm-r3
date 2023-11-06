@@ -21,9 +21,9 @@ export default async function record(url: string) {
   });
   const page = await browser.newPage();
 
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/long.js' })
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/src/lodash.js' })
-  await page.addInitScript({ path: '/Users/jakob/Desktop/wasm-r3/tool/dist/runtime.js' })
+  await page.addInitScript({ path: './src/long.js' })
+  await page.addInitScript({ path: './src/lodash.js' })
+  await page.addInitScript({ path: './dist/runtime.js' })
 
   await page.goto(url);
   console.log(`Record is running. Enter 'Stop' to stop recording.`)
