@@ -1,3 +1,10 @@
+const printWelcome = function () {
+    console.log('---------------------------------------------')
+    console.log('                   Wasm-R3                   ')
+    console.log('---------------------------------------------')
+    console.log('WebAssembly module instantiated. Recording...')
+}
+
 const importObjectWithHooks = function (importObject) {
     let importObjectWithHooks = importObject || {};
     importObjectWithHooks.__wasabi_hooks = Wasabi.module.lowlevelHooks;
@@ -32,7 +39,7 @@ const buffer = uint8Array.buffer;
 initSync(buffer)
 let original_instantiate = WebAssembly.instantiate;
 WebAssembly.instantiate = function (buffer, importObject) {
-    console.log('Hellllellleoooooeooeooo')
+    printWelcome()
     originalWasmBuffer = _.cloneDeep(buffer)
     const { instrumented, js } = instrument_wasm({ original: new Uint8Array(buffer) });
     Wasabi = eval(js + '\nWasabi')

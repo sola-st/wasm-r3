@@ -1,4 +1,4 @@
-import { Route, chromium } from 'playwright'
+import { chromium } from 'playwright'
 import readline from 'readline'
 import { Trace } from '../trace.cjs'
 
@@ -31,6 +31,9 @@ export default async function record(url: string) {
   const trace: Trace = await page.evaluate(() => trace);
   trace.forEach(event => event.type === 'Load' && Array.from(event.data))
   const originalWasmBuffer: number[] = await page.evaluate(() => {
+    try { originalWasmBuffer } catch {
+      throw new Error('There is no WebAssembly instantiated on that page. Make sure this page actually uses WebAssembly and that you also invoked it through your interaction.')
+    }
     return Array.from(new Uint8Array(originalWasmBuffer))
   });
   rl.close()

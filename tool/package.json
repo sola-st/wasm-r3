@@ -24,6 +24,7 @@
     "test": "npm run build && npm run test-no-build",
     "test-no-build": "node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
-    "instrument": "npm run build && node ./dist/src/instrumenter.cjs"
+    "instrument": "npm run build && node ./dist/src/instrumenter.cjs",
+    "start": "node ./dist/src/cli/main.cjs"
   }
 }
