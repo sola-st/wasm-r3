@@ -1,0 +1,2 @@
+Error: This is not yet implemented: Init memory instruction. Also this testcase is not correct
+    at file:///Users/jakob/Desktop/wasm-r3/tool/tests/node/mem-exp-init-no-host-mod/test.js:11:7

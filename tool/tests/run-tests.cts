@@ -5,21 +5,13 @@ const _ = require('lodash')
 import Generator from "../src/replay-generator.cjs";
 import parse from "../src/trace-parse.cjs";
 import stringify from "../src/trace-stringify.cjs";
+import setupTracer from "../src/tracer.cjs";
 import { Wasabi } from '../wasabi.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
 
-async function run() {
-  const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer-node.cjs");
+const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
 
-  let testNames = getDirectoryNames(path.join(process.cwd(), 'tests'));
-  // parse cli arguments, you can specify the specific testcases you want to run
-  if (process.argv.length > 2) {
-    testNames = testNames.filter((n) => process.argv.includes(n));
-  }
-
-  // ignore specific tests because wasabi does not support this yet
-  // let filter = ['table-exp-host-mod-multiple', 'table-exp-host-mod', 'call-indirect']
-  // testNames = testNames.filter((n) => !filter.includes(n))
+async function runNodeTests(names: string[]) {
 
   // ignore specific tests
   let filter2 = [
@@ -31,15 +23,11 @@ async function run() {
     'mem-exp-host-mod-load-vec',
     'table-imp-init-max',
   ]
-  testNames = testNames.filter((n) => !filter2.includes(n))
+  names = names.filter((n) => !filter2.includes(n))
 
-  // if you want to run a specific test just uncomment below line and put your test
-  // testNames = ['rust-game-of-life']
-
-  process.stdout.write(`Executing Tests ... \n`);
-  for (let name of testNames) {
+  for (let name of names) {
     process.stdout.write(writeTestName(name));
-    const testPath = path.join(process.cwd(), 'tests', name);
+    const testPath = path.join(process.cwd(), 'tests', 'node', name)
     const testJsPath = path.join(testPath, 'test.js')
     const watPath = path.join(testPath, "index.wat");
     const wasmPath = path.join(testPath, "index.wasm");
@@ -74,7 +62,9 @@ async function run() {
     modifyRuntime(wasabiRuntimePath)
 
     // 2. Execute test and generate trace as well as call graph
-    let trace = require(tracerPath).default(wasabiRuntimePath);
+
+    // let trace = require(tracerPath).default(wasabiRuntimePath);
+    let trace = setupTracer(require(wasabiRuntimePath), _)
     // trace = await trace
     try {
       await import(testJsPath)
@@ -86,15 +76,15 @@ async function run() {
     let traceString = stringify(trace);
     fs.writeFileSync(tracePath, traceString);
 
-    let callGraph = callGraphConstructor(wasabiRuntimePath)
-    try {
-      await import(testJsPath)
-    } catch (e: any) {
-      fail(e.stack, testReportPath);
-      continue;
-    }
-    fs.writeFileSync(callGraphPath, stringifyCallGraph(callGraph))
-    callGraph = undefined
+    // let callGraph = callGraphConstructor(wasabiRuntimePath)
+    // try {
+    //   await import(testJsPath)
+    // } catch (e: any) {
+    //   fail(e.stack, testReportPath);
+    //   continue;
+    // }
+    // fs.writeFileSync(callGraphPath, stringifyCallGraph(callGraph))
+    // callGraph = undefined
 
     // 3. Generate replay binary
     try {
@@ -113,12 +103,13 @@ async function run() {
     fs.writeFileSync(replayPath, replayCode)
 
     // 4. Execute replay and generate trace as well as call graph
-    let replayTrace = require(tracerPath).default(wasabiRuntimePath);
+    // let replayTrace = require(tracerPath).default(wasabiRuntimePath);
+    let replayTrace = setupTracer(require(wasabiRuntimePath), _)
     try {
       await import(replayPath);
     } catch (e: any) {
       fail(e.stack, testReportPath);
-      continue;
+      continue
     }
     deleteRequireCaches()
     let replayTraceString = stringify(replayTrace);
@@ -163,11 +154,71 @@ async function run() {
       delete (require as NodeJS.Require & { cache: any }).cache[tracerPath]
       delete (require as NodeJS.Require & { cache: any }).cache[testJsPath]
       delete (require as NodeJS.Require & { cache: any }).cache[replayPath]
+      return
     }
   }
-  process.stdout.write(`done running ${testNames.length} tests\n`);
 }
-run()
+async function runWebTests(names: string) {
+  for (let name of names) {
+    process.stdout.write(writeTestName(name));
+    const testPath = path.join(process.cwd(), 'tests', 'node', name)
+    const testJsPath = path.join(testPath, 'test.js')
+    const watPath = path.join(testPath, "index.wat");
+    const wasmPath = path.join(testPath, "index.wasm");
+    const wasabiRuntimePathJS = path.join(testPath, "index.wasabi.js");
+    const wasabiRuntimePath = path.join(testPath, "index.wasabi.cjs");
+    const tracePath = path.join(testPath, "trace.r3");
+    const callGraphPath = path.join(testPath, "call-graph.txt");
+    const replayPath = path.join(testPath, "replay.js");
+    const replayTracePath = path.join(testPath, "replay-trace.r3");
+    const replayCallGraphPath = path.join(testPath, "replay-call-graph.txt");
+    const testReportPath = path.join(testPath, "report.txt");
+  }
+}
+
+(async function run() {
+  console.log('Run node tests')
+  let nodeTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
+  await runNodeTests(nodeTestNames)
+  console.log('Run web tests')
+  let webTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'web'));
+  await runWebTests(webTestNames)
+  process.stdout.write(`done running ${nodeTestNames.length + webTestNames.length} tests\n`);
+})()
+
+
+// // here is the old implementation
+// async function run() {
+//   const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
+
+//   let testNames = getDirectoryNames(path.join(process.cwd(), 'tests'));
+//   // parse cli arguments, you can specify the specific testcases you want to run
+//   if (process.argv.length > 2) {
+//     testNames = testNames.filter((n) => process.argv.includes(n));
+//   }
+
+//   // ignore specific tests
+//   let filter2 = [
+//     'rust-tictactoe',
+//     'mem-exp-vec-store-no-host-mod',
+//     'mem-exp-init-no-host-mod',
+//     'mem-exp-copy-no-host-mod',
+//     'mem-exp-fill-no-host-mod',
+//     'mem-exp-host-mod-load-vec',
+//     'table-imp-init-max',
+//   ]
+//   testNames = testNames.filter((n) => !filter2.includes(n))
+
+//   // if you want to run a specific test just uncomment below line and put your test
+//   // testNames = ['rust-game-of-life']
+
+//   process.stdout.write(`Executing Tests ... \n`);
+//   for (let name of testNames) {
+
+//   }
+//   process.stdout.write(`done running ${testNames.length} tests\n`);
+// }
+// run()
 
 function fail(report: string, testReportPath: string) {
   process.stdout.write(`\u2717\t\t${testReportPath}\n`);

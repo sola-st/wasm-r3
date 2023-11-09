@@ -35,17 +35,19 @@ for (let i = 0; i < binaryString.length; i++) {
     uint8Array[i] = binaryString.charCodeAt(i);
 }
 const buffer = uint8Array.buffer;
+let originalWasmBuffer = []
+let traces = []
 
 initSync(buffer)
 let original_instantiate = WebAssembly.instantiate;
 WebAssembly.instantiate = function (buffer, importObject) {
     printWelcome()
-    originalWasmBuffer = _.cloneDeep(buffer)
+    originalWasmBuffer.push(_.cloneDeep(buffer))
     const { instrumented, js } = instrument_wasm({ original: new Uint8Array(buffer) });
     Wasabi = eval(js + '\nWasabi')
     buffer = new Uint8Array(instrumented)
     importObject = importObjectWithHooks(importObject)
-    setupTracer()
+    traces.push(setupTracer())
     let result = original_instantiate(buffer, importObject);
     result.then(({ module, instance }) => wireInstanceExports(instance))
     return result

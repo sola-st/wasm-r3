@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { StoreOp, LoadOp, ImpExp, Wasabi as W } from '../wasabi.cjs'
+import { StoreOp, LoadOp, ImpExp} from '../wasabi.cjs'
 import _ from 'lodash'
 export default function tracer(runtimePath: string) {
 let Wasabi = require(runtimePath)
@@ -96,10 +96,14 @@ Wasabi.analysis = {
             shadowGlobals[idx] = value
             return
         }
-        let globalInfo = Wasabi.module.info.globals[idx]
-        if (shadowGlobals[idx] !== value) {
-            let valtype = globalInfo.valType
-            trace.push({ type: 'GlobalGet', name: getName(globalInfo), value, valtype, idx })
+        if (op === 'global.get') {
+            let globalInfo = Wasabi.module.info.globals[idx]
+            if (shadowGlobals[idx] !== value) {
+                // console.log(location)
+                // console.log(idx + ' ' + op + 'value', value)
+                let valtype = globalInfo.valType
+                trace.push({ type: 'GlobalGet', name: getName(globalInfo), value, valtype, idx })
+            }
         }
     },
 
@@ -114,6 +118,7 @@ Wasabi.analysis = {
         }
         let name = funcImport[1]
         extCallStack.push({ name, idx: funcidx })
+        // console.log('CallPre: ' + name)
         trace.push({ type: "ImportCall", name, idx: funcidx })
     },
 
@@ -122,6 +127,7 @@ Wasabi.analysis = {
         if (func === undefined) {
             return
         }
+        // console.log('CallPost: ' + func.name)
         trace.push({ type: 'ImportReturn', name: func.name, results, idx: func.idx })
         checkMemGrow()
         checkTableGrow()
@@ -223,7 +229,7 @@ function growShadowMem(memIdx, byPages: number) {
 }
 
 function growShadowTable(tableIdx, amount: number) {
-    const newShadow = new WebAssembly.Table({ initial: Wasabi.module.tables[0].length + amount, element: 'anyfunc' })
+    const newShadow = new WebAssembly.Table({ initial: Wasabi.module.tables[0].length, element: 'anyfunc' })
     for (let i = 0; i < Wasabi.module.tables[tableIdx].length; i++) {
         newShadow.set(i, Wasabi.module.tables[tableIdx].get(i))
     }

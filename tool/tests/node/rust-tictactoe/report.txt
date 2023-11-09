@@ -1,0 +1,7 @@
+ReferenceError: module is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension and '/Users/jakob/Desktop/wasm-r3/tool/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+    at file:///Users/jakob/Desktop/wasm-r3/tool/tests/node/rust-tictactoe/test.js:2:39
+    at ModuleJob.run (node:internal/modules/esm/module_job:218:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:329:24)
+    at async importModuleDynamicallyWrapper (node:internal/vm/module:430:15)
+    at async runNodeTests (/Users/jakob/Desktop/wasm-r3/tool/dist/tests/run-tests.cjs:57:13)

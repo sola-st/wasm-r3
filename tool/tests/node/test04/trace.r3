@@ -1,0 +1,12 @@
+ImportFunc;0;env;add
+ImportFunc;1;env;sub
+ImportFunc;2;lib;add
+ExportCall;main;
+ImportCall;0;add
+ImportReturn;0;add;3
+ImportCall;0;add
+ImportReturn;0;add;1
+ImportCall;1;sub
+ImportReturn;1;sub;2.5
+ImportCall;2;add
+ImportReturn;2;add;5

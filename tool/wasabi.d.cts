@@ -56,7 +56,9 @@ export type Wasabi = {
             tables: (ImpExp & { ref_type: any })[],
             globals: (ImpExp & { valType: ValType })[],
             start: any,
-            tableExportName: string,
+            tableExportNames: string[],
+            memoryExportNames: string[],
+            globalExportNames: string[],
             brTables: any[],
             originalFunctionImportsCount: number
         },

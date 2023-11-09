@@ -7,15 +7,16 @@ import stringifyTrace from '../trace-stringify.cjs';
 async function main() {
     const url = process.argv[2]
     const benchmarkPath = process.argv[3]
-    const { binary, trace } = await record(url)
+    const results = await record(url)
     fs.mkdirSync(benchmarkPath)
-    fs.writeFileSync(path.join(benchmarkPath, 'trace.r3'), stringifyTrace(trace))
-
-    // const traceString = fs.readFileSync(path.join(process.cwd(), process.argv[3]), 'utf-8')
-    // const trace = parse(traceString)
-    const jsString = new Generator().generateReplay(trace).toString()
-    fs.writeFileSync(path.join(benchmarkPath, 'replay.js'), jsString)
-    fs.writeFileSync(path.join(benchmarkPath, 'index.wasm'), Buffer.from(binary))
+    results.map(({ binary, trace }, i) => {
+        const binPath = path.join(benchmarkPath, `bin_${i}`)
+        fs.mkdirSync(binPath)
+        fs.writeFileSync(path.join(binPath, 'trace.r3'), stringifyTrace(trace))
+        const jsString = new Generator().generateReplay(trace).toString()
+        fs.writeFileSync(path.join(binPath, 'replay.js'), jsString)
+        fs.writeFileSync(path.join(binPath, 'index.wasm'), Buffer.from(binary))
+    })
 }
 
 main()

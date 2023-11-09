@@ -1,0 +1,4 @@
+RangeError: WebAssembly.Memory.grow(): Maximum memory size exceeded
+    at imports.env.changeMem (file:///Users/jakob/Desktop/wasm-r3/tool/tests/node/mem-imp-host-grow/replay.js:16:5)
+    at wasm://wasm/8850adfa:wasm-function[8]:0x140
+    at file:///Users/jakob/Desktop/wasm-r3/tool/tests/node/mem-imp-host-grow/replay.js:26:24
