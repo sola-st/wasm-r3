@@ -1,2 +1,0 @@
-Error: This is not yet implemented: Fill memory instruction. Also this testcase is not correct
-    at file:///Users/jakob/Desktop/wasm-r3/tool/tests/node/mem-exp-fill-no-host-mod/test.js:11:7

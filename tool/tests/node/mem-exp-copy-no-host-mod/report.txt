@@ -1,2 +1,0 @@
-Error: This is not yet implemented: Memory copy instruction. Also this testcase is not correct
-    at file:///Users/jakob/Desktop/wasm-r3/tool/tests/node/mem-exp-copy-no-host-mod/test.js:11:7

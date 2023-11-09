@@ -1,0 +1,1 @@
+{"version":3,"file":"test.cjs","sourceRoot":"","sources":["../../../../tests/online/game-of-life/test.cts"],"names":[],"mappings":";;AAAA,oEAA4D;AAE7C,KAAK,UAAU,IAAI;IAC9B,MAAM,GAAG,GAAG,6BAA6B,CAAA;IACzC,MAAM,EAAE,OAAO,EAAE,IAAI,EAAE,GAAG,MAAM,IAAA,yBAAM,EAAC,GAAG,CAAC,CAAA;IAC3C,2BAA2B;IAC3B,OAAO,MAAM,IAAA,uBAAI,EAAC,OAAO,EAAE,IAAI,CAAC,CAAA;AACpC,CAAC;AALD,uBAKC"}
