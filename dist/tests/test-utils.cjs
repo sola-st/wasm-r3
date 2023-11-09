@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDirectoryNames = void 0;
+exports.delay = exports.getDirectoryNames = void 0;
 const fs = require('fs');
 function getDirectoryNames(folderPath) {
     const entries = fs.readdirSync(folderPath, { withFileTypes: true });
@@ -10,4 +10,10 @@ function getDirectoryNames(folderPath) {
     return directories;
 }
 exports.getDirectoryNames = getDirectoryNames;
+async function delay(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}
+exports.delay = delay;
 //# sourceMappingURL=test-utils.cjs.map

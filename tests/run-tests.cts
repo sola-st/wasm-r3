@@ -8,7 +8,8 @@ import stringify from "../src/trace-stringify.cjs";
 import setupTracer from "../src/tracer.cjs";
 import { Wasabi } from '../wasabi.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
-import { Record, saveBenchmark } from '../src/benchmark.cjs';
+import { Record, saveBenchmark, saveBenchmarkSync } from '../src/benchmark.cjs';
+import { instrument_wasm } from '/Users/jakob/Desktop/wasm-r3/dist/wasabi/wasabi_js.js'
 
 const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
 
@@ -182,11 +183,15 @@ async function runOnlineTests(names: string) {
       fail(e.stack, testReportPath)
       continue;
     }
-    await saveBenchmark(benchmarkPath, record)
+    console.log(record)
+    await saveBenchmarkSync(benchmarkPath, record)
     let subBenchmarkNames = getDirectoryNames(benchmarkPath)
+    console.log(subBenchmarkNames)
     for (let subBenchmarkName of subBenchmarkNames) {
       let binary = fs.readFileSync(path.join(benchmarkPath, subBenchmarkName, 'index.wasm'))
-      
+      binary = instrument_wasm({ original: binary }).instrumented
+
+      fs.writeFileSync(path.join(testPath, 'index.wasm'), Buffer.from(binary))
     }
 
   }
@@ -195,7 +200,7 @@ async function runOnlineTests(names: string) {
 (async function run() {
   console.log('Run node tests')
   let nodeTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
-  await runNodeTests(nodeTestNames)
+  // await runNodeTests(nodeTestNames)
   console.log('Run online tests')
   console.log('WARNING: You need a working internet connection')
   console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')

@@ -9,3 +9,9 @@ export function getDirectoryNames(folderPath: string) {
 
     return directories;
 }
+
+export async function delay(ms: number) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}

@@ -18,13 +18,11 @@
     "playwright": "^1.39.0"
   },
   "scripts": {
-    "test-bun": "bun ./tests/run-tests.cts",
-    "clean-tests-bun": "bun ./tests/clean-tests.cts",
     "build": "node --loader ts-node/esm ./build.ts",
-    "test": "npm run build && npm run test-no-build",
-    "test-no-build": "node ./dist/tests/run-tests.cjs",
+    "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target nodejs --out-dir ../../../dist/wasabi && cd ../../..",
+    "build-full": "npm run build-wasabi && npm run build",
+    "test": "npm run build && node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
-    "instrument": "npm run build && node ./dist/src/instrumenter.cjs",
     "start": "node ./dist/src/cli/main.cjs"
   }
 }
