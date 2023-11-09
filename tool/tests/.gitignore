@@ -1,6 +1,0 @@
-# */**
-# !node/*/index.wat
-# !node/*/index.rs
-# !node/*/index.c
-# !node/*/test.js
-# !web

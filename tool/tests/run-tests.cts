@@ -8,6 +8,7 @@ import stringify from "../src/trace-stringify.cjs";
 import setupTracer from "../src/tracer.cjs";
 import { Wasabi } from '../wasabi.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
+import { Record, saveBenchmark } from '../src/benchmark.cjs';
 
 const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
 
@@ -158,11 +159,12 @@ async function runNodeTests(names: string[]) {
     }
   }
 }
-async function runWebTests(names: string) {
+async function runOnlineTests(names: string) {
   for (let name of names) {
     process.stdout.write(writeTestName(name));
-    const testPath = path.join(process.cwd(), 'tests', 'node', name)
+    const testPath = path.join(process.cwd(), 'tests', 'online', name)
     const testJsPath = path.join(testPath, 'test.js')
+    const benchmarkPath = path.join(testPath, 'benchmark')
     const watPath = path.join(testPath, "index.wat");
     const wasmPath = path.join(testPath, "index.wasm");
     const wasabiRuntimePathJS = path.join(testPath, "index.wasabi.js");
@@ -173,52 +175,34 @@ async function runWebTests(names: string) {
     const replayTracePath = path.join(testPath, "replay-trace.r3");
     const replayCallGraphPath = path.join(testPath, "replay-call-graph.txt");
     const testReportPath = path.join(testPath, "report.txt");
+    let record: Record
+    try {
+      record = await (await import(testJsPath)).default()
+    } catch (e: any) {
+      fail(e.stack, testReportPath)
+      continue;
+    }
+    await saveBenchmark(benchmarkPath, record)
+    let subBenchmarkNames = getDirectoryNames(benchmarkPath)
+    for (let subBenchmarkName of subBenchmarkNames) {
+      let binary = fs.readFileSync(path.join(benchmarkPath, subBenchmarkName, 'index.wasm'))
+      
+    }
+
   }
 }
 
 (async function run() {
   console.log('Run node tests')
   let nodeTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
-  await runNodeTests(nodeTestNames)
-  console.log('Run web tests')
-  let webTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'web'));
-  await runWebTests(webTestNames)
+  // await runNodeTests(nodeTestNames)
+  console.log('Run online tests')
+  console.log('WARNING: You need a working internet connection')
+  console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
+  let webTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
+  await runOnlineTests(webTestNames)
   process.stdout.write(`done running ${nodeTestNames.length + webTestNames.length} tests\n`);
 })()
-
-
-// // here is the old implementation
-// async function run() {
-//   const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
-
-//   let testNames = getDirectoryNames(path.join(process.cwd(), 'tests'));
-//   // parse cli arguments, you can specify the specific testcases you want to run
-//   if (process.argv.length > 2) {
-//     testNames = testNames.filter((n) => process.argv.includes(n));
-//   }
-
-//   // ignore specific tests
-//   let filter2 = [
-//     'rust-tictactoe',
-//     'mem-exp-vec-store-no-host-mod',
-//     'mem-exp-init-no-host-mod',
-//     'mem-exp-copy-no-host-mod',
-//     'mem-exp-fill-no-host-mod',
-//     'mem-exp-host-mod-load-vec',
-//     'table-imp-init-max',
-//   ]
-//   testNames = testNames.filter((n) => !filter2.includes(n))
-
-//   // if you want to run a specific test just uncomment below line and put your test
-//   // testNames = ['rust-game-of-life']
-
-//   process.stdout.write(`Executing Tests ... \n`);
-//   for (let name of testNames) {
-
-//   }
-//   process.stdout.write(`done running ${testNames.length} tests\n`);
-// }
-// run()
 
 function fail(report: string, testReportPath: string) {
   process.stdout.write(`\u2717\t\t${testReportPath}\n`);

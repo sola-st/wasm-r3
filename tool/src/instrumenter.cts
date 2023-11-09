@@ -3,6 +3,7 @@ import readline from 'readline'
 import { Trace } from '../trace.cjs'
 import { Wasabi } from '../wasabi.cjs';
 import setupTracer from './tracer.cjs';
+import { Record } from './benchmark.cjs';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -101,10 +102,16 @@ function setup(setupTracer) {
   }
 }
 
-async function launch(url: string) {
-  const browser = await chromium.launch({
-    headless: false,
-  });
+type Options = {
+  headless: boolean
+}
+
+export async function launch(url: string, options?: Options) {
+  let headless = false
+  if (options !== undefined) {
+    headless = true
+  }
+  const browser = await chromium.launch({ headless });
   const page = await browser.newPage();
 
   await page.addInitScript({ path: './src/long.js' })
@@ -116,7 +123,7 @@ async function launch(url: string) {
   return { browser, page }
 }
 
-async function land(browser: Browser, page: Page) {
+export async function land(browser: Browser, page: Page): Promise<Record> {
   const traces: Trace[] = await page.evaluate(() => {
     return traces
   })
@@ -131,11 +138,11 @@ async function land(browser: Browser, page: Page) {
   return traces.map((trace, i) => ({ binary: originalWasmBuffer[i], trace }))
 }
 
-export default async function record(url: string) {
-  const { browser, page } = await launch(url)
+export default async function record(url: string, options?: Options) {
+  const { browser, page } = await launch(url, options)
   console.log(`Record is running. Enter 'Stop' to stop recording.`)
   await askQuestion('')
   rl.close()
-  console.log('benchmark stopped')
+  console.log(`Record stopped`)
   return await land(browser, page)
 }
