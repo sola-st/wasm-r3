@@ -1,0 +1,4 @@
+[submodule "wasabi"]
+	path = wasabi
+	url = https://github.com/jakobgetz/wasabi.git
+	branch = jakob
