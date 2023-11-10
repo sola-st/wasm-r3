@@ -5,19 +5,6 @@ import { Wasabi } from '../wasabi.cjs';
 import setupTracer from './tracer.cjs';
 import { Record } from './benchmark.cjs';
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-async function askQuestion(question: string) {
-  return new Promise((resolve) => {
-    rl.question(question, (answer) => {
-      resolve(answer);
-    });
-  });
-}
-
 // Extend the global window object
 declare global {
   interface Window {
@@ -54,21 +41,34 @@ function setup(setupTracer) {
   };
 
   const wireInstanceExports = function (instance) {
+    console.log(instance)
     window.Wasabi.module.exports = instance.exports;
-    window.Wasabi.module.tables = [];
-    window.Wasabi.module.memories = [];
-    window.Wasabi.module.globals = [];
-    for (let exp in instance.exports) {
+    // window.Wasabi.module.tables = [];
+    // window.Wasabi.module.memories = [];
+    // window.Wasabi.module.globals = [];
+    window.Wasabi.module.tables = Object.keys(instance.exports).map(exp => {
       if (window.Wasabi.module.info.tableExportNames.includes(exp)) {
-        window.Wasabi.module.tables.push(instance.exports[exp]);
+        return instance.exports[exp]
       }
-      if (window.Wasabi.module.info.memoryExportNames.includes(exp)) {
-        window.Wasabi.module.memories.push(instance.exports[exp]);
-      }
+    }).filter(i => i !== undefined)
+    window.Wasabi.module.memories = [instance.exports[Object.keys(instance.exports).filter(exp => window.Wasabi.module.info.memoryExportNames.includes(exp))[0]]]
+    window.Wasabi.module.globals = Object.keys(instance.exports).map(exp => {
       if (window.Wasabi.module.info.globalExportNames.includes(exp)) {
-        window.Wasabi.module.globals.push(instance.exports[exp]);
+        return instance.exports[exp]
       }
-    }
+    }).filter(i => i !== undefined)
+    console.log(window.Wasabi)
+    // for (let exp in instance.exports) {
+    //   if (window.Wasabi.module.info.tableExportNames.includes(exp)) {
+    //     window.Wasabi.module.tables.push(instance.exports[exp]);
+    //   }
+    //   if (window.Wasabi.module.info.memoryExportNames.includes(exp)) {
+    //     window.Wasabi.module.memories.push(instance.exports[exp]);
+    //   }
+    //   if (window.Wasabi.module.info.globalExportNames.includes(exp)) {
+    //     window.Wasabi.module.globals.push(instance.exports[exp]);
+    //   }
+    // }
   };
 
   //@ts-ignore
@@ -81,37 +81,32 @@ function setup(setupTracer) {
 
   initSync(buffer)
   let original_instantiate = WebAssembly.instantiate
-  WebAssembly.instantiate = function (buffer, importObject) {
+  WebAssembly.instantiate = function (buffer: ArrayBuffer, importObject: Object) {
+    console.log('WebAssembly.instantiate')
     printWelcome()
-    window.originalWasmBuffer.push(_.cloneDeep(buffer))
+    window.originalWasmBuffer.push(Array.from(new Uint8Array(buffer)))
     const { instrumented, js } = instrument_wasm({ original: new Uint8Array(buffer) });
     window.Wasabi = eval(js + '\nWasabi')
     buffer = new Uint8Array(instrumented)
     importObject = importObjectWithHooks(importObject)
-    console.log(window.Wasabi)
-    window.traces.push(eval(`(${setupTracer})(window.Wasabi, _)`))
+    window.traces.push(eval(`(${setupTracer})(window.Wasabi)`))
     let result = original_instantiate(buffer, importObject)
     result.then(({ module, instance }) => wireInstanceExports(instance))
     return result
   };
   // replace instantiateStreaming
   WebAssembly.instantiateStreaming = async function (source, obj) {
+    console.log('WebAssembly.instantiateStreaming')
     let response = await source;
     let body = await response.arrayBuffer();
     return WebAssembly.instantiate(body, obj);
   }
 }
 
-type Options = {
-  headless: boolean
-}
-
 export async function launch(url: string, { headless } = { headless: false }) {
   const browser = await chromium.launch({ headless });
   const page = await browser.newPage();
 
-  await page.addInitScript({ path: './src/long.js' })
-  await page.addInitScript({ path: './src/lodash.js' })
   await page.addInitScript({ path: './dist/wasabi.js' })
   await page.addInitScript(setup, setupTracer.toString())
 
@@ -134,7 +129,19 @@ export async function land(browser: Browser, page: Page): Promise<Record> {
   return traces.map((trace, i) => ({ binary: originalWasmBuffer[i], trace }))
 }
 
-export default async function record(url: string, options?: Options) {
+export default async function record(url: string, options = { headless: false }) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  async function askQuestion(question: string) {
+    return new Promise((resolve) => {
+      rl.question(question, (answer) => {
+        resolve(answer);
+      });
+    });
+  }
   const { browser, page } = await launch(url, options)
   console.log(`Record is running. Enter 'Stop' to stop recording.`)
   await askQuestion('')

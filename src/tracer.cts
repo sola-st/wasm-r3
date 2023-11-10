@@ -1,8 +1,7 @@
 import { StoreOp, LoadOp, ImpExp, Wasabi } from '../wasabi.cjs'
 import { Trace } from '../trace.d.cjs'
-import { LoDashWrapper } from 'lodash'
 
-export default function setupTracer(Wasabi: Wasabi, _: any) {
+export default function setupTracer(Wasabi: Wasabi) {
 
     const MEM_PAGE_SIZE = 65536
 
@@ -98,8 +97,6 @@ export default function setupTracer(Wasabi: Wasabi, _: any) {
             if (op === 'global.get') {
                 let globalInfo = Wasabi.module.info.globals[idx]
                 if (shadowGlobals[idx] !== value) {
-                    // console.log(location)
-                    // console.log(idx + ' ' + op + 'value', value)
                     let valtype = globalInfo.valType
                     trace.push({ type: 'GlobalGet', name: getName(globalInfo), value, valtype, idx })
                 }
@@ -117,7 +114,6 @@ export default function setupTracer(Wasabi: Wasabi, _: any) {
             }
             let name = funcImport[1]
             extCallStack.push({ name, idx: funcidx })
-            // console.log('CallPre: ' + name)
             trace.push({ type: "ImportCall", name, idx: funcidx })
         },
 
@@ -126,7 +122,6 @@ export default function setupTracer(Wasabi: Wasabi, _: any) {
             if (func === undefined) {
                 return
             }
-            // console.log('CallPost: ' + func.name)
             trace.push({ type: 'ImportReturn', name: func.name, results, idx: func.idx })
             checkMemGrow()
             checkTableGrow()
@@ -148,7 +143,7 @@ export default function setupTracer(Wasabi: Wasabi, _: any) {
             if (isImported) {
                 shadowMemories.push(new ArrayBuffer(mem.buffer.byteLength))
             } else {
-                shadowMemories.push(_.cloneDeep(mem.buffer))
+                shadowMemories.push(cloneArrayBuffer(mem.buffer))
             }
         })
         Wasabi.module.info.memories.forEach((m, idx) => {
@@ -169,7 +164,7 @@ export default function setupTracer(Wasabi: Wasabi, _: any) {
             }
         })
         // Init Globals
-        shadowGlobals = _.cloneDeep(Wasabi.module.globals.map(g => g.value))
+        shadowGlobals = Wasabi.module.globals.map(g => g.value)
         Wasabi.module.info.globals.forEach((g, idx) => {
             if (g.import !== null) {
                 trace.push({ type: 'ImportGlobal', module: g.import[0], name: g.import[1], valtype: g.valType, value: Wasabi.module.globals[idx].value, idx })
@@ -210,7 +205,7 @@ export default function setupTracer(Wasabi: Wasabi, _: any) {
     function tableGetEvent(tableidx: number, idx: number) {
         let table = Wasabi.module.tables[tableidx]
         let shadowTable = shadowTables[tableidx]
-        if (!_.isEqual(shadowTable.get(idx), table.get(idx))) {
+        if (shadowTable.get(idx) !== table.get(idx)) {
             let name = getName(Wasabi.module.info.tables[tableidx])
             let funcidx = parseInt(table.get(idx).name)
             let funcName = getName(Wasabi.module.info.functions[parseInt(table.get(idx).name) - Object.keys(Wasabi.module.lowlevelHooks).length])
@@ -269,6 +264,19 @@ export default function setupTracer(Wasabi: Wasabi, _: any) {
 
     function getByteLength(instr: StoreOp | LoadOp) {
         return parseInt(instr.substring(1, 3)) / 8
+    }
+
+    function cloneArrayBuffer(original: ArrayBuffer) {
+        const cloned = new ArrayBuffer(original.byteLength);
+        const sourceArray = new Uint8Array(original);
+        const clonedArray = new Uint8Array(cloned);
+
+        // Copy the data from the original ArrayBuffer to the cloned ArrayBuffer
+        for (let i = 0; i < original.byteLength; i++) {
+            clonedArray[i] = sourceArray[i];
+        }
+
+        return cloned;
     }
 
     return trace

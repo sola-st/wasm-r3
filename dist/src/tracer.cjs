@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function setupTracer(Wasabi, _) {
+function setupTracer(Wasabi) {
     const MEM_PAGE_SIZE = 65536;
     let trace = [];
     // shadow stuff
@@ -87,8 +87,6 @@ function setupTracer(Wasabi, _) {
             if (op === 'global.get') {
                 let globalInfo = Wasabi.module.info.globals[idx];
                 if (shadowGlobals[idx] !== value) {
-                    // console.log(location)
-                    // console.log(idx + ' ' + op + 'value', value)
                     let valtype = globalInfo.valType;
                     trace.push({ type: 'GlobalGet', name: getName(globalInfo), value, valtype, idx });
                 }
@@ -105,7 +103,6 @@ function setupTracer(Wasabi, _) {
             }
             let name = funcImport[1];
             extCallStack.push({ name, idx: funcidx });
-            // console.log('CallPre: ' + name)
             trace.push({ type: "ImportCall", name, idx: funcidx });
         },
         call_post(location, results) {
@@ -113,7 +110,6 @@ function setupTracer(Wasabi, _) {
             if (func === undefined) {
                 return;
             }
-            // console.log('CallPost: ' + func.name)
             trace.push({ type: 'ImportReturn', name: func.name, results, idx: func.idx });
             checkMemGrow();
             checkTableGrow();
@@ -133,7 +129,7 @@ function setupTracer(Wasabi, _) {
                 shadowMemories.push(new ArrayBuffer(mem.buffer.byteLength));
             }
             else {
-                shadowMemories.push(_.cloneDeep(mem.buffer));
+                shadowMemories.push(cloneArrayBuffer(mem.buffer));
             }
         });
         Wasabi.module.info.memories.forEach((m, idx) => {
@@ -154,7 +150,7 @@ function setupTracer(Wasabi, _) {
             }
         });
         // Init Globals
-        shadowGlobals = _.cloneDeep(Wasabi.module.globals.map(g => g.value));
+        shadowGlobals = Wasabi.module.globals.map(g => g.value);
         Wasabi.module.info.globals.forEach((g, idx) => {
             if (g.import !== null) {
                 trace.push({ type: 'ImportGlobal', module: g.import[0], name: g.import[1], valtype: g.valType, value: Wasabi.module.globals[idx].value, idx });
@@ -191,7 +187,7 @@ function setupTracer(Wasabi, _) {
     function tableGetEvent(tableidx, idx) {
         let table = Wasabi.module.tables[tableidx];
         let shadowTable = shadowTables[tableidx];
-        if (!_.isEqual(shadowTable.get(idx), table.get(idx))) {
+        if (shadowTable.get(idx) !== table.get(idx)) {
             let name = getName(Wasabi.module.info.tables[tableidx]);
             let funcidx = parseInt(table.get(idx).name);
             let funcName = getName(Wasabi.module.info.functions[parseInt(table.get(idx).name) - Object.keys(Wasabi.module.lowlevelHooks).length]);
@@ -245,6 +241,16 @@ function setupTracer(Wasabi, _) {
     }
     function getByteLength(instr) {
         return parseInt(instr.substring(1, 3)) / 8;
+    }
+    function cloneArrayBuffer(original) {
+        const cloned = new ArrayBuffer(original.byteLength);
+        const sourceArray = new Uint8Array(original);
+        const clonedArray = new Uint8Array(cloned);
+        // Copy the data from the original ArrayBuffer to the cloned ArrayBuffer
+        for (let i = 0; i < original.byteLength; i++) {
+            clonedArray[i] = sourceArray[i];
+        }
+        return cloned;
     }
     return trace;
 }
