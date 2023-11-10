@@ -3,7 +3,7 @@ const fs = require('fs')
 export function getDirectoryNames(folderPath: string) {
     const entries = fs.readdirSync(folderPath, { withFileTypes: true });
 
-    const directories = entries
+    const directories: string[] = entries
         .filter((entry) => entry.isDirectory())
         .map((entry) => entry.name);
 

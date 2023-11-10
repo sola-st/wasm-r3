@@ -4,29 +4,30 @@ import fss from 'fs'
 import path from 'path'
 import Generator from "./replay-generator.cjs"
 import stringifyTrace from "./trace-stringify.cjs"
+import parse from './trace-parse.cjs'
 
 export type Record = { binary: number[], trace: Trace }[]
 
-export async function saveBenchmark(benchmarkPath: string, record: Record) {
+export async function saveBenchmark(benchmarkPath: string, record: Record, options = { trace: true }) {
     await fs.mkdir(benchmarkPath)
-    await record.map(async ({ binary, trace }, i) => {
+    await Promise.all(record.map(async ({ binary, trace }, i) => {
         const binPath = path.join(benchmarkPath, `bin_${i}`)
         await fs.mkdir(binPath)
         const jsString = new Generator().generateReplay(trace).toString()
         await fs.writeFile(path.join(binPath, 'trace.r3'), stringifyTrace(trace))
         await fs.writeFile(path.join(binPath, 'replay.js'), jsString)
         await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
-    })
+    }))
 }
 
-export function saveBenchmarkSync(benchmarkPath: string, record: Record) {
-    fss.mkdirSync(benchmarkPath)
-    record.map(({ binary, trace }, i) => {
-        const binPath = path.join(benchmarkPath, `bin_${i}`)
-        fs.mkdir(binPath)
-        const jsString = new Generator().generateReplay(trace).toString()
-        fss.writeFileSync(path.join(binPath, 'trace.r3'), stringifyTrace(trace))
-        fss.writeFileSync(path.join(binPath, 'replay.js'), jsString)
-        fss.writeFileSync(path.join(binPath, 'index.wasm'), Buffer.from(binary))
-    })
+export async function readBenchmark(benchmarkPath: string): Promise<Record> {
+    const dirnames = await fs.readdir(benchmarkPath)
+    return await Promise.all(dirnames.map(async (name) => {
+        const subBenchmarkPath = path.join(benchmarkPath, name)
+        const binPath = path.join(subBenchmarkPath, 'index.wasm')
+        const tracePath = path.join(subBenchmarkPath, 'trace.r3')
+        let binary = Array.from(await fs.readFile(binPath))
+        let trace = parse(await fs.readFile(tracePath, 'utf-8'))
+        return { binary, trace }
+    }))
 }

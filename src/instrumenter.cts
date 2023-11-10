@@ -106,11 +106,7 @@ type Options = {
   headless: boolean
 }
 
-export async function launch(url: string, options?: Options) {
-  let headless = false
-  if (options !== undefined) {
-    headless = true
-  }
+export async function launch(url: string, { headless } = { headless: false }) {
   const browser = await chromium.launch({ headless });
   const page = await browser.newPage();
 

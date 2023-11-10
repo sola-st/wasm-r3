@@ -8,7 +8,7 @@ import stringify from "../src/trace-stringify.cjs";
 import setupTracer from "../src/tracer.cjs";
 import { Wasabi } from '../wasabi.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
-import { Record, saveBenchmark, saveBenchmarkSync } from '../src/benchmark.cjs';
+import { Record, saveBenchmark } from '../src/benchmark.cjs';
 import { instrument_wasm } from '/Users/jakob/Desktop/wasm-r3/dist/wasabi/wasabi_js.js'
 
 const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
@@ -160,21 +160,14 @@ async function runNodeTests(names: string[]) {
     }
   }
 }
-async function runOnlineTests(names: string) {
+async function runOnlineTests(names: string[]) {
+  names = ['pathfinding']
   for (let name of names) {
     process.stdout.write(writeTestName(name));
     const testPath = path.join(process.cwd(), 'tests', 'online', name)
     const testJsPath = path.join(testPath, 'test.js')
     const benchmarkPath = path.join(testPath, 'benchmark')
-    const watPath = path.join(testPath, "index.wat");
-    const wasmPath = path.join(testPath, "index.wasm");
-    const wasabiRuntimePathJS = path.join(testPath, "index.wasabi.js");
-    const wasabiRuntimePath = path.join(testPath, "index.wasabi.cjs");
-    const tracePath = path.join(testPath, "trace.r3");
-    const callGraphPath = path.join(testPath, "call-graph.txt");
-    const replayPath = path.join(testPath, "replay.js");
-    const replayTracePath = path.join(testPath, "replay-trace.r3");
-    const replayCallGraphPath = path.join(testPath, "replay-call-graph.txt");
+    const testBenchmarkPath = path.join(testPath, 'test-benchmark')
     const testReportPath = path.join(testPath, "report.txt");
     let record: Record
     try {
@@ -183,17 +176,43 @@ async function runOnlineTests(names: string) {
       fail(e.stack, testReportPath)
       continue;
     }
-    console.log(record)
-    await saveBenchmarkSync(benchmarkPath, record)
+    await saveBenchmark(benchmarkPath, record)
     let subBenchmarkNames = getDirectoryNames(benchmarkPath)
-    console.log(subBenchmarkNames)
-    for (let subBenchmarkName of subBenchmarkNames) {
-      let binary = fs.readFileSync(path.join(benchmarkPath, subBenchmarkName, 'index.wasm'))
-      binary = instrument_wasm({ original: binary }).instrumented
+    let Wasabi
+    record = record.map(({ binary, trace }) => {
+      const out = instrument_wasm({ original: binary })
+      binary = out.instrumented
+      const js = out.js + `\nWasabi`
+      fs.writeFileSync(path.join(testPath, 'runtime.js'), js)
+      Wasabi = eval(js)
+      return { binary, trace }
+    })
+    await saveBenchmark(testBenchmarkPath, record, { trace: false })
+    try {
+      await Promise.all(subBenchmarkNames.map(async (subBenchmarkName, i) => {
+        const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkName)
+        const replayPath = path.join(subBenchmarkPath, 'replay.js')
+        const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
+        let replayTrace = setupTracer(Wasabi, _)
+        await import(replayPath)
+        let traceString = stringify(record[i].trace)
+        let replayTraceString = stringify(replayTrace);
+        fs.writeFileSync(replayTracePath, replayTraceString);
 
-      fs.writeFileSync(path.join(testPath, 'index.wasm'), Buffer.from(binary))
+        // 5. Check if original trace and replay trace match
+        if (replayTraceString !== traceString) {
+          let report = `[Expected]\n`;
+          report += traceString;
+          report += `\n\n`;
+          report += `[Actual]\n`;
+          report += replayTraceString;
+          throw new Error(report)
+        }
+      }))
+    } catch (e: any) {
+      fail(e.stack, testReportPath)
+      continue
     }
-
   }
 }
 
