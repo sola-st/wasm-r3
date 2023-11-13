@@ -254,57 +254,35 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   if (subBenchmarkNames.length === 0) {
     return { testPath, success: false, reason: 'no benchmark was generated' }
   }
-  let Wasabi
-  record = record.map(({ binary, trace }) => {
-    const out = instrument_wasm({ original: binary })
-    binary = out.instrumented
-    Wasabi = eval(out.js + `\nWasabi`)
-    return { binary, trace }
-  })
-  await saveBenchmark(testBenchmarkPath, record, { trace: false })
-  for (let i = 0; i < subBenchmarkNames.length; i++) {
-    const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
-    const replayPath = path.join(subBenchmarkPath, 'replay.js')
-    const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
-    let replayTrace = setupTracer(Wasabi)
-    await import(replayPath)
-    let traceString = stringify(record[i].trace)
-    let replayTraceString = stringify(replayTrace);
-    await fs.writeFile(replayTracePath, replayTraceString);
+  try {
+    let runtimes = record.map(({ binary }, i) => {
+      const out = instrument_wasm({ original: binary })
+      record[i].binary = out.instrumented
+      return out.js
+    })
+    await saveBenchmark(testBenchmarkPath, record, { trace: false })
+    for (let i = 0; i < record.length; i++) {
+      const Wasabi: Wasabi = eval(runtimes[i] + `\nWasabi`)
+      const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
+      const replayPath = path.join(subBenchmarkPath, 'replay.js')
+      const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
+      let replayTrace = setupTracer(Wasabi)
+      await import(replayPath)
+      let traceString = stringify(record[i].trace)
+      let replayTraceString = stringify(replayTrace);
+      await fs.writeFile(replayTracePath, replayTraceString);
 
-    // 5. Check if original trace and replay trace match
-    if (replayTraceString !== traceString) {
-      let reason = `[Expected]\n`;
-      reason += traceString;
-      reason += `\n\n`;
-      reason += `[Actual]\n`;
-      reason += replayTraceString;
-      return { testPath, success: false, reason: reason }
+      // 5. Check if original trace and replay trace match
+      let result = compareTraces(testPath, traceString, replayTraceString)
+      if (result.success === false) {
+        return result
+      }
     }
+  } catch (e: any) {
+    return { testPath, success: false, reason: e.stack }
   }
   return { testPath, success: true }
 }
-
-(async function run() {
-  console.log('==============')
-  console.log('Run node tests')
-  console.log('==============')
-  let nodeTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
-  await runNodeTests(nodeTestNames)
-  console.log('=================')
-  console.log('Run offline tests')
-  console.log('=================')
-  let offlineTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
-  await runOfflineTests(offlineTestNames)
-  console.log('================')
-  console.log('Run online tests')
-  console.log('================')
-  console.log('WARNING: You need a working internet connection')
-  console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
-  let webTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
-  await runOnlineTests(webTestNames)
-  // process.stdout.write(`done running ${nodeTestNames.length + webTestNames.length} tests\n`);
-})()
 
 function fileExists(filePath: string) {
   try {
@@ -406,3 +384,31 @@ function stringifyCallGraph(callGraph: CallGraph) {
   })
   return s
 }
+
+
+(async function run() {
+  if (process.argv[2] === 'node' || process.argv[2] === undefined) {
+    console.log('==============')
+    console.log('Run node tests')
+    console.log('==============')
+    let nodeTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
+    await runNodeTests(nodeTestNames)
+  }
+  if (process.argv[2] === 'offline' || process.argv[2] === undefined) {
+    console.log('=================')
+    console.log('Run offline tests')
+    console.log('=================')
+    let offlineTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
+    await runOfflineTests(offlineTestNames)
+  }
+  if (process.argv[2] === 'online' || process.argv[2] === undefined) {
+    console.log('================')
+    console.log('Run online tests')
+    console.log('================')
+    console.log('WARNING: You need a working internet connection')
+    console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
+    let webTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
+    await runOnlineTests(webTestNames)
+  }
+  // process.stdout.write(`done running ${nodeTestNames.length + webTestNames.length} tests\n`);
+})()

@@ -14,7 +14,9 @@ export async function saveBenchmark(benchmarkPath: string, record: Record, optio
         const binPath = path.join(benchmarkPath, `bin_${i}`)
         await fs.mkdir(binPath)
         const jsString = new Generator().generateReplay(trace).toString()
-        await fs.writeFile(path.join(binPath, 'trace.r3'), stringifyTrace(trace))
+        if (options.trace === true) {
+            await fs.writeFile(path.join(binPath, 'trace.r3'), stringifyTrace(trace))
+        }
         await fs.writeFile(path.join(binPath, 'replay.js'), jsString)
         await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
     }))
