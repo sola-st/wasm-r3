@@ -5,6 +5,7 @@ import { Wasabi } from '../wasabi.cjs';
 import setupTracer from './tracer.cjs';
 import { Record } from './benchmark.cjs';
 import fs from 'fs'
+import { instrument_wasm } from '/Users/jakob/Desktop/wasm-r3/dist/wasabi/wasabi_js';
 
 // Extend the global self object
 declare global {
@@ -160,4 +161,70 @@ export default async function record(url: string, options = { headless: false })
   rl.close()
   console.log(`Record stopped`)
   return await land(browser, page)
+}
+
+export async function record_deprecated(url: string): Promise<Record> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  async function askQuestion(question: string) {
+    return new Promise((resolve) => {
+      rl.question(question, (answer) => {
+        resolve(answer);
+      });
+    });
+  }
+  const browser = await chromium.launch({ headless: true })
+  const page = await browser.newPage()
+  let runtime: string
+  let binary: number[]
+  await page.route('**/*', async route => {
+    const response = await route.fetch()
+    if (response.headers()['content-type'] === 'application/wasm') {
+      let body = await response.body()
+      binary = Array.from(body)
+      const out = instrument_wasm({ original: body })
+      runtime = out.js
+      console.log('instrumented')
+      route.fulfill({
+        response,
+        body: out.instrumented,
+      });
+    } else {
+      route.fulfill({
+        response
+      })
+    }
+  })
+  await page.goto(url)
+  await askQuestion('')
+  await browser.close()
+  const browser2 = await chromium.launch({ headless: false })
+  const page2 = await browser2.newPage()
+  page2.addInitScript(runtime)
+  page2.addInitScript(`(${setupTracer.toString()})(Wasabi)`)
+  await page2.route('**/*', async route => {
+    const response = await route.fetch()
+    if (response.headers()['content-type'] === 'application/wasm') {
+      let body = await response.body()
+      binary = Array.from(body)
+      const out = instrument_wasm({ original: body })
+      console.log(out.instrumented)
+      route.fulfill({
+        response,
+        body: out.instrumented
+      });
+    } else {
+      route.fulfill({
+        response
+      })
+    }
+  })
+  page2.goto(url)
+  await askQuestion('')
+  let trace = await page2.evaluate(() => trace)
+  await browser.close()
+  return [{ binary, trace }]
 }

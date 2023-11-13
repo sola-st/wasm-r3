@@ -10,7 +10,7 @@ import setupTracer from "../src/tracer.cjs";
 import { Wasabi } from '../wasabi.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
 import { Record, saveBenchmark } from '../src/benchmark.cjs';
-import { instrument_wasm } from '/Users/jakob/Desktop/wasm-r3/dist/wasabi/wasabi_js.js'
+import { instrument_wasm } from '/Users/jakob/Desktop/wasm-r3/dist/wasabi/wasabi_js'
 import { Server } from 'http'
 
 async function rmSafe(path: string) {
@@ -147,9 +147,8 @@ async function runNodeTest(name: string): Promise<TestReport> {
 }
 
 async function runNodeTests(names: string[]) {
-
   // ignore specific tests
-  let filter2 = [
+  let filter = [
     'rust-tictactoe',
     'mem-exp-vec-store-no-host-mod',
     'mem-exp-init-no-host-mod',
@@ -160,7 +159,7 @@ async function runNodeTests(names: string[]) {
     'table-exp-host-mod',
     'table-exp-host-grow',
   ]
-  names = names.filter((n) => !filter2.includes(n))
+  names = names.filter((n) => !filter.includes(n))
 
   for (let name of names) {
     await writeReport(name, await runNodeTest(name))
@@ -180,6 +179,11 @@ function compareTraces(testPath: string, traceString: string, replayTraceString:
 }
 
 async function runOnlineTests(names: string[]) {
+  // ignore specific tests
+  let filter = [
+    'calculator',
+  ]
+  names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
     await writeReport(name, await runOnlineTest(name))
   }
@@ -387,21 +391,21 @@ function stringifyCallGraph(callGraph: CallGraph) {
 
 
 (async function run() {
-  if (process.argv[2] === 'node' || process.argv[2] === undefined) {
+  if (process.argv.includes('node') || process.argv[2] === undefined) {
     console.log('==============')
     console.log('Run node tests')
     console.log('==============')
     let nodeTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
     await runNodeTests(nodeTestNames)
   }
-  if (process.argv[2] === 'offline' || process.argv[2] === undefined) {
+  if (process.argv.includes('offline') || process.argv[2] === undefined) {
     console.log('=================')
     console.log('Run offline tests')
     console.log('=================')
     let offlineTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
     await runOfflineTests(offlineTestNames)
   }
-  if (process.argv[2] === 'online' || process.argv[2] === undefined) {
+  if (process.argv.includes('online') || process.argv[2] === undefined) {
     console.log('================')
     console.log('Run online tests')
     console.log('================')

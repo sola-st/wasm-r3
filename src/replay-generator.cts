@@ -183,26 +183,26 @@ class Code {
 
         // Init modules
         for (let module of this.modules) {
-            jsString += `imports.${module} = {}\n`
+            jsString += `${writeModule(module)}\n`
         }
         // Init memories
         for (let memidx in this.memImports) {
             let mem = this.memImports[memidx]
-            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages}, maximum: ${mem.pages/*This is wrong. You need to traxe the actual maximum here*/} })\n`
-            jsString += `imports.${mem.module}.${mem.name} = ${mem.name}\n`
+            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages}, maximum: ${mem.pages/*This is wrong. You need to trace the actual maximum here*/} })\n`
+            jsString += `${writeImport(mem.module, mem.name)}${mem.name}\n`
         }
         // Init globals
         for (let globalIdx in this.globalImports) {
             let global = this.globalImports[globalIdx]
             jsString += `const ${global.name} = new WebAssembly.Global({ value: '${global.valtype}', mutable: true}, ${global.value})\n`
             jsString += `${global.name}.value = ${global.value}\n`
-            jsString += `imports.${global.module}.${global.name} = ${global.name}\n`
+            jsString += `${writeImport(global.module, global.name)}${global.name}\n`
         }
         // Init tables
         for (let tableidx in this.tableImports) {
             let table = this.tableImports[tableidx]
             jsString += `const ${table.name} = new WebAssembly.Table({ initial: ${table.initial}, element: '${table.element}'})\n`
-            jsString += `imports.${table.module}.${table.name} = ${table.name}\n`
+            jsString += `${writeImport(table.module, table.name)}${table.name}\n`
         }
         // Init entity states
         for (let event of this.initialization) {
@@ -223,12 +223,11 @@ class Code {
         }
         // Imported functions
         for (let funcidx in this.funcImports) {
-            jsString += `let ${global(funcidx)} = -1\n`
+            jsString += `let ${writeFuncGlobal(funcidx)} = -1\n`
             let func = this.funcImports[funcidx]
-            jsString += `imports.${func.module}.${func.name} = `
-            jsString += `() => {\n`
-            jsString += `${global(funcidx)}++\n`
-            jsString += `switch (${global(funcidx)}) {\n`
+            jsString += `${writeImport(func.module, func.name)}() => {\n`
+            jsString += `${writeFuncGlobal(funcidx)}++\n`
+            jsString += `switch (${writeFuncGlobal(funcidx)}) {\n`
             func.body.forEach((b, i) => {
                 jsString += `case ${i}:\n`
                 for (let event of b.events) {
@@ -332,6 +331,14 @@ class Code {
     }
 }
 
-function global(funcidx: string) {
+function writeFuncGlobal(funcidx: string) {
     return `global_${funcidx} `
+}
+
+function writeModule(module: string) {
+    return `imports['${module}'] = {}`
+}
+
+function writeImport(module: string, name: string) {
+    return `imports['${module}']['${name}'] = `
 }
