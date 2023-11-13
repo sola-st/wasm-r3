@@ -10,7 +10,8 @@ import setupTracer from "../src/tracer.cjs";
 import { Wasabi } from '../wasabi.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
 import { Record, saveBenchmark } from '../src/benchmark.cjs';
-import { instrument_wasm } from '/Users/jakob/Desktop/wasm-r3/dist/wasabi/wasabi_js'
+//@ts-ignore
+import { instrument_wasm } from '../wasabi/wasabi_js.js'
 import { Server } from 'http'
 
 async function rmSafe(path: string) {

@@ -5,7 +5,8 @@ import { Wasabi } from '../wasabi.cjs';
 import setupTracer from './tracer.cjs';
 import { Record } from './benchmark.cjs';
 import fs from 'fs'
-import { instrument_wasm } from '/Users/jakob/Desktop/wasm-r3/dist/wasabi/wasabi_js';
+//@ts-ignore
+import { instrument_wasm } from '../wasabi/wasabi_js.js'
 
 // Extend the global self object
 declare global {
