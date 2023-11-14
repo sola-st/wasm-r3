@@ -18,7 +18,8 @@ declare global {
     initSync: Function,
     WebAssembly: any,
     instrument_wasm: Function,
-    i: number
+    i: number,
+    monkeypatched: boolean
   }
 }
 
@@ -27,11 +28,22 @@ function setup(setupTracer) {
   const initSync = self.initSync
   const WebAssembly = self.WebAssembly
   const instrument_wasm = self.instrument_wasm
-  self.traces = []
-  self.wasabis = []
-  self.i = 0
-
-  self.originalWasmBuffer = []
+  if (self.traces === undefined) {
+    self.traces = []
+  }
+  if (self.wasabis === undefined) {
+    self.wasabis = []
+  }
+  if (self.i === undefined) {
+    self.i = 0
+  }
+  if (self.originalWasmBuffer === undefined) {
+    self.originalWasmBuffer = []
+  }
+  if (self.monkeypatched === true) {
+    return
+  }
+  self.monkeypatched = true
   const printWelcome = function () {
     console.log('---------------------------------------------')
     console.log('                   Wasm-R3                   ')
@@ -50,7 +62,7 @@ function setup(setupTracer) {
     self.wasabis[i].module.tables = [];
     self.wasabis[i].module.memories = [];
     self.wasabis[i].module.globals = [];
-    console.log(self.wasabis)
+    // console.log(self.wasabis)
     for (let exp in instance.exports) {
       if (self.wasabis[i].module.info.tableExportNames.includes(exp)) {
         self.wasabis[i].module.tables.push(instance.exports[exp]);
@@ -121,14 +133,13 @@ export async function launch(url: string, { headless } = { headless: false }) {
   await page.addInitScript(setup, setupTracer.toString())
   console.timeEnd('setup')
 
-  await page.route('**/*worker.js*', async route => {
+  await page.route(`**/*.js`, async route => {
     const response = await route.fetch()
     const script = await response.text()
     const wasabi = fs.readFileSync('./dist/wasabi.js')
     const body = `${wasabi}\n(${setup.toString()})(\`${setupTracer.toString()}\`)\n${script}`
     await route.fulfill({ response, body: body })
   })
-
   page.on('worker', worker => {
     workerHandles.push(worker)
   })
@@ -159,17 +170,14 @@ export async function land(browser: Browser, page: Page): Promise<Record> {
   traces.forEach(trace => trace.forEach(event => event.type === 'Load' && Array.from(event.data)))
   console.timeEnd('trace processing')
   console.time('wasm download')
-  const originalWasmBufferString: string[] = await page.evaluate(() => {
+  const originalWasmBuffer: number[][] = await page.evaluate(() => {
     try { originalWasmBuffer } catch {
       throw new Error('There is no WebAssembly instantiated on that page. Make sure this page actually uses WebAssembly and that you also invoked it through your interaction.')
     }
     return originalWasmBuffer.map(b => {
-      const uint8Array = new Uint8Array(b)
-      const base64String = new TextDecoder().decode(uint8Array)
-      return base64String
+      return Array.from(b)
     })
   });
-  const originalWasmBuffer: number[][] = originalWasmBufferString.map(b => Array.from(new TextEncoder().encode(b)))
   let workerBuffers = await Promise.all(workerHandles.map(w => w.evaluate(() => originalWasmBuffer)))
   if (workerBuffers.length !== 0) {
     originalWasmBuffer.push(...workerBuffers.flat(1))
@@ -179,7 +187,6 @@ export async function land(browser: Browser, page: Page): Promise<Record> {
   console.time('browser close')
   browser.close()
   console.timeEnd('browser close')
-  console.time('closed browser')
   return traces.map((trace, i) => ({ binary: originalWasmBuffer[i], trace }))
 }
 
