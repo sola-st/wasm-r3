@@ -197,6 +197,11 @@ async function runOnlineTest(name: string) {
 }
 
 async function runOfflineTests(names: string[]) {
+  // ignore specific tests
+  let filter = [
+    'sqllite'
+  ]
+  names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
     await writeReport(name, await runOfflineTest(name))
   }

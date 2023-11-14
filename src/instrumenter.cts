@@ -23,6 +23,7 @@ declare global {
 }
 
 function setup(setupTracer) {
+  console.log('setup')
   const initSync = self.initSync
   const WebAssembly = self.WebAssembly
   const instrument_wasm = self.instrument_wasm
@@ -49,12 +50,19 @@ function setup(setupTracer) {
     self.wasabis[i].module.tables = [];
     self.wasabis[i].module.memories = [];
     self.wasabis[i].module.globals = [];
+    console.log(self.wasabis)
     for (let exp in instance.exports) {
       if (self.wasabis[i].module.info.tableExportNames.includes(exp)) {
         self.wasabis[i].module.tables.push(instance.exports[exp]);
       }
       if (self.wasabis[i].module.info.memoryExportNames.includes(exp)) {
-        self.wasabis[i].module.memories.push(instance.exports[exp]);
+        // console.log('I am here and I add to the memory', exp)
+        self.wasabis[i].module.memories.push(instance.exports[exp])
+        // console.log(i)
+        // console.log(instance.exports[exp])
+        // console.log(self.wasabis[i].module.memories)
+        // console.log(self.wasabis)
+        // console.log(self.wasabis[i].module.memories)
       }
       if (self.wasabis[i].module.info.globalExportNames.includes(exp)) {
         self.wasabis[i].module.globals.push(instance.exports[exp]);
@@ -78,13 +86,19 @@ function setup(setupTracer) {
     console.log('WebAssembly.instantiate')
     printWelcome()
     self.originalWasmBuffer.push(Array.from(new Uint8Array(buffer)))
+    console.log('try to instrument')
+    console.time('instrument')
     const { instrumented, js } = instrument_wasm({ original: new Uint8Array(buffer) });
+    console.timeEnd('instrument')
     self.wasabis.push(eval(js + '\nWasabi'))
     buffer = new Uint8Array(instrumented)
     importObject = importObjectWithHooks(importObject, i)
     self.traces.push(eval(`(${setupTracer})(self.wasabis[i])`))
-    let result = original_instantiate(buffer, importObject)
-    result.then(({ module, instance }) => wireInstanceExports(instance, i))
+    let result
+    result = original_instantiate(buffer, importObject)
+    result.then(({ module, instance }) => {
+      wireInstanceExports(instance, i)
+    })
     return result
   };
   // replace instantiateStreaming
@@ -103,7 +117,9 @@ export async function launch(url: string, { headless } = { headless: false }) {
   const page = await browser.newPage();
 
   await page.addInitScript({ path: './dist/wasabi.js' })
+  console.time('setup')
   await page.addInitScript(setup, setupTracer.toString())
+  console.timeEnd('setup')
 
   await page.route('**/*worker.js*', async route => {
     const response = await route.fetch()
@@ -122,24 +138,48 @@ export async function launch(url: string, { headless } = { headless: false }) {
 }
 
 export async function land(browser: Browser, page: Page): Promise<Record> {
-  const traces: Trace[] = (await page.evaluate(() => traces))
-  let workerTraces = await Promise.all(workerHandles.map((w) => w.evaluate(() => traces)))
+  console.log('landing...')
+  console.time('trace download')
+  const tracesString: string = (await page.evaluate(() => {
+    console.time('stringify')
+    const tracesString = JSON.stringify(traces)
+    console.timeEnd('stringify')
+    return tracesString
+  }))
+  console.time('parse')
+  const traces: Trace[] = JSON.parse(tracesString)
+  console.timeEnd('parse')
+  console.timeEnd('trace download')
+  const workerTracesStrings = await Promise.all(workerHandles.map((w) => w.evaluate(() => JSON.stringify(traces))))
+  const workerTraces = workerTracesStrings.map(t => JSON.parse(t))
   if (workerTraces.length !== 0) {
     traces.push(...workerTraces.flat(1))
   }
+  console.time('trace processing')
   traces.forEach(trace => trace.forEach(event => event.type === 'Load' && Array.from(event.data)))
-  const originalWasmBuffer: number[][] = await page.evaluate(() => {
+  console.timeEnd('trace processing')
+  console.time('wasm download')
+  const originalWasmBufferString: string[] = await page.evaluate(() => {
     try { originalWasmBuffer } catch {
       throw new Error('There is no WebAssembly instantiated on that page. Make sure this page actually uses WebAssembly and that you also invoked it through your interaction.')
     }
-    return originalWasmBuffer.map(b => Array.from(new Uint8Array(b)))
+    return originalWasmBuffer.map(b => {
+      const uint8Array = new Uint8Array(b)
+      const base64String = new TextDecoder().decode(uint8Array)
+      return base64String
+    })
   });
+  const originalWasmBuffer: number[][] = originalWasmBufferString.map(b => Array.from(new TextEncoder().encode(b)))
   let workerBuffers = await Promise.all(workerHandles.map(w => w.evaluate(() => originalWasmBuffer)))
   if (workerBuffers.length !== 0) {
     originalWasmBuffer.push(...workerBuffers.flat(1))
   }
+  console.timeEnd('wasm download')
   workerHandles = []
+  console.time('browser close')
   browser.close()
+  console.timeEnd('browser close')
+  console.time('closed browser')
   return traces.map((trace, i) => ({ binary: originalWasmBuffer[i], trace }))
 }
 
@@ -228,4 +268,13 @@ export async function record_deprecated(url: string): Promise<Record> {
   let trace = await page2.evaluate(() => trace)
   await browser.close()
   return [{ binary, trace }]
+}
+
+function decodeBase64ToUint8Array(base64String) {
+  const binaryString = atob(base64String);
+  const uint8Array = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    uint8Array[i] = binaryString.charCodeAt(i);
+  }
+  return uint8Array;
 }

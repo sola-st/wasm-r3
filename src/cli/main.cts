@@ -10,7 +10,9 @@ async function main() {
     } else {
         benchmark = await record(url)
     }
-    saveBenchmark(benchmarkPath, benchmark)
+    console.time('save Benchmark')
+    await saveBenchmark(benchmarkPath, benchmark)
+    console.timeEnd('save Benchmark')
 }
 
 main()
