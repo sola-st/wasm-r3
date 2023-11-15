@@ -74,29 +74,28 @@ async function runNodeTest(name: string): Promise<TestReport> {
   // const wabtModule = await wabt()
   // const binary = wabtModule.parseWat(watPath, wat).toBinary({})
   const binary = await fs.readFile(wasmPath)
-  const { instrumented, js } = instrument_wasm({ original: binary })
+  let { instrumented, js } = instrument_wasm({ original: binary })
   fss.writeFileSync(wasmPath, Buffer.from(instrumented))
 
   // 2. Execute test and generate trace as well as call graph
-
+  const wasmBinary = await fs.readFile(wasmPath)
   let trace = setupTracer(eval(js + `\nWasabi`))
   try {
-    await import(testJsPath)
+    await (await import(testJsPath)).default(wasmBinary)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
   let traceString = stringify(trace);
   fss.writeFileSync(tracePath, traceString);
 
-  // let callGraph = callGraphConstructor(eval(js + `\nWasabi`))
-  // delete (require as NodeJS.Require & { cache: any }).cache[testJsPath]
-  // try {
-  //   await import(testJsPath)
-  // } catch (e: any) {
-  //   return { testPath, success: false, reason: e.stack }
-  // }
-  // await fs.writeFile(callGraphPath, stringifyCallGraph(callGraph))
-  // callGraph = undefined
+  let callGraph = callGraphConstructor(eval(js + `\nWasabi`))
+  try {
+    await (await import(testJsPath)).default(wasmBinary)
+  } catch (e: any) {
+    return { testPath, success: false, reason: e.stack }
+  }
+  const callGraphString = stringifyCallGraph(callGraph)
+  await fs.writeFile(callGraphPath, callGraphString)
 
   // 3. Generate replay binary
   try {
@@ -115,36 +114,40 @@ async function runNodeTest(name: string): Promise<TestReport> {
   // 4. Execute replay and generate trace as well as call graph
   let replayTrace = setupTracer(eval(js + `\nWasabi`))
   try {
-    await import(replayPath);
+    await (await import(replayPath)).default(wasmBinary)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
   let replayTraceString = stringify(replayTrace);
   fss.writeFileSync(replayTracePath, replayTraceString);
 
-  // let replayCallGraph = callGraphConstructor(eval(js + `\nWasabi`))
-  // delete (require as NodeJS.Require & { cache: any }).cache[replayPath]
-  // try {
-  //   await import(replayPath)
-  // } catch (e: any) {
-  //   return { testPath, success: false, reason: e.stack }
-  // }
-  // await fs.writeFile(replayCallGraphPath, stringifyCallGraph(replayCallGraph))
+  let replayCallGraph = callGraphConstructor(eval(js + `\nWasabi`))
+  delete (require as NodeJS.Require & { cache: any }).cache[replayPath]
+  try {
+    await (await import(replayPath)).default(wasmBinary)
+  } catch (e: any) {
+    return { testPath, success: false, reason: e.stack }
+  }
+  const replayCallGraphString = stringifyCallGraph(replayCallGraph)
+  await fs.writeFile(replayCallGraphPath, replayCallGraphString)
 
   // 5. Check if original trace and replay trace match
-  return compareTraces(testPath, traceString, replayTraceString)
+  const result = compareTraces(testPath, traceString, replayTraceString)
+  if (result.success === false) {
+    return result
+  }
 
-  // 6. Check if the computing results of the original and replay execution match
-  // if (!_.isEqual(callGraph, replayCallGraph)) {
-  //   let report = `Call graphs do not match! \n\n`
-  //   report += `[Expected]\n`;
-  //   report += stringifyCallGraph(callGraph);
-  //   report += `\n\n`;
-  //   report += `[Actual]\n`;
-  //   report += stringifyCallGraph(replayCallGraph);
-  //   fail(report, testReportPath);
-  //   continue
-  // }
+  // 6. Check if the call graphs the original and replay execution match
+  if (callGraphString !== replayCallGraphString) {
+    let report = `Call graphs do not match! \n\n`
+    report += `[Expected]\n`
+    report += callGraphString
+    report += `\n\n`
+    report += `[Actual]\n`
+    report += replayCallGraphString
+    return { testPath, success: false, reason: report }
+  }
+  return result
 }
 
 async function runNodeTests(names: string[]) {

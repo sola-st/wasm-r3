@@ -1,0 +1,38 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "funky-kart10",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/funky-kart10/bin_0/replay.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "funky-kart11",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/funky-kart11/bin_0/replay.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "test node",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
+            "args": [
+                "node"
+            ]
+        }
+    ]
+}

@@ -176,8 +176,7 @@ class Code {
     public toString() {
         let jsString = `import fs from 'fs'\n`
         jsString += `import path from 'path'\n`
-        jsString += `const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n`
-        jsString += `const wasmBinary = fs.readFileSync(p)\n`
+        jsString += `export default async function replay(wasmBinary) {\n`
         jsString += `let instance\n`
         jsString += 'let imports = {}\n'
 
@@ -268,6 +267,12 @@ class Code {
             paramsString = paramsString.slice(0, -1)
             jsString += `await instance.exports.${exp.name}(${paramsString}) \n`
         }
+        jsString += `}\n`
+        jsString += `if (process.argv[2] === 'run') {\n`
+        jsString += `const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n`
+        jsString += `const wasmBinary = fs.readFileSync(p)\n`
+        jsString += `replay(wasmBinary)\n`
+        jsString += `}\n`
         return jsString
     }
 
