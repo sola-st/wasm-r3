@@ -25,6 +25,7 @@ declare global {
 
 function setup(setupTracer) {
   console.log('setup')
+  console.time('setup')
   const initSync = self.initSync
   const WebAssembly = self.WebAssembly
   const instrument_wasm = self.instrument_wasm
@@ -120,6 +121,7 @@ function setup(setupTracer) {
     let body = await response.arrayBuffer();
     return WebAssembly.instantiate(body, obj);
   }
+  console.timeEnd('setup')
 }
 
 let workerHandles: Worker[] = []
@@ -129,9 +131,7 @@ export async function launch(url: string, { headless } = { headless: false }) {
   const page = await browser.newPage();
 
   await page.addInitScript({ path: './dist/wasabi.js' })
-  console.time('setup')
   await page.addInitScript(setup, setupTracer.toString())
-  console.timeEnd('setup')
 
   await page.route(`**/*.js`, async route => {
     const response = await route.fetch()
@@ -145,20 +145,39 @@ export async function launch(url: string, { headless } = { headless: false }) {
   })
 
   await page.goto(url)
+  console.time('user interaction')
   return { browser, page }
 }
 
 export async function land(browser: Browser, page: Page): Promise<Record> {
+  console.timeEnd('user interaction')
   console.log('landing...')
   console.time('trace download')
-  const tracesString: string = (await page.evaluate(() => {
-    console.time('stringify')
-    const tracesString = JSON.stringify(traces)
-    console.timeEnd('stringify')
-    return tracesString
+  const tracesStrings: string[][] = (await page.evaluate(() => {
+    // We cannot construct a string longer then a specific length
+    // specifically for v8 the string must not be longer then 2^29 - 24 (~1GiB) for 64 bit systems
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length#
+    let chunks: string[][] = []
+    traces.forEach((t, i) => {
+      chunks.push([])
+      while (t.length > 0) {
+        chunks[i].push(JSON.stringify(t.splice(0, 2000000)))
+      }
+    })
+    return chunks
   }))
+
   console.time('parse')
-  const traces: Trace[] = JSON.parse(tracesString)
+  let traces: Trace[] = []
+  for (let t of tracesStrings) {
+    traces.push([])
+    for (let chunk of t) {
+      const c: Trace = JSON.parse(chunk)
+      for (let event of c) {
+        traces[traces.length - 1].push(event)
+      }
+    }
+  }
   console.timeEnd('parse')
   console.timeEnd('trace download')
   const workerTracesStrings = await Promise.all(workerHandles.map((w) => w.evaluate(() => JSON.stringify(traces))))
