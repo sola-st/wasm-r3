@@ -133,7 +133,7 @@ export async function launch(url: string, { headless } = { headless: false }) {
   await page.addInitScript({ path: './dist/wasabi.js' })
   await page.addInitScript(setup, setupTracer.toString())
 
-  await page.route(`**/*.js`, async route => {
+  await page.route(`**/*.js*`, async route => {
     const response = await route.fetch()
     const script = await response.text()
     const wasabi = fs.readFileSync('./dist/wasabi.js')
