@@ -137,7 +137,7 @@ export async function launch(url: string, { headless } = { headless: false }) {
     const response = await route.fetch()
     const script = await response.text()
     const wasabi = fs.readFileSync('./dist/wasabi.js')
-    const body = `${wasabi}\n(${setup.toString()})(\`${setupTracer.toString()}\`)\n${script}`
+    const body = `${wasabi};(${setup.toString()})(\`${setupTracer.toString()}\`);${script}`
     await route.fulfill({ response, body: body })
   })
   page.on('worker', worker => {
