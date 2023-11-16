@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Worker test</title>
+</head>
+
+<body>
+  <script>
+    fetch("add.wasm")
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => WebAssembly.instantiate(bytes, {}))
+      .then((result) => console.log(`10 + 2 = ${result.instance.exports.add(10, 2)}`));
+    fetch("add.wasm")
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => WebAssembly.instantiate(bytes, {}))
+      .then((result) => console.log(`10 + 2 = ${result.instance.exports.add(1, 1)}`));
+    fetch("sub.wasm")
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => WebAssembly.instantiate(bytes, {}))
+      .then((result) => console.log(`9 - 3 = ${result.instance.exports.sub(9, 3)}`));
+    new Worker('worker.js')
+  </script>
+</body>
+
+</html>

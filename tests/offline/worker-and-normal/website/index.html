@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Worker test</title>
+</head>
+
+<body>
+  <script>
+    fetch("add.wasm")
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => {
+        console.log(bytes)
+        return WebAssembly.instantiate(bytes, {})
+      })
+      .then((result) => console.log(`2 + 2 = ${result.instance.exports.add(2, 2)}`));
+    var worker = new Worker('worker.js');
+  </script>
+</body>
+
+</html>

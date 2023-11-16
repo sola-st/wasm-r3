@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Worker test</title>
+</head>
+
+<body>
+  <script>
+    var worker = new Worker('worker.js');
+    var worker2 = new Worker('worker2.js');
+  </script>
+  <script src="redundant.js" type="application/javascript""></script>
+  <script src="redundant2.js" type="application/javascript""></script>
+</body>
+
+</html>
