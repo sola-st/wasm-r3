@@ -1,7 +1,12 @@
 import { StoreOp, LoadOp, ImpExp, Wasabi } from '../wasabi.cjs'
 import { Trace } from '../trace.d.cjs'
 
-export default function setupTracer(Wasabi: Wasabi) {
+export default function setupAnalysis(Wasabi: Wasabi) {
+
+    // console.log('---------------------------------------------')
+    // console.log('                   Wasm-R3                   ')
+    // console.log('---------------------------------------------')
+    // console.log('Recording...')
 
     const MEM_PAGE_SIZE = 65536
 

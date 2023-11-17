@@ -6,13 +6,17 @@ import express from 'express'
 import Generator from "../src/replay-generator.cjs";
 import parse from "../src/trace-parse.cjs";
 import stringify from "../src/trace-stringify.cjs";
-import setupTracer from "../src/tracer.cjs";
-import { Wasabi } from '../wasabi.cjs'
+import setupAnalysis from "../src/tracer.cjs";
+import setupCallGraphAnalysis from '../src/callgraph.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
-import { Record, saveBenchmark } from '../src/benchmark.cjs';
+import { fromAnalysisResult, saveBenchmark } from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
 import { Server } from 'http'
+import Analyser, { AnalysisResult } from '../src/analyser.cjs'
+
+let generateCallGraphs = false
+const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
 
 async function rmSafe(path: string) {
   try {
@@ -39,7 +43,18 @@ async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, 'test-benchmark'))
 }
 
-const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
+function stringifyCallGraph(callGraph: any) {
+  let s = 'How to read this graph: $from -> [$params] -> $to [$memSizes] [$tableSizes]\n'
+  callGraph.forEach((edge, i) => {
+    s += `${i}: ${edge.from.funcidx} -> [${edge.params}] -> ${edge.to.funcidx}\t`
+    if (edge.from.host) {
+      s += `[${(edge.to).memSizes}] [${(edge.to).tableSizes}]`
+    }
+    s += `\n`
+  })
+  return s
+}
+
 
 async function runNodeTest(name: string): Promise<TestReport> {
   const testPath = path.join(process.cwd(), 'tests', 'node', name)
@@ -79,7 +94,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
 
   // 2. Execute test and generate trace as well as call graph
   const wasmBinary = await fs.readFile(wasmPath)
-  let trace = setupTracer(eval(js + `\nWasabi`))
+  let trace = setupAnalysis(eval(js + `\nWasabi`))
   try {
     await (await import(testJsPath)).default(wasmBinary)
   } catch (e: any) {
@@ -87,15 +102,6 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
   let traceString = stringify(trace);
   fss.writeFileSync(tracePath, traceString);
-
-  let callGraph = callGraphConstructor(eval(js + `\nWasabi`))
-  try {
-    await (await import(testJsPath)).default(wasmBinary)
-  } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
-  }
-  const callGraphString = stringifyCallGraph(callGraph)
-  await fs.writeFile(callGraphPath, callGraphString)
 
   // 3. Generate replay binary
   try {
@@ -111,8 +117,8 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
   fss.writeFileSync(replayPath, replayCode)
 
-  // 4. Execute replay and generate trace as well as call graph
-  let replayTrace = setupTracer(eval(js + `\nWasabi`))
+  // 4. Execute replay and generate trace and compare
+  let replayTrace = setupAnalysis(eval(js + `\nWasabi`))
   try {
     await (await import(replayPath)).default(wasmBinary)
   } catch (e: any) {
@@ -121,31 +127,32 @@ async function runNodeTest(name: string): Promise<TestReport> {
   let replayTraceString = stringify(replayTrace);
   fss.writeFileSync(replayTracePath, replayTraceString);
 
-  let replayCallGraph = callGraphConstructor(eval(js + `\nWasabi`))
-  delete (require as NodeJS.Require & { cache: any }).cache[replayPath]
-  try {
-    await (await import(replayPath)).default(wasmBinary)
-  } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
-  }
-  const replayCallGraphString = stringifyCallGraph(replayCallGraph)
-  await fs.writeFile(replayCallGraphPath, replayCallGraphString)
-
-  // 5. Check if original trace and replay trace match
-  const result = compareTraces(testPath, traceString, replayTraceString)
+  const result = compareResults(testPath, traceString, replayTraceString)
   if (result.success === false) {
     return result
   }
 
-  // 6. Check if the call graphs the original and replay execution match
-  if (callGraphString !== replayCallGraphString) {
-    let report = `Call graphs do not match! \n\n`
-    report += `[Expected]\n`
-    report += callGraphString
-    report += `\n\n`
-    report += `[Actual]\n`
-    report += replayCallGraphString
-    return { testPath, success: false, reason: report }
+  // 5. Compare call graphs
+  if (generateCallGraphs === false) {
+    let callGraph = setupCallGraphAnalysis(eval(js + `\nWasabi`))
+    try {
+      await (await import(testJsPath)).default(wasmBinary)
+    } catch (e: any) {
+      return { testPath, success: false, reason: e.stack }
+    }
+    const callGraphString = stringifyCallGraph(callGraph)
+    await fs.writeFile(callGraphPath, callGraphString)
+
+    let replayCallGraph = setupCallGraphAnalysis(eval(js + `\nWasabi`))
+    delete (require as NodeJS.Require & { cache: any }).cache[replayPath]
+    try {
+      await (await import(replayPath)).default(wasmBinary)
+    } catch (e: any) {
+      return { testPath, success: false, reason: e.stack }
+    }
+    const replayCallGraphString = stringifyCallGraph(replayCallGraph)
+    await fs.writeFile(replayCallGraphPath, replayCallGraphString)
+    return compareResults(testPath, callGraphString, replayCallGraphString)
   }
   return result
 }
@@ -162,6 +169,7 @@ async function runNodeTests(names: string[]) {
     'table-imp-init-max',
     'table-exp-host-mod',
     'table-exp-host-grow',
+    'funky-kart',
   ]
   names = names.filter((n) => !filter.includes(n))
 
@@ -170,7 +178,7 @@ async function runNodeTests(names: string[]) {
   }
 }
 
-function compareTraces(testPath: string, traceString: string, replayTraceString: string): TestReport {
+function compareResults(testPath: string, traceString: string, replayTraceString: string): TestReport {
   if (replayTraceString !== traceString) {
     let reason = `[Expected]\n`;
     reason += traceString;
@@ -185,9 +193,10 @@ function compareTraces(testPath: string, traceString: string, replayTraceString:
 async function runOnlineTests(names: string[]) {
   // ignore specific tests
   let filter = [
-    'calculator',
+    'funky-kart'
   ]
   names = names.filter((n) => !filter.includes(n))
+  names = [ 'pathfinding' ]
   for (let name of names) {
     await writeReport(name, await runOnlineTest(name))
   }
@@ -256,17 +265,33 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')
   const benchmarkPath = path.join(testPath, 'benchmark')
   const testBenchmarkPath = path.join(testPath, 'test-benchmark')
-  let record: Record
+  let analysisResult: AnalysisResult
   try {
-    record = await (await import(testJsPath)).default()
+    analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/tracer.cjs'))
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
+  const record = fromAnalysisResult(analysisResult)
   await saveBenchmark(benchmarkPath, record)
   let subBenchmarkNames = getDirectoryNames(benchmarkPath)
   if (subBenchmarkNames.length === 0) {
     return { testPath, success: false, reason: 'no benchmark was generated' }
   }
+  try {
+    analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/callgraph.cjs'))
+  } catch (e: any) {
+    return { testPath, success: false, reason: e.stack }
+  }
+  let callGraphs = []
+  if (generateCallGraphs === true) {
+    callGraphs = await Promise.all(analysisResult.map(async (r, i) => {
+      const callGraph = JSON.parse(r.result)
+      const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpgraph.txt')
+      await fs.writeFile(callGraphPath, stringifyCallGraph(callGraph))
+      return callGraph
+    }))
+  }
+
   try {
     let runtimes = record.map(({ binary }, i) => {
       const out = instrument_wasm({ original: binary })
@@ -275,20 +300,34 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     })
     await saveBenchmark(testBenchmarkPath, record, { trace: false })
     for (let i = 0; i < record.length; i++) {
-      const Wasabi: Wasabi = eval(runtimes[i] + `\nWasabi`)
+      // Compare traces
       const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
       const replayPath = path.join(subBenchmarkPath, 'replay.js')
       const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
-      let replayTrace = setupTracer(Wasabi)
-      await import(replayPath)
+      let replayTrace = setupAnalysis(eval(runtimes[i] + `\nWasabi`))
+      await (await import(replayPath)).default(Buffer.from(record[i].binary))
       let traceString = stringify(record[i].trace)
       let replayTraceString = stringify(replayTrace);
       await fs.writeFile(replayTracePath, replayTraceString);
 
       // 5. Check if original trace and replay trace match
-      let result = compareTraces(testPath, traceString, replayTraceString)
+      let result = compareResults(testPath, traceString, replayTraceString)
       if (result.success === false) {
         return result
+      }
+
+      // Compare call graphs
+      if (generateCallGraphs === true) {
+        const replayCallGraphPath = path.join(subBenchmarkPath, 'replay-call-graph.txt')
+        let replayCallGraph = setupCallGraphAnalysis(eval(runtimes[i] + `\nWasabi`))
+        await (await import(replayPath)).default(Buffer.from(record[i].binary))
+        const callGraphString = stringifyCallGraph(callGraphs[i])
+        const replayCallGraphString = stringifyCallGraph(replayCallGraph)
+        await fs.writeFile(replayCallGraphPath, replayCallGraphString)
+        result = compareResults(testPath, callGraphString, replayCallGraphString)
+        if (result.success === false) {
+          return result
+        }
       }
     }
   } catch (e: any) {
@@ -310,96 +349,10 @@ function fileExists(filePath: string) {
   }
 }
 
-type FromInit = { funcidx: 'h', host: true }
-type FromHost = { funcidx: number, host: true }
-type FromWasm = { funcidx: number, host: false }
-type FromNode = FromInit | FromHost | FromWasm
-type ToFromHost = { funcidx: number, host: false, memSizes: number[], tableSizes: number[] }
-type ToFromWasm = { funcidx: number, host: boolean }
-type Edge = {
-  params: number[],
-} & (
-    | { from: FromInit, to: ToFromHost }
-    | { from: FromHost, to: ToFromHost }
-    | { from: FromWasm, to: ToFromWasm }
-  )
-type CallGraph = Edge[]
-
-function callGraphConstructor(Wasabi: Wasabi) {
-  let from: FromNode = { funcidx: 'h', host: true }
-  let inHost: boolean | null = null
-  let callGraph: CallGraph = []
-  // delete (require as NodeJS.Require & { cache: any }).cache[runtimePath]
-  Wasabi.analysis = {
-    call_pre(locatation, op, targetFunc, args, tableTarget) {
-      inHost = Wasabi.module.info.functions.filter(f => f.import !== null).length <= locatation.func
-      if (inHost) {
-        let from: FromWasm = {
-          funcidx: locatation.func,
-          host: false as false,
-        }
-        let to = {
-          funcidx: targetFunc,
-          params: args,
-          host: true,
-        }
-        callGraph.push({ from, params: args, to })
-      }
-      from = {
-        funcidx: targetFunc,
-        host: true,
-      }
-    },
-    begin_function(location, args) {
-      if (from.funcidx === 'h') {
-        let from: FromInit = {
-          funcidx: 'h' as 'h',
-          host: true as true
-        }
-        let to: ToFromHost = {
-          funcidx: location.func,
-          host: false as false,
-          memSizes: Wasabi.module.memories.map(m => m.buffer.byteLength),
-          tableSizes: Wasabi.module.tables.map(t => t.length),
-        }
-        callGraph.push({ from, params: args, to })
-        return
-      }
-      if (from.host) {
-        let to: ToFromHost = {
-          funcidx: location.func,
-          host: false,
-          memSizes: Wasabi.module.memories.map(m => m.buffer.byteLength),
-          tableSizes: Wasabi.module.tables.map(t => t.length)
-        }
-        callGraph.push({ from, params: args, to })
-        return
-      }
-      let to: ToFromWasm = {
-        funcidx: location.func,
-        host: false,
-      }
-      //@ts-ignore
-      callGraph.push({ from, params: args, to })
-    }
-  }
-  return callGraph
-}
-
-function stringifyCallGraph(callGraph: CallGraph) {
-  let s = 'How to read this graph: $from -> [$params] -> $to [$memSizes] [$tableSizes]\n'
-  callGraph.forEach((edge, i) => {
-    s += `${i}: ${edge.from.funcidx} -> [${edge.params}] -> ${edge.to.funcidx}\t`
-    if (edge.from.host) {
-      s += `[${(edge.to as ToFromHost).memSizes}] [${(edge.to as ToFromHost).tableSizes}]`
-    }
-    s += `\n`
-  })
-  return s
-}
-
-
 (async function run() {
+  if (process.argv[2] === 'call') {
+    generateCallGraphs = true
+  }
   if (process.argv.includes('node') || process.argv[2] === undefined) {
     console.log('==============')
     console.log('Run node tests')

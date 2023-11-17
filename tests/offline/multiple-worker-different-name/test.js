@@ -1,9 +1,8 @@
-import { launch, land } from '../../../dist/src/instrumenter.cjs'
 import { delay } from '../../../dist/tests/test-utils.cjs'
 
-export default async function test(wasmBinary) {
+export default async function test(analyser) {
     const url = 'http://localhost:8000'
-    let { browser, page } = await launch(url, { headless: true })
+    await analyser.start(url, { headless: true })
     await delay(1000)
-    return await land(browser, page)
+    return await analyser.stop()
 }
