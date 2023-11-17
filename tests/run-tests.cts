@@ -4,10 +4,9 @@ import path from 'path'
 const cp = require("child_process")
 import express from 'express'
 import Generator from "../src/replay-generator.cjs";
-import parse from "../src/trace-parse.cjs";
 import stringify from "../src/trace-stringify.cjs";
-import setupAnalysis from "../src/tracer.cjs";
-import setupCallGraphAnalysis from '../src/callgraph.cjs'
+import Trace from "../src/tracer.cjs";
+import CallGraph from '../src/callgraph.cjs'
 import { getDirectoryNames } from "./test-utils.cjs";
 import { fromAnalysisResult, saveBenchmark } from '../src/benchmark.cjs';
 //@ts-ignore
@@ -41,18 +40,6 @@ async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, "long.cjs"))
   await rmSafe(path.join(testPath, 'benchmark'))
   await rmSafe(path.join(testPath, 'test-benchmark'))
-}
-
-function stringifyCallGraph(callGraph: any) {
-  let s = 'How to read this graph: $from -> [$params] -> $to [$memSizes] [$tableSizes]\n'
-  callGraph.forEach((edge, i) => {
-    s += `${i}: ${edge.from.funcidx} -> [${edge.params}] -> ${edge.to.funcidx}\t`
-    if (edge.from.host) {
-      s += `[${(edge.to).memSizes}] [${(edge.to).tableSizes}]`
-    }
-    s += `\n`
-  })
-  return s
 }
 
 
@@ -94,37 +81,37 @@ async function runNodeTest(name: string): Promise<TestReport> {
 
   // 2. Execute test and generate trace as well as call graph
   const wasmBinary = await fs.readFile(wasmPath)
-  let trace = setupAnalysis(eval(js + `\nWasabi`))
+  let trace = new Trace(eval(js + `\nWasabi`)).getResult()
   try {
     await (await import(testJsPath)).default(wasmBinary)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
-  let traceString = stringify(trace);
+  let traceString = trace.toString();
   fss.writeFileSync(tracePath, traceString);
 
   // 3. Generate replay binary
   try {
-    trace = parse(traceString)
+    trace = trace.fromString(traceString)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
   let replayCode
   try {
-    replayCode = new Generator().generateReplay(trace).toString()
+    replayCode = new Generator().generateReplay(trace.into()).toString()
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
   fss.writeFileSync(replayPath, replayCode)
 
   // 4. Execute replay and generate trace and compare
-  let replayTrace = setupAnalysis(eval(js + `\nWasabi`))
+  let replayTrace = new Trace(eval(js + `\nWasabi`)).getResult()
   try {
     await (await import(replayPath)).default(wasmBinary)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
-  let replayTraceString = stringify(replayTrace);
+  let replayTraceString = replayTrace.toString();
   fss.writeFileSync(replayTracePath, replayTraceString);
 
   const result = compareResults(testPath, traceString, replayTraceString)
@@ -133,24 +120,24 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
 
   // 5. Compare call graphs
-  if (generateCallGraphs === false) {
-    let callGraph = setupCallGraphAnalysis(eval(js + `\nWasabi`))
+  if (generateCallGraphs === true) {
+    let callGraph = new CallGraph(eval(js + `\nWasabi`)).getResult()
     try {
       await (await import(testJsPath)).default(wasmBinary)
     } catch (e: any) {
       return { testPath, success: false, reason: e.stack }
     }
-    const callGraphString = stringifyCallGraph(callGraph)
+    const callGraphString = JSON.stringify(callGraph)
     await fs.writeFile(callGraphPath, callGraphString)
 
-    let replayCallGraph = setupCallGraphAnalysis(eval(js + `\nWasabi`))
+    let replayCallGraph = new CallGraph(eval(js + `\nWasabi`)).getResult()
     delete (require as NodeJS.Require & { cache: any }).cache[replayPath]
     try {
       await (await import(replayPath)).default(wasmBinary)
     } catch (e: any) {
       return { testPath, success: false, reason: e.stack }
     }
-    const replayCallGraphString = stringifyCallGraph(replayCallGraph)
+    const replayCallGraphString = JSON.stringify(toString())
     await fs.writeFile(replayCallGraphPath, replayCallGraphString)
     return compareResults(testPath, callGraphString, replayCallGraphString)
   }
@@ -195,8 +182,9 @@ async function runOnlineTests(names: string[]) {
   let filter = [
     'funky-kart'
   ]
+  // names = ['visual6502remix']
   names = names.filter((n) => !filter.includes(n))
-  names = [ 'pathfinding' ]
+  // names = ['pathfinding']
   for (let name of names) {
     await writeReport(name, await runOnlineTest(name))
   }
@@ -268,31 +256,22 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   let analysisResult: AnalysisResult
   try {
     analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/tracer.cjs'))
-  } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
-  }
-  const record = fromAnalysisResult(analysisResult)
-  await saveBenchmark(benchmarkPath, record)
-  let subBenchmarkNames = getDirectoryNames(benchmarkPath)
-  if (subBenchmarkNames.length === 0) {
-    return { testPath, success: false, reason: 'no benchmark was generated' }
-  }
-  try {
+    const record = fromAnalysisResult(analysisResult)
+    await saveBenchmark(benchmarkPath, record)
+    let subBenchmarkNames = getDirectoryNames(benchmarkPath)
+    if (subBenchmarkNames.length === 0) {
+      return { testPath, success: false, reason: 'no benchmark was generated' }
+    }
     analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/callgraph.cjs'))
-  } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
-  }
-  let callGraphs = []
-  if (generateCallGraphs === true) {
-    callGraphs = await Promise.all(analysisResult.map(async (r, i) => {
-      const callGraph = JSON.parse(r.result)
-      const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpgraph.txt')
-      await fs.writeFile(callGraphPath, stringifyCallGraph(callGraph))
-      return callGraph
-    }))
-  }
+    let callGraphs: string[] = []
+    if (generateCallGraphs === true) {
+      callGraphs = await Promise.all(analysisResult.map(async (r, i) => {
+        const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpgraph.txt')
+        await fs.writeFile(callGraphPath, r.result)
+        return r.result
+      }))
+    }
 
-  try {
     let runtimes = record.map(({ binary }, i) => {
       const out = instrument_wasm({ original: binary })
       record[i].binary = out.instrumented
@@ -304,10 +283,10 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
       const replayPath = path.join(subBenchmarkPath, 'replay.js')
       const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
-      let replayTrace = setupAnalysis(eval(runtimes[i] + `\nWasabi`))
+      let replayTrace = new Trace(eval(runtimes[i] + `\nWasabi`)).getResult()
       await (await import(replayPath)).default(Buffer.from(record[i].binary))
       let traceString = stringify(record[i].trace)
-      let replayTraceString = stringify(replayTrace);
+      let replayTraceString = replayTrace.toString()
       await fs.writeFile(replayTracePath, replayTraceString);
 
       // 5. Check if original trace and replay trace match
@@ -319,10 +298,10 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       // Compare call graphs
       if (generateCallGraphs === true) {
         const replayCallGraphPath = path.join(subBenchmarkPath, 'replay-call-graph.txt')
-        let replayCallGraph = setupCallGraphAnalysis(eval(runtimes[i] + `\nWasabi`))
+        let replayCallGraph = new CallGraph(eval(runtimes[i] + `\nWasabi`)).getResult()
         await (await import(replayPath)).default(Buffer.from(record[i].binary))
-        const callGraphString = stringifyCallGraph(callGraphs[i])
-        const replayCallGraphString = stringifyCallGraph(replayCallGraph)
+        const callGraphString = callGraphs[i].toString()
+        const replayCallGraphString = JSON.stringify(replayCallGraph.into())
         await fs.writeFile(replayCallGraphPath, replayCallGraphString)
         result = compareResults(testPath, callGraphString, replayCallGraphString)
         if (result.success === false) {
@@ -331,7 +310,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       }
     }
   } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
+    return { testPath, success: false, reason: e.stack}
   }
   return { testPath, success: true }
 }

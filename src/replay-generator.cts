@@ -26,6 +26,9 @@ export default class Generator {
     }
 
     generateReplay(trace: Trace) {
+        if (trace.length === 0) {
+            throw new Error('No trace has been provided. Are you sure the app that you are using instantiates WebAssembly.')
+        }
         trace.forEach((event) => {
             switch (event.type) {
                 case "ExportCall":

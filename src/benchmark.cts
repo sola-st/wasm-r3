@@ -10,7 +10,7 @@ import { AnalysisResult } from "./analyser.cjs"
 export type Record = { binary: number[], trace: Trace }[]
 
 export function fromAnalysisResult(result: AnalysisResult): Record {
-    return result.map(r => ({ trace: JSON.parse(r.result), binary: r.wasm }))
+    return result.map(r => ({ trace: parse(r.result), binary: r.wasm }))
 }
 
 export async function saveBenchmark(benchmarkPath: string, record: Record, options = { trace: true }) {

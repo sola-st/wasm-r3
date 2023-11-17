@@ -2,6 +2,9 @@ import { Trace, ValType, RefType } from '../trace.d.cjs'
 
 export default function parse(traceString: string) {
     let trace: Trace = []
+    if (traceString.length === 0) {
+        return trace
+    }
     let events = traceString.trim().split('\n')
     for (let event of events) {
         let components = event.split(';')

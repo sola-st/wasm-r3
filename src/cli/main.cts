@@ -9,11 +9,9 @@ async function main() {
     if ('call' === process.argv[4]) {
         await record_callgraph(url)
     } else {
-        benchmark = await record(url)
+        benchmark = await record(url, { dumpPerformance: true, headless: false })
     }
-    console.time('save Benchmark')
     await saveBenchmark(benchmarkPath, benchmark)
-    console.timeEnd('save Benchmark')
 }
 
 main()
