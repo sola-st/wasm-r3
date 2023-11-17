@@ -59,11 +59,12 @@ export default function setupTracer(Wasabi: Wasabi) {
         },
 
         store(location, op, target, memarg, value) {
+            const addr = target.addr + memarg.offset
             if (shadowMemories.length === 0) {
                 return
             }
-            let addr = target.addr + memarg.offset
             let byteLength = getByteLength(op)
+            byteLength = parseInt(op.substring(1, 3)) / 8
             let data = get_actual_mem(target.memIdx, addr, byteLength)
             set_shadow_memory(target.memIdx, addr, data)
         },
@@ -76,10 +77,10 @@ export default function setupTracer(Wasabi: Wasabi) {
         },
 
         load(location, op, target, memarg, value) {
+            const addr = target.addr + memarg.offset
             if (shadowMemories.length === 0) {
                 return
             }
-            let addr = target.addr
             let numType = getByteLength(op)
             if (mem_content_equals(target.memIdx, addr, numType)) {
                 return
@@ -87,6 +88,18 @@ export default function setupTracer(Wasabi: Wasabi) {
             let data = get_actual_mem(target.memIdx, addr, numType)
             set_shadow_memory(target.memIdx, addr, data)
             trace.push({ type: "Load", name: getName(Wasabi.module.info.memories[target.memIdx]), offset: addr, data, idx: 0 })
+            // if ((addr === 1434178 || addr === 1434179 || addr === 4317476 || addr === 1434198)) {
+            //     console.log('-----------------------------')
+            //     console.log('op', op)
+            //     console.log('byteLength', numType)
+            //     console.log('location', location)
+            //     console.log('target', target)
+            //     console.log('memarg', memarg)
+            //     console.log('addr', addr)
+            //     console.log('value', value)
+            //     console.log('trace length', trace.length)
+            //     console.log('trace', trace)
+            // }
         },
 
         global(location, op, idx, value) {
@@ -263,6 +276,22 @@ export default function setupTracer(Wasabi: Wasabi) {
     }
 
     function getByteLength(instr: StoreOp | LoadOp) {
+        let typeIndex = 9
+        // if (instr.charAt(4) === 's') {
+        //     if (instr.charAt(typeIndex) === '8') {
+        //         return parseInt(instr.charAt(typeIndex)) / 8
+        //     } else if (instr.charAt(typeIndex) === '1' || instr.charAt(typeIndex) === '3') {
+        //         return parseInt(instr.substring(typeIndex, 9)) / 8
+        //     }
+        // }
+        if (instr.charAt(4) === 'l') {
+            typeIndex = 8
+            if (instr.charAt(typeIndex) === '8') {
+                return parseInt(instr.charAt(typeIndex)) / 8
+            } else if (instr.charAt(typeIndex) === '1' || instr.charAt(typeIndex) === '3') {
+                return parseInt(instr.substring(typeIndex, 9)) / 8
+            }
+        }
         return parseInt(instr.substring(1, 3)) / 8
     }
 

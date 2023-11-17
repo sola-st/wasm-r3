@@ -2,7 +2,7 @@ import { unreachable } from "./util.cjs"
 import { Trace } from "../trace.d.cjs"
 
 type ImpExp = { import: boolean, name: string }
-type Call = { type: "Call", name: string }
+type Call = { type: "Call", name: string, params: number[] }
 type Store = { type: "Store", addr: number, data: number[] } & ImpExp
 type MemGrow = { type: "MemGrow", amount: number } & ImpExp
 type TableSet = { type: "TableSet", idx: number, funcImport: boolean, funcName: string } & ImpExp
@@ -33,7 +33,7 @@ export default class Generator {
                         this.code.calls.push({ name: event.name, params: event.params })
                         break
                     }
-                    this.pushEvent({ type: 'Call', name: event.name })
+                    this.pushEvent({ type: 'Call', name: event.name, params: event.params })
                     break
                 case "ImportCall":
                     this.code.funcImports[event.idx].body.push({ results: [], events: [] })
@@ -232,7 +232,7 @@ class Code {
                 for (let event of b.events) {
                     switch (event.type) {
                         case 'Call':
-                            jsString += `instance.exports.${event.name}()\n`
+                            jsString += `instance.exports.${event.name}(${writeParamsString(event.params)})\n`
                             break
                         case 'Store':
                             jsString += this.storeEvent(event)
@@ -260,12 +260,7 @@ class Code {
         jsString += `let wasm = await WebAssembly.instantiate(wasmBinary, imports) \n`
         jsString += `instance = wasm.instance\n`
         for (let exp of this.calls) {
-            let paramsString = ''
-            for (let p of exp.params) {
-                paramsString += p + ','
-            }
-            paramsString = paramsString.slice(0, -1)
-            jsString += `await instance.exports.${exp.name}(${paramsString}) \n`
+            jsString += `await instance.exports.${exp.name}(${writeParamsString(exp.params)}) \n`
         }
         jsString += `}\n`
         jsString += `if (process.argv[2] === 'run') {\n`
@@ -337,7 +332,7 @@ class Code {
 }
 
 function writeFuncGlobal(funcidx: string) {
-    return `global_${funcidx} `
+    return `global_${funcidx}`
 }
 
 function writeModule(module: string) {
@@ -346,4 +341,13 @@ function writeModule(module: string) {
 
 function writeImport(module: string, name: string) {
     return `imports['${module}']['${name}'] = `
+}
+
+function writeParamsString(params: number[]) {
+    let paramsString = ''
+    for (let p of params) {
+        paramsString += p + ','
+    }
+    paramsString = paramsString.slice(0, -1)
+    return paramsString
 }

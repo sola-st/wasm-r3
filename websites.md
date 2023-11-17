@@ -4,8 +4,8 @@ This is a list of Websites we have tried wasm-r3 on.
 
 - [Game of Life](https://playgameoflife.com/) (Seems to work)
 - [Path finding](https://jacobdeichert.github.io/wasm-astar/) (Seems to work)
-- [Calculator App](https://handytools.xd-deng.com/) (Seems to work)
-- [Funky Karts](https://www.funkykarts.rocks/demo.html) (Replay fails with memory index out of bounds error)
+- [Handy tools](https://handytools.xd-deng.com/) (Seems to work)
+- [Funky Karts](https://www.funkykarts.rocks/demo.html) (There is divergence in the record and the replay trace)
     - Instrumentation takes 0:0.439, NaN
     - Trace download takes 1:56.243, 2:24.030
     - Trace conversion takes 0:0.080, 0:0.87
@@ -22,6 +22,6 @@ This is a list of Websites we have tried wasm-r3 on.
     - browser close: 0:0.391
     - save Benchmark: NaN => It does not take too long though
 - [Rust Python](https://rustpython.github.io/demo/) There is some compilation error
-- [Generate Heatmap](https://aurium.gitlab.io/wasm-heatmap/) (Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin)
+- [Generate Heatmap](https://aurium.gitlab.io/wasm-heatmap/) (Super slow)
 - [PSPDF Kit Demo](https://pspdfkit.com/demo/hello) (We didnt really test it yet. Wasm seems not to get instantiated) WebWorker issue
 - [Capcut]() (email: jakob@getz.de, password: 123456)

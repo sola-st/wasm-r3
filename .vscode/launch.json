@@ -4,14 +4,18 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "node",
             "request": "launch",
-            "name": "funky-kart10",
+            "name": "funky-kart13",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/funky-kart10/bin_0/replay.js"
+            "program": "${workspaceFolder}/funky-kart13/bin_0/replay.js",
+            "args": [
+                "run"
+            ]
         },
         {
             "type": "node",
@@ -20,7 +24,10 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/funky-kart11/bin_0/replay.js"
+            "program": "${workspaceFolder}/funky-kart11/bin_0/replay.js",
+            "args": [
+                "run"
+            ]
         },
         {
             "type": "node",
@@ -32,6 +39,30 @@
             "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
             "args": [
                 "node"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "test offline",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
+            "args": [
+                "offline"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "test online",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
+            "args": [
+                "online"
             ]
         }
     ]
