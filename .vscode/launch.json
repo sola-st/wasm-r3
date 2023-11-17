@@ -4,7 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "type": "node",
             "request": "launch",
@@ -64,6 +63,19 @@
             "args": [
                 "online"
             ]
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "sqllite",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/dist/src/cli/main.cjs",
+            "args": [
+                "http://localhost:8000/speedtest1.html",
+                "sqllite"
+            ]
+        },
     ]
 }
