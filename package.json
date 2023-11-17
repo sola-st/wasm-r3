@@ -18,7 +18,7 @@
     "playwright": "^1.39.0"
   },
   "scripts": {
-    "build": "node --loader ts-node/esm ./build.ts",
+    "build": "node ./build.js",
     "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && wasm-pack build --target nodejs --out-dir ../../../dist/wasabi && cd ../../..",
     "build-full": "npm run build-wasabi && npm run build",
     "test": "npm run build && node ./dist/tests/run-tests.cjs",

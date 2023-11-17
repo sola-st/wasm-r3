@@ -6,9 +6,9 @@ const dirname = path.dirname(import.meta.url.replace(/^file:/, ''))
 
 // Compile Typescript
 cp.execSync('npx tsc')
-const jsTracerPath = path.join(dirname, './dist/src/tracer.cjs')
-const tracer = fs.readFileSync(jsTracerPath, 'utf-8')
-let lines = tracer.split("\n")
+// const jsTracerPath = path.join(dirname, './dist/src/tracer.cjs')
+// const tracer = fs.readFileSync(jsTracerPath, 'utf-8')
+// let lines = tracer.split("\n")
 // lines.splice(1, 1)
 // fs.writeFileSync(jsTracerPath, lines.join('\n'))
 
