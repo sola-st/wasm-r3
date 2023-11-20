@@ -70,7 +70,7 @@ export class Trace {
                     traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.initial, e.element)
                     break
                 default:
-                    throw new Error(`Event of type ${(e as Event).type} not supported`)
+                    throw new Error(`Event of type ${(e as Event).type} not supported. Trace: ${JSON.stringify(this.trace)}`,)
             }
             traceString += "\n"
         }
@@ -202,7 +202,7 @@ export class Trace {
                     })
                     break
                 default:
-                    throw new Error(`${components[0]}: Not a valid trace event`)
+                    throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}. Trace: ${JSON.stringify(this.trace)}`)
             }
         }
         return this
