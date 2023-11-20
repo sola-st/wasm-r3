@@ -180,7 +180,6 @@ function compareResults(testPath: string, traceString: string, replayTraceString
 async function runOnlineTests(names: string[]) {
   // ignore specific tests
   let filter = [
-    'funky-kart'
   ]
   // names = ['visual6502remix']
   names = names.filter((n) => !filter.includes(n))
@@ -310,7 +309,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       }
     }
   } catch (e: any) {
-    return { testPath, success: false, reason: e.stack}
+    return { testPath, success: false, reason: e.stack }
   }
   return { testPath, success: true }
 }
