@@ -17,7 +17,7 @@ export default async function record(url: string, options = { headless: false, d
   }
   const analyser = new Analyser('./dist/src/tracer.cjs')
   await analyser.start(url, { headless: options.headless })
-  console.log(`Record is running. Enter 'Stop' to stop recording.`)
+  console.log(`Record is running. Enter 'Stop' to stop recording: `)
   await askQuestion('')
   rl.close()
   console.log(`Record stopped`)

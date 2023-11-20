@@ -159,6 +159,7 @@ async function runNodeTests(names: string[]) {
     'funky-kart',
   ]
   names = names.filter((n) => !filter.includes(n))
+  names = ["mem-imp-host-grow"]
 
   for (let name of names) {
     await writeReport(name, await runNodeTest(name))

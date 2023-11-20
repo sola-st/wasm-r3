@@ -1,6 +1,7 @@
 import { Browser, chromium, Page, Worker } from 'playwright'
 import { PerformanceEntry, PerformanceList } from './performance.cjs'
 import fs from 'fs/promises'
+import { Trace } from '../trace.cjs'
 
 export interface AnalysisI<T> {
     getResult(): T
@@ -63,16 +64,47 @@ export default class Analyser {
         const p_download = new PerformanceEntry('data download')
         const p_downloadTraces = new PerformanceEntry('trace download')
         const p_downloadTracesMain = new PerformanceEntry('trace download from main context')
-        let analysis: AnalysisI<any>[]
+        let analysis: AnalysisI<Trace>[]
         const analysisResults: string[] = (await this.page.evaluate(() => {
             // We cannot construct a string longer then a specific length
             // specifically for v8 the string must not be longer then 2^29 - 24 (~1GiB) for 64 bit systems
             // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length#
-            return analysis.map(r => r.getResult().toString())
+            //@ts-ignore
+            const p_downloadTraces = performanceEvent(`compress traces from main thread`)
+            const traces = analysis.map((r, i) => {
+                //@ts-ignore
+                const p_compressTrace = performanceEvent(`compress trace ${i} from main thread`)
+                const trace = r.getResult().toString()
+                //@ts-ignore
+                self.performanceList.push(p_compressTrace.stop())
+                return trace
+            })
+            //@ts-ignore
+            self.performanceList.push(p_downloadTraces.stop())
+            return traces
         }))
         this.performanceTraceLocal.push(p_downloadTracesMain.stop())
-        const p_downloadTracesWorker = new PerformanceEntry('trace download from workers')
-        const workerResults = await Promise.all(this.workerHandles.map((w) => w.evaluate(() => analysis.map(r => r.getResult().toString()))))
+        const p_downloadTracesWorker = new PerformanceEntry('traces download from workers')
+        const workerResults = await Promise.all(this.workerHandles.map(async (w, i) => {
+            const p_downloadTrace = new PerformanceEntry(`download traces from worker ${i}`)
+            const trace = await w.evaluate((i) => {
+                //@ts-ignore
+                const p_compressTraces = performanceEvent(`compress traces from worker ${i}`)
+                const traces = analysis.map((r, j) => {
+                    //@ts-ignore
+                    const p_compressTrace = performanceEvent(`compress trace ${j} from worker ${i}`)
+                    const trace = r.getResult().toString()
+                    //@ts-ignore
+                    self.performanceList.push(p_compressTrace.stop())
+                    return trace
+                })
+                //@ts-ignore
+                self.performanceList.push(p_compressTraces.stop())
+                return traces
+            }, i)
+            this.performanceTraceLocal.push(p_downloadTrace.stop())
+            return trace
+        }))
         analysisResults.push(...workerResults.flat(1))
         this.performanceTraceLocal.push(p_downloadTracesWorker.stop())
         this.performanceTraceLocal.push(p_downloadTraces.stop())

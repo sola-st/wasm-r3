@@ -58,7 +58,7 @@ class Trace {
                     traceString += stringifyEvent(e.type, e.idx, e.name, str(e.results))
                     break
                 case 'ImportMemory':
-                    traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.pages)
+                    traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.pages, e.maxPages)
                     break
                 case 'ImportGlobal':
                     traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.valtype, e.value)
@@ -104,6 +104,7 @@ class Trace {
                         module: components[2],
                         name: components[3],
                         pages: parseInt(components[4]),
+                        maxPages: parseInt(components[5])
                     })
                     break
                 case "ExportCall":
@@ -211,7 +212,7 @@ class Trace {
 export default class Analysis implements AnalysisI<Trace> {
 
     private trace: Trace = new Trace()
-    private Wasabi
+    private Wasabi: Wasabi
 
     // shadow stuff
     private shadowMemories: ArrayBuffer[] = []
@@ -500,7 +501,11 @@ export default class Analysis implements AnalysisI<Trace> {
         })
         this.Wasabi.module.info.memories.forEach((m, idx) => {
             if (m.import !== null) {
-                this.trace.push({ type: 'ImportMemory', module: m.import[0], name: m.import[1], pages: this.Wasabi.module.memories[idx].buffer.byteLength / this.MEM_PAGE_SIZE, idx })
+                const memory = this.Wasabi.module.memories[idx]
+                const pages = memory.buffer.byteLength / this.MEM_PAGE_SIZE
+                const maxPages = memory.buffer.byteLength / (64 * 1024)
+                console.log(maxPages)
+                this.trace.push({ type: 'ImportMemory', module: m.import[0], name: m.import[1], pages, idx, maxPages })
             }
         })
         // Init Tables

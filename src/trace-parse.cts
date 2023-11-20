@@ -16,6 +16,7 @@ export default function parse(traceString: string) {
                     module: components[2],
                     name: components[3],
                     pages: parseInt(components[4]),
+                    maxPages: parseInt(components[5])
                 })
                 break
             case "ExportCall":

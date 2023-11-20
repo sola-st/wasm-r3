@@ -28,7 +28,7 @@ export default function stringifyTrace(trace: Trace) {
                 traceString += stringifyEvent(e.type, e.idx, e.name, str(e.results))
                 break
             case 'ImportMemory':
-                traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.pages)
+                traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.pages, e.maxPages)
                 break
             case 'ImportGlobal':
                 traceString += stringifyEvent(e.type, e.idx, e.module, e.name, e.valtype, e.value)

@@ -11,7 +11,7 @@ type GlobalSet = { type: "GlobalSet", value: number, bigInt: boolean } & ImpExp
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type Import = { module: string, name: string }
 type Function = Import & { body: { results: number[], events: Event[] }[] }
-type Memory = Import & { pages: number }
+type Memory = Import & { pages: number, maxPages: number }
 type Table = Import & WebAssembly.TableDescriptor
 type Global = Import & { valtype: string, value: number }
 type State = { callStack: Function[], lastFunc?: Function }
@@ -87,7 +87,8 @@ export default class Generator {
                     this.code.memImports[event.idx] = {
                         module: event.module,
                         name: event.name,
-                        pages: event.pages
+                        pages: event.pages,
+                        maxPages: event.maxPages
                     }
                     break
                 case 'GlobalGet':
@@ -190,7 +191,7 @@ class Code {
         // Init memories
         for (let memidx in this.memImports) {
             let mem = this.memImports[memidx]
-            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages}, maximum: ${mem.pages/*This is wrong. You need to trace the actual maximum here*/} })\n`
+            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages}, maximum: ${mem.maxPages} })\n`
             jsString += `${writeImport(mem.module, mem.name)}${mem.name}\n`
         }
         // Init globals
