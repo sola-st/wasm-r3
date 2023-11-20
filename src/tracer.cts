@@ -504,7 +504,6 @@ export default class Analysis implements AnalysisI<Trace> {
                 const memory = this.Wasabi.module.memories[idx]
                 const pages = memory.buffer.byteLength / this.MEM_PAGE_SIZE
                 const maxPages = memory.buffer.byteLength / (64 * 1024)
-                console.log(maxPages)
                 this.trace.push({ type: 'ImportMemory', module: m.import[0], name: m.import[1], pages, idx, maxPages })
             }
         })

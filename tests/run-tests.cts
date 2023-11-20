@@ -79,7 +79,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
   let { instrumented, js } = instrument_wasm({ original: binary })
   fss.writeFileSync(wasmPath, Buffer.from(instrumented))
 
-  // 2. Execute test and generate trace as well as call graph
+  // 2. Execute test and generate trace
   const wasmBinary = await fs.readFile(wasmPath)
   let trace = new Trace(eval(js + `\nWasabi`)).getResult()
   try {
@@ -182,7 +182,6 @@ async function runOnlineTests(names: string[]) {
   // ignore specific tests
   let filter = [
   ]
-  // names = ['visual6502remix']
   names = names.filter((n) => !filter.includes(n))
   // names = ['pathfinding']
   for (let name of names) {
@@ -202,6 +201,7 @@ async function runOfflineTests(names: string[]) {
     'sqllite'
   ]
   names = names.filter((n) => !filter.includes(n))
+  names = ['basic']
   for (let name of names) {
     await writeReport(name, await runOfflineTest(name))
   }
@@ -262,14 +262,16 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: 'no benchmark was generated' }
     }
-    analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/callgraph.cjs'))
     let callGraphs: string[] = []
     if (generateCallGraphs === true) {
-      callGraphs = await Promise.all(analysisResult.map(async (r, i) => {
-        const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpgraph.txt')
-        await fs.writeFile(callGraphPath, r.result)
-        return r.result
-      }))
+      analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/callgraph.cjs'))
+      if (generateCallGraphs === true) {
+        callGraphs = await Promise.all(analysisResult.map(async (r, i) => {
+          const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpgraph.txt')
+          await fs.writeFile(callGraphPath, r.result)
+          return r.result
+        }))
+      }
     }
 
     let runtimes = record.map(({ binary }, i) => {
