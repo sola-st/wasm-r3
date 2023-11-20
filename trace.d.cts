@@ -23,7 +23,7 @@ export type ImportCall = { type: "ImportCall", idx: number, name: string }
 
 export type ImportReturn = { type: "ImportReturn", idx: number, name: string, results: number[] }
 
-export type ImportMemory = { type: 'ImportMemory', idx: number, pages: number } & Import
+export type ImportMemory = { type: 'ImportMemory', idx: number, pages: number, maxPages: number } & Import
 
 export type ImportTable = { type: 'ImportTable', idx: number } & WebAssembly.TableDescriptor & Import
 
