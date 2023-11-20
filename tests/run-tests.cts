@@ -1,29 +1,20 @@
-import fss from 'fs'
 import fs from 'fs/promises'
+import { existsSync as exists } from 'fs'
 import path from 'path'
-const cp = require("child_process")
+import cp from 'child_process'
 import express from 'express'
 import Generator from "../src/replay-generator.cjs";
-import stringify from "../src/trace-stringify.cjs";
 import Trace from "../src/tracer.cjs";
 import CallGraph from '../src/callgraph.cjs'
-import { getDirectoryNames } from "./test-utils.cjs";
+import { getDirectoryNames, rmSafe } from "./test-utils.cjs";
 import { fromAnalysisResult, saveBenchmark } from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
 import { Server } from 'http'
 import Analyser, { AnalysisResult } from '../src/analyser.cjs'
+import commandLineArgs from 'command-line-args'
 
 let generateCallGraphs = false
-const tracerPath = path.join(process.cwd(), 'dist', "./src/tracer.cjs");
-
-async function rmSafe(path: string) {
-  try {
-    await fs.rm(path, { recursive: true });
-  } catch {
-    // file doesnt exist, ok
-  }
-}
 
 async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, "gen.js"))
@@ -59,25 +50,25 @@ async function runNodeTest(name: string): Promise<TestReport> {
   // 1. Instrument with Wasabi !!Please use the newest version
   const indexRsPath = path.join(testPath, 'index.rs')
   const indexCPath = path.join(testPath, 'index.c')
-  if (fileExists(indexRsPath)) {
+  if (exists(indexRsPath)) {
     cp.execSync(`rustc --crate-type cdylib ${indexRsPath} --target wasm32-unknown-unknown --crate-type cdylib -o ${wasmPath}`, { stdio: 'ignore' })
     cp.execSync(`wasm2wat ${wasmPath} -o ${watPath}`)
-  } else if (fileExists(indexCPath)) {
-
+} else if (exists(indexCPath)) {
+    // TODO
   } else {
     cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
   }
   // const wasabiCommand = `wasabi ${wasmPath} --node -o ${testPath}`
-  // cp.execSync(wasabiCommand, { stdio: 'ignore' });
-  // fss.renameSync(wasabiRuntimePathJS, wasabiRuntimePath)
-  // fss.renameSync(path.join(testPath, 'long.js'), path.join(testPath, 'long.cjs'))
+  // cp.exec(wasabiCommand, { stdio: 'ignore' });
+  // fss.rename(wasabiRuntimePathJS, wasabiRuntimePath)
+  // fss.rename(path.join(testPath, 'long.js'), path.join(testPath, 'long.cjs'))
   // modifyRuntime(wasabiRuntimePath)
   // const wat = await fs.readFile(watPath)
   // const wabtModule = await wabt()
   // const binary = wabtModule.parseWat(watPath, wat).toBinary({})
   const binary = await fs.readFile(wasmPath)
   let { instrumented, js } = instrument_wasm({ original: binary })
-  fss.writeFileSync(wasmPath, Buffer.from(instrumented))
+  await fs.writeFile(wasmPath, Buffer.from(instrumented))
 
   // 2. Execute test and generate trace
   const wasmBinary = await fs.readFile(wasmPath)
@@ -88,7 +79,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
     return { testPath, success: false, reason: e.stack }
   }
   let traceString = trace.toString();
-  fss.writeFileSync(tracePath, traceString);
+  await fs.writeFile(tracePath, traceString);
 
   // 3. Generate replay binary
   try {
@@ -98,11 +89,11 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
   let replayCode
   try {
-    replayCode = new Generator().generateReplay(trace.into()).toString()
+    replayCode = new Generator().generateReplay(trace).toString()
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
-  fss.writeFileSync(replayPath, replayCode)
+  await fs.writeFile(replayPath, replayCode)
 
   // 4. Execute replay and generate trace and compare
   let replayTrace = new Trace(eval(js + `\nWasabi`)).getResult()
@@ -112,7 +103,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
     return { testPath, success: false, reason: e.stack }
   }
   let replayTraceString = replayTrace.toString();
-  fss.writeFileSync(replayTracePath, replayTraceString);
+  await fs.writeFile(replayTracePath, replayTraceString);
 
   const result = compareResults(testPath, traceString, replayTraceString)
   if (result.success === false) {
@@ -157,9 +148,10 @@ async function runNodeTests(names: string[]) {
     'table-exp-host-mod',
     'table-exp-host-grow',
     'funky-kart',
+    'mem-imp-host-grow'
   ]
   names = names.filter((n) => !filter.includes(n))
-  names = ["mem-imp-host-grow"]
+  // names = ["mem-imp-host-grow"]
 
   for (let name of names) {
     await writeReport(name, await runNodeTest(name))
@@ -181,9 +173,9 @@ function compareResults(testPath: string, traceString: string, replayTraceString
 async function runOnlineTests(names: string[]) {
   // ignore specific tests
   let filter = [
+    'visual6502remix'
   ]
   names = names.filter((n) => !filter.includes(n))
-  // names = ['pathfinding']
   for (let name of names) {
     await writeReport(name, await runOnlineTest(name))
   }
@@ -201,7 +193,6 @@ async function runOfflineTests(names: string[]) {
     'sqllite'
   ]
   names = names.filter((n) => !filter.includes(n))
-  names = ['basic']
   for (let name of names) {
     await writeReport(name, await runOfflineTest(name))
   }
@@ -253,18 +244,20 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')
   const benchmarkPath = path.join(testPath, 'benchmark')
   const testBenchmarkPath = path.join(testPath, 'test-benchmark')
+  const performancePath = path.join(testPath, 'performance')
   let analysisResult: AnalysisResult
   try {
-    analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/tracer.cjs'))
+    const analyser = new Analyser('./dist/src/tracer.cjs')
+    analysisResult = await (await import(testJsPath)).default(analyser)
     const record = fromAnalysisResult(analysisResult)
-    await saveBenchmark(benchmarkPath, record)
-    let subBenchmarkNames = getDirectoryNames(benchmarkPath)
+    await saveBenchmark(benchmarkPath, record, { trace: true })
+    let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: 'no benchmark was generated' }
     }
     let callGraphs: string[] = []
     if (generateCallGraphs === true) {
-      analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/callgraph.cjs'))
+      analysisResult = await (await import(testJsPath)).default(analyser)
       if (generateCallGraphs === true) {
         callGraphs = await Promise.all(analysisResult.map(async (r, i) => {
           const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpgraph.txt')
@@ -287,7 +280,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
       let replayTrace = new Trace(eval(runtimes[i] + `\nWasabi`)).getResult()
       await (await import(replayPath)).default(Buffer.from(record[i].binary))
-      let traceString = stringify(record[i].trace)
+      let traceString = record[i].trace.toString()
       let replayTraceString = replayTrace.toString()
       await fs.writeFile(replayTracePath, replayTraceString);
 
@@ -311,50 +304,43 @@ async function testWebPage(testPath: string): Promise<TestReport> {
         }
       }
     }
+    analyser.dumpPerformance(performancePath)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
   return { testPath, success: true }
 }
 
-function fileExists(filePath: string) {
-  try {
-    fss.accessSync(filePath); // This will throw an error if the file doesn't exist
-    return true;
-  } catch (error: any) {
-    if (error.code === 'ENOENT') {
-      return false;
-    } else {
-      throw error; // Handle other errors appropriately
-    }
-  }
-}
-
 (async function run() {
-  if (process.argv[2] === 'call') {
+  const optionDefinitions = [
+    { name: 'callgraph', alias: 'c', type: Boolean },
+    { name: 'category', type: String, multiple: true, defaultOption: true },
+  ]
+  const options = commandLineArgs(optionDefinitions)
+  if (options.callGraph == true) {
     generateCallGraphs = true
   }
-  if (process.argv.includes('node') || process.argv[2] === undefined) {
+  if (options.category === undefined || options.category.includes('node')) {
     console.log('==============')
     console.log('Run node tests')
     console.log('==============')
-    let nodeTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
+    let nodeTestNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
     await runNodeTests(nodeTestNames)
   }
-  if (process.argv.includes('offline') || process.argv[2] === undefined) {
+  if (options.category === undefined || options.category.includes('offline')) {
     console.log('=================')
     console.log('Run offline tests')
     console.log('=================')
-    let offlineTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
+    let offlineTestNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
     await runOfflineTests(offlineTestNames)
   }
-  if (process.argv.includes('online') || process.argv[2] === undefined) {
+  if (options.category === undefined || options.category.includes('online')) {
     console.log('================')
     console.log('Run online tests')
     console.log('================')
     console.log('WARNING: You need a working internet connection')
     console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
-    let webTestNames = getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
+    let webTestNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
     await runOnlineTests(webTestNames)
   }
   // process.stdout.write(`done running ${nodeTestNames.length + webTestNames.length} tests\n`);

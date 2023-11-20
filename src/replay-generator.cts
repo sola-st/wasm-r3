@@ -1,5 +1,5 @@
 import { unreachable } from "./util.cjs"
-import { Trace } from "../trace.d.cjs"
+import { Trace } from "./tracer.cjs"
 
 type ImpExp = { import: boolean, name: string }
 type Call = { type: "Call", name: string, params: number[] }
@@ -26,10 +26,10 @@ export default class Generator {
     }
 
     generateReplay(trace: Trace) {
-        if (trace.length === 0) {
+        if (trace.into().length === 0) {
             throw new Error('No trace has been provided. Are you sure the app that you are using instantiates WebAssembly.')
         }
-        trace.forEach((event) => {
+        trace.into().forEach((event) => {
             switch (event.type) {
                 case "ExportCall":
                     if (this.state.callStack.length === 0) {

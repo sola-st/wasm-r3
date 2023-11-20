@@ -86,8 +86,7 @@
             ],
             "program": "${workspaceFolder}/dist/src/cli/main.cjs",
             "args": [
-                "https://playgameoflife.com",
-                "gameoflife"
+                "https://playgameoflife.com"
             ]
         },
     ]

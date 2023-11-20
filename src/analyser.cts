@@ -157,6 +157,8 @@ export default class Analyser {
         analysisScript = analysisScript.split('exports.default = setupAnalysis;').join('')
         analysisScript = analysisScript.split('exports.stringifyTrace = void 0;').join('')
         analysisScript = analysisScript.split('exports.stringifyTrace = stringifyTrace;').join('')
+        analysisScript = analysisScript.split('exports.Trace = void 0;').join('')
+        analysisScript = analysisScript.split('exports.Trace = Trace;').join('')
         analysisScript = analysisScript.split('exports.default = Analysis;').join('')
         analysisScript = 'function setupAnalysis(Wasabi) {\n' + analysisScript + '\nreturn new Analysis(Wasabi)}\n'
         const setupScript = await fs.readFile('./src/runtime.js') + '\n'

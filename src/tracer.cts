@@ -2,7 +2,7 @@ import { StoreOp, LoadOp, ImpExp, Wasabi } from '../wasabi.cjs'
 import { Trace as TraceType, ValType, WasmEvent } from '../trace.d.cjs'
 import { AnalysisI } from './analyser.cjs'
 
-class Trace {
+export class Trace {
     private trace: TraceType
     constructor() {
         this.trace = []

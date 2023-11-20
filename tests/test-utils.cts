@@ -1,7 +1,7 @@
-const fs = require('fs')
+import fs from 'fs/promises'
 
-export function getDirectoryNames(folderPath: string) {
-    const entries = fs.readdirSync(folderPath, { withFileTypes: true });
+export async function getDirectoryNames(folderPath: string) {
+    const entries = await fs.readdir(folderPath, { withFileTypes: true });
 
     const directories: string[] = entries
         .filter((entry) => entry.isDirectory())
@@ -14,4 +14,12 @@ export async function delay(ms: number) {
     return new Promise(resolve => {
         setTimeout(resolve, ms);
     });
+}
+
+export async function rmSafe(path: string) {
+    try {
+        await fs.rm(path, { recursive: true });
+    } catch {
+        // file doesnt exist, ok
+    }
 }
