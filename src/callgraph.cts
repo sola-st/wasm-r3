@@ -31,17 +31,17 @@ class CallGraph {
         return this.callGraph
     }
 
-    // toString() {
-    //     let s = 'How to read this graph: $from -> [$params] -> $to [$memSizes] [$tableSizes]\n'
-    //     this.callGraph.forEach((edge, i) => {
-    //         s += `${i}: ${edge.from.funcidx} -> [${edge.params}] -> ${edge.to.funcidx}\t`
-    //         if (edge.from.host) {
-    //             s += `[${(edge.to as ToFromHost).memSizes}] [${(edge.to as ToFromHost).tableSizes}]`
-    //         }
-    //         s += `\n`
-    //     })
-    //     return s
-    // }
+    toString() {
+        let s = 'How to read this graph: $from -> [$params] -> $to [$memSizes] [$tableSizes]\n'
+        this.callGraph.forEach((edge, i) => {
+            s += `${i}: ${edge.from.funcidx} -> [${edge.params}] -> ${edge.to.funcidx}\t`
+            if (edge.from.host) {
+                s += `[${(edge.to as ToFromHost).memSizes}] [${(edge.to as ToFromHost).tableSizes}]`
+            }
+            s += `\n`
+        })
+        return s
+    }
 }
 
 export default class Analysis implements AnalysisI<CallGraph> {

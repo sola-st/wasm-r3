@@ -118,7 +118,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
     } catch (e: any) {
       return { testPath, success: false, reason: e.stack }
     }
-    const callGraphString = JSON.stringify(callGraph)
+    const callGraphString = callGraph.toString()
     await fs.writeFile(callGraphPath, callGraphString)
 
     let replayCallGraph = new CallGraph(eval(js + `\nWasabi`)).getResult()
@@ -128,7 +128,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
     } catch (e: any) {
       return { testPath, success: false, reason: e.stack }
     }
-    const replayCallGraphString = JSON.stringify(toString())
+    const replayCallGraphString = replayCallGraph.toString()
     await fs.writeFile(replayCallGraphPath, replayCallGraphString)
     return compareResults(testPath, callGraphString, replayCallGraphString)
   }
@@ -263,10 +263,10 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     }
     let callGraphs: string[] = []
     if (generateCallGraphs === true) {
-      analysisResult = await (await import(testJsPath)).default(analyser)
+      analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/callgraph.cjs'))
       if (generateCallGraphs === true) {
         callGraphs = await Promise.all(analysisResult.map(async (r, i) => {
-          const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpgraph.txt')
+          const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpraph.txt')
           await fs.writeFile(callGraphPath, r.result)
           return r.result
         }))
@@ -279,6 +279,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       return out.js
     })
     await saveBenchmark(testBenchmarkPath, record, { trace: false })
+    let results: any = { testPath, success: true }
     for (let i = 0; i < record.length; i++) {
       // Compare traces
       const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
@@ -291,35 +292,42 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       await fs.writeFile(replayTracePath, replayTraceString);
 
       // 5. Check if original trace and replay trace match
-      let result = compareResults(testPath, traceString, replayTraceString)
-      if (result.success === false) {
-        return result
+      const newResult = compareResults(testPath, traceString, replayTraceString)
+      if (newResult.success === false) {
+        results.success = false;
+        if (results.reason === undefined) {
+          results.reason = ''
+        }
+        results.reason += `\n\n${newResult.reason}`
       }
-
       // Compare call graphs
       if (generateCallGraphs === true) {
-        const replayCallGraphPath = path.join(subBenchmarkPath, 'replay-call-graph.txt')
+        const replayCallGraphPath = path.join(subBenchmarkPath, 'callgraph.txt')
         let replayCallGraph = new CallGraph(eval(runtimes[i] + `\nWasabi`)).getResult()
         await (await import(replayPath)).default(Buffer.from(record[i].binary))
         const callGraphString = callGraphs[i].toString()
-        const replayCallGraphString = JSON.stringify(replayCallGraph.into())
+        const replayCallGraphString = replayCallGraph.toString()
         await fs.writeFile(replayCallGraphPath, replayCallGraphString)
-        result = compareResults(testPath, callGraphString, replayCallGraphString)
-        if (result.success === false) {
-          return result
+        const newResult = compareResults(testPath, callGraphString, replayCallGraphString)
+        if (newResult.success === false) {
+          results.success = false;
+          if (results.reason === undefined) {
+            results.reason = ''
+          }
+          results.reason += `\n\n${newResult.reason}`
         }
       }
     }
     analyser.dumpPerformance(performancePath)
+    return results
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
-  return { testPath, success: true }
 }
 
 (async function run() {
   const optionDefinitions = [
-    { name: 'callgraph', alias: 'c', type: Boolean },
+    { name: 'callGraph', alias: 'c', type: Boolean },
     { name: 'category', type: String, multiple: true, defaultOption: true },
     { name: 'testcases', alias: 't', type: String, multiple: true }
   ]

@@ -38,7 +38,6 @@ There are three categories of tests:
 To test only certain categories just provide the specific categories you want to test as an argument to the test command.
 
 The faithfulness of Wasm-R3 is tested by comparing the trace generated during record with the trace generated during replay. The results of the testcases will be generated in the corresponding folders. Interesting files are the `report.txt` which contains information why a testcase failed. Also the trace for the record and the replay phase gets saved in `.r3` files. In case of `offline` and `online` the record traces are found under `benchmark/*/trace.r3` and the replay trace is found under `test-benchmark/*/trace.r3`
-> NOTE: as additional faithfulness check we can also compare the **callgraph** generated during record to the **callgraph** generated during replay. Documentation incoming as soon as there is a stabel api for this.
 
 ### Adding testcases
 

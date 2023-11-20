@@ -89,5 +89,20 @@
                 "https://playgameoflife.com"
             ]
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "gameoflife test",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
+            "args": [
+                "online",
+                "-t",
+                "game-of-life",
+                "-c"
+            ]
+        },
     ]
 }
