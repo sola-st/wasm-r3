@@ -6,7 +6,7 @@ import express from 'express'
 import Generator from "../src/replay-generator.cjs";
 import Trace from "../src/tracer.cjs";
 import CallGraph from '../src/callgraph.cjs'
-import { getDirectoryNames, rmSafe } from "./test-utils.cjs";
+import { getDirectoryNames, rmSafe, startSpinner, stopSpinner } from "./test-utils.cjs";
 import { fromAnalysisResult, saveBenchmark } from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
@@ -53,7 +53,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
   if (exists(indexRsPath)) {
     cp.execSync(`rustc --crate-type cdylib ${indexRsPath} --target wasm32-unknown-unknown --crate-type cdylib -o ${wasmPath}`, { stdio: 'ignore' })
     cp.execSync(`wasm2wat ${wasmPath} -o ${watPath}`)
-} else if (exists(indexCPath)) {
+  } else if (exists(indexCPath)) {
     // TODO
   } else {
     cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
@@ -152,9 +152,9 @@ async function runNodeTests(names: string[]) {
   ]
   names = names.filter((n) => !filter.includes(n))
   // names = ["mem-imp-host-grow"]
-
   for (let name of names) {
-    await writeReport(name, await runNodeTest(name))
+    const report = await runNodeTest(name)
+    await writeReport(name, report)
   }
 }
 
@@ -177,7 +177,10 @@ async function runOnlineTests(names: string[]) {
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
-    await writeReport(name, await runOnlineTest(name))
+    const spinner = startSpinner(name)
+    const report = await runOnlineTest(name)
+    stopSpinner(spinner)
+    await writeReport(name, report)
   }
 }
 
@@ -194,7 +197,10 @@ async function runOfflineTests(names: string[]) {
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
-    await writeReport(name, await runOfflineTest(name))
+    const spinner = startSpinner(name)
+    const report = await runOfflineTest(name)
+    stopSpinner(spinner)
+    await writeReport(name, report)
   }
 }
 
@@ -204,7 +210,7 @@ type TestReport = { testPath: string } & (Success | Failure)
 async function writeReport(name: string, report: TestReport) {
   const totalLength = 40;
   if (totalLength < name.length) {
-    throw "Total length should be greater than or equal to the length of the initial word.";
+    throw "Total length should oe greater than or equal to the length of the initial word.";
   }
   const spacesLength = totalLength - name.length;
   const spaces = " ".repeat(spacesLength);
@@ -315,6 +321,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   const optionDefinitions = [
     { name: 'callgraph', alias: 'c', type: Boolean },
     { name: 'category', type: String, multiple: true, defaultOption: true },
+    { name: 'testcases', alias: 't', type: String, multiple: true }
   ]
   const options = commandLineArgs(optionDefinitions)
   if (options.callGraph == true) {
@@ -324,15 +331,21 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     console.log('==============')
     console.log('Run node tests')
     console.log('==============')
-    let nodeTestNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
-    await runNodeTests(nodeTestNames)
+    let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
+    if (options.testcases !== undefined) {
+      testNames = testNames.filter(n => options.testcases.includes(n));
+    }
+    await runNodeTests(testNames)
   }
   if (options.category === undefined || options.category.includes('offline')) {
     console.log('=================')
     console.log('Run offline tests')
     console.log('=================')
-    let offlineTestNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
-    await runOfflineTests(offlineTestNames)
+    let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
+    if (options.testcases !== undefined) {
+      testNames = testNames.filter(n => options.testcases.includes(n));
+    }
+    await runOfflineTests(testNames)
   }
   if (options.category === undefined || options.category.includes('online')) {
     console.log('================')
@@ -340,8 +353,11 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     console.log('================')
     console.log('WARNING: You need a working internet connection')
     console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
-    let webTestNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
-    await runOnlineTests(webTestNames)
+    let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
+    if (options.testcases !== undefined) {
+      testNames = testNames.filter(n => options.testcases.includes(n));
+    }
+    await runOnlineTests(testNames)
   }
   // process.stdout.write(`done running ${nodeTestNames.length + webTestNames.length} tests\n`);
 })()

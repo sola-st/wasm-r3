@@ -23,3 +23,21 @@ export async function rmSafe(path: string) {
         // file doesnt exist, ok
     }
 }
+
+
+export function startSpinner(name: string) {
+    const spinnerChars = ['|', '/', '-', '\\'];
+    let spinnerIndex = 0;
+
+    process.stdout.write(name + '   ');
+    return setInterval(() => {
+        process.stdout.write('\b')
+        process.stdout.write(spinnerChars[spinnerIndex]);
+        spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
+    }, 130);
+}
+
+export function stopSpinner(interval: NodeJS.Timeout) {
+    clearInterval(interval);
+    process.stdout.write('\r')
+}
