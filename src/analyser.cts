@@ -42,6 +42,10 @@ export default class Analyser {
         await this.page.route(`**/*.js*`, async route => {
             const response = await route.fetch()
             const script = await response.text()
+            if (route.request().url().endsWith('json')) {
+                route.fulfill({ response, body: script })
+                return
+            }
             const body = `${initScript}${script}`
             await route.fulfill({ response, body: body })
         })

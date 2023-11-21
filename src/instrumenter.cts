@@ -9,6 +9,7 @@ export default async function run(url: string, options: Options) {
     throw new Error('Option callGraph currently not supported')
   } else {
     const analyser = new Analyser('./dist/src/tracer.cjs')
+    // const analyser = new Analyser('./dist/src/tracer-ext.cjs')
     await analyser.start(url, { headless: options.headless })
     await askQuestion(`Record is running. Enter 'Stop' to stop recording: `)
     console.log(`Record stopped`)

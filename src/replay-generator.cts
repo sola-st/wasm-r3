@@ -264,7 +264,7 @@ class Code {
         jsString += `let wasm = await WebAssembly.instantiate(wasmBinary, imports) \n`
         jsString += `instance = wasm.instance\n`
         for (let exp of this.calls) {
-            jsString += `await instance.exports.${exp.name}(${writeParamsString(exp.params)}) \n`
+            jsString += `instance.exports.${exp.name}(${writeParamsString(exp.params)}) \n`
         }
         jsString += `}\n`
         jsString += `if (process.argv[2] === 'run') {\n`
