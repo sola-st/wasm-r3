@@ -15,6 +15,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "acorn": "^8.11.2",
     "command-line-args": "^5.2.1",
     "playwright": "^1.39.0"
   },
