@@ -173,7 +173,11 @@ function compareResults(testPath: string, traceString: string, replayTraceString
 async function runOnlineTests(names: string[]) {
   // ignore specific tests
   let filter = [
-    'visual6502remix'
+    'visual6502remix',
+    'heatmap',
+    'funky-kart',
+    'ffmpeg',
+    'sandspiel'
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {

@@ -1,7 +1,8 @@
-import { Browser, chromium, Page, Worker } from 'playwright'
+import { Browser, chromium, Frame, Page, Worker } from 'playwright'
 import { PerformanceEntry, PerformanceList } from './performance.cjs'
 import fs from 'fs/promises'
 import { Trace } from '../trace.cjs'
+import acorn from 'acorn'
 
 export interface AnalysisI<T> {
     getResult(): T
@@ -17,7 +18,8 @@ export default class Analyser {
     private analysisPath: string
     private browser: Browser
     private page: Page
-    private workerHandles: Worker[] = []
+    private frames: Frame[]
+    private contexts: (Frame | Worker)[] = []
     private isRunning = false
     private performanceTraceLocal = new PerformanceList('Node')
     private performanceTraceBrowser = new PerformanceList('Browser')
@@ -42,15 +44,16 @@ export default class Analyser {
         await this.page.route(`**/*.js*`, async route => {
             const response = await route.fetch()
             const script = await response.text()
-            if (route.request().url().endsWith('json')) {
+            try {
+                acorn.parse(script, { ecmaVersion: 'latest' })
+                const body = `${initScript}${script}`
+                await route.fulfill({ response, body: body })
+            } catch {
                 route.fulfill({ response, body: script })
-                return
             }
-            const body = `${initScript}${script}`
-            await route.fulfill({ response, body: body })
         })
         this.page.on('worker', worker => {
-            this.workerHandles.push(worker)
+            this.contexts.push(worker)
         })
 
         await this.page.goto(url)
@@ -65,83 +68,85 @@ export default class Analyser {
         }
         this.performanceTraceLocal.top().stop()
         const p_stop = new PerformanceEntry('stop')
+        this.contexts = this.contexts.concat(this.page.frames())
         const p_download = new PerformanceEntry('data download')
         const p_downloadTraces = new PerformanceEntry('trace download')
-        const p_downloadTracesMain = new PerformanceEntry('trace download from main context')
-        let analysis: AnalysisI<Trace>[]
-        const analysisResults: string[] = (await this.page.evaluate(() => {
-            // We cannot construct a string longer then a specific length
-            // specifically for v8 the string must not be longer then 2^29 - 24 (~1GiB) for 64 bit systems
-            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length#
-            //@ts-ignore
-            const p_downloadTraces = performanceEvent(`compress traces from main thread`)
-            const traces = analysis.map((r, i) => {
-                //@ts-ignore
-                const p_compressTrace = performanceEvent(`compress trace ${i} from main thread`)
-                const trace = r.getResult().toString()
-                //@ts-ignore
-                self.performanceList.push(p_compressTrace.stop())
-                return trace
-            })
-            //@ts-ignore
-            self.performanceList.push(p_downloadTraces.stop())
-            return traces
-        }))
-        this.performanceTraceLocal.push(p_downloadTracesMain.stop())
-        const p_downloadTracesWorker = new PerformanceEntry('traces download from workers')
-        const workerResults = await Promise.all(this.workerHandles.map(async (w, i) => {
-            const p_downloadTrace = new PerformanceEntry(`download traces from worker ${i}`)
-            const trace = await w.evaluate((i) => {
-                //@ts-ignore
-                const p_compressTraces = performanceEvent(`compress traces from worker ${i}`)
-                const traces = analysis.map((r, j) => {
-                    //@ts-ignore
-                    const p_compressTrace = performanceEvent(`compress trace ${j} from worker ${i}`)
-                    const trace = r.getResult().toString()
-                    //@ts-ignore
-                    self.performanceList.push(p_compressTrace.stop())
-                    return trace
-                })
-                //@ts-ignore
-                self.performanceList.push(p_compressTraces.stop())
-                return traces
-            }, i)
-            this.performanceTraceLocal.push(p_downloadTrace.stop())
-            return trace
-        }))
-        analysisResults.push(...workerResults.flat(1))
-        this.performanceTraceLocal.push(p_downloadTracesWorker.stop())
+        const analysisResults = await this.getResults()
         this.performanceTraceLocal.push(p_downloadTraces.stop())
         const p_bufferDownload = new PerformanceEntry('buffer download')
-        const p_bufferDownloadMain = new PerformanceEntry('buffer download from main context')
-        const originalWasmBuffer: number[][] = await this.page.evaluate(() => {
-            try { originalWasmBuffer } catch {
-                throw new Error('There is no WebAssembly instantiated on that page. Make sure this page actually uses WebAssembly and that you also invoked it through your interaction.')
-            }
-            return originalWasmBuffer.map(b => {
-                return Array.from(b)
-            })
-        });
-        this.performanceTraceLocal.push(p_bufferDownloadMain.stop())
+        const originalWasmBuffer = await this.getBuffers()
         const p_bufferDownloadWorker = new PerformanceEntry('buffer download from workers')
-        let workerBuffers = await Promise.all(this.workerHandles.map(w => w.evaluate(() => originalWasmBuffer)))
-        if (workerBuffers.length !== 0) {
-            originalWasmBuffer.push(...workerBuffers.flat(1))
-        }
         this.performanceTraceLocal.push(p_bufferDownloadWorker.stop())
         this.performanceTraceLocal.push(p_bufferDownload.stop())
         this.performanceTraceLocal.push(p_download.stop())
-        const p_performanceInfoDownload = new PerformanceEntry('performance info download')
-        const performanceList: any = await this.page.evaluate(() => performanceList)
-        const workerPerformanceLists = await Promise.all(this.workerHandles.map(w => w.evaluate(() => performanceList)))
-        performanceList.push(...workerPerformanceLists.flat(1))
-        performanceList.forEach(p => this.performanceTraceBrowser.push(new PerformanceEntry(p.name).buildFromObject(p)))
-        this.performanceTraceLocal.push(p_performanceInfoDownload.stop())
-        this.workerHandles = []
+
+        await this.downloadPerformanceList()
+        this.contexts = []
         this.browser.close()
         this.isRunning = false
         this.performanceTraceLocal.push(p_stop.stop())
         return analysisResults.map((result, i) => ({ result, wasm: originalWasmBuffer[i] }))
+    }
+
+    private async getResults() {
+        const p_downloadTraces = new PerformanceEntry('traces download from workers')
+        const results = await Promise.all(this.contexts.map(async (c) => {
+            const p_downloadTrace = new PerformanceEntry(`download traces from context: ${c.url()}`)
+            const trace = await c.evaluate((url) => {
+                try {
+                    //@ts-ignore
+                    analysis
+                    //@ts-ignore
+                    const p_compressTraces = performanceEvent(`compress traces from context ${url}`)
+                    //@ts-ignore
+                    const traces = (analysis as AnalysisI<Trace>[]).map((r, j) => {
+                        //@ts-ignore
+                        const p_compressTrace = performanceEvent(`compress trace ${j} from context ${url}`)
+                        const trace = r.getResult().toString()
+                        //@ts-ignore
+                        self.performanceList.push(p_compressTrace.stop())
+                        return trace
+                    })
+                    //@ts-ignore
+                    self.performanceList.push(p_compressTraces.stop())
+                    return traces
+                } catch {
+                    return []
+                }
+            }, c.url())
+            this.performanceTraceLocal.push(p_downloadTrace.stop())
+            return trace
+        }))
+        this.performanceTraceLocal.push(p_downloadTraces.stop())
+        return results.flat(1)
+    }
+
+
+    private async getBuffers() {
+        const p_downloadBuffer = new PerformanceEntry('buffer download from main context')
+        const originalWasmBuffer = await Promise.all(this.contexts.map(c => c.evaluate(() => {
+            try {
+                return Array.from(originalWasmBuffer)
+            } catch { 
+                return []
+            }
+        })))
+        this.performanceTraceLocal.push(p_downloadBuffer.stop())
+        return originalWasmBuffer.flat(1) as number[][]
+    }
+
+    private async downloadPerformanceList() {
+        const p_performanceInfoDownload = new PerformanceEntry('performance info download')
+        const performanceList: any[][] = await Promise.all(this.contexts.map(w => w.evaluate(() => {
+            try {
+                return performanceList
+            } catch { 
+                return []
+            }
+        })))
+        this.performanceTraceLocal.push(p_performanceInfoDownload.stop())
+        performanceList.flat(1).forEach((p) => this.performanceTraceBrowser.push(new PerformanceEntry(p.name).buildFromObject(p)))
+
     }
 
     async dumpPerformance(path: string) {

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Worker test</title>
+</head>
+
+<body>
+  <script>
+    fetch("sub.wasm")
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => WebAssembly.instantiate(bytes, {}))
+      .then((result) => console.log(`1 + 2 = ${result.instance.exports.sub(1, 2)}`));
+  </script>
+</body>
+
+</html>
