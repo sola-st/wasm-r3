@@ -16,12 +16,12 @@ type GlobalGet = { type: 'GG', globalIdx: number, value: number }
 type GlobalSet = { type: 'GS', globalIdx: number, value: number }
 
 export class Trace {
-    private trace: ExtTrace
+    private trace: string[]
     constructor() {
         this.clear()
     }
 
-    push(event: Event) {
+    push(event: string) {
         this.trace.push(event)
     }
 
@@ -33,24 +33,24 @@ export class Trace {
         this.trace = []
     }
 
-    toString() {
-        let traceString = ''
-        for (let event of this.trace) {
-            for (let field in event) {
-                const value = event[field]
-                if (Array.isArray(value)) {
-                    for (let item of value) {
-                        traceString += item += `,`
-                    }
-                } else {
-                    traceString += value
-                }
-                traceString += ';'
-            }
-            traceString += `\n`
-        }
-        return traceString
-    }
+    // toString() {
+    //     let traceString = ''
+    //     for (let event of this.trace) {
+    //         for (let field in event) {
+    //             const value = event[field]
+    //             if (Array.isArray(value)) {
+    //                 for (let item of value) {
+    //                     traceString += item += `,`
+    //                 }
+    //             } else {
+    //                 traceString += value
+    //             }
+    //             traceString += ';'
+    //         }
+    //         traceString += `\n`
+    //     }
+    //     return traceString
+    // }
 
     fromString(traceString: string) {
         this.trace = JSON.parse(traceString)
@@ -62,6 +62,10 @@ export default class Analysis implements AnalysisI<Trace> {
     private trace: Trace = new Trace()
 
     getResult(): Trace {
+        return this.trace
+    }
+
+    getResultChunk(size: number): Trace {
         return this.trace
     }
 
@@ -103,47 +107,63 @@ export default class Analysis implements AnalysisI<Trace> {
             table_fill(location, index, value, length) { },
 
             begin_function: (location, args) => {
-                this.trace.push({ type: 'C', funcIdx: location.func, args })
+                this.trace.push(this.stringifyEvent({ type: 'C', funcIdx: location.func, args }))
             },
 
             store: (location, op, target, memarg, value) => {
-                this.trace.push({ type: 'S', memIdx: target.memIdx, addr: target.addr + memarg.offset, op, value })
+                this.trace.push(this.stringifyEvent({ type: 'S', memIdx: target.memIdx, addr: target.addr + memarg.offset, op, value }))
             },
 
             memory_grow: (location, memIdx, byPages, previousSizePages) => {
-                this.trace.push({ type: 'MG', memIdx, byPages })
+                this.trace.push(this.stringifyEvent({ type: 'MG', memIdx, byPages }))
             },
 
             load: (location, op, target, memarg, value) => {
-                this.trace.push({ type: 'L', memIdx: target.memIdx, addr: target.addr + memarg.offset, op, value })
+                this.trace.push(this.stringifyEvent({ type: 'L', memIdx: target.memIdx, addr: target.addr + memarg.offset, op, value }))
             },
 
             global: (location, op, idx, value) => {
                 if (op === 'global.set') {
-                    this.trace.push({ type: 'GS', globalIdx: idx, value })
+                    this.trace.push(this.stringifyEvent({ type: 'GS', globalIdx: idx, value }))
                 } else {
-                    this.trace.push({ type: 'GG', globalIdx: idx, value })
+                    this.trace.push(this.stringifyEvent({ type: 'GG', globalIdx: idx, value }))
                 }
             },
 
             call_pre: (location, op, funcIdx, args, tableTarget) => {
-                this.trace.push({ type: 'C', funcIdx, args })
+                this.trace.push(this.stringifyEvent({ type: 'C', funcIdx, args }))
                 if (op === 'call_indirect') {
-                    this.trace.push({ type: 'TG', tableIdx: tableTarget.tableIdx, idx: tableTarget.elemIdx, funcIdx })
+                    this.trace.push(this.stringifyEvent({ type: 'TG', tableIdx: tableTarget.tableIdx, idx: tableTarget.elemIdx, funcIdx }))
                 }
             },
 
             call_post: (location, results) => {
-                this.trace.push({ type: 'R', funcIdx: 0, results })
+                this.trace.push(this.stringifyEvent({ type: 'R', funcIdx: 0, results }))
             },
 
             table_set: (location, target, value) => {
-                this.trace.push({ type: 'TS', tableIdx: target.tableIdx, idx: target.elemIdx, funcIdx: value })
+                this.trace.push(this.stringifyEvent({ type: 'TS', tableIdx: target.tableIdx, idx: target.elemIdx, funcIdx: value }))
             },
 
             table_get: (location, target, value) => {
-                this.trace.push({ type: 'TG', tableIdx: target.tableIdx, idx: target.elemIdx, funcIdx: value })
+                this.trace.push(this.stringifyEvent({ type: 'TG', tableIdx: target.tableIdx, idx: target.elemIdx, funcIdx: value }))
             }
         }
+    }
+
+    private stringifyEvent(event: object) {
+        let eventString = ''
+        for (let field in event) {
+            const value = event[field]
+            if (Array.isArray(value)) {
+                for (let item of value) {
+                    eventString += item += `,`
+                }
+            } else {
+                eventString += value
+            }
+            eventString += ';'
+        }
+        return eventString
     }
 }

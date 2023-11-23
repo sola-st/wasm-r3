@@ -49,7 +49,9 @@
             ],
             "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
             "args": [
-                "offline"
+                "offline",
+                "-t",
+                "frame-in-frame"
             ]
         },
         {
@@ -61,7 +63,9 @@
             ],
             "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
             "args": [
-                "online"
+                "online",
+                "-t",
+                "kittygame"
             ]
         },
         {

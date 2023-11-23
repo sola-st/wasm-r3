@@ -49,6 +49,9 @@ export default class Analysis implements AnalysisI<CallGraph> {
     getResult() {
         return this.callGraph
     }
+    getResultChunk(size: number): CallGraph {
+        return this.callGraph
+    }
     constructor(Wasabi: Wasabi) {
 
         // console.log('---------------------------------------------')

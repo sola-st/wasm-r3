@@ -1,11 +1,12 @@
 import { Browser, chromium, Frame, Page, Worker } from 'playwright'
 import { PerformanceEntry, PerformanceList } from './performance.cjs'
 import fs from 'fs/promises'
-import { Trace } from '../trace.cjs'
+import { Trace } from './tracer.cjs'
 import acorn from 'acorn'
 
 export interface AnalysisI<T> {
-    getResult(): T
+    getResult(): T,
+    getResultChunk(size: number): T
 }
 
 export type AnalysisResult = {
@@ -35,7 +36,12 @@ export default class Analyser {
         }
         const p_start = new PerformanceEntry('start')
         this.isRunning = true
-        this.browser = await chromium.launch({ headless, args: ['--disable-web-security'] });
+        this.browser = await chromium.launch({
+            headless, args: [
+                '--disable-web-security',
+                '--js-flags="--max_old_space_size=8192"'
+            ]
+        });
         this.page = await this.browser.newPage();
         const initScript = await this.constructInitScript()
 
@@ -85,17 +91,15 @@ export default class Analyser {
         this.browser.close()
         this.isRunning = false
         this.performanceTraceLocal.push(p_stop.stop())
-        return analysisResults.map((result, i) => ({ result, wasm: originalWasmBuffer[i] }))
+        return analysisResults.map((result, i) => ({ result: result, wasm: originalWasmBuffer[i] }))
     }
 
     private async getResults() {
         const p_downloadTraces = new PerformanceEntry('traces download from workers')
         const results = await Promise.all(this.contexts.map(async (c) => {
             const p_downloadTrace = new PerformanceEntry(`download traces from context: ${c.url()}`)
-            const trace = await c.evaluate((url) => {
+            const traces = await c.evaluate((url) => {
                 try {
-                    //@ts-ignore
-                    analysis
                     //@ts-ignore
                     const p_compressTraces = performanceEvent(`compress traces from context ${url}`)
                     //@ts-ignore
@@ -115,7 +119,7 @@ export default class Analyser {
                 }
             }, c.url())
             this.performanceTraceLocal.push(p_downloadTrace.stop())
-            return trace
+            return traces.map(t => t.toString())
         }))
         this.performanceTraceLocal.push(p_downloadTraces.stop())
         return results.flat(1)
@@ -127,7 +131,7 @@ export default class Analyser {
         const originalWasmBuffer = await Promise.all(this.contexts.map(c => c.evaluate(() => {
             try {
                 return Array.from(originalWasmBuffer)
-            } catch { 
+            } catch {
                 return []
             }
         })))
@@ -140,7 +144,7 @@ export default class Analyser {
         const performanceList: any[][] = await Promise.all(this.contexts.map(w => w.evaluate(() => {
             try {
                 return performanceList
-            } catch { 
+            } catch {
                 return []
             }
         })))

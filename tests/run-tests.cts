@@ -4,10 +4,10 @@ import path from 'path'
 import cp from 'child_process'
 import express from 'express'
 import Generator from "../src/replay-generator.cjs";
-import Trace from "../src/tracer.cjs";
+import Tracer, { Trace } from "../src/tracer.cjs";
 import CallGraph from '../src/callgraph.cjs'
-import { getDirectoryNames, rmSafe, startSpinner, stopSpinner } from "./test-utils.cjs";
-import { fromAnalysisResult, saveBenchmark } from '../src/benchmark.cjs';
+import { copyDir, getDirectoryNames, rmSafe, startSpinner, stopSpinner } from "./test-utils.cjs";
+import Benchmark from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
 import { Server } from 'http'
@@ -72,7 +72,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
 
   // 2. Execute test and generate trace
   const wasmBinary = await fs.readFile(wasmPath)
-  let trace = new Trace(eval(js + `\nWasabi`)).getResult()
+  let trace = new Tracer(eval(js + `\nWasabi`)).getResult()
   try {
     await (await import(testJsPath)).default(wasmBinary)
   } catch (e: any) {
@@ -83,7 +83,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
 
   // 3. Generate replay binary
   try {
-    trace = trace.fromString(traceString)
+    trace = Trace.fromString(traceString)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
@@ -96,7 +96,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
   await fs.writeFile(replayPath, replayCode)
 
   // 4. Execute replay and generate trace and compare
-  let replayTrace = new Trace(eval(js + `\nWasabi`)).getResult()
+  let replayTrace = new Tracer(eval(js + `\nWasabi`)).getResult()
   try {
     await (await import(replayPath)).default(wasmBinary)
   } catch (e: any) {
@@ -177,7 +177,8 @@ async function runOnlineTests(names: string[]) {
     'heatmap',
     'funky-kart',
     'ffmpeg',
-    'sandspiel'
+    'sandspiel',
+    'image-convolute'
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
@@ -259,8 +260,8 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   try {
     const analyser = new Analyser('./dist/src/tracer.cjs')
     analysisResult = await (await import(testJsPath)).default(analyser)
-    const record = fromAnalysisResult(analysisResult)
-    await saveBenchmark(benchmarkPath, record, { trace: true })
+    const benchmark = Benchmark.fromAnalysisResult(analysisResult)
+    await benchmark.save(benchmarkPath, { trace: true })
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: 'no benchmark was generated' }
@@ -277,19 +278,16 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       }
     }
 
-    let runtimes = record.map(({ binary }, i) => {
-      const out = instrument_wasm({ original: binary })
-      record[i].binary = out.instrumented
-      return out.js
-    })
-    await saveBenchmark(testBenchmarkPath, record, { trace: false })
+    let runtimes = benchmark.instrumentBinaries()
+    await copyDir(benchmarkPath, testBenchmarkPath)
     let results: any = { testPath, success: true }
+    const record = benchmark.getRecord()
     for (let i = 0; i < record.length; i++) {
       // Compare traces
       const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
       const replayPath = path.join(subBenchmarkPath, 'replay.js')
       const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
-      let replayTrace = new Trace(eval(runtimes[i] + `\nWasabi`)).getResult()
+      let replayTrace = new Tracer(eval(runtimes[i] + `\nWasabi`)).getResult()
       await (await import(replayPath)).default(Buffer.from(record[i].binary))
       let traceString = record[i].trace.toString()
       let replayTraceString = replayTrace.toString()

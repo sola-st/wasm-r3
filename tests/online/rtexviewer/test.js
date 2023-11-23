@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
     const url = 'https://raylibtech.itch.io/rtexviewer'
-    let page = await analyser.start(url, { headless: false })
+    let page = await analyser.start(url, { headless: true })
     await delay(10000)
     const iframe = await page.$('#game_drop')
     const content = await iframe.contentFrame()

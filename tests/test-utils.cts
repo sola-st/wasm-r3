@@ -1,4 +1,5 @@
 import fs from 'fs/promises'
+import path from 'path'
 
 export async function getDirectoryNames(folderPath: string) {
     const entries = await fs.readdir(folderPath, { withFileTypes: true });
@@ -40,4 +41,18 @@ export function startSpinner(name: string) {
 export function stopSpinner(interval: NodeJS.Timeout) {
     clearInterval(interval);
     process.stdout.write('\r')
+}
+
+export async function copyDir(source: string, destination: string) {
+    await fs.mkdir(destination, { recursive: true });
+    const items = await fs.readdir(source, { withFileTypes: true });
+    for (const item of items) {
+        const srcPath = path.join(source, item.name);
+        const destPath = path.join(destination, item.name);
+        if (item.isDirectory()) {
+            await copyDir(srcPath, destPath);
+        } else {
+            await fs.copyFile(srcPath, destPath);
+        }
+    }
 }
