@@ -13,10 +13,11 @@ type TableGrow = { type: "TableGrow", idx: number, amount: number } & ImpExp
 type GlobalSet = { type: "GlobalSet", value: number, bigInt: boolean } & ImpExp
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type Import = { module: string, name: string }
-type Function = Import & { body: { results: number[], events: Event[] }[] }
-type Memory = Import & { pages: number, maxPages: number }
+type BodyPart = { results: number[], events: Event[] }
+type Function = Import & { body: BodyPart[] }
+type Memory = Import & WebAssembly.MemoryDescriptor
 type Table = Import & WebAssembly.TableDescriptor
-type Global = Import & { valtype: string, value: number }
+type Global = Import & WebAssembly.GlobalDescriptor & { initial: number }
 type State = { callStack: Function[], lastFunc?: Function }
 
 export default class Generator {
@@ -64,17 +65,11 @@ export default class Generator {
                 this.pushEvent({ type: 'Call', name: event.name, params: event.params })
                 break
             case "ImportCall":
-                if (this.code.funcImports[event.idx] === undefined) {
-                    console.log('body')
-                }
                 this.code.funcImports[event.idx].body.push({ results: [], events: [] })
                 this.state.callStack.push(this.code.funcImports[event.idx])
                 break
             case "ImportReturn":
                 this.state.lastFunc = this.state.callStack.pop()
-                if (this.state.lastFunc === undefined) {
-                    console.log('yo')
-                }
                 this.state.lastFunc.body.slice(-1)[0].results = event.results
                 break
             case "Load":
@@ -118,8 +113,8 @@ export default class Generator {
                 this.code.memImports[event.idx] = {
                     module: event.module,
                     name: event.name,
-                    pages: event.pages,
-                    maxPages: event.maxPages
+                    initial: event.initial,
+                    maximum: event.maximum
                 }
                 break
             case 'GlobalGet':
@@ -146,8 +141,9 @@ export default class Generator {
                 this.code.globalImports[event.idx] = {
                     module: event.module,
                     name: event.name,
-                    valtype: event.valtype,
                     value: event.value,
+                    initial: event.initial,
+                    mutable: event.mutable
                 }
                 break
             case 'ImportFunc':
@@ -220,20 +216,20 @@ class Code {
         // Init memories
         for (let memidx in this.memImports) {
             let mem = this.memImports[memidx]
-            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages}, maximum: ${mem.maxPages} })\n`
+            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.initial}, maximum: ${mem.maximum} })\n`
             jsString += `${writeImport(mem.module, mem.name)}${mem.name}\n`
         }
         // Init globals
         for (let globalIdx in this.globalImports) {
             let global = this.globalImports[globalIdx]
-            jsString += `const ${global.name} = new WebAssembly.Global({ value: '${global.valtype}', mutable: true}, ${global.value})\n`
-            jsString += `${global.name}.value = ${global.value}\n`
+            jsString += `const ${global.name} = new WebAssembly.Global({ value: '${global.value}', mutable: ${global.mutable}}, ${global.initial})\n`
+            // jsString += `${global.name}.value = ${global.initial}\n`
             jsString += `${writeImport(global.module, global.name)}${global.name}\n`
         }
         // Init tables
         for (let tableidx in this.tableImports) {
             let table = this.tableImports[tableidx]
-            jsString += `const ${table.name} = new WebAssembly.Table({ initial: ${table.initial}, element: '${table.element}'})\n`
+            jsString += `const ${table.name} = new WebAssembly.Table({ initial: ${table.initial}, maximum: ${table.maximum}, element: '${table.element}'})\n`
             jsString += `${writeImport(table.module, table.name)}${table.name}\n`
         }
         // Init entity states
@@ -304,7 +300,7 @@ class Code {
         return jsString
     }
 
-    toWriteStream(stream: WriteStream) {
+    async toWriteStream(stream: WriteStream) {
         stream.write(`import fs from 'fs'\n`)
         stream.write(`import path from 'path'\n`)
         stream.write(`export default async function replay(wasmBinary) {\n`)
@@ -318,20 +314,20 @@ class Code {
         // Init memories
         for (let memidx in this.memImports) {
             let mem = this.memImports[memidx]
-            stream.write(`const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.pages}, maximum: ${mem.maxPages} })\n`)
+            stream.write(`const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.initial}, maximum: ${mem.maximum} })\n`)
             stream.write(`${writeImport(mem.module, mem.name)}${mem.name}\n`)
         }
         // Init globals
         for (let globalIdx in this.globalImports) {
             let global = this.globalImports[globalIdx]
-            stream.write(`const ${global.name} = new WebAssembly.Global({ value: '${global.valtype}', mutable: true}, ${global.value})\n`)
-            stream.write(`${global.name}.value = ${global.value}\n`)
+            stream.write(`const ${global.name} = new WebAssembly.Global({ value: '${global.value}', mutable: ${global.mutable}}, ${global.initial})\n`)
+            // stream.write(`${global.name}.value = ${global.initial}\n`)
             stream.write(`${writeImport(global.module, global.name)}${global.name}\n`)
         }
         // Init tables
         for (let tableidx in this.tableImports) {
             let table = this.tableImports[tableidx]
-            stream.write(`const ${table.name} = new WebAssembly.Table({ initial: ${table.initial}, element: '${table.element}'})\n`)
+            stream.write(`const ${table.name} = new WebAssembly.Table({ initial: ${table.initial}, maximum: ${table.maximum}, element: '${table.element}'})\n`)
             stream.write(`${writeImport(table.module, table.name)}${table.name}\n`)
         }
         // Init entity states
@@ -358,39 +354,9 @@ class Code {
             stream.write(`${writeImport(func.module, func.name)}() => {\n`)
             stream.write(`${writeFuncGlobal(funcidx)}++\n`)
             stream.write(`switch (${writeFuncGlobal(funcidx)}) {\n`)
-            func.body.forEach((b, i) => {
-                if (b.events.length !== 0 || b.results.length !== 0) {
-                    stream.write(`case ${i}:\n`)
-                }
-                if (b.events.length !== 0) {
-                    for (let event of b.events) {
-                        switch (event.type) {
-                            case 'Call':
-                                stream.write(`instance.exports.${event.name}(${writeParamsString(event.params)})\n`)
-                                break
-                            case 'Store':
-                                stream.write(this.storeEvent(event))
-                                break
-                            case 'MemGrow':
-                                stream.write(this.memGrowEvent(event))
-                                break
-                            case 'TableSet':
-                                stream.write(this.tableSetEvent(event))
-                                break
-                            case 'TableGrow':
-                                stream.write(this.tableGrowEvent(event))
-                                break
-                            case 'GlobalSet':
-                                stream.write(this.globalSet(event))
-                                break
-                            default: unreachable(event)
-                        }
-                    }
-                }
-                if (b.results.length !== 0) {
-                    stream.write(`return ${b.results[0]} \n`)
-                }
-            })
+            for (let i = 0; i < func.body.length; i++) {
+                await this.writeBody(stream, func.body[i], i)
+            }
             stream.write('}\n')
             stream.write('}\n')
         }
@@ -406,6 +372,46 @@ class Code {
         stream.write(`replay(wasmBinary)\n`)
         stream.write(`}\n`)
         stream.close()
+    }
+
+    private async writeBody(stream: WriteStream, b: BodyPart, i: number) {
+        if (b.events.length !== 0 || b.results.length !== 0) {
+            await this.write(stream, `case ${i}:\n`)
+        }
+        if (b.events.length !== 0) {
+            for (let event of b.events) {
+                switch (event.type) {
+                    case 'Call':
+                        stream.write(`instance.exports.${event.name}(${writeParamsString(event.params)})\n`)
+                        break
+                    case 'Store':
+                        stream.write(this.storeEvent(event))
+                        break
+                    case 'MemGrow':
+                        stream.write(this.memGrowEvent(event))
+                        break
+                    case 'TableSet':
+                        stream.write(this.tableSetEvent(event))
+                        break
+                    case 'TableGrow':
+                        stream.write(this.tableGrowEvent(event))
+                        break
+                    case 'GlobalSet':
+                        stream.write(this.globalSet(event))
+                        break
+                    default: unreachable(event)
+                }
+            }
+        }
+        if (b.results.length !== 0) {
+            await this.write(stream, `return ${b.results[0]} \n`)
+        }
+    }
+
+    private async write(stream: WriteStream, s: string) {
+        if (stream.write(s) === false) {
+            await new Promise((resolve) => stream.once('drain', resolve))
+        }
     }
 
     private storeEvent(event: Store) {

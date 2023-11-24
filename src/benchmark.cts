@@ -28,7 +28,7 @@ export default class Benchmark {
             // console.log('wrote temp trace to disk and start stream code generation')
             const code = await new Generator().generateReplayFromStream(fss.createReadStream(diskSave))
             // console.log('stream code generation finished. Now stream js string to file')
-            code.toWriteStream(fss.createWriteStream(path.join(binPath, 'replay.js')))
+            await code.toWriteStream(fss.createWriteStream(path.join(binPath, 'replay.js')))
             // const jsString = new Generator().generateReplay(trace).toString()
             // console.log('js code generation finished. Now dump wasm to file')
             // await fs.writeFile(path.join(binPath, 'replay.js'), jsString)

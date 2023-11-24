@@ -71,13 +71,13 @@ export class Trace {
                     trace.push({type: 'ImportReturn', idx: e[1], name: e[2], results: e[3]})
                     break
                 case 'IM':
-                    trace.push({type: 'ImportMemory', idx: e[1], module: e[2], name: e[3], pages: e[4], maxPages: e[5]})
+                    trace.push({type: 'ImportMemory', idx: e[1], module: e[2], name: e[3], initial: e[4], maximum: e[5]})
                     break
                 case 'IT':
-                    trace.push({type: 'ImportTable', idx: e[1], module: e[2], name: e[3], initial: e[4], element: e[5]})
+                    trace.push({type: 'ImportTable', idx: e[1], module: e[2], name: e[3], initial: e[4], maximum: e[5], element: e[6]})
                     break
                 case 'IG':
-                    trace.push({type: 'ImportGlobal', idx: e[1], module: e[2], name: e[3], valtype: e[4], value: e[5]})
+                    trace.push({type: 'ImportGlobal', idx: e[1], module: e[2], name: e[3], value: e[4], mutable: e[5] === 1, initial: e[6]})
                     break
                 case 'IF':
                     trace.push({type: 'ImportFunc', idx: e[1], module: e[2], name: e[3]})
@@ -101,7 +101,9 @@ export class Trace {
                     } 
                 })
             } else {
-                eventString += value
+                if (value !== undefined && value !== null) {
+                    eventString += value
+                }
             }
             if (i < event.length - 1) {
                 eventString += ';'
@@ -137,7 +139,7 @@ export class Trace {
                         components[2],
                         components[3],
                         parseInt(components[4]),
-                        parseInt(components[5])
+                        components[5] === '' ? undefined : parseInt(components[5])
                     ]
                 case "EC":
                     return [
@@ -199,12 +201,13 @@ export class Trace {
                     ]
                 case 'IG':
                     return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    components[3],
+                        components[0],
+                        parseInt(components[1]),
+                        components[2],
+                        components[3],
                         components[4] as ValType,
-                        parseInt(components[5]),
+                        parseInt(components[5]) as 0 | 1,
+                        parseInt(components[6]),
                     ]
                 case 'IF':
                     return [
@@ -215,12 +218,13 @@ export class Trace {
                     ]
                 case 'IT':
                     return [
-                    components[0],
+                        components[0],
                         parseInt(components[1]),
                         components[2],
                         components[3],
                         parseInt(components[4]),
-                        components[5] as 'anyfunc'
+                        components[5] === '' ? undefined : parseInt(components[5]),
+                        components[6] as 'anyfunc'
                     ]
                 default:
                     throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}.`)
@@ -253,8 +257,8 @@ export class Trace {
                         idx: parseInt(components[1]),
                         module: components[2],
                         name: components[3],
-                        pages: parseInt(components[4]),
-                        maxPages: parseInt(components[5])
+                        initial: parseInt(components[4]),
+                        maximum: components[5] === '' ? undefined : parseInt(components[5])
                     }
                 case "EC":
                     return {
@@ -320,8 +324,9 @@ export class Trace {
                         idx: parseInt(components[1]),
                         module: components[2],
                         name: components[3],
-                        valtype: components[4] as ValType,
-                        value: parseInt(components[5]),
+                        initial: parseInt(components[6]),
+                        value: components[4] as ValType,
+                        mutable: parseInt(components[5]) === 1
                     }
                 case 'IF':
                     return {
@@ -337,7 +342,8 @@ export class Trace {
                         module: components[2],
                         name: components[3],
                         initial: parseInt(components[4]),
-                        element: components[5] as 'anyfunc'
+                        maximum: components[5] === '' ? undefined : parseInt(components[5]),
+                        element: components[6] as 'anyfunc'
                     }
                 default:
                     throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}.`)
@@ -725,29 +731,26 @@ export default class Analysis implements AnalysisI<Trace> {
         })
         this.Wasabi.module.info.memories.forEach((m, idx) => {
             if (m.import !== null) {
-                const memory = this.Wasabi.module.memories[idx]
-                const pages = memory.buffer.byteLength / this.MEM_PAGE_SIZE
-                const maxPages = memory.buffer.byteLength / (64 * 1024)
-                this.trace.push(['IM', idx, m.import[0], m.import[1], pages, maxPages ])
+                this.trace.push(['IM', idx, m.import[0], m.import[1], m.initial, m.maximum ])
             }
         })
         // Init Tables
         this.Wasabi.module.tables.forEach((t, i) => {
-            this.shadowTables.push(new WebAssembly.Table({ initial: this.Wasabi.module.tables[i].length, element: 'anyfunc' }))
+            this.shadowTables.push(new WebAssembly.Table({ initial: this.Wasabi.module.tables[i].length, element: 'anyfunc' })) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
             for (let y = 0; y < this.Wasabi.module.tables[i].length; y++) {
                 this.shadowTables[i].set(y, t.get(y))
             }
         })
         this.Wasabi.module.info.tables.forEach((t, idx) => {
             if (t.import !== null) {
-                this.trace.push(['IT', idx, t.import![0], t.import![1], this.Wasabi.module.tables[idx].length , 'anyfunc'])
+                this.trace.push(['IT', idx, t.import![0], t.import![1], t.initial, t.maximum, 'anyfunc']) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
             }
         })
         // Init Globals
         this.shadowGlobals = this.Wasabi.module.globals.map(g => g.value)
         this.Wasabi.module.info.globals.forEach((g, idx) => {
             if (g.import !== null) {
-                this.trace.push([ 'IG', idx, g.import[0], g.import[1], g.valType, this.Wasabi.module.globals[idx].value])
+                this.trace.push([ 'IG', idx, g.import[0], g.import[1], g.valType, g.mutability === 'Mut' ? 1 : 0, this.Wasabi.module.globals[idx].value])
             }
         })
         // Init Functions

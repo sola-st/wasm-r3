@@ -39,17 +39,17 @@ export type ConsiseImportCall = ['IC', number, string]
 // export type ImportReturn = [type, idx, name, results]
 export type ConsiseImportReturn = ['IR', number, string, number[]]
 
-// export type ImportMemory = { type: 'IM', idx: number, pages: number, maxPages: number } & Import
-// export type ImportMemory = [type, idx, module, name, pages, maxPages]
-export type ConsiseImportMemory = ['IM', number, string, string, number, number]
+// export type ImportMemory = { type: 'IM', idx: number, initial: number, maximum: number } & Import
+// export type ImportMemory = [type, idx, module, name, initial, maxiumum]
+export type ConsiseImportMemory = ['IM', number, string, string, number | undefined, number]
 
 // export type ImportTable = { type: 'IT', idx: number } & WebAssembly.TableDescriptor & Import
-// export type ImportTable = [type, idx, module, name, size, tablekind]
-export type ConsiseImportTable = ['IT', number, string, string, number, WebAssembly.TableKind]
+// export type ImportTable = [type, idx, module, name, initial, maximum, element]
+export type ConsiseImportTable = ['IT', number, string, string, number, number | undefined, WebAssembly.TableKind]
 
 // export type ImportGlobal = { type: 'IG', idx: number, valtype: ValType, value: number } & Import
-// export type ImportGlobal = [type, idx, module, name, valtype, value]
-export type ConsiseImportGlobal = ['IG', number, string, string, ValType, number]
+// export type ImportGlobal = [type, idx, module, name, value, mutable, initial]
+export type ConsiseImportGlobal = ['IG', number, string, string, ValType, 0 | 1, number]
 
 // export type ImportFunc = { type: 'IF', idx: number } & Import
 // export type ImportGlobal = [type, idx, module, name]
@@ -79,16 +79,17 @@ export type ImportCall = { type: "ImportCall", idx: number, name: string }
 
 export type ImportReturn = { type: "ImportReturn", idx: number, name: string, results: number[] }
 
-export type ImportMemory = { type: 'ImportMemory', idx: number, pages: number, maxPages: number } & Import
+export type ImportMemory = { type: 'ImportMemory', idx: number } & WebAssembly.MemoryDescriptor & Import
 
 export type ImportTable = { type: 'ImportTable', idx: number } & WebAssembly.TableDescriptor & Import
 
-export type ImportGlobal = { type: 'ImportGlobal', idx: number, valtype: ValType, value: number } & Import
+export type ImportGlobal = { type: 'ImportGlobal', idx: number, initial: number } & WebAssembly.GlobalDescriptor & Import
 
 export type ImportFunc = { type: 'ImportFunc', idx: number } & Import
 
 
 
-export type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
+export type ValType = keyof WebAssembly.ValueTypeMap
+// export type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
 export type RefType = 'funcref' | 'externref'
 export type Import = { module: string, name: string }

@@ -1,5 +1,5 @@
 import fs from 'fs/promises'
-import { existsSync as exists } from 'fs'
+import fss from 'fs'
 import path from 'path'
 import cp from 'child_process'
 import express from 'express'
@@ -50,10 +50,10 @@ async function runNodeTest(name: string): Promise<TestReport> {
   // 1. Instrument with Wasabi !!Please use the newest version
   const indexRsPath = path.join(testPath, 'index.rs')
   const indexCPath = path.join(testPath, 'index.c')
-  if (exists(indexRsPath)) {
+  if (fss.exists(indexRsPath)) {
     cp.execSync(`rustc --crate-type cdylib ${indexRsPath} --target wasm32-unknown-unknown --crate-type cdylib -o ${wasmPath}`, { stdio: 'ignore' })
     cp.execSync(`wasm2wat ${wasmPath} -o ${watPath}`)
-  } else if (exists(indexCPath)) {
+  } else if (fss.exists(indexCPath)) {
     // TODO
   } else {
     cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
@@ -89,7 +89,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
   let replayCode
   try {
-    replayCode = new Generator().generateReplay(trace).toString()
+    replayCode = await new Generator().generateReplay(trace).toWriteStream(fss.)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
@@ -144,11 +144,9 @@ async function runNodeTests(names: string[]) {
     'mem-exp-copy-no-host-mod',
     'mem-exp-fill-no-host-mod',
     'mem-exp-host-mod-load-vec',
-    'table-imp-init-max',
     'table-exp-host-mod',
     'table-exp-host-grow',
     'funky-kart',
-    'mem-imp-host-grow'
   ]
   names = names.filter((n) => !filter.includes(n))
   // names = ["mem-imp-host-grow"]

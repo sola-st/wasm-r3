@@ -1,5 +1,5 @@
 export type Location = { func: number, instr: number }
-export type ValType = 'i32' | 'i64' | 'f32' | 'f64' | 'anyfunc' | 'funcref' | 'externref'
+export type ValType = keyof WebAssembly.ValueTypeMap
 export type GlobalOp = 'global.set' | 'global.get'
 export type LocalOp = 'local.get' | 'local.set' | 'local.tee'
 export type StoreOp = 'i32.store' | 'i32.store8' | 'i32.store16' | 'i64.store' | 'i64.store8' | 'i64.store16' | 'i64.store32' | 'f32.store' | 'f64.store'
@@ -12,6 +12,8 @@ export type BlockType = 'function' | 'block' | 'loop' | 'if' | 'else'
 export type UnaryOp = string // todo
 export type BinaryOp = string // todo
 export type ImpExp = { import: string[] | null, export: string }
+export type Mutability = 'Mut' | 'Const'
+export type Limits = { initial: number, maximum: number | null }
 
 export type Wasabi = {
     HOOK_NAMES: [
@@ -52,9 +54,9 @@ export type Wasabi = {
                 locals: string,
                 instrCount: number
             })[],
-            memories: ImpExp[],
-            tables: (ImpExp & { ref_type: any })[],
-            globals: (ImpExp & { valType: ValType })[],
+            memories: (ImpExp & Limits)[],
+            tables: (ImpExp & Limits & { refType: any })[],
+            globals: (ImpExp & { valType: ValType, mutability: Mutability })[],
             start: any,
             tableExportNames: string[],
             memoryExportNames: string[],
