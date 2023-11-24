@@ -6,7 +6,7 @@ import express from 'express'
 import Generator from "../src/replay-generator.cjs";
 import Tracer, { Trace } from "../src/tracer.cjs";
 import CallGraph from '../src/callgraph.cjs'
-import { copyDir, getDirectoryNames, rmSafe, startSpinner, stopSpinner } from "./test-utils.cjs";
+import { copyDir, delay, getDirectoryNames, rmSafe, startSpinner, stopSpinner } from "./test-utils.cjs";
 import Benchmark from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
@@ -50,10 +50,10 @@ async function runNodeTest(name: string): Promise<TestReport> {
   // 1. Instrument with Wasabi !!Please use the newest version
   const indexRsPath = path.join(testPath, 'index.rs')
   const indexCPath = path.join(testPath, 'index.c')
-  if (fss.exists(indexRsPath)) {
+  if (fss.existsSync(indexRsPath)) {
     cp.execSync(`rustc --crate-type cdylib ${indexRsPath} --target wasm32-unknown-unknown --crate-type cdylib -o ${wasmPath}`, { stdio: 'ignore' })
     cp.execSync(`wasm2wat ${wasmPath} -o ${watPath}`)
-  } else if (fss.exists(indexCPath)) {
+  } else if (fss.existsSync(indexCPath)) {
     // TODO
   } else {
     cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
@@ -89,11 +89,11 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
   let replayCode
   try {
-    replayCode = await new Generator().generateReplay(trace).toWriteStream(fss.)
+    replayCode = await new Generator().generateReplay(trace).toWriteStream(fss.createWriteStream(replayPath))
+    await delay(0) // WTF why do I need this WHAT THE FUCK
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
-  await fs.writeFile(replayPath, replayCode)
 
   // 4. Execute replay and generate trace and compare
   let replayTrace = new Tracer(eval(js + `\nWasabi`)).getResult()

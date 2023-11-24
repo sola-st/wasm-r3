@@ -33,7 +33,7 @@ export default class Benchmark {
             // console.log('js code generation finished. Now dump wasm to file')
             // await fs.writeFile(path.join(binPath, 'replay.js'), jsString)
             await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
-            await fs.rm(diskSave)
+            // await fs.rm(diskSave)
         }))
     }
 

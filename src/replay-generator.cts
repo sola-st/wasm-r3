@@ -13,8 +13,9 @@ type TableGrow = { type: "TableGrow", idx: number, amount: number } & ImpExp
 type GlobalSet = { type: "GlobalSet", value: number, bigInt: boolean } & ImpExp
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type Import = { module: string, name: string }
-type BodyPart = { results: number[], events: Event[] }
-type Function = Import & { body: BodyPart[] }
+type Result = { results: number[], reps: number }
+type Body = Event[]
+type Function = Import & { bodys: Body[], results: Result[] }
 type Memory = Import & WebAssembly.MemoryDescriptor
 type Table = Import & WebAssembly.TableDescriptor
 type Global = Import & WebAssembly.GlobalDescriptor & { initial: number }
@@ -65,12 +66,19 @@ export default class Generator {
                 this.pushEvent({ type: 'Call', name: event.name, params: event.params })
                 break
             case "ImportCall":
-                this.code.funcImports[event.idx].body.push({ results: [], events: [] })
+                this.code.funcImports[event.idx].bodys.push([])
                 this.state.callStack.push(this.code.funcImports[event.idx])
                 break
             case "ImportReturn":
                 this.state.lastFunc = this.state.callStack.pop()
-                this.state.lastFunc.body.slice(-1)[0].results = event.results
+                let r = this.state.lastFunc.results
+                if (r.length > 0) {
+                    if (r.slice(-1)[0].results[0] === event.results[0]) {
+                        r.slice(-1)[0].reps += 1
+                        break
+                    }
+                }
+                r.push({ results: event.results, reps: 1 })
                 break
             case "Load":
                 this.pushEvent({
@@ -151,7 +159,8 @@ export default class Generator {
                 this.code.funcImports[event.idx] = {
                     module: event.module,
                     name: event.name,
-                    body: []
+                    bodys: [],
+                    results: []
                 }
                 break
             default:
@@ -160,20 +169,20 @@ export default class Generator {
     }
 
     private pushEvent(event: Event) {
-        const stackTop = this.state.callStack.slice(-1)[0]?.body.slice(-1)[0]
+        const stackTop = this.state.callStack.slice(-1)[0]?.bodys.slice(-1)[0]
         if (stackTop === undefined) {
             if (this.state.lastFunc === undefined) {
                 this.code.initialization.push(event)
                 return
             }
-            this.state.lastFunc.body.slice(-1)[0].events.push(event)
+            this.state.lastFunc.bodys.slice(-1)[0].push(event)
             return
         }
-        if (stackTop.events?.slice(-1)[0]?.type === "Call") {
-            stackTop.events.splice(stackTop.events.length - 1, 0, event)
+        if (stackTop.slice(-1)[0]?.type === "Call") {
+            stackTop.splice(stackTop.length - 1, 0, event)
             return
         }
-        stackTop.events.push(event)
+        stackTop.push(event)
     }
 
     private addModule(event: Import) {
@@ -200,104 +209,6 @@ class Code {
         this.calls = []
         this.initialization = []
         this.modules = []
-    }
-
-    public toString() {
-        let jsString = `import fs from 'fs'\n`
-        jsString += `import path from 'path'\n`
-        jsString += `export default async function replay(wasmBinary) {\n`
-        jsString += `let instance\n`
-        jsString += 'let imports = {}\n'
-
-        // Init modules
-        for (let module of this.modules) {
-            jsString += `${writeModule(module)}\n`
-        }
-        // Init memories
-        for (let memidx in this.memImports) {
-            let mem = this.memImports[memidx]
-            jsString += `const ${mem.name} = new WebAssembly.Memory({ initial: ${mem.initial}, maximum: ${mem.maximum} })\n`
-            jsString += `${writeImport(mem.module, mem.name)}${mem.name}\n`
-        }
-        // Init globals
-        for (let globalIdx in this.globalImports) {
-            let global = this.globalImports[globalIdx]
-            jsString += `const ${global.name} = new WebAssembly.Global({ value: '${global.value}', mutable: ${global.mutable}}, ${global.initial})\n`
-            // jsString += `${global.name}.value = ${global.initial}\n`
-            jsString += `${writeImport(global.module, global.name)}${global.name}\n`
-        }
-        // Init tables
-        for (let tableidx in this.tableImports) {
-            let table = this.tableImports[tableidx]
-            jsString += `const ${table.name} = new WebAssembly.Table({ initial: ${table.initial}, maximum: ${table.maximum}, element: '${table.element}'})\n`
-            jsString += `${writeImport(table.module, table.name)}${table.name}\n`
-        }
-        // Init entity states
-        for (let event of this.initialization) {
-            switch (event.type) {
-                case 'Store':
-                    jsString += this.storeEvent(event)
-                    break
-                case 'MemGrow':
-                    jsString += this.memGrowEvent(event)
-                    break
-                case 'TableSet':
-                    jsString += this.tableSetEvent(event)
-                    break
-                case 'TableGrow':
-                    jsString += this.tableGrowEvent(event)
-                    break
-            }
-        }
-        // Imported functions
-        for (let funcidx in this.funcImports) {
-            jsString += `let ${writeFuncGlobal(funcidx)} = -1\n`
-            let func = this.funcImports[funcidx]
-            jsString += `${writeImport(func.module, func.name)}() => {\n`
-            jsString += `${writeFuncGlobal(funcidx)}++\n`
-            jsString += `switch (${writeFuncGlobal(funcidx)}) {\n`
-            func.body.forEach((b, i) => {
-                jsString += `case ${i}:\n`
-                for (let event of b.events) {
-                    switch (event.type) {
-                        case 'Call':
-                            jsString += `instance.exports.${event.name}(${writeParamsString(event.params)})\n`
-                            break
-                        case 'Store':
-                            jsString += this.storeEvent(event)
-                            break
-                        case 'MemGrow':
-                            jsString += this.memGrowEvent(event)
-                            break
-                        case 'TableSet':
-                            jsString += this.tableSetEvent(event)
-                            break
-                        case 'TableGrow':
-                            jsString += this.tableGrowEvent(event)
-                            break
-                        case 'GlobalSet':
-                            jsString += this.globalSet(event)
-                            break
-                        default: unreachable(event)
-                    }
-                }
-                jsString += `return ${b.results[0]} \n`
-            })
-            jsString += '}\n'
-            jsString += '}\n'
-        }
-        jsString += `let wasm = await WebAssembly.instantiate(wasmBinary, imports) \n`
-        jsString += `instance = wasm.instance\n`
-        for (let exp of this.calls) {
-            jsString += `instance.exports.${exp.name}(${writeParamsString(exp.params)}) \n`
-        }
-        jsString += `}\n`
-        jsString += `if (process.argv[2] === 'run') {\n`
-        jsString += `const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n`
-        jsString += `const wasmBinary = fs.readFileSync(p)\n`
-        jsString += `replay(wasmBinary)\n`
-        jsString += `}\n`
-        return jsString
     }
 
     async toWriteStream(stream: WriteStream) {
@@ -353,11 +264,14 @@ class Code {
             let func = this.funcImports[funcidx]
             stream.write(`${writeImport(func.module, func.name)}() => {\n`)
             stream.write(`${writeFuncGlobal(funcidx)}++\n`)
-            stream.write(`switch (${writeFuncGlobal(funcidx)}) {\n`)
-            for (let i = 0; i < func.body.length; i++) {
-                await this.writeBody(stream, func.body[i], i)
+            if (func.bodys.length !== 0) {
+                stream.write(`switch (${writeFuncGlobal(funcidx)}) {\n`)
+                for (let i = 0; i < func.bodys.length; i++) {
+                    await this.writeBody(stream, func.bodys[i], i)
+                }
+                stream.write('}\n')
             }
-            stream.write('}\n')
+            await this.writeResults(stream, func.results, writeFuncGlobal(funcidx))
             stream.write('}\n')
         }
         stream.write(`let wasm = await WebAssembly.instantiate(wasmBinary, imports) \n`)
@@ -374,12 +288,10 @@ class Code {
         stream.close()
     }
 
-    private async writeBody(stream: WriteStream, b: BodyPart, i: number) {
-        if (b.events.length !== 0 || b.results.length !== 0) {
+    private async writeBody(stream: WriteStream, b: Body, i: number) {
+        if (b.length !== 0) {
             await this.write(stream, `case ${i}:\n`)
-        }
-        if (b.events.length !== 0) {
-            for (let event of b.events) {
+            for (let event of b) {
                 switch (event.type) {
                     case 'Call':
                         stream.write(`instance.exports.${event.name}(${writeParamsString(event.params)})\n`)
@@ -402,9 +314,17 @@ class Code {
                     default: unreachable(event)
                 }
             }
+            stream.write(`break\n`)
         }
-        if (b.results.length !== 0) {
-            await this.write(stream, `return ${b.results[0]} \n`)
+    }
+
+    private async writeResults(stream: WriteStream, results: Result[], funcGlobal: string) {
+        let current = 0
+        for (let r of results) {
+            const newC = current + r.reps
+            stream.write(`if ((${funcGlobal} >= ${current}) && ${funcGlobal} < ${newC}) {\n`)
+            stream.write(`return ${r.results[0]} }\n`)
+            current = newC
         }
     }
 
