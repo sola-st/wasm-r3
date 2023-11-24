@@ -178,7 +178,8 @@ async function runOnlineTests(names: string[]) {
     'funky-kart',
     'ffmpeg',
     'sandspiel',
-    'image-convolute'
+    'image-convolute',
+    'javascriptcore',
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
