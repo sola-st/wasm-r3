@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build": "tsc && node ./build.js",
-    "build-wasabi": "git submodule init && git submodule update --remote && cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && wasm-pack build --target nodejs --out-dir ../../../dist/wasabi && cd ../../..",
+    "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && wasm-pack build --target nodejs --out-dir ../../../dist/wasabi && cd ../../..",
     "build-full": "npm run build-wasabi && npm run build",
     "test": "npm run build && node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
