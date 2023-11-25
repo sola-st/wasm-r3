@@ -446,7 +446,6 @@ export default class Analysis implements AnalysisI<Trace> {
                     this.trace.push(["EC", this.Wasabi.module.info.functions[location.func].export, args])
                     this.checkMemGrow()
                     this.checkTableGrow()
-                    this.currentWasmFunc = location.func
                 }
                 this.callStack.push('int')
             },
