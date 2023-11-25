@@ -19,7 +19,6 @@ export default class Analyser {
     private analysisPath: string
     private browser: Browser
     private page: Page
-    private frames: Frame[]
     private contexts: (Frame | Worker)[] = []
     private isRunning = false
     private performanceTraceLocal = new PerformanceList('Node')
@@ -151,6 +150,13 @@ export default class Analyser {
         this.performanceTraceLocal.push(p_performanceInfoDownload.stop())
         performanceList.flat(1).forEach((p) => this.performanceTraceBrowser.push(new PerformanceEntry(p.name).buildFromObject(p)))
 
+    }
+
+    getPerformance() {
+        return {
+            analyser: this.performanceTraceLocal,
+            browser: this.performanceTraceBrowser,
+        }
     }
 
     async dumpPerformance(path: string) {
