@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://w3reality.github.io/async-thread-worker/examples/wasm-ffmpeg/index.html'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
   // const estimateButton = page.locator('#devHelpButton')
   // const logWindow = page.locator('#log')
   // await estimateButton.waitFor({ state: 'visible' })

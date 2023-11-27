@@ -493,7 +493,8 @@ export default class Analysis implements AnalysisI<Trace> {
                 }
                 if (op === 'global.get') {
                     let globalInfo = Wasabi.module.info.globals[idx]
-                    if (this.shadowGlobals[idx] !== value) {
+                    // can be NaN in case of the NaN being imported to the WebAssembly Module. Google it!
+                    if (this.shadowGlobals[idx] !== value && !Number.isNaN(this.shadowGlobals[idx]) && !Number.isNaN(value)) {
                         let valtype = globalInfo.valType
                         this.trace.push(['G', idx, this.getName(globalInfo), value, valtype])
                     }

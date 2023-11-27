@@ -176,6 +176,7 @@ async function runOnlineTests(names: string[]) {
     'funky-kart', // takes so long and we know that record and replay trace differ
     'image-convolute', // takes so long
     'javascriptcore',
+    'ffmpeg', // runs for ever
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {

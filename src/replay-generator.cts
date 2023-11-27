@@ -14,12 +14,11 @@ type GlobalSet = { type: "GlobalSet", value: number, bigInt: boolean } & ImpExp
 type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type Import = { module: string, name: string }
 type Result = { results: number[], reps: number }
-type Body = Event[]
-type Function = Import & { bodys: Body[], results: Result[] }
+type Function = Import & { bodys: Event[][], results: Result[] }
 type Memory = Import & WebAssembly.MemoryDescriptor
 type Table = Import & WebAssembly.TableDescriptor
 type Global = Import & WebAssembly.GlobalDescriptor & { initial: number }
-type State = { callStack: Function[], lastFunc?: Function }
+type State = { importCallStack: Function[], lastFunc?: Function }
 
 export default class Generator {
     private code: Code
@@ -27,7 +26,7 @@ export default class Generator {
 
     constructor() {
         this.code = new Code()
-        this.state = { callStack: [] }
+        this.state = { importCallStack: [] }
     }
 
     generateReplay(trace: Trace) {
@@ -59,19 +58,14 @@ export default class Generator {
     private consumeEvent(event: WasmEvent) {
         switch (event.type) {
             case "ExportCall":
-                if (this.state.callStack.length === 0) {
-                    this.code.calls.push({ name: event.name, params: event.params })
-                    // this.pushEvent({ type: 'Call', name: event.name, params: event.params })
-                    break
-                }
                 this.pushEvent({ type: 'Call', name: event.name, params: event.params })
                 break
             case "ImportCall":
                 this.code.funcImports[event.idx].bodys.push([])
-                this.state.callStack.push(this.code.funcImports[event.idx])
+                this.state.importCallStack.push(this.code.funcImports[event.idx])
                 break
             case "ImportReturn":
-                this.state.lastFunc = this.state.callStack.pop()
+                this.state.lastFunc = this.state.importCallStack.pop()
                 let r = this.state.lastFunc.results
                 if (r.length > 0) {
                     if (r.slice(-1)[0].results[0] === event.results[0]) {
@@ -170,20 +164,20 @@ export default class Generator {
     }
 
     private pushEvent(event: Event) {
-        const stackTop = this.state.callStack.slice(-1)[0]?.bodys.slice(-1)[0]
-        if (stackTop === undefined) {
-            if (this.state.lastFunc === undefined) {
-                this.code.initialization.push(event)
+        let currentFunk = this.state.importCallStack.slice(-1)[0]?.bodys.slice(-1)[0]
+        if (currentFunk === undefined) {
+            currentFunk = this.code.initialization
+            if (this.state.lastFunc !== undefined && event.type !== 'Call') {
+                currentFunk = this.state.lastFunc.bodys.slice(-1)[0]
+                currentFunk.push(event)
                 return
             }
-            this.state.lastFunc.bodys.slice(-1)[0].push(event)
+        }
+        if (currentFunk.slice(-1)[0]?.type === "Call" && event.type !== 'Call') {
+            currentFunk.splice(currentFunk.length - 1, 0, event)
             return
         }
-        if (stackTop.slice(-1)[0]?.type === "Call") {
-            stackTop.splice(stackTop.length - 1, 0, event)
-            return
-        }
-        stackTop.push(event)
+        currentFunk.push(event)
     }
 
     private addModule(event: Import) {
@@ -255,22 +249,22 @@ class Code {
             stream.write(`${writeImport(table.module, table.name)}${table.name}\n`)
         }
         // Init entity states
-        for (let event of this.initialization) {
-            switch (event.type) {
-                case 'Store':
-                    stream.write(this.storeEvent(event))
-                    break
-                case 'MemGrow':
-                    stream.write(this.memGrowEvent(event))
-                    break
-                case 'TableSet':
-                    stream.write(this.tableSetEvent(event))
-                    break
-                case 'TableGrow':
-                    stream.write(this.tableGrowEvent(event))
-                    break
-            }
-        }
+        // for (let event of this.initialization) {
+        //     switch (event.type) {
+        //         case 'Store':
+        //             stream.write(this.storeEvent(event))
+        //             break
+        //         case 'MemGrow':
+        //             stream.write(this.memGrowEvent(event))
+        //             break
+        //         case 'TableSet':
+        //             stream.write(this.tableSetEvent(event))
+        //             break
+        //         case 'TableGrow':
+        //             stream.write(this.tableGrowEvent(event))
+        //             break
+        //     }
+        // }
         // Imported functions
         for (let funcidx in this.funcImports) {
             stream.write(`let ${writeFuncGlobal(funcidx)} = -1\n`)
@@ -293,24 +287,29 @@ class Code {
             stream.write(`instance.exports.${exp.name}(${writeParamsString(exp.params)}) \n`)
         }
         // Init entity states
-        // for (let event of this.initialization) {
-        //     switch (event.type) {
-        //         case 'Store':
-        //             stream.write(this.storeEvent(event))
-        //             break
-        //         case 'MemGrow':
-        //             stream.write(this.memGrowEvent(event))
-        //             break
-        //         case 'TableSet':
-        //             stream.write(this.tableSetEvent(event))
-        //             break
-        //         case 'TableGrow':
-        //             stream.write(this.tableGrowEvent(event))
-        //             break
-        //         case 'Call':
-        //             stream.write(this.callEvent(event))
-        //     }
-        // }
+        for (let event of this.initialization) {
+            switch (event.type) {
+                case 'Store':
+                    stream.write(this.storeEvent(event))
+                    break
+                case 'MemGrow':
+                    stream.write(this.memGrowEvent(event))
+                    break
+                case 'TableSet':
+                    stream.write(this.tableSetEvent(event))
+                    break
+                case 'TableGrow':
+                    stream.write(this.tableGrowEvent(event))
+                    break
+                case 'Call':
+                    stream.write(this.callEvent(event))
+                    break
+                case 'GlobalSet':
+                    stream.write(this.globalSet(event))
+                    break
+                default: unreachable(event)
+            }
+        }
         stream.write(`}\n`)
         stream.write(`if (process.argv[2] === 'run') {\n`)
         stream.write(`const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n`)
@@ -320,7 +319,7 @@ class Code {
         stream.close()
     }
 
-    private async writeBody(stream: WriteStream, b: Body, i: number) {
+    private async writeBody(stream: WriteStream, b: Event[], i: number) {
         if (b.length !== 0) {
             await this.write(stream, `case ${i}:\n`)
             for (let event of b) {
