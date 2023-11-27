@@ -72,7 +72,7 @@ export default class Benchmark {
 
     instrumentBinaries(): WasabiRuntime[] {
         return this.record.map((r, i) => {
-            const { instrumented, js } = instrument_wasm({ original: r.binary })
+            const { instrumented, js } = instrument_wasm(r.binary)
             this.record[i].binary = instrumented
             return js
         })

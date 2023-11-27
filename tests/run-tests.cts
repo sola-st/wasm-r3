@@ -67,7 +67,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
   // const wabtModule = await wabt()
   // const binary = wabtModule.parseWat(watPath, wat).toBinary({})
   const binary = await fs.readFile(wasmPath)
-  let { instrumented, js } = instrument_wasm({ original: binary })
+  let { instrumented, js } = instrument_wasm(binary)
   await fs.writeFile(wasmPath, Buffer.from(instrumented))
 
   // 2. Execute test and generate trace
