@@ -11,7 +11,7 @@ export type BranchTarget = { label: number, location: Location }
 export type BlockType = 'function' | 'block' | 'loop' | 'if' | 'else'
 export type UnaryOp = string // todo
 export type BinaryOp = string // todo
-export type ImpExp = { import: string[] | null, export: string }
+export type ImpExp = { import: string[] | null, export: string[] }
 export type Mutability = 'Mut' | 'Const'
 export type Limits = { initial: number, maximum: number | null }
 

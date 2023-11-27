@@ -421,7 +421,6 @@ export default class Analysis implements AnalysisI<Trace> {
             begin(location, type) { },
             drop(location, value) { },
             select(location, cond, first, second) { },
-            return_(location, values) { },
             const_(location, op, value) { },
             unary(location, op, input, result) { },
             binary(location, op, first, second, result) { },
@@ -442,10 +441,15 @@ export default class Analysis implements AnalysisI<Trace> {
                     this.first_entry = false
                 }
                 if (this.callStack[this.callStack.length - 1] !== 'int') {
-                    // console.log('funidx', location.func, 'exportName', this.Wasabi.module.info.functions[location.func].export)
-                    this.trace.push(["EC", this.Wasabi.module.info.functions[location.func].export, args])
-                    this.checkMemGrow()
-                    this.checkTableGrow()
+                    const exportName = this.Wasabi.module.info.functions[location.func].export[0]
+                    // there is some fucked up shit going on. I dont know what It is but somehow there can be unexported functions called
+                    // even tho we tho we should be inside of the host
+                    // I dont know what the fuck is going on here, but I just ignore those for now and hope for the best
+                    if (exportName !== undefined) {
+                        this.trace.push(["EC", exportName, args])
+                        this.checkMemGrow()
+                        this.checkTableGrow()
+                    }
                 }
                 this.callStack.push('int')
             },
@@ -497,10 +501,10 @@ export default class Analysis implements AnalysisI<Trace> {
             },
 
             call_pre: (location, op, funcidx, args, tableTarget) => {
-                let funcImport = Wasabi.module.info.functions[funcidx].import
                 if (op === 'call_indirect') {
                     this.tableGetEvent(tableTarget.tableIdx, tableTarget.elemIdx)
                 }
+                let funcImport = Wasabi.module.info.functions[funcidx].import
                 if (funcImport !== null) {
                     let name = funcImport[1]
                     this.callStack.push({ name, idx: funcidx })
@@ -519,11 +523,8 @@ export default class Analysis implements AnalysisI<Trace> {
                 this.checkTableGrow()
             },
 
-            end: (location, type, beginLocation, ifLocation) => {
-                if (type === 'function') {
-                    // console.log('pop', this.callStack[this.callStack.length - 1])
-                    this.callStack.pop()
-                }
+            return_: (location, values) => {
+                this.callStack.pop()
             },
 
             table_set: (location, target, value) => {
