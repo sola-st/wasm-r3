@@ -61,6 +61,7 @@ export default class Generator {
             case "ExportCall":
                 if (this.state.callStack.length === 0) {
                     this.code.calls.push({ name: event.name, params: event.params })
+                    // this.pushEvent({ type: 'Call', name: event.name, params: event.params })
                     break
                 }
                 this.pushEvent({ type: 'Call', name: event.name, params: event.params })
@@ -231,9 +232,21 @@ class Code {
         // Init globals
         for (let globalIdx in this.globalImports) {
             let global = this.globalImports[globalIdx]
-            stream.write(`const ${global.name} = new WebAssembly.Global({ value: '${global.value}', mutable: ${global.mutable}}, ${global.initial})\n`)
-            // stream.write(`${global.name}.value = ${global.initial}\n`)
-            stream.write(`${writeImport(global.module, global.name)}${global.name}\n`)
+            // There is a special case here: 
+            // you can also import the values NaN and Infinity as globals in WebAssembly
+            // Thats why whe need this if else
+            if (Number.isNaN(global.initial)) {
+                if (global.name.toLocaleLowerCase() === 'infinity') {
+                    stream.write(`${writeImport(global.module, global.name)}Infinity\n`)
+                } else if (global.name.toLocaleLowerCase() === 'nan') {
+                    stream.write(`${writeImport(global.module, global.name)}NaN\n`)
+                } else {
+                    throw new Error(`Could not generate javascript code for the global initialisation, the initial value is NaN. The website you where recording did some weired stuff that I was not considering during the implementation of Wasm-R3. Tried to genereate global ${global}`)
+                }
+            } else {
+                stream.write(`const ${global.name} = new WebAssembly.Global({ value: '${global.value}', mutable: ${global.mutable}}, ${global.initial})\n`)
+                stream.write(`${writeImport(global.module, global.name)}${global.name}\n`)
+            }
         }
         // Init tables
         for (let tableidx in this.tableImports) {
@@ -279,6 +292,25 @@ class Code {
         for (let exp of this.calls) {
             stream.write(`instance.exports.${exp.name}(${writeParamsString(exp.params)}) \n`)
         }
+        // Init entity states
+        // for (let event of this.initialization) {
+        //     switch (event.type) {
+        //         case 'Store':
+        //             stream.write(this.storeEvent(event))
+        //             break
+        //         case 'MemGrow':
+        //             stream.write(this.memGrowEvent(event))
+        //             break
+        //         case 'TableSet':
+        //             stream.write(this.tableSetEvent(event))
+        //             break
+        //         case 'TableGrow':
+        //             stream.write(this.tableGrowEvent(event))
+        //             break
+        //         case 'Call':
+        //             stream.write(this.callEvent(event))
+        //     }
+        // }
         stream.write(`}\n`)
         stream.write(`if (process.argv[2] === 'run') {\n`)
         stream.write(`const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n`)
@@ -345,6 +377,10 @@ class Code {
             }
         })
         return jsString
+    }
+
+    private callEvent(event: Call) {
+        return `instance.exports.${event.name}(${writeParamsString(event.params)}) \n`
     }
 
     private memGrowEvent(event: MemGrow) {

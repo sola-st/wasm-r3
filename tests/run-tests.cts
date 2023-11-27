@@ -171,12 +171,10 @@ function compareResults(testPath: string, traceString: string, replayTraceString
 async function runOnlineTests(names: string[]) {
   // ignore specific tests
   let filter = [
-    'visual6502remix',
-    'heatmap',
-    'funky-kart',
-    'ffmpeg',
-    'sandspiel',
-    'image-convolute',
+    'visual6502remix', // takes so long and is not automated yet
+    'heatmap', // takes so long
+    'funky-kart', // takes so long and we know that record and replay trace differ
+    'image-convolute', // takes so long
     'javascriptcore',
   ]
   names = names.filter((n) => !filter.includes(n))
