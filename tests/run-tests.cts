@@ -13,6 +13,7 @@ import { instrument_wasm } from '../wasabi/wasabi_js.js'
 import { Server } from 'http'
 import Analyser, { AnalysisResult } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
+import { initPerformance } from '../src/performance.cjs'
 
 let generateCallGraphs = false
 
@@ -178,18 +179,21 @@ async function runOnlineTests(names: string[]) {
     'ffmpeg', // replay runs forever
     'jsc', // replay trace differs
     'rtexviewer', // replay trace differs
+    'video', // replay trace differs
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
     const spinner = startSpinner(name)
-    const report = await runOnlineTest(name)
+    const testPath = path.join(process.cwd(), 'tests', 'online', name)
+    const cleanUpPerformance = await initPerformance(name, 'online-auto-test', path.join(testPath, 'performance.ndjson'))
+    const report = await runOnlineTest(testPath)
     stopSpinner(spinner)
+    cleanUpPerformance()
     await writeReport(name, report)
   }
 }
 
-async function runOnlineTest(name: string) {
-  const testPath = path.join(process.cwd(), 'tests', 'online', name)
+async function runOnlineTest(testPath: string) {
   await cleanUp(testPath)
   return testWebPage(testPath)
 }
@@ -254,7 +258,6 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')
   const benchmarkPath = path.join(testPath, 'benchmark')
   const testBenchmarkPath = path.join(testPath, 'test-benchmark')
-  const performancePath = path.join(testPath, 'performance')
   let analysisResult: AnalysisResult
   try {
     const analyser = new Analyser('./dist/src/tracer.cjs')
@@ -319,7 +322,6 @@ async function testWebPage(testPath: string): Promise<TestReport> {
         }
       }
     }
-    analyser.dumpPerformance(performancePath)
     return results
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }

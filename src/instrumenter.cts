@@ -5,8 +5,10 @@ import Benchmark from './benchmark.cjs';
 import { askQuestion } from './util.cjs';
 import { Options } from './cli/options.cjs'
 import Generator from './replay-generator.cjs';
+import { initPerformance } from './performance.cjs';
 
 export default async function run(url: string, options: Options) {
+  await initPerformance(url, 'manual-run', 'performance.ndjson')
   if (options.file !== undefined) {
     const code = await new Generator().generateReplayFromStream(fss.createReadStream(options.file))
     code.toWriteStream(fss.createWriteStream(options.file + '.js'))
@@ -23,6 +25,6 @@ export default async function run(url: string, options: Options) {
     const results = await analyser.stop()
     console.log('Download done. Generating Benchmark...')
     Benchmark.fromAnalysisResult(results).save(options.benchmarkPath, { trace: options.dumpTrace })
-    await analyser.dumpPerformance(path.join(options.benchmarkPath, 'performance.txt')).catch(e => console.log(e))
+    // perfMetrics.dumpJsonToFile('perf-history.ndjson')
   }
 }

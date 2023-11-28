@@ -1,5 +1,5 @@
 import { Browser, chromium, Frame, Page, Worker } from 'playwright'
-import { PerformanceEntry, PerformanceList } from './performance.cjs'
+import { createMeasure, StopMeasure } from './performance.cjs'
 import fs from 'fs/promises'
 import { Trace } from './tracer.cjs'
 import acorn from 'acorn'
@@ -21,8 +21,7 @@ export default class Analyser {
     private page: Page
     private contexts: (Frame | Worker)[] = []
     private isRunning = false
-    private performanceTraceLocal = new PerformanceList('Node')
-    private performanceTraceBrowser = new PerformanceList('Browser')
+    private p_measureUserInteraction: StopMeasure
 
 
     constructor(analysisPath: string) {
@@ -33,7 +32,7 @@ export default class Analyser {
         if (this.isRunning === true) {
             throw new Error('Analyser is already running. Stop the Analyser before starting again')
         }
-        const p_start = new PerformanceEntry('start')
+        const p_measureStart = createMeasure('start', { phase: 'record', description: `The time it takes start the chromium browser and open the webpage until the 'load' event is fired.` })
         this.isRunning = true
         this.browser = await chromium.launch({
             headless, args: [
@@ -62,8 +61,8 @@ export default class Analyser {
         })
 
         await this.page.goto(url)
-        this.performanceTraceLocal.push(p_start.stop())
-        this.performanceTraceLocal.push(new PerformanceEntry('user interaction'))
+        p_measureStart()
+        this.p_measureUserInteraction = createMeasure('user interaction', { phase: 'record', description: `The time the user interacts with the webpage during recording, from the time the 'loal' event got fired in the browser until the user stopps the recording.` })
         return this.page
     }
 
@@ -71,105 +70,63 @@ export default class Analyser {
         if (this.isRunning === false) {
             throw new Error('Analyser is not running. Start the Analyser before stopping')
         }
-        this.performanceTraceLocal.top().stop()
-        const p_stop = new PerformanceEntry('stop')
+        this.p_measureUserInteraction()
+        const p_measureStop = createMeasure('stop', { phase: 'record', description: `The time it takes to stop the recording, from when the user stopped the recording until all data is downloaded from the browser and the browser is closed.` })
         this.contexts = this.contexts.concat(this.page.frames())
-        const p_download = new PerformanceEntry('data download')
-        const p_downloadTraces = new PerformanceEntry('trace download')
+        const p_measureDataDownload = createMeasure('data download', { phase: 'record', description: `The time it takes to download all data from the browser.` })
+        const p_measureTraceDownload = createMeasure('trace download', { phase: 'record', description: `The time it takes to download all traces from the browser.` })
         const analysisResults = await this.getResults()
-        this.performanceTraceLocal.push(p_downloadTraces.stop())
-        const p_bufferDownload = new PerformanceEntry('buffer download')
+        p_measureTraceDownload()
+        const p_measureBufferDownload = createMeasure('buffer download', { phase: 'record', description: `The time it takes to download all wasm binaries from the browser.` })
         const originalWasmBuffer = await this.getBuffers()
-        const p_bufferDownloadWorker = new PerformanceEntry('buffer download from workers')
-        this.performanceTraceLocal.push(p_bufferDownloadWorker.stop())
-        this.performanceTraceLocal.push(p_bufferDownload.stop())
-        this.performanceTraceLocal.push(p_download.stop())
-
-        await this.downloadPerformanceList()
+        p_measureBufferDownload()
+        p_measureDataDownload()
         this.contexts = []
         this.browser.close()
         this.isRunning = false
-        this.performanceTraceLocal.push(p_stop.stop())
+        p_measureStop()
         return analysisResults.map((result, i) => ({ result: result, wasm: originalWasmBuffer[i] }))
     }
 
     private async getResults() {
-        const p_downloadTraces = new PerformanceEntry('traces download from workers')
         const results = await Promise.all(this.contexts.map(async (c) => {
-            const p_downloadTrace = new PerformanceEntry(`download traces from context: ${c.url()}`)
-            const traces = await c.evaluate((url) => {
+            const p_measureTraceDownload = createMeasure(`trace download from context: ${c.url()}`, { phase: 'record', description: `The time it takes to download the trace from the browser context: ${c.url}.` })
+            const traces = await c.evaluate(() => {
                 try {
                     //@ts-ignore
-                    const p_compressTraces = performanceEvent(`compress traces from context ${url}`)
-                    //@ts-ignore
                     const traces = (analysis as AnalysisI<Trace>[]).map((r, j) => {
-                        //@ts-ignore
-                        const p_compressTrace = performanceEvent(`compress trace ${j} from context ${url}`)
                         const trace = r.getResult().toString()
-                        //@ts-ignore
-                        self.performanceList.push(p_compressTrace.stop())
                         return trace
                     })
-                    //@ts-ignore
-                    self.performanceList.push(p_compressTraces.stop())
                     return traces
                 } catch {
                     return []
                 }
-            }, c.url())
-            this.performanceTraceLocal.push(p_downloadTrace.stop())
+            })
+            p_measureTraceDownload()
             return traces.map(t => t.toString())
         }))
-        this.performanceTraceLocal.push(p_downloadTraces.stop())
         return results.flat(1)
     }
 
 
     private async getBuffers() {
-        const p_downloadBuffer = new PerformanceEntry('buffer download from main context')
-        const originalWasmBuffer = await Promise.all(this.contexts.map(c => c.evaluate(() => {
-            try {
-                return Array.from(originalWasmBuffer)
-            } catch {
-                return []
-            }
-        })))
-        this.performanceTraceLocal.push(p_downloadBuffer.stop())
+        const originalWasmBuffer = await Promise.all(this.contexts.map(async (c) => {
+            const p_measureBufferDownload = createMeasure(`buffer download from context: ${c.url()}`, { phase: 'record', description: `The time it takes to download the wasm binary from the browser context: ${c.url}.` })
+            const buffer = await c.evaluate(() => {
+                try {
+                    return Array.from(originalWasmBuffer)
+                } catch {
+                    return []
+                }
+            })
+            p_measureBufferDownload()
+            return buffer
+        }))
         return originalWasmBuffer.flat(1) as number[][]
     }
 
-    private async downloadPerformanceList() {
-        const p_performanceInfoDownload = new PerformanceEntry('performance info download')
-        const performanceList: any[][] = await Promise.all(this.contexts.map(w => w.evaluate(() => {
-            try {
-                return performanceList
-            } catch {
-                return []
-            }
-        })))
-        this.performanceTraceLocal.push(p_performanceInfoDownload.stop())
-        performanceList.flat(1).forEach((p) => this.performanceTraceBrowser.push(new PerformanceEntry(p.name).buildFromObject(p)))
-
-    }
-
-    getPerformance() {
-        return {
-            analyser: this.performanceTraceLocal,
-            browser: this.performanceTraceBrowser,
-        }
-    }
-
-    async dumpPerformance(path: string) {
-        await fs.writeFile(path, this.performanceTraceLocal.toString() + this.performanceTraceBrowser.toString())
-    }
-
     private async constructInitScript() {
-        let performanceScript = await fs.readFile('./dist/src/performance.cjs') + '\n'
-        performanceScript = performanceScript.split('Object.defineProperty(exports, "__esModule", { value: true });').join('')
-        performanceScript = performanceScript.split('exports.PerformanceList = exports.PerformanceEntry = void 0;').join('')
-        performanceScript = performanceScript.split('exports.PerformanceEntry = PerformanceEntry;').join('')
-        performanceScript = performanceScript.split('exports.PerformanceList = PerformanceList;').join('')
-        performanceScript = 'function performanceEvent(name) {\n' + performanceScript + '\nreturn new PerformanceEntry(name)}\n'
         const wasabiScript = await fs.readFile('./dist/wasabi.js') + '\n'
         let analysisScript = await fs.readFile(this.analysisPath) + '\n'
         analysisScript = analysisScript.split('Object.defineProperty(exports, "__esModule", { value: true });').join('')
@@ -181,7 +138,7 @@ export default class Analyser {
         analysisScript = analysisScript.split('exports.default = Analysis;').join('')
         analysisScript = 'function setupAnalysis(Wasabi) {\n' + analysisScript + '\nreturn new Analysis(Wasabi)}\n'
         const setupScript = await fs.readFile('./src/runtime.js') + '\n'
-        return performanceScript + ';' + wasabiScript + ';' + analysisScript + ';' + setupScript + ';'
+        return wasabiScript + ';' + analysisScript + ';' + setupScript + ';'
     }
 }
 

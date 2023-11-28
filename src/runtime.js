@@ -3,18 +3,16 @@
 // - setup(wasabiBinary) you need to call this to make the next function available
 // - instrument_wasm() a function that takes a wasm buffer and instruments it with wasabi.
 // - the setupAnalysis function returns a new Analysis instance when given the Wasabi object
-// - performanceEvent() a function that takes a name and returns a PerformanceEntry
 function setup() {
     if (self.monkeypatched === true) {
         return
     }
     self.monkeypatched = true
-    self.performanceList = []
     self.analysis = []
     self.originalWasmBuffer = []
     let wasabis = []
     let i = 0
-    const p_timeToFirstInstantiate = performanceEvent('time until instantiation of first wasm module in this context')
+    // const p_timeToFirstInstantiate = performanceEvent('time until instantiation of first wasm module in this context')
     const printWelcome = function () {
         console.log('---------------------------------------------')
         console.log('          Wasabi analysis attached           ')
@@ -56,16 +54,16 @@ function setup() {
     initSync(buffer)
     let original_instantiate = WebAssembly.instantiate
     WebAssembly.instantiate = function (buffer, importObject) {
-        self.performanceList.push(p_timeToFirstInstantiate.stop())
+        // self.performanceList.push(p_timeToFirstInstantiate.stop())
         const this_i = i
         i += 1
-        const p_instantiationTime = performanceEvent(`Time to instantiate wasm module ${this_i}`)
+        // const p_instantiationTime = performanceEvent(`Time to instantiate wasm module ${this_i}`)
         console.log('WebAssembly.instantiate')
         printWelcome()
         self.originalWasmBuffer.push(Array.from(new Uint8Array(buffer)))
-        const p_instrumenting = performanceEvent(`instrumentation of wasm binary ${this_i}`)
+        // const p_instrumenting = performanceEvent(`instrumentation of wasm binary ${this_i}`)
         const { instrumented, js } = instrument_wasm(new Uint8Array(buffer));
-        self.performanceList.push(p_instrumenting.stop())
+        // self.performanceList.push(p_instrumenting.stop())
         wasabis.push(eval(js + '\nWasabi'))
         buffer = new Uint8Array(instrumented)
         importObject = importObjectWithHooks(importObject, this_i)
@@ -75,7 +73,7 @@ function setup() {
         result.then(({ module, instance }) => {
             wireInstanceExports(instance, this_i)
         })
-        self.performanceList.push(p_instantiationTime.stop())
+        // self.performanceList.push(p_instantiationTime.stop())
         return result
     };
     // replace instantiateStreaming

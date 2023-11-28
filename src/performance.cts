@@ -1,54 +1,39 @@
-export class PerformanceEntry {
-    private name: string
-    private duration: number
-    private startTime: number
-    private endTime: number
+import fs from 'fs/promises'
+import { rmSafe } from '../tests/test-utils.cjs'
 
-    constructor(name: string) {
-        this.startTime = Date.now()
-        this.name = name
-    }
+type PerformanceInfo = {
+    phase: 'record' | 'replay-generation' | 'replay',
+    description: string
+}
 
-    buildFromObject(obj: any) {
-        this.duration = obj.duration
-        this.startTime = obj.startTime
-        this.endTime = obj.endTime
-        return this
-    }
-
-    stop() {
-        this.endTime = Date.now()
-        this.duration = this.endTime - this.startTime
-        return this
-    }
-
-    toString() {
-        return `${this.name}: ${this.duration}`
+export type StopMeasure = () => void
+export function createMeasure(name: string, detail: PerformanceInfo): StopMeasure {
+    const start = name + 'start'
+    const end = name + '_end'
+    performance.mark(start)
+    return () => {
+        performance.mark(end)
+        performance.measure(name, { start, end, detail })
     }
 }
 
-export class PerformanceList {
-    private events: PerformanceEntry[]
-    private name: string
-
-    constructor(name: string) {
-        this.name = name
-        this.events = []
-    }
-
-    push(entry: PerformanceEntry) {
-        this.events.push(entry)
-    }
-
-    top() {
-        return this.events[this.events.length - 1]
-    }
-
-    toString() {
-        let eventList = ''
-        for (let event of this.events) {
-            eventList += event.toString() + '\n'
+type Type = 'manual-run' | 'offline-auto-test' | 'online-auto-test'
+export async function initPerformance(app: string, type: Type, filePath?: string) {
+    const timeStamp = Date.now()
+    const dBPath = 'performance.db.ndjson'
+    await rmSafe(filePath)
+    const measureCallback: PerformanceObserverCallback = async (list) => {
+        for (let measure of list.getEntriesByType('measure')) {
+            //@ts-ignore for some reason I cannot cast measure of type PerformanceEntry to PerformanceMeasure
+            const entry = { ...measure.toJSON(), ...measure.detail }
+            fs.appendFile(dBPath, JSON.stringify({ timeStamp, url: app, type, ...entry }) + '\n')
+            if (filePath !== undefined) {
+                fs.appendFile(filePath, JSON.stringify(entry) + '\n')
+            }
         }
-        return `${this.name}\n${eventList}`
     }
+
+    const observer = new PerformanceObserver(measureCallback)
+    observer.observe({ type: 'measure' })
+    return () => observer.disconnect()
 }
