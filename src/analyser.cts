@@ -14,9 +14,11 @@ export type AnalysisResult = {
     wasm: number[]
 }[]
 
+type Options = { extended: boolean }
 export default class Analyser {
 
     private analysisPath: string
+    private options: Options
     private browser: Browser
     private page: Page
     private contexts: (Frame | Worker)[] = []
@@ -24,8 +26,9 @@ export default class Analyser {
     private p_measureUserInteraction: StopMeasure
 
 
-    constructor(analysisPath: string) {
+    constructor(analysisPath: string, options = { extended: false }) {
         this.analysisPath = analysisPath
+        this.options = options
     }
 
     async start(url: string, { headless } = { headless: false }) {
@@ -136,7 +139,7 @@ export default class Analyser {
         analysisScript = analysisScript.split('exports.Trace = void 0;').join('')
         analysisScript = analysisScript.split('exports.Trace = Trace;').join('')
         analysisScript = analysisScript.split('exports.default = Analysis;').join('')
-        analysisScript = 'function setupAnalysis(Wasabi) {\n' + analysisScript + '\nreturn new Analysis(Wasabi)}\n'
+        analysisScript = `function setupAnalysis(Wasabi) {\n ${analysisScript};\n return new Analysis(Wasabi, { extended: ${this.options.extended}})}\n`
         const setupScript = await fs.readFile('./src/runtime.js') + '\n'
         return wasabiScript + ';' + analysisScript + ';' + setupScript + ';'
     }

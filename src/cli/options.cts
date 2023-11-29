@@ -6,9 +6,9 @@ export type Options = {
     dumpPerformance: boolean,
     dumpTrace: boolean,
     benchmarkPath: string,
-    callGraph: boolean
-    file: string
-  }
+    file: string,
+    extended: boolean
+}
 
 export default function getOptions() {
     const optionDefinitions = [
@@ -16,9 +16,9 @@ export default function getOptions() {
         { name: 'trace', alias: 't', type: Boolean },
         { name: 'url', type: String, defaultOption: true },
         { name: 'benchmarkPath', alias: 'b', type: String },
-        { name: 'callGraph', alias: 'c', type: Boolean },
         { name: 'headless', alias: 'h', type: Boolean },
-        { name: 'file', alias: 'f', type: String}
+        { name: 'file', alias: 'f', type: String },
+        { name: 'extended', alias: 'e', type: Boolean }
     ]
     const options: Options & { url: string } = commandLineArgs(optionDefinitions)
     if (options.headless === undefined) {

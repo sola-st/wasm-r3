@@ -6,10 +6,12 @@
 export type ConsiseTrace = (ConsiseWasmEvent | Ref)[]
 
 export type ConsiseWasmEvent = ConsiseLoad | ConsiseMemGrow | ConsiseTableGet | ConsiseTableGrow | ConsiseGlobalGet | ConsiseExportCall | ConsiseImportCall | ConsiseImportReturn | ConsiseImportMemory | ConsiseImportTable | ConsiseImportGlobal | ConsiseImportFunc
+    | ConsiseFuncEntry | ConsiseFuncReturn | ConsiseLoadExtended | ConsiseTableGetExtended
 
 // export type Load = { type: "L", idx: number, name: string, offset: number, data: number[] }
 // export type Load = [type, idx, name, offset, data]
 export type ConsiseLoad = ['L', number, string, number, number[]]
+export type ConsiseLoadExtended = ['LE', number, string, number, number[]]
 
 // export type MemGrow = { type: 'MG', idx: number, name: string, amount: number }
 // export type MemGrow = [type, idx, name, amount]
@@ -18,6 +20,7 @@ export type ConsiseMemGrow = ['MG', number, string, number]
 // export type TableGet = { type: "T", tableidx: number, name: string, idx: number, funcidx: number, funcName: string }
 // export type TableGet = [type, tableidx, name, idx, funcidx, funcname]
 export type ConsiseTableGet = ['T', number, string, number, number, string]
+export type ConsiseTableGetExtended = ['TE', number, string, number, number, string]
 
 // export type TableGrow = { type: 'TG', idx: number, name: string, amount: number }
 // export type TableGrow = [type, idx, name, amount]
@@ -55,6 +58,12 @@ export type ConsiseImportGlobal = ['IG', number, string, string, ValType, 0 | 1,
 // export type ImportGlobal = [type, idx, module, name]
 export type ConsiseImportFunc = ['IF', number, string, string]
 
+// export type FuncEntry = [type, idx, args]
+export type ConsiseFuncEntry = ['FE', number, number[]]
+
+// export type FuncReturn = [type, idx, values]
+export type ConsiseFuncReturn = ['FR', number, number[]]
+
 export type Ref = [number]
 
 // Normal Trace
@@ -62,12 +71,17 @@ export type Ref = [number]
 export type Trace = WasmEvent[]
 
 export type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ImportReturn | ImportMemory | ImportTable | ImportGlobal | ImportFunc
+    | FuncEntry | FuncReturn | LoadExtended | TableGetExtended
 
 export type Load = { type: "Load", idx: number, name: string, offset: number, data: number[] }
+
+export type LoadExtended = { type: "LoadExt", idx: number, name: string, offset: number, data: number[] }
 
 export type MemGrow = { type: 'MemGrow', idx: number, name: string, amount: number }
 
 export type TableGet = { type: "TableGet", tableidx: number, name: string, idx: number, funcidx: number, funcName: string }
+
+export type TableGetExtended = { type: "TableGetExt", tableidx: number, name: string, idx: number, funcidx: number, funcName: string }
 
 export type TableGrow = { type: 'TableGrow', idx: number, name: string, amount: number }
 
@@ -86,6 +100,10 @@ export type ImportTable = { type: 'ImportTable', idx: number } & WebAssembly.Tab
 export type ImportGlobal = { type: 'ImportGlobal', idx: number, initial: number } & WebAssembly.GlobalDescriptor & Import
 
 export type ImportFunc = { type: 'ImportFunc', idx: number } & Import
+
+export type FuncEntry = { type: 'FuncEntry', idx: number, args: number[] }
+
+export type FuncReturn = { type: 'FuncReturn', idx: number, values: number[] }
 
 
 

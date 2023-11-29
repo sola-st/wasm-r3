@@ -49,11 +49,17 @@ export class Trace {
                 case 'L':
                     trace.push({ type: 'Load', idx: e[1], name: e[2], offset: e[3], data: e[4] })
                     break
+                case 'LE':
+                    trace.push({ type: 'LoadExt', idx: e[1], name: e[2], offset: e[3], data: e[4] })
+                    break
                 case 'MG':
                     trace.push({ type: 'MemGrow', idx: e[1], name: e[2], amount: e[3] })
                     break
                 case 'T':
                     trace.push({ type: 'TableGet', tableidx: e[1], name: e[2], idx: e[3], funcidx: e[4], funcName: e[5] })
+                    break
+                case 'TE':
+                    trace.push({ type: 'TableGetExt', tableidx: e[1], name: e[2], idx: e[3], funcidx: e[4], funcName: e[5] })
                     break
                 case 'TG':
                     trace.push({ type: 'TableGrow', idx: e[1], name: e[2], amount: e[3] })
@@ -81,6 +87,12 @@ export class Trace {
                     break
                 case 'IF':
                     trace.push({ type: 'ImportFunc', idx: e[1], module: e[2], name: e[3] })
+                    break
+                case 'FE':
+                    trace.push({ type: 'FuncEntry', idx: e[1], args: e[2] })
+                    break
+                case 'FR':
+                    trace.push({ type: 'FuncReturn', idx: e[1], values: e[2] })
                     break
                 default:
                     throw new Error(`Unknown event type ${e[0]}`)
@@ -161,6 +173,7 @@ export class Trace {
                     splitList(components[3]),
                 ]
             case "L":
+            case 'LE':
                 return [
                     components[0],
                     parseInt(components[1]),
@@ -176,6 +189,7 @@ export class Trace {
                     parseInt(components[3])
                 ]
             case "T":
+            case 'TE':
                 return [
                     components[0],
                     parseInt(components[1]),
@@ -225,6 +239,13 @@ export class Trace {
                     parseInt(components[4]),
                     components[5] === '' ? undefined : parseInt(components[5]),
                     components[6] as 'anyfunc'
+                ]
+            case 'FE':
+            case 'FR':
+                return [
+                    components[0],
+                    parseInt(components[1]),
+                    splitList(components[2]),
                 ]
             default:
                 throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}.`)
@@ -287,6 +308,14 @@ export class Trace {
                     offset: parseInt(components[3]),
                     data: splitList(components[4]),
                 }
+            case "LE":
+                return {
+                    type: 'LoadExt',
+                    idx: parseInt(components[1]),
+                    name: components[2],
+                    offset: parseInt(components[3]),
+                    data: splitList(components[4]),
+                }
             case "MG":
                 return {
                     type: 'MemGrow',
@@ -297,6 +326,15 @@ export class Trace {
             case "T":
                 return {
                     type: 'TableGet',
+                    tableidx: parseInt(components[1]),
+                    name: components[2],
+                    idx: parseInt(components[3]),
+                    funcidx: parseInt(components[4]),
+                    funcName: components[5],
+                }
+            case "TE":
+                return {
+                    type: 'TableGetExt',
                     tableidx: parseInt(components[1]),
                     name: components[2],
                     idx: parseInt(components[3]),
@@ -345,6 +383,18 @@ export class Trace {
                     maximum: components[5] === '' ? undefined : parseInt(components[5]),
                     element: components[6] as 'anyfunc'
                 }
+            case 'FE':
+                return {
+                    type: 'FuncEntry',
+                    idx: parseInt(components[1]),
+                    args: splitList(components[2])
+                }
+            case 'FR':
+                return {
+                    type: 'FuncReturn',
+                    idx: parseInt(components[1]),
+                    values: splitList(components[2])
+                }
             default:
                 throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}.`)
         }
@@ -376,10 +426,12 @@ export class Trace {
     }
 }
 
+type Options = { extended: boolean }
 export default class Analysis implements AnalysisI<Trace> {
 
     private trace: Trace = new Trace()
     private Wasabi: Wasabi
+    private options: Options
 
     // shadow stuff
     private shadowMemories: ArrayBuffer[] = []
@@ -402,8 +454,9 @@ export default class Analysis implements AnalysisI<Trace> {
         // return this.trace.getChunk(0, size)
     }
 
-    constructor(Wasabi: Wasabi) {
+    constructor(Wasabi: Wasabi, options = { extended: false }) {
         this.Wasabi = Wasabi
+        this.options = options
 
         // console.log('---------------------------------------------')
         // console.log('                   Wasm-R3                   ')
@@ -439,6 +492,9 @@ export default class Analysis implements AnalysisI<Trace> {
                 if (this.first_entry) {
                     this.init()
                     this.first_entry = false
+                }
+                if (options.extended) {
+                    this.trace.push(['FE', location.func, args])
                 }
                 if (this.callStack[this.callStack.length - 1] !== 'int') {
                     const exportName = this.Wasabi.module.info.functions[location.func].export[0]
@@ -478,12 +534,17 @@ export default class Analysis implements AnalysisI<Trace> {
                     return
                 }
                 let numType = this.getByteLength(op)
+                if (this.options.extended === true) {
+                    let data = this.get_actual_mem(target.memIdx, addr, numType)
+                    this.set_shadow_memory(target.memIdx, addr, data)
+                    this.trace.push(['LE', 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr, data])
+                }
                 if (this.mem_content_equals(target.memIdx, addr, numType)) {
                     return
                 }
                 let data = this.get_actual_mem(target.memIdx, addr, numType)
                 this.set_shadow_memory(target.memIdx, addr, data)
-                this.trace.push(["L", 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr, data])
+                this.trace.push(['L', 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr, data])
             },
 
             global: (location, op, idx, value) => {
@@ -526,6 +587,9 @@ export default class Analysis implements AnalysisI<Trace> {
 
             return_: (location, values) => {
                 this.callStack.pop()
+                if (this.options.extended === true) {
+                    this.trace.push(['FR', location.func, values])
+                }
             },
 
             table_set: (location, target, value) => {
@@ -571,6 +635,12 @@ export default class Analysis implements AnalysisI<Trace> {
             let funcName = this.getName(this.Wasabi.module.info.functions[parseInt(table.get(idx).name) - Object.keys(this.Wasabi.module.lowlevelHooks).length])
             this.trace.push(['T', tableidx, name, idx, funcidx, funcName])
             this.shadowTables[0].set(0, table.get(idx))
+        }
+        if (this.options.extended === true) {
+            let name = this.getName(this.Wasabi.module.info.tables[tableidx])
+            let funcidx = parseInt(table.get(idx).name)
+            let funcName = this.getName(this.Wasabi.module.info.functions[parseInt(table.get(idx).name) - Object.keys(this.Wasabi.module.lowlevelHooks).length])
+            this.trace.push(['TE', tableidx, name, idx, funcidx, funcName])
         }
     }
 

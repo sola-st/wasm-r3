@@ -5,7 +5,6 @@ import cp from 'child_process'
 import express from 'express'
 import Generator from "../src/replay-generator.cjs";
 import Tracer, { Trace } from "../src/tracer.cjs";
-import CallGraph from '../src/callgraph.cjs'
 import { copyDir, delay, getDirectoryNames, rmSafe, startSpinner, stopSpinner } from "./test-utils.cjs";
 import Benchmark from '../src/benchmark.cjs';
 //@ts-ignore
@@ -15,7 +14,7 @@ import Analyser, { AnalysisResult } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
 
-let generateCallGraphs = false
+let extended = false
 
 async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, "gen.js"))
@@ -73,7 +72,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
 
   // 2. Execute test and generate trace
   const wasmBinary = await fs.readFile(wasmPath)
-  let trace = new Tracer(eval(js + `\nWasabi`)).getResult()
+  let trace = new Tracer(eval(js + `\nWasabi`), { extended }).getResult()
   try {
     await (await import(testJsPath)).default(wasmBinary)
   } catch (e: any) {
@@ -97,7 +96,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
 
   // 4. Execute replay and generate trace and compare
-  let replayTrace = new Tracer(eval(js + `\nWasabi`)).getResult()
+  let replayTrace = new Tracer(eval(js + `\nWasabi`), { extended }).getResult()
   try {
     await (await import(replayPath)).default(wasmBinary)
   } catch (e: any) {
@@ -111,28 +110,6 @@ async function runNodeTest(name: string): Promise<TestReport> {
     return result
   }
 
-  // 5. Compare call graphs
-  if (generateCallGraphs === true) {
-    let callGraph = new CallGraph(eval(js + `\nWasabi`)).getResult()
-    try {
-      await (await import(testJsPath)).default(wasmBinary)
-    } catch (e: any) {
-      return { testPath, success: false, reason: e.stack }
-    }
-    const callGraphString = callGraph.toString()
-    await fs.writeFile(callGraphPath, callGraphString)
-
-    let replayCallGraph = new CallGraph(eval(js + `\nWasabi`)).getResult()
-    delete (require as NodeJS.Require & { cache: any }).cache[replayPath]
-    try {
-      await (await import(replayPath)).default(wasmBinary)
-    } catch (e: any) {
-      return { testPath, success: false, reason: e.stack }
-    }
-    const replayCallGraphString = replayCallGraph.toString()
-    await fs.writeFile(replayCallGraphPath, replayCallGraphString)
-    return compareResults(testPath, callGraphString, replayCallGraphString)
-  }
   return result
 }
 
@@ -260,24 +237,13 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   const testBenchmarkPath = path.join(testPath, 'test-benchmark')
   let analysisResult: AnalysisResult
   try {
-    const analyser = new Analyser('./dist/src/tracer.cjs')
+    const analyser = new Analyser('./dist/src/tracer.cjs', { extended })
     analysisResult = await (await import(testJsPath)).default(analyser)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
     await benchmark.save(benchmarkPath, { trace: true })
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: 'no benchmark was generated' }
-    }
-    let callGraphs: string[] = []
-    if (generateCallGraphs === true) {
-      analysisResult = await (await import(testJsPath)).default(new Analyser('./dist/src/callgraph.cjs'))
-      if (generateCallGraphs === true) {
-        callGraphs = await Promise.all(analysisResult.map(async (r, i) => {
-          const callGraphPath = path.join(benchmarkPath, `bin_${i}`, 'callpraph.txt')
-          await fs.writeFile(callGraphPath, r.result)
-          return r.result
-        }))
-      }
     }
 
     let runtimes = benchmark.instrumentBinaries()
@@ -289,7 +255,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
       const replayPath = path.join(subBenchmarkPath, 'replay.js')
       const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
-      let replayTrace = new Tracer(eval(runtimes[i] + `\nWasabi`)).getResult()
+      let replayTrace = new Tracer(eval(runtimes[i] + `\nWasabi`), { extended }).getResult()
       await (await import(replayPath)).default(Buffer.from(record[i].binary))
       let traceString = record[i].trace.toString()
       let replayTraceString = replayTrace.toString()
@@ -304,23 +270,6 @@ async function testWebPage(testPath: string): Promise<TestReport> {
         }
         results.reason += `\n\n${newResult.reason}`
       }
-      // Compare call graphs
-      if (generateCallGraphs === true) {
-        const replayCallGraphPath = path.join(subBenchmarkPath, 'callgraph.txt')
-        let replayCallGraph = new CallGraph(eval(runtimes[i] + `\nWasabi`)).getResult()
-        await (await import(replayPath)).default(Buffer.from(record[i].binary))
-        const callGraphString = callGraphs[i].toString()
-        const replayCallGraphString = replayCallGraph.toString()
-        await fs.writeFile(replayCallGraphPath, replayCallGraphString)
-        const newResult = compareResults(testPath, callGraphString, replayCallGraphString)
-        if (newResult.success === false) {
-          results.success = false;
-          if (results.reason === undefined) {
-            results.reason = ''
-          }
-          results.reason += `\n\n${newResult.reason}`
-        }
-      }
     }
     return results
   } catch (e: any) {
@@ -330,14 +279,12 @@ async function testWebPage(testPath: string): Promise<TestReport> {
 
 (async function run() {
   const optionDefinitions = [
-    { name: 'callGraph', alias: 'c', type: Boolean },
+    { name: 'extended', alias: 'e', type: Boolean },
     { name: 'category', type: String, multiple: true, defaultOption: true },
     { name: 'testcases', alias: 't', type: String, multiple: true }
   ]
   const options = commandLineArgs(optionDefinitions)
-  if (options.callGraph == true) {
-    generateCallGraphs = true
-  }
+  extended = options.extended
   if (options.category === undefined || options.category.includes('node')) {
     console.log('==============')
     console.log('Run node tests')

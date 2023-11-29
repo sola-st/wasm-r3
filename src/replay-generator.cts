@@ -158,6 +158,11 @@ export default class Generator {
                     results: []
                 }
                 break
+            case 'FuncEntry':
+            case 'FuncReturn':
+            case 'LoadExt':
+            case 'TableGetExt':
+                break
             default:
                 unreachable(event)
         }
