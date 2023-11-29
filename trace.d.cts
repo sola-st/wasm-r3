@@ -5,7 +5,7 @@
 
 export type ConsiseTrace = (ConsiseWasmEvent | Ref)[]
 
-export type ConsiseWasmEvent = ConsiseLoad | ConsiseMemGrow | ConsiseTableGet | ConsiseTableGrow | ConsiseGlobalGet | ConsiseExportCall | ConsiseImportCall | ConsiseImportReturn | ConsiseImportMemory | ConsiseImportTable | ConsiseImportGlobal | ConsiseImportFunc
+export type ConsiseWasmEvent = ConsiseLoad | ConsiseMemGrow | ConsiseTableGet | ConsiseTableGrow | ConsiseGlobalGet | ConsiseExportCall | ConsiseExportReturn | ConsiseImportCall | ConsiseImportReturn | ConsiseImportMemory | ConsiseImportTable | ConsiseImportGlobal | ConsiseImportFunc
     | ConsiseFuncEntry | ConsiseFuncReturn | ConsiseLoadExtended | ConsiseTableGetExtended
 
 // export type Load = { type: "L", idx: number, name: string, offset: number, data: number[] }
@@ -33,6 +33,10 @@ export type ConsiseGlobalGet = ['G', number, string, number, ValType]
 // export type ExportCall = { type: "EC", name: string, params: number[] }
 // export type ExportCall = [type, name, params]
 export type ConsiseExportCall = ['EC', string, number[]]
+
+// export type ImportReturn = { type: "ER"}
+// export type ImportReturn = [type]
+export type ConsiseExportReturn = ['ER']
 
 // export type ImportCall = { type: "IC", idx: number, name: string }
 // export type ImportCall = [type, idx, name]
@@ -70,7 +74,7 @@ export type Ref = [number]
 
 export type Trace = WasmEvent[]
 
-export type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ImportReturn | ImportMemory | ImportTable | ImportGlobal | ImportFunc
+export type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ExportReturn | ImportReturn | ImportMemory | ImportTable | ImportGlobal | ImportFunc
     | FuncEntry | FuncReturn | LoadExtended | TableGetExtended
 
 export type Load = { type: "Load", idx: number, name: string, offset: number, data: number[] }
@@ -88,6 +92,8 @@ export type TableGrow = { type: 'TableGrow', idx: number, name: string, amount: 
 export type GlobalGet = { type: 'GlobalGet', idx: number, name: string, value: number, valtype: ValType }
 
 export type ExportCall = { type: "ExportCall", name: string, params: number[] }
+
+export type ExportReturn = { type: 'ExportReturn' }
 
 export type ImportCall = { type: "ImportCall", idx: number, name: string }
 

@@ -72,12 +72,20 @@ async function runNodeTest(name: string): Promise<TestReport> {
 
   // 2. Execute test and generate trace
   const wasmBinary = await fs.readFile(wasmPath)
-  let trace = new Tracer(eval(js + `\nWasabi`), { extended }).getResult()
+  let tracer = new Tracer(eval(js + `\nWasabi`), { extended })
+  let original_instantiate = WebAssembly.instantiate
+  //@ts-ignore
+  WebAssembly.instantiate = async function (bytes: BufferSource, importObject?: WebAssembly.Imports) {
+    const result = await original_instantiate(bytes, importObject)
+    tracer.init()
+    return result
+  };
   try {
     await (await import(testJsPath)).default(wasmBinary)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
+  let trace = tracer.getResult()
   let traceString = trace.toString();
   await fs.writeFile(tracePath, traceString);
 
@@ -96,13 +104,16 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
 
   // 4. Execute replay and generate trace and compare
-  let replayTrace = new Tracer(eval(js + `\nWasabi`), { extended }).getResult()
+  let replayTracer = new Tracer(eval(js + `\nWasabi`), { extended })
   try {
-    await (await import(replayPath)).default(wasmBinary)
+    const replayBinary = await import(replayPath)
+    const wasm = await replayBinary.instantiate(wasmBinary)
+    replayTracer.init()
+    replayBinary.replay(wasm)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
-  let replayTraceString = replayTrace.toString();
+  let replayTraceString = replayTracer.getResult().toString();
   await fs.writeFile(replayTracePath, replayTraceString);
 
   const result = compareResults(testPath, traceString, replayTraceString)
@@ -154,9 +165,9 @@ async function runOnlineTests(names: string[]) {
     'funky-kart', // takes so long and we know that record and replay trace differ
     'image-convolute', // replay runs forever
     'ffmpeg', // replay runs forever
-    'jsc', // replay trace differs
+    // 'jsc', // replay trace differs
     'rtexviewer', // replay trace differs
-    'video', // replay trace differs
+    // 'video', // replay trace differs
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
@@ -255,10 +266,13 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
       const replayPath = path.join(subBenchmarkPath, 'replay.js')
       const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
-      let replayTrace = new Tracer(eval(runtimes[i] + `\nWasabi`), { extended }).getResult()
-      await (await import(replayPath)).default(Buffer.from(record[i].binary))
+      let tracer = new Tracer(eval(runtimes[i] + `\nWasabi`), { extended })
+      const replayBinary = (await import(replayPath))
+      const wasm = await replayBinary.instantiate(Buffer.from(record[i].binary))
+      tracer.init()
+      await replayBinary.replay(wasm)
       let traceString = record[i].trace.toString()
-      let replayTraceString = replayTrace.toString()
+      let replayTraceString = tracer.getResult().toString()
       await fs.writeFile(replayTracePath, replayTraceString);
 
       // 5. Check if original trace and replay trace match

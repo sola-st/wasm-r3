@@ -70,6 +70,9 @@ export class Trace {
                 case 'EC':
                     trace.push({ type: 'ExportCall', name: e[1], params: e[2] })
                     break
+                case 'ER':
+                    trace.push({ type: 'ExportReturn' })
+                    break
                 case 'IC':
                     trace.push({ type: 'ImportCall', idx: e[1], name: e[2] })
                     break
@@ -158,6 +161,10 @@ export class Trace {
                     components[0],
                     components[1],
                     splitList(components[2])
+                ]
+            case 'ER':
+                return [
+                    components[0]
                 ]
             case "IC":
                 return [
@@ -286,6 +293,10 @@ export class Trace {
                     type: 'ExportCall',
                     name: components[1],
                     params: splitList(components[2])
+                }
+            case 'ER':
+                return {
+                    type: 'ExportReturn'
                 }
             case "IC":
                 return {
@@ -424,6 +435,10 @@ export class Trace {
         }
         return event
     }
+
+    getLength() {
+        return this.trace.length
+    }
 }
 
 type Options = { extended: boolean }
@@ -489,10 +504,6 @@ export default class Analysis implements AnalysisI<Trace> {
             table_fill(location, index, value, length) { },
 
             begin_function: (location, args) => {
-                if (this.first_entry) {
-                    this.init()
-                    this.first_entry = false
-                }
                 if (options.extended) {
                     this.trace.push(['FE', location.func, args])
                 }
@@ -518,6 +529,18 @@ export default class Analysis implements AnalysisI<Trace> {
                 let byteLength = this.getByteLength(op)
                 byteLength = parseInt(op.substring(1, 3)) / 8
                 let data = this.get_actual_mem(target.memIdx, addr, byteLength)
+                // if (
+                //     addr > 4096 && addr < 4107
+                // ) {
+                //     console.log('********************* STORE *********************')
+                //     console.log('Trace length', this.trace.getLength())
+                //     console.log('op', op)
+                //     console.log('numType', byteLength)
+                //     console.log('addr', addr)
+                //     console.log('value', value, 'asArray', data)
+                //     console.log('ShadowMem', this.shadowMemories[0])
+                //     console.log('Wasabi', Wasabi)
+                // }
                 this.set_shadow_memory(target.memIdx, addr, data)
             },
 
@@ -534,10 +557,23 @@ export default class Analysis implements AnalysisI<Trace> {
                     return
                 }
                 let numType = this.getByteLength(op)
+                if (addr === 5246968) {
+                    // console.log('*************** LOAD ***************')
+                    // console.log('at addr 5246968:', new Uint8Array(this.Wasabi.module.memories[0].buffer)[5246968])
+                }
                 if (this.options.extended === true) {
                     let data = this.get_actual_mem(target.memIdx, addr, numType)
-                    this.set_shadow_memory(target.memIdx, addr, data)
                     this.trace.push(['LE', 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr, data])
+                    // if (this.trace.getLength() === 20252) {
+                    //     console.log('********************* LOAD *********************')
+                    //     console.log('Trace entry', this.trace.getLength(), ':', this.trace.getTop())
+                    //     console.log('op', op)
+                    //     console.log('numType', numType)
+                    //     console.log('addr', addr)
+                    //     console.log('value', value, 'asArray', this.get_actual_mem(target.memIdx, addr, numType))
+                    //     console.log('ShadowMem', this.shadowMemories[0])
+                    //     console.log('Wasabi', Wasabi)
+                    // }
                 }
                 if (this.mem_content_equals(target.memIdx, addr, numType)) {
                     return
@@ -590,6 +626,9 @@ export default class Analysis implements AnalysisI<Trace> {
                 if (this.options.extended === true) {
                     this.trace.push(['FR', location.func, values])
                 }
+                if (this.callStack.length === 1) {
+                    this.trace.push(['ER'])
+                }
             },
 
             table_set: (location, target, value) => {
@@ -605,6 +644,10 @@ export default class Analysis implements AnalysisI<Trace> {
     private set_shadow_memory(memIdx: number, addr: number, data: number[]) {
         for (let i = 0; i < data.length; i++) {
             let shadowArray = new Uint8Array(this.shadowMemories[memIdx])
+            // if ((addr + i) === 4105) {
+            //     console.log('********************* SET SHADOW MEMORY *********************')
+            //     console.log(data[i])
+            // }
             shadowArray[addr + i] = data[i]
         }
     }
@@ -629,17 +672,21 @@ export default class Analysis implements AnalysisI<Trace> {
     private tableGetEvent(tableidx: number, idx: number) {
         let table = this.Wasabi.module.tables[tableidx]
         let shadowTable = this.shadowTables[tableidx]
+        let resolvedFuncIdx = parseInt(table.get(idx).name)
+        if (resolvedFuncIdx >= this.Wasabi.module.info.originalFunctionImportsCount) {
+            resolvedFuncIdx = resolvedFuncIdx - Object.keys(this.Wasabi.module.lowlevelHooks).length
+        }
         if (shadowTable.get(idx) !== table.get(idx)) {
             let name = this.getName(this.Wasabi.module.info.tables[tableidx])
             let funcidx = parseInt(table.get(idx).name)
-            let funcName = this.getName(this.Wasabi.module.info.functions[parseInt(table.get(idx).name) - Object.keys(this.Wasabi.module.lowlevelHooks).length])
+            let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
             this.trace.push(['T', tableidx, name, idx, funcidx, funcName])
             this.shadowTables[0].set(0, table.get(idx))
         }
         if (this.options.extended === true) {
             let name = this.getName(this.Wasabi.module.info.tables[tableidx])
             let funcidx = parseInt(table.get(idx).name)
-            let funcName = this.getName(this.Wasabi.module.info.functions[parseInt(table.get(idx).name) - Object.keys(this.Wasabi.module.lowlevelHooks).length])
+            let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
             this.trace.push(['TE', tableidx, name, idx, funcidx, funcName])
         }
     }
@@ -718,8 +765,14 @@ export default class Analysis implements AnalysisI<Trace> {
         return cloned;
     }
 
-    private init() {
+    init() {
         // Init Memories
+        // console.log('init shadow mem', this.shadowMemories[0])
+        this.Wasabi.module.info.memories.forEach((m, idx) => {
+            if (m.import !== null) {
+                this.trace.push(['IM', idx, m.import[0], m.import[1], m.initial, m.maximum])
+            }
+        })
         this.Wasabi.module.memories.forEach((mem, i) => {
             let isImported = this.Wasabi.module.info.memories[i].import !== null
             if (isImported) {
@@ -728,11 +781,8 @@ export default class Analysis implements AnalysisI<Trace> {
                 this.shadowMemories.push(this.cloneArrayBuffer(mem.buffer))
             }
         })
-        this.Wasabi.module.info.memories.forEach((m, idx) => {
-            if (m.import !== null) {
-                this.trace.push(['IM', idx, m.import[0], m.import[1], m.initial, m.maximum])
-            }
-        })
+        // console.log(this.Wasabi.module.memories.length)
+        // console.log('at address 5246968:', new Uint8Array(this.Wasabi.module.memories[0].buffer)[5246968])
         // Init Tables
         this.Wasabi.module.tables.forEach((t, i) => {
             this.shadowTables.push(new WebAssembly.Table({ initial: this.Wasabi.module.tables[i].length, element: 'anyfunc' })) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')

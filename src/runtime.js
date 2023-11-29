@@ -72,6 +72,8 @@ function setup() {
         result = original_instantiate(buffer, importObject)
         result.then(({ module, instance }) => {
             wireInstanceExports(instance, this_i)
+            self.analysis[this_i].init()
+            
         })
         // self.performanceList.push(p_instantiationTime.stop())
         return result
