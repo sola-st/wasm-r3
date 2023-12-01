@@ -168,6 +168,8 @@ export default class Generator {
             case 'FuncReturn':
             case 'LoadExt':
             case 'TableGetExt':
+            case 'Call':
+            case 'StoreExt':
                 break
             default:
                 unreachable(event)
@@ -281,22 +283,22 @@ class Code {
         for (let event of this.initialization) {
             switch (event.type) {
                 case 'Store':
-                    stream.write(this.storeEvent(event))
+                    await this.write(stream, this.storeEvent(event))
                     break
                 case 'MemGrow':
-                    stream.write(this.memGrowEvent(event))
+                    await this.write(stream, this.memGrowEvent(event))
                     break
                 case 'TableSet':
-                    stream.write(this.tableSetEvent(event))
+                    await this.write(stream, this.tableSetEvent(event))
                     break
                 case 'TableGrow':
-                    stream.write(this.tableGrowEvent(event))
+                    await this.write(stream, this.tableGrowEvent(event))
                     break
                 case 'Call':
-                    stream.write(this.callEvent(event))
+                    await this.write(stream, this.callEvent(event))
                     break
                 case 'GlobalSet':
-                    stream.write(this.globalSet(event))
+                    await this.write(stream, this.globalSet(event))
                     break
                 default: unreachable(event)
             }
@@ -308,8 +310,7 @@ class Code {
         stream.write(`if (process.argv[2] === 'run') {\n`)
         stream.write(`const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n`)
         stream.write(`const wasmBinary = fs.readFileSync(p)\n`)
-        stream.write(`const wasm = await instantiate(wasmBinary)\n`)
-        stream.write(`replay(wasm)\n`)
+        stream.write(`instantiate(wasmBinary).then((wasm) => replay(wasm))\n`)
         stream.write(`}\n`)
         stream.close()
     }
@@ -320,22 +321,22 @@ class Code {
             for (let event of b) {
                 switch (event.type) {
                     case 'Call':
-                        stream.write(`instance.exports.${event.name}(${writeParamsString(event.params)})\n`)
+                        await this.write(stream, `instance.exports.${event.name}(${writeParamsString(event.params)})\n`)
                         break
                     case 'Store':
-                        stream.write(this.storeEvent(event))
+                        await this.write(stream, this.storeEvent(event))
                         break
                     case 'MemGrow':
-                        stream.write(this.memGrowEvent(event))
+                        await this.write(stream, this.memGrowEvent(event))
                         break
                     case 'TableSet':
-                        stream.write(this.tableSetEvent(event))
+                        await this.write(stream, this.tableSetEvent(event))
                         break
                     case 'TableGrow':
-                        stream.write(this.tableGrowEvent(event))
+                        await this.write(stream, this.tableGrowEvent(event))
                         break
                     case 'GlobalSet':
-                        stream.write(this.globalSet(event))
+                        await this.write(stream, this.globalSet(event))
                         break
                     default: unreachable(event)
                 }

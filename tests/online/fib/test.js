@@ -1,6 +1,5 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
-
 export default async function test(analyser) {
+  analyser.setExtended(false)
   const url = 'https://takahirox.github.io/WebAssembly-benchmark/tests/fib.html'
   const page = await analyser.start(url, { headless: true })
   const buttonLocator = page.locator('#run_button')

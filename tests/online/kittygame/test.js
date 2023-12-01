@@ -1,6 +1,7 @@
 import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
+    analyser.setExtended(false)
     const url = 'https://wasm4.org/play/kittygame'
     let page = await analyser.start(url, { headless: true })
     await delay(2000)

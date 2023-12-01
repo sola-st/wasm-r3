@@ -37,7 +37,7 @@ export default class Analyser {
         }
         const p_measureStart = createMeasure('start', { phase: 'record', description: `The time it takes start the chromium browser and open the webpage until the 'load' event is fired.` })
         this.isRunning = true
-        this.browser = await chromium.launch({
+        this.browser = await chromium.launch({ // chromium version: 119.0.6045.9 (Developer Build) (x86_64); V8 version: V8 11.9.169.3; currently in node I run version 11.8.172.13-node.12
             headless, args: [
                 '--disable-web-security',
                 '--js-flags="--max_old_space_size=8192"'
@@ -142,6 +142,14 @@ export default class Analyser {
         analysisScript = `function setupAnalysis(Wasabi) {\n ${analysisScript};\n return new Analysis(Wasabi, { extended: ${this.options.extended}})}\n`
         const setupScript = await fs.readFile('./src/runtime.js') + '\n'
         return wasabiScript + ';' + analysisScript + ';' + setupScript + ';'
+    }
+
+    setExtended(extended: boolean) {
+        this.options.extended = extended
+    }
+
+    getExtended() {
+        return this.options.extended
     }
 }
 

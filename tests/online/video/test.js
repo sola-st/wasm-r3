@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
     const url = 'https://d2jta7o2zej4pf.cloudfront.net/'
-    const page = await analyser.start(url, { headless: false })
+    const page = await analyser.start(url, { headless: true })
     page.context().grantPermissions(['camera'], {
         origin: url
     })
