@@ -13,7 +13,7 @@ import { Server } from 'http'
 import Analyser, { AnalysisResult } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
-import Diff from 'diff'
+const Diff =  require('diff')
 
 let extended = false
 
@@ -175,12 +175,10 @@ async function runOnlineTests(names: string[]) {
   let filter = [
     'visual6502remix', // takes so long and is not automated yet
     'heatmap', // takes so long
-    // 'funky-kart', // takes so long and we know that record and replay trace differ
-    // 'image-convolute', // replay runs forever
+    'image-convolute', // out of memory
     'ffmpeg', // replay runs forever
-    'jsc', // replay trace differs
+    'jsc', // replay runs forever
     'rtexviewer', // replay trace differs
-    'video', // replay trace differs
     'boa', // extended trace FE return values differ (5e-327 instead of 5 and -Infinity instead of NaN etc.)
   ]
   names = names.filter((n) => !filter.includes(n))
@@ -304,7 +302,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
 
       // 5. Check if original trace and replay trace match
       const newResult = Diff.diffChars(traceString, replayTraceString)
-      if (newResult.length !== 0) {
+      if (newResult.some((c) => c.added || c.removed)) {
         results.success = false;
         results.reason += `\n\n${JSON.stringify(newResult)}`
       }

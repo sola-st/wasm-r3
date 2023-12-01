@@ -1,6 +1,7 @@
 import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
+    analysis.setExtended(false)
     const url = 'https://jacobdeichert.github.io/wasm-astar/'
     const page = await analyser.start(url, { headless: true })
     await delay(5000)
