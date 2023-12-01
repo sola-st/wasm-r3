@@ -44,6 +44,7 @@ export default class Analyser {
             ]
         });
         this.page = await this.browser.newPage();
+        this.page.setDefaultTimeout(120000);
         const initScript = await this.constructInitScript()
 
         await this.page.addInitScript({ content: initScript })
