@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
     const url = 'https://boajs.dev/boa/playground/'
-    const page = await analyser.start(url, { headless: false })
+    const page = await analyser.start(url, { headless: true })
     // const terminalWrapper = page.locator('.textbox')
     // await terminalWrapper.waitFor({ state: 'visible' })
     await delay(5000)

@@ -179,7 +179,6 @@ async function runOnlineTests(names: string[]) {
     'ffmpeg', // replay runs forever
     'jsc', // replay runs forever
     'rtexviewer', // replay trace differs
-    'video', // replay trace differs
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {

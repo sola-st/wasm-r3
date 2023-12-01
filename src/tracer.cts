@@ -768,7 +768,6 @@ export default class Analysis implements AnalysisI<Trace> {
     }
 
     init() {
-        // console.log('test getByteLength', this.getByteLength('i64.load32_u'))
         // Init Memories
         this.Wasabi.module.info.memories.forEach((m, idx) => {
             if (m.import !== null) {
@@ -783,7 +782,6 @@ export default class Analysis implements AnalysisI<Trace> {
                 this.shadowMemories.push(this.cloneArrayBuffer(mem.buffer))
             }
         })
-        // this.debugMemory(4345592, 4345600)
         // Init Tables
         this.Wasabi.module.tables.forEach((t, i) => {
             this.shadowTables.push(new WebAssembly.Table({ initial: this.Wasabi.module.tables[i].length, element: 'anyfunc' })) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
