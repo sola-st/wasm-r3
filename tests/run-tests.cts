@@ -13,7 +13,6 @@ import { Server } from 'http'
 import Analyser, { AnalysisResult } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
-const Diff = require('Diff')
 
 let extended = false
 
