@@ -49,7 +49,13 @@ export default class Analyser {
         await this.page.addInitScript({ content: initScript })
 
         await this.page.route(`**/*.js*`, async route => {
-            const response = await route.fetch()
+            let response
+            try {
+                response = await route.fetch()
+            } catch {
+                // this usually only happens when the browser is already closed. Only happens when running the test suite
+                return
+            }
             const script = await response.text()
             try {
                 acorn.parse(script, { ecmaVersion: 'latest' })
