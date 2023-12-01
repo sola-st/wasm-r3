@@ -13,7 +13,7 @@ import { Server } from 'http'
 import Analyser, { AnalysisResult } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
-const Diff =  require('diff')
+const Diff = require('Diff')
 
 let extended = false
 
@@ -179,7 +179,7 @@ async function runOnlineTests(names: string[]) {
     'ffmpeg', // replay runs forever
     'jsc', // replay runs forever
     'rtexviewer', // replay trace differs
-    'boa', // extended trace FE return values differ (5e-327 instead of 5 and -Infinity instead of NaN etc.)
+    'video', // replay trace differs
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {

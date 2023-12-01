@@ -140,7 +140,7 @@ export class Trace {
         }
 
         function parseNumber(n: string) {
-            if (n.includes('.') || n.includes('e') || n.includes('NaN') || n.includes('Infinity')) {
+            if (n.includes('.') || n.includes('e-') || n.includes('NaN') || n.includes('Infinity')) {
                 return parseFloat(n)
             }
             return parseInt(n)
