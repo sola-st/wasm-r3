@@ -55,7 +55,7 @@ export type Wasabi = {
                 instrCount: number
             })[],
             memories: (ImpExp & Limits)[],
-            tables: (ImpExp & Limits & { refType: any })[],
+            tables: (ImpExp & Limits & { refType: string | 'funcref' /* should be: WebAssembly.TableKind*/ })[],
             globals: (ImpExp & { valType: ValType, mutability: Mutability })[],
             start: any,
             tableExportNames: string[],

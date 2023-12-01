@@ -5,7 +5,7 @@ import cp from 'child_process'
 import express from 'express'
 import Generator from "../src/replay-generator.cjs";
 import Tracer, { Trace } from "../src/tracer.cjs";
-import { copyDir, delay, getDirectoryNames, rmSafe, startSpinner, stopSpinner } from "./test-utils.cjs";
+import { copyDir, delay, getDirectoryNames, rmSafe, startSpinner, stopSpinner, trimFromLastOccurance } from "./test-utils.cjs";
 import Benchmark from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
@@ -142,6 +142,7 @@ async function runNodeTests(names: string[]) {
     'table-exp-host-mod',
     'table-exp-host-grow',
     'funky-kart',
+    'table-exp-host-add-friend',
   ]
   names = names.filter((n) => !filter.includes(n))
   // names = ["mem-imp-host-grow"]
@@ -178,7 +179,7 @@ async function runOnlineTests(names: string[]) {
     'image-convolute', // out of memory
     'ffmpeg', // replay runs forever
     'jsc', // replay runs forever
-    'rtexviewer', // replay trace differs
+    // 'rtexviewer', // replay trace differs
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
@@ -220,9 +221,9 @@ type Success = { success: true }
 type Failure = { success: false, reason: string }
 type TestReport = { testPath: string } & (Success | Failure)
 async function writeReport(name: string, report: TestReport) {
-  const totalLength = 40;
+  const totalLength = 45;
   if (totalLength < name.length) {
-    throw "Total length should oe greater than or equal to the length of the initial word.";
+    throw new Error("Total length should oe greater than or equal to the length of the initial word.");
   }
   const spacesLength = totalLength - name.length;
   const spaces = " ".repeat(spacesLength);
@@ -266,6 +267,14 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     const analyser = new Analyser('./dist/src/tracer.cjs', { extended })
     analysisResult = await (await import(testJsPath)).default(analyser)
     const blockExtended = analyser.getExtended()
+
+    // Sometimes during record we stop in the middle of wasm execution
+    // we will generate the replay correctly, but it will run until the end
+    // so we will end up with a longer replay trace.
+    // Thats why we trim our trace to the position where the last wasm routine was finished
+    for (let i = 0; i <= analysisResult.length - 1; i++) {
+      analysisResult[i].result = trimFromLastOccurance(analysisResult[i].result, 'ER')
+    }
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
     await benchmark.save(benchmarkPath, { trace: true })
@@ -300,10 +309,13 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       await fs.writeFile(replayTracePath, replayTraceString);
 
       // 5. Check if original trace and replay trace match
-      const newResult = Diff.diffChars(traceString, replayTraceString)
-      if (newResult.some((c) => c.added || c.removed)) {
+      const newResult = compareResults(testPath, traceString, replayTraceString)
+      if (newResult.success === false) {
         results.success = false;
-        results.reason += `\n\n${JSON.stringify(newResult)}`
+        if (results.reason === undefined) {
+          results.reason = ''
+        }
+        results.reason += `\n\n${newResult.reason}`
       }
     }
     return results

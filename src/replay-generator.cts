@@ -6,12 +6,13 @@ import { WasmEvent } from "../trace.cjs"
 
 type ImpExp = { import: boolean, name: string }
 type Call = { type: "Call", name: string, params: number[] }
+type TableCall = { type: 'TableCall', tableName: string, funcidx: number, params: number[] }
 type Store = { type: "Store", addr: number, data: number[] } & ImpExp
 type MemGrow = { type: "MemGrow", amount: number } & ImpExp
 type TableSet = { type: "TableSet", idx: number, funcImport: boolean, funcName: string } & ImpExp
 type TableGrow = { type: "TableGrow", idx: number, amount: number } & ImpExp
 type GlobalSet = { type: "GlobalSet", value: number, bigInt: boolean } & ImpExp
-type Event = Call | Store | MemGrow | TableSet | TableGrow | GlobalSet
+type Event = Call | TableCall | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type Import = { module: string, name: string }
 type Result = { results: number[], reps: number }
 type Function = Import & { bodys: Event[][], results: Result[] }
@@ -60,6 +61,8 @@ export default class Generator {
             case "ExportCall":
                 this.pushEvent({ type: 'Call', name: event.name, params: event.params })
                 break
+            case 'TableCall':
+                this.pushEvent({ type: 'TableCall', tableName: event.tableName, funcidx: event.funcidx, params: event.params })
             case 'ExportReturn':
                 this.state.globalScope = true
                 break
@@ -297,6 +300,9 @@ class Code {
                 case 'Call':
                     await this.write(stream, this.callEvent(event))
                     break
+                case 'TableCall':
+                    await this.write(stream, this.tableCallEvent(event))
+                    break
                 case 'GlobalSet':
                     await this.write(stream, this.globalSet(event))
                     break
@@ -321,7 +327,10 @@ class Code {
             for (let event of b) {
                 switch (event.type) {
                     case 'Call':
-                        await this.write(stream, `instance.exports.${event.name}(${writeParamsString(event.params)})\n`)
+                        await this.write(stream, this.callEvent(event))
+                        break
+                    case 'TableCall':
+                        await this.write(stream, this.tableCallEvent(event))
                         break
                     case 'Store':
                         await this.write(stream, this.storeEvent(event))
@@ -375,7 +384,11 @@ class Code {
     }
 
     private callEvent(event: Call) {
-        return `instance.exports.${event.name}(${writeParamsString(event.params)}) \n`
+        return `instance.exports.${event.name}(${writeParamsString(event.params)})\n`
+    }
+
+    private tableCallEvent(event: TableCall) {
+        return `instance.exports.${event.tableName}.get(${event.funcidx})(${writeParamsString(event.params)})\n`
     }
 
     private memGrowEvent(event: MemGrow) {

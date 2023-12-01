@@ -56,3 +56,12 @@ export async function copyDir(source: string, destination: string) {
         }
     }
 }
+
+export function trimFromLastOccurance(str: string, substring: string) {
+    const lastIndex = str.lastIndexOf(substring);
+    if (lastIndex === -1) {
+        // Substring not found, return original string or handle as needed
+        return str;
+    }
+    return str.substring(0, lastIndex + substring.length);
+}

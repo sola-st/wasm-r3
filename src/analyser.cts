@@ -63,7 +63,7 @@ export default class Analyser {
             this.contexts.push(worker)
         })
 
-        await this.page.goto(url)
+        await this.page.goto(url, { timeout: 60000 })
         p_measureStart()
         this.p_measureUserInteraction = createMeasure('user interaction', { phase: 'record', description: `The time the user interacts with the webpage during recording, from the time the 'loal' event got fired in the browser until the user stopps the recording.` })
         return this.page
@@ -78,7 +78,7 @@ export default class Analyser {
         this.contexts = this.contexts.concat(this.page.frames())
         const p_measureDataDownload = createMeasure('data download', { phase: 'record', description: `The time it takes to download all data from the browser.` })
         const p_measureTraceDownload = createMeasure('trace download', { phase: 'record', description: `The time it takes to download all traces from the browser.` })
-        const analysisResults = await this.getResults()
+        const traces = await this.getResults()
         p_measureTraceDownload()
         const p_measureBufferDownload = createMeasure('buffer download', { phase: 'record', description: `The time it takes to download all wasm binaries from the browser.` })
         const originalWasmBuffer = await this.getBuffers()
@@ -88,8 +88,17 @@ export default class Analyser {
         this.browser.close()
         this.isRunning = false
         p_measureStop()
-        return analysisResults.map((result, i) => ({ result: result, wasm: originalWasmBuffer[i] }))
+        return traces.map((result, i) => ({ result: result, wasm: originalWasmBuffer[i] }))
     }
+
+    // private trim(traces: string[]) {
+    //     return traces.map(t => {
+    //         while (t.length >= 3 && t.slice(t.length - 3, t.length) !== 'ER;') {
+    //             t = t.slice(0, -1)
+    //         }
+    //         return t
+    //     })
+    // }
 
     private async getResults() {
         const results = await Promise.all(this.contexts.map(async (c) => {

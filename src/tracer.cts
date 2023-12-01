@@ -70,6 +70,9 @@ export class Trace {
                 case 'EC':
                     trace.push({ type: 'ExportCall', name: e[1], params: e[2] })
                     break
+                case 'TC':
+                    trace.push({ type: 'TableCall', tableName: e[1], funcidx: e[2], params: e[3] })
+                    break
                 case 'ER':
                     trace.push({ type: 'ExportReturn' })
                     break
@@ -161,6 +164,13 @@ export class Trace {
                     components[0],
                     components[1],
                     splitList(components[2])
+                ]
+            case 'TC':
+                return [
+                    components[0],
+                    components[1],
+                    parseInt(components[2]),
+                    splitList(components[3]),
                 ]
             case 'ER':
                 return [
@@ -304,6 +314,13 @@ export class Trace {
                     type: 'ExportCall',
                     name: components[1],
                     params: splitList(components[2])
+                }
+            case 'TC':
+                return {
+                    type: 'TableCall',
+                    tableName: components[1],
+                    funcidx: parseInt(components[2]),
+                    params: splitList(components[3])
                 }
             case 'ER':
                 return {
@@ -525,10 +542,21 @@ export default class Analysis implements AnalysisI<Trace> {
                 }
                 if (this.callStack[this.callStack.length - 1] !== 'int') {
                     const exportName = this.Wasabi.module.info.functions[location.func].export[0]
-                    // there is some fucked up shit going on. I dont know what It is but somehow there can be unexported functions called
-                    // even tho we tho we should be inside of the host
-                    // I dont know what the fuck is going on here, but I just ignore those for now and hope for the best
-                    if (exportName !== undefined) {
+                    const CALLED_WITH_TABLE_GET = exportName === undefined
+                    if (CALLED_WITH_TABLE_GET) {
+                        if (!this.Wasabi.module.tables.some((table, i) => {
+                            for (let tableIndex = 0; tableIndex < table.length; tableIndex++) {
+                                const funcidx = this.resolveFuncIdx(table, tableIndex)
+                                if (funcidx === location.func) {
+                                    this.trace.push(["TC", this.getName(this.Wasabi.module.info.tables[i]), tableIndex, args])
+                                    return true
+                                }
+                            }
+                            return false
+                        })) {
+                            throw new Error('The function you where calling from outside the wasm module is neither exported nor in a table...')
+                        }
+                    } else {
                         this.trace.push(["EC", exportName, args])
                         this.checkMemGrow()
                         this.checkTableGrow()
@@ -608,9 +636,6 @@ export default class Analysis implements AnalysisI<Trace> {
                     this.callStack.push({ name, idx: funcidx })
                     this.trace.push(["IC", funcidx, name])
                 }
-                // if (options.extended) {
-                //     this.trace.push(['C', funcidx])
-                // }
             },
 
             call_post: (location, results) => {
@@ -667,10 +692,7 @@ export default class Analysis implements AnalysisI<Trace> {
     private tableGetEvent(tableidx: number, idx: number) {
         let table = this.Wasabi.module.tables[tableidx]
         let shadowTable = this.shadowTables[tableidx]
-        let resolvedFuncIdx = parseInt(table.get(idx).name)
-        if (resolvedFuncIdx >= this.Wasabi.module.info.originalFunctionImportsCount) {
-            resolvedFuncIdx = resolvedFuncIdx - Object.keys(this.Wasabi.module.lowlevelHooks).length
-        }
+        let resolvedFuncIdx = this.resolveFuncIdx(table, idx)
         if (shadowTable.get(idx) !== table.get(idx)) {
             let name = this.getName(this.Wasabi.module.info.tables[tableidx])
             let funcidx = parseInt(table.get(idx).name)
@@ -684,6 +706,14 @@ export default class Analysis implements AnalysisI<Trace> {
             let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
             this.trace.push(['TE', tableidx, name, idx, funcidx, funcName])
         }
+    }
+
+    private resolveFuncIdx(table: WebAssembly.Table, idx: number) {
+        let resolvedFuncIdx = parseInt(table.get(idx).name)
+        if (resolvedFuncIdx >= this.Wasabi.module.info.originalFunctionImportsCount) {
+            resolvedFuncIdx = resolvedFuncIdx - Object.keys(this.Wasabi.module.lowlevelHooks).length
+        }
+        return resolvedFuncIdx
     }
 
     private growShadowMem(memIdx, byPages: number) {
@@ -784,6 +814,9 @@ export default class Analysis implements AnalysisI<Trace> {
         })
         // Init Tables
         this.Wasabi.module.tables.forEach((t, i) => {
+            if (this.Wasabi.module.info.tables[i].refType !== 'funcref') {
+                throw new Error('I didnt implement other tabletypes then funcrefs yet')
+            }
             this.shadowTables.push(new WebAssembly.Table({ initial: this.Wasabi.module.tables[i].length, element: 'anyfunc' })) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
             for (let y = 0; y < this.Wasabi.module.tables[i].length; y++) {
                 this.shadowTables[i].set(y, t.get(y))

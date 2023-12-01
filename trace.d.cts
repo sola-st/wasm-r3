@@ -5,7 +5,7 @@
 
 export type ConsiseTrace = (ConsiseWasmEvent | Ref)[]
 
-export type ConsiseWasmEvent = ConsiseLoad | ConsiseMemGrow | ConsiseTableGet | ConsiseTableGrow | ConsiseGlobalGet | ConsiseExportCall | ConsiseExportReturn | ConsiseImportCall | ConsiseImportReturn | ConsiseImportMemory | ConsiseImportTable | ConsiseImportGlobal | ConsiseImportFunc
+export type ConsiseWasmEvent = ConsiseLoad | ConsiseMemGrow | ConsiseTableGet | ConsiseTableGrow | ConsiseGlobalGet | ConsiseExportCall | ConsiseTableCall | ConsiseExportReturn | ConsiseImportCall | ConsiseImportReturn | ConsiseImportMemory | ConsiseImportTable | ConsiseImportGlobal | ConsiseImportFunc
     | ConsiseFuncEntry | ConsiseFuncReturn | ConsiseLoadExtended | ConsiseTableGetExtended | ConsiseCallExt | ConsiseStoreExt
 
 // export type Load = { type: "L", idx: number, name: string, offset: number, data: number[] }
@@ -34,6 +34,10 @@ export type ConsiseGlobalGet = ['G', number, string, number, ValType]
 // export type ExportCall = { type: "EC", name: string, params: number[] }
 // export type ExportCall = [type, name, params]
 export type ConsiseExportCall = ['EC', string, number[]]
+
+// export type ExportCall = { type: "TC", tableName: string, funcidx: number, params: number[] }
+// export type ExportCall = [type, tableName, funcidx, params]
+export type ConsiseTableCall = ['TC', string, number, number[]]
 
 // export type ImportReturn = { type: "ER"}
 // export type ImportReturn = [type]
@@ -77,14 +81,14 @@ export type Ref = [number]
 
 export type Trace = WasmEvent[]
 
-export type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ExportReturn | ImportReturn | ImportMemory | ImportTable | ImportGlobal | ImportFunc
+export type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | TableCall | ImportCall | ExportReturn | ImportReturn | ImportMemory | ImportTable | ImportGlobal | ImportFunc
     | FuncEntry | FuncReturn | LoadExtended | TableGetExtended | Call | StoreExt
 
 export type Load = { type: "Load", idx: number, name: string, offset: number, data: number[] }
 
 export type LoadExtended = { type: "LoadExt", idx: number, name: string, offset: number, data: number[] }
 
-export type StoreExt = { type: 'StoreExt', offset: number, data: number[]}
+export type StoreExt = { type: 'StoreExt', offset: number, data: number[] }
 
 export type MemGrow = { type: 'MemGrow', idx: number, name: string, amount: number }
 
@@ -97,6 +101,8 @@ export type TableGrow = { type: 'TableGrow', idx: number, name: string, amount: 
 export type GlobalGet = { type: 'GlobalGet', idx: number, name: string, value: number, valtype: ValType }
 
 export type ExportCall = { type: "ExportCall", name: string, params: number[] }
+
+export type TableCall = { type: "TableCall", tableName: string, funcidx: number, params: number[] }
 
 export type ExportReturn = { type: 'ExportReturn' }
 

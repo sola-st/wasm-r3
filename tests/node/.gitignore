@@ -1,5 +1,7 @@
-*/**
-!*/index.wat
-!*/index.rs
-!*/index.c
-!*/test.js
+replay-trace.r3
+replay.js
+report.txt
+trace.r3
+index.wasm
+long.cjs
+index.wasabi.cjs
