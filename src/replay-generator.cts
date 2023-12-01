@@ -283,22 +283,22 @@ class Code {
         for (let event of this.initialization) {
             switch (event.type) {
                 case 'Store':
-                    stream.write(this.storeEvent(event))
+                    await this.write(stream, this.storeEvent(event))
                     break
                 case 'MemGrow':
-                    stream.write(this.memGrowEvent(event))
+                    await this.write(stream, this.memGrowEvent(event))
                     break
                 case 'TableSet':
-                    stream.write(this.tableSetEvent(event))
+                    await this.write(stream, this.tableSetEvent(event))
                     break
                 case 'TableGrow':
-                    stream.write(this.tableGrowEvent(event))
+                    await this.write(stream, this.tableGrowEvent(event))
                     break
                 case 'Call':
-                    stream.write(this.callEvent(event))
+                    await this.write(stream, this.callEvent(event))
                     break
                 case 'GlobalSet':
-                    stream.write(this.globalSet(event))
+                    await this.write(stream, this.globalSet(event))
                     break
                 default: unreachable(event)
             }
@@ -321,22 +321,22 @@ class Code {
             for (let event of b) {
                 switch (event.type) {
                     case 'Call':
-                        stream.write(`instance.exports.${event.name}(${writeParamsString(event.params)})\n`)
+                        await this.write(stream, `instance.exports.${event.name}(${writeParamsString(event.params)})\n`)
                         break
                     case 'Store':
-                        stream.write(this.storeEvent(event))
+                        await this.write(stream, this.storeEvent(event))
                         break
                     case 'MemGrow':
-                        stream.write(this.memGrowEvent(event))
+                        await this.write(stream, this.memGrowEvent(event))
                         break
                     case 'TableSet':
-                        stream.write(this.tableSetEvent(event))
+                        await this.write(stream, this.tableSetEvent(event))
                         break
                     case 'TableGrow':
-                        stream.write(this.tableGrowEvent(event))
+                        await this.write(stream, this.tableGrowEvent(event))
                         break
                     case 'GlobalSet':
-                        stream.write(this.globalSet(event))
+                        await this.write(stream, this.globalSet(event))
                         break
                     default: unreachable(event)
                 }

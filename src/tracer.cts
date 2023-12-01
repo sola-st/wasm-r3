@@ -3,7 +3,7 @@ import { Trace as TraceType, ConsiseTrace, ValType, ConsiseWasmEvent, WasmEvent,
 import { AnalysisI } from './analyser.cjs'
 
 export class Trace {
-    private trace: string[]// ConsiseTrace
+    private trace: string[]
     private cache: string[] = []
 
     constructor() {
@@ -476,7 +476,6 @@ export default class Analysis implements AnalysisI<Trace> {
     private shadowTables: WebAssembly.Table[] = []
 
     // helpers
-    private first_entry = true
     private callStack: ('int' | { name: string, idx: number })[] = [{ name: 'main', 'idx': -1 }]
 
     private MEM_PAGE_SIZE = 65536
@@ -494,11 +493,6 @@ export default class Analysis implements AnalysisI<Trace> {
     constructor(Wasabi: Wasabi, options = { extended: false }) {
         this.Wasabi = Wasabi
         this.options = options
-
-        // console.log('---------------------------------------------')
-        // console.log('                   Wasm-R3                   ')
-        // console.log('---------------------------------------------')
-        // console.log('Recording...')
 
         Wasabi.analysis = {
             start(location) { },
@@ -549,51 +543,43 @@ export default class Analysis implements AnalysisI<Trace> {
                     return
                 }
                 let byteLength = this.getByteLength(op)
-                let data = this.get_actual_mem(target.memIdx, addr, byteLength)
-                // if (addr + byteLength > 1044833 && addr <= 1044833) {
-                //     console.log('*************** STORE ***************')
-                //     console.log('Trace length', this.trace.getLength())
-                //     console.log('addr', addr, 'byteLength', byteLength, 'data', data)
-                //     this.trace.push(['S', addr, data])
-                // }
-                this.set_shadow_memory(target.memIdx, addr, data)
+                for (let i = 0; i < byteLength; i++) {
+                    const value = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
+                    new Uint8Array(this.shadowMemories[0])[addr + i] = value
+                    // if (this.options.extended === true) {
+                    //     this.trace.push(['S', addr + i, [value]])
+                    // }
+                }
             },
 
             memory_grow: (location, memIdx, byPages, previousSizePages) => {
-                // console.log('grow')
-                // console.log('shadowMem', new Uint8Array(this.shadowMemories[0])[1044833])
                 if (this.shadowMemories.length === 0) {
                     return
                 }
                 this.growShadowMem(memIdx, byPages)
-                // console.log('shadowMem', new Uint8Array(this.shadowMemories[0])[1044833])
-                // console.log('traceLength', this.trace.getLength())
             },
 
             load: (location, op, target, memarg, value) => {
-                const addr = target.addr + memarg.offset
                 if (this.shadowMemories.length === 0) {
                     return
                 }
-                let numType = this.getByteLength(op)
+                const addr = target.addr + memarg.offset
+                const memName = this.getName(Wasabi.module.info.memories[target.memIdx])
+                let byteLength = this.getByteLength(op)
+                const res = this.mem_content_equals(target.memIdx, addr, byteLength)
                 if (this.options.extended === true) {
-                    let data = this.get_actual_mem(target.memIdx, addr, numType)
-                    this.trace.push(['LE', 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr, data])
+                    let data = []
+                    for (let i = 0; i < byteLength; i++) {
+                        data.push(new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i])
+                    }
+                    this.trace.push(['LE', 0, memName, addr, data])
                 }
-                const res = this.mem_content_equals(target.memIdx, addr, numType)
                 res.forEach((r, i) => {
                     if (r !== true) {
+                        new Uint8Array(this.shadowMemories[0])[addr + i] = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
                         new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i] = r as number
-                        this.trace.push(['L', 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr + i, [r as number]])
-                        // if (this.trace.getTop() == 'L;0;memory;1044833;2') {
-                        //     console.log('******** SUS LOAD *********')
-                        //     console.log('Trace length', this.trace.getLength(), op)
-                        //     console.log('addr', addr, 'byteLength', numType, 'data')
-                        //     console.log('shadowMem', new Uint8Array(this.shadowMemories[0]).slice(addr, addr + res.length).join(','))
-                        //     console.log('actualMem', new Uint8Array(this.Wasabi.module.memories[0].buffer).slice(addr, addr + res.length).join(','))
-                        // }
+                        this.trace.push(['L', 0, memName, addr + i, [r as number]])
                     }
-                    new Uint8Array(this.shadowMemories[0])[addr + i] = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
                 })
             },
 
@@ -622,9 +608,9 @@ export default class Analysis implements AnalysisI<Trace> {
                     this.callStack.push({ name, idx: funcidx })
                     this.trace.push(["IC", funcidx, name])
                 }
-                if (options.extended) {
-                    this.trace.push(['C', funcidx])
-                }
+                // if (options.extended) {
+                //     this.trace.push(['C', funcidx])
+                // }
             },
 
             call_post: (location, results) => {
@@ -661,29 +647,9 @@ export default class Analysis implements AnalysisI<Trace> {
     private set_shadow_memory(memIdx: number, addr: number, data: number[]) {
         for (let i = 0; i < data.length; i++) {
             let shadowArray = new Uint8Array(this.shadowMemories[memIdx])
-            // if ((addr + i) === 4105) {
-            //     console.log('********************* SET SHADOW MEMORY *********************')
-            //     console.log(data[i])
-            // }
             shadowArray[addr + i] = data[i]
         }
     }
-
-    // private mem_content_equals(memIdx: number, addr: number, numBytes: number) {
-    //     // if (addr === 5246972) {
-    //     //     console.log('************* MEM CONTENT EQUALS *************')
-    //     //     console.log('memIdx', memIdx)
-    //     //     console.log('numBytes', numBytes)
-    //     //     console.log('RealMem at 5246972', new Int8Array(this.Wasabi.module.memories[0].buffer)[5246972])
-    //     //     console.log('ShadowMem at 5246972', new Int8Array(this.shadowMemories[0])[5246972])
-    //     // }
-    //     for (let i = 0; i < numBytes; i++) {
-    //         if (new Uint8Array(this.shadowMemories[memIdx])[addr + i] !== new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]) {
-    //             return false
-    //         }
-    //     }
-    //     return true
-    // }
 
     private mem_content_equals(memIdx: number, addr: number, numBytes: number): (number | boolean)[] {
         let result = []
@@ -696,14 +662,6 @@ export default class Analysis implements AnalysisI<Trace> {
             }
         }
         return result
-    }
-
-    private get_actual_mem(memIdx: number, addr: number, numBytes: number): number[] {
-        let data = []
-        for (let i = 0; i < numBytes; i++) {
-            data.push(new Uint8Array(this.Wasabi.module.memories[memIdx].buffer)[addr + i])
-        }
-        return data
     }
 
     private tableGetEvent(tableidx: number, idx: number) {
@@ -729,7 +687,6 @@ export default class Analysis implements AnalysisI<Trace> {
     }
 
     private growShadowMem(memIdx, byPages: number) {
-        // console.log('grow')
         const newShadow = new ArrayBuffer(this.shadowMemories[memIdx].byteLength + byPages * this.MEM_PAGE_SIZE)
         new Uint8Array(this.shadowMemories[memIdx]).forEach((b, i) => {
             new Uint8Array(newShadow)[i] = b
@@ -777,18 +734,22 @@ export default class Analysis implements AnalysisI<Trace> {
         }
     }
 
+
+    /**
+     * @example 'i32.load' => 4
+     * 'i32.load16' => 2
+     * 'i64.store' => 8
+     * 'i64.store8_u' => 1
+     */
     private getByteLength(instr: StoreOp | LoadOp) {
         let typeIndex = 9
         if (instr.charAt(4) === 'l') {
             typeIndex = 8
         }
-        // if (instr === 'i32.store8') {
-        //     console.log(instr, instr.charAt(typeIndex), instr.charAt(4) === 'l', instr.charAt(typeIndex) === '8', parseInt(instr.charAt(typeIndex)) / 8)
-        // }
         if (instr.charAt(typeIndex) === '8') {
             return parseInt(instr.charAt(typeIndex)) / 8
         } else if (instr.charAt(typeIndex) === '1' || instr.charAt(typeIndex) === '3') {
-            return parseInt(instr.substring(typeIndex, typeIndex + 1)) / 8
+            return parseInt(instr.substring(typeIndex, typeIndex + 2)) / 8
         }
         return parseInt(instr.substring(1, 3)) / 8
     }
@@ -807,8 +768,8 @@ export default class Analysis implements AnalysisI<Trace> {
     }
 
     init() {
+        // console.log('test getByteLength', this.getByteLength('i64.load32_u'))
         // Init Memories
-        // console.log('init shadow mem', this.shadowMemories[0])
         this.Wasabi.module.info.memories.forEach((m, idx) => {
             if (m.import !== null) {
                 this.trace.push(['IM', idx, m.import[0], m.import[1], m.initial, m.maximum])
@@ -822,9 +783,7 @@ export default class Analysis implements AnalysisI<Trace> {
                 this.shadowMemories.push(this.cloneArrayBuffer(mem.buffer))
             }
         })
-        // console.log(this.Wasabi.module.memories.length)
-        // console.log('RealMem at 5246972', new Int8Array(this.Wasabi.module.memories[0].buffer)[5246972])
-        // console.log('ShadowMem at 5246972', new Int8Array(this.shadowMemories[0])[5246972])
+        // this.debugMemory(4345592, 4345600)
         // Init Tables
         this.Wasabi.module.tables.forEach((t, i) => {
             this.shadowTables.push(new WebAssembly.Table({ initial: this.Wasabi.module.tables[i].length, element: 'anyfunc' })) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
@@ -850,5 +809,25 @@ export default class Analysis implements AnalysisI<Trace> {
                 this.trace.push(['IF', idx, f.import![0], f.import[1]])
             }
         })
+    }
+
+    private debugLoad(op: LoadOp, addr: number, byteLength: number) {
+        console.log('*********** LOAD ***********')
+        console.log('Trace length', this.trace.getLength(), 'last event', this.trace.getTop(), op)
+        console.log('addr', addr, 'byteLength', byteLength, 'data')
+        console.log('shadowMem', new Uint8Array(this.shadowMemories[0]).slice(addr, addr + byteLength).join(','))
+        this.debugMemory(addr, addr + byteLength)
+    }
+
+    private debugStore(op: StoreOp, addr: number, byteLength: number) {
+        console.log('*********** STORE ***********')
+        console.log('Trace length', this.trace.getLength(), 'last event', this.trace.getTop(), op)
+        console.log('addr', addr, 'byteLength', byteLength, 'data')
+        this.debugMemory(addr, addr + byteLength)
+    }
+
+    private debugMemory(startAddr: number, endAddr: number) {
+        console.log(`actualMem from ${startAddr}:`, new Uint8Array(this.Wasabi.module.memories[0].buffer).slice(startAddr, endAddr).join(','))
+        console.log(`shadowMem from ${startAddr}:`, new Uint8Array(this.shadowMemories[0]).slice(startAddr, endAddr).join(','))
     }
 }

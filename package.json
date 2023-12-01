@@ -3,9 +3,11 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
+    "@types/diff": "^5.0.8",
     "@types/express": "^4.17.21",
     "@types/node": "^20.9.0",
     "bun-types": "latest",
+    "diff": "^5.1.0",
     "express": "^4.18.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",

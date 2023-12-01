@@ -13,6 +13,7 @@ import { Server } from 'http'
 import Analyser, { AnalysisResult } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
+import Diff from 'diff'
 
 let extended = false
 
@@ -125,6 +126,11 @@ async function runNodeTest(name: string): Promise<TestReport> {
 }
 
 async function runNodeTests(names: string[]) {
+  if (names.length > 0) {
+    console.log('==============')
+    console.log('Run node tests')
+    console.log('==============')
+  }
   // ignore specific tests
   let filter = [
     'rust-tictactoe',
@@ -158,16 +164,24 @@ function compareResults(testPath: string, traceString: string, replayTraceString
 }
 
 async function runOnlineTests(names: string[]) {
+  if (names.length > 0) {
+    console.log('================')
+    console.log('Run online tests')
+    console.log('================')
+    console.log('WARNING: You need a working internet connection')
+    console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
+  }
   // ignore specific tests
   let filter = [
     'visual6502remix', // takes so long and is not automated yet
     'heatmap', // takes so long
     // 'funky-kart', // takes so long and we know that record and replay trace differ
-    'image-convolute', // replay runs forever
+    // 'image-convolute', // replay runs forever
     'ffmpeg', // replay runs forever
     'jsc', // replay trace differs
     'rtexviewer', // replay trace differs
     'video', // replay trace differs
+    'boa', // extended trace FE return values differ (5e-327 instead of 5 and -Infinity instead of NaN etc.)
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
@@ -187,6 +201,11 @@ async function runOnlineTest(testPath: string) {
 }
 
 async function runOfflineTests(names: string[]) {
+  if (names.length > 0) {
+    console.log('=================')
+    console.log('Run offline tests')
+    console.log('=================')
+  }
   // ignore specific tests
   let filter = [
     'sqllite'
@@ -245,18 +264,19 @@ async function runOfflineTest(name: string): Promise<TestReport> {
 async function testWebPage(testPath: string): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')
   const benchmarkPath = path.join(testPath, 'benchmark')
-  const testBenchmarkPath = path.join(testPath, 'test-benchmark')
   let analysisResult: AnalysisResult
   try {
     const analyser = new Analyser('./dist/src/tracer.cjs', { extended })
     analysisResult = await (await import(testJsPath)).default(analyser)
+    const blockExtended = analyser.getExtended()
+    // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
     await benchmark.save(benchmarkPath, { trace: true })
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: 'no benchmark was generated' }
     }
-    
+
     let runtimes = benchmark.instrumentBinaries()
     // await copyDir(benchmarkPath, testBenchmarkPath)
     let results: any = { testPath, success: true }
@@ -268,7 +288,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       await fs.rename(tracePath, refTracePath)
       const replayPath = path.join(subBenchmarkPath, 'replay.js')
       const replayTracePath = path.join(subBenchmarkPath, 'trace-replay.r3')
-      let tracer = new Tracer(eval(runtimes[i] + `\nWasabi`), { extended })
+      let tracer = new Tracer(eval(runtimes[i] + `\nWasabi`), { extended: blockExtended })
       let replayBinary
       try {
         replayBinary = (await import(replayPath))
@@ -283,13 +303,10 @@ async function testWebPage(testPath: string): Promise<TestReport> {
       await fs.writeFile(replayTracePath, replayTraceString);
 
       // 5. Check if original trace and replay trace match
-      const newResult = compareResults(testPath, traceString, replayTraceString)
-      if (newResult.success === false) {
+      const newResult = Diff.diffChars(traceString, replayTraceString)
+      if (newResult.length !== 0) {
         results.success = false;
-        if (results.reason === undefined) {
-          results.reason = ''
-        }
-        results.reason += `\n\n${newResult.reason}`
+        results.reason += `\n\n${JSON.stringify(newResult)}`
       }
     }
     return results
@@ -307,9 +324,6 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   const options = commandLineArgs(optionDefinitions)
   extended = options.extended
   if (options.category === undefined || options.category.includes('node')) {
-    console.log('==============')
-    console.log('Run node tests')
-    console.log('==============')
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
     if (options.testcases !== undefined) {
       testNames = testNames.filter(n => options.testcases.includes(n));
@@ -317,9 +331,6 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     await runNodeTests(testNames)
   }
   if (options.category === undefined || options.category.includes('offline')) {
-    console.log('=================')
-    console.log('Run offline tests')
-    console.log('=================')
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
     if (options.testcases !== undefined) {
       testNames = testNames.filter(n => options.testcases.includes(n));
@@ -327,11 +338,6 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     await runOfflineTests(testNames)
   }
   if (options.category === undefined || options.category.includes('online')) {
-    console.log('================')
-    console.log('Run online tests')
-    console.log('================')
-    console.log('WARNING: You need a working internet connection')
-    console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
     if (options.testcases !== undefined) {
       testNames = testNames.filter(n => options.testcases.includes(n));

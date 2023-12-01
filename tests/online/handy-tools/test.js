@@ -1,6 +1,8 @@
 import { delay } from '../../../dist/tests/test-utils.cjs'
+import { askQuestion } from '../../../dist/src/util.cjs'
 
 export default async function test(analyser) {
+    analyser.setExtended(false)
     const url = 'https://handytools.xd-deng.com/'
     const page = await analyser.start(url, { headless: true })
     const linkLocator = page.locator('a:has-text("Base64 Encode/Decode")');
@@ -12,5 +14,6 @@ export default async function test(analyser) {
     await box.getByText('Encode').click()
     await box.locator('textarea').fill('SGVsbG8sIFdvcmxkIQ==')
     await box.getByText('Decode').click()
+    // await askQuestion('')
     return await analyser.stop()
 }
