@@ -168,6 +168,8 @@ export default class Generator {
             case 'FuncReturn':
             case 'LoadExt':
             case 'TableGetExt':
+            case 'Call':
+            case 'StoreExt':
                 break
             default:
                 unreachable(event)
@@ -308,8 +310,7 @@ class Code {
         stream.write(`if (process.argv[2] === 'run') {\n`)
         stream.write(`const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n`)
         stream.write(`const wasmBinary = fs.readFileSync(p)\n`)
-        stream.write(`const wasm = await instantiate(wasmBinary)\n`)
-        stream.write(`replay(wasm)\n`)
+        stream.write(`instantiate(wasmBinary).then((wasm) => replay(wasm))\n`)
         stream.write(`}\n`)
         stream.close()
     }

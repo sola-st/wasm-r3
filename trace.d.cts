@@ -6,12 +6,13 @@
 export type ConsiseTrace = (ConsiseWasmEvent | Ref)[]
 
 export type ConsiseWasmEvent = ConsiseLoad | ConsiseMemGrow | ConsiseTableGet | ConsiseTableGrow | ConsiseGlobalGet | ConsiseExportCall | ConsiseExportReturn | ConsiseImportCall | ConsiseImportReturn | ConsiseImportMemory | ConsiseImportTable | ConsiseImportGlobal | ConsiseImportFunc
-    | ConsiseFuncEntry | ConsiseFuncReturn | ConsiseLoadExtended | ConsiseTableGetExtended
+    | ConsiseFuncEntry | ConsiseFuncReturn | ConsiseLoadExtended | ConsiseTableGetExtended | ConsiseCallExt | ConsiseStoreExt
 
 // export type Load = { type: "L", idx: number, name: string, offset: number, data: number[] }
 // export type Load = [type, idx, name, offset, data]
 export type ConsiseLoad = ['L', number, string, number, number[]]
 export type ConsiseLoadExtended = ['LE', number, string, number, number[]]
+export type ConsiseStoreExt = ['S', number, number[]]
 
 // export type MemGrow = { type: 'MG', idx: number, name: string, amount: number }
 // export type MemGrow = [type, idx, name, amount]
@@ -41,6 +42,8 @@ export type ConsiseExportReturn = ['ER']
 // export type ImportCall = { type: "IC", idx: number, name: string }
 // export type ImportCall = [type, idx, name]
 export type ConsiseImportCall = ['IC', number, string]
+
+export type ConsiseCallExt = ['C', number]
 
 // export type ImportReturn = { type: "IR", idx: number, name: string, results: number[] }
 // export type ImportReturn = [type, idx, name, results]
@@ -75,11 +78,13 @@ export type Ref = [number]
 export type Trace = WasmEvent[]
 
 export type WasmEvent = Load | MemGrow | TableGet | TableGrow | GlobalGet | ExportCall | ImportCall | ExportReturn | ImportReturn | ImportMemory | ImportTable | ImportGlobal | ImportFunc
-    | FuncEntry | FuncReturn | LoadExtended | TableGetExtended
+    | FuncEntry | FuncReturn | LoadExtended | TableGetExtended | Call | StoreExt
 
 export type Load = { type: "Load", idx: number, name: string, offset: number, data: number[] }
 
 export type LoadExtended = { type: "LoadExt", idx: number, name: string, offset: number, data: number[] }
+
+export type StoreExt = { type: 'StoreExt', offset: number, data: number[]}
 
 export type MemGrow = { type: 'MemGrow', idx: number, name: string, amount: number }
 
@@ -96,6 +101,8 @@ export type ExportCall = { type: "ExportCall", name: string, params: number[] }
 export type ExportReturn = { type: 'ExportReturn' }
 
 export type ImportCall = { type: "ImportCall", idx: number, name: string }
+
+export type Call = { type: 'Call', idx: number }
 
 export type ImportReturn = { type: "ImportReturn", idx: number, name: string, results: number[] }
 

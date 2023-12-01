@@ -172,6 +172,11 @@ export class Trace {
                     parseInt(components[1]),
                     components[2]
                 ]
+            case 'C':
+                return [
+                    components[0],
+                    parseInt(components[1])
+                ]
             case "IR":
                 return [
                     components[0],
@@ -254,6 +259,12 @@ export class Trace {
                     parseInt(components[1]),
                     splitList(components[2]),
                 ]
+            case 'S':
+                return [
+                    components[0],
+                    parseInt(components[1]),
+                    splitList(components[2]),
+                ]
             default:
                 throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}.`)
         }
@@ -303,6 +314,11 @@ export class Trace {
                     type: 'ImportCall',
                     idx: parseInt(components[1]),
                     name: components[2]
+                }
+            case 'C':
+                return {
+                    type: 'Call',
+                    idx: parseInt(components[1])
                 }
             case "IR":
                 return {
@@ -405,6 +421,12 @@ export class Trace {
                     type: 'FuncReturn',
                     idx: parseInt(components[1]),
                     values: splitList(components[2])
+                }
+            case 'S':
+                return {
+                    type: 'StoreExt',
+                    offset: parseInt(components[1]),
+                    data: splitList(components[2])
                 }
             default:
                 throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}.`)
@@ -527,28 +549,25 @@ export default class Analysis implements AnalysisI<Trace> {
                     return
                 }
                 let byteLength = this.getByteLength(op)
-                byteLength = parseInt(op.substring(1, 3)) / 8
                 let data = this.get_actual_mem(target.memIdx, addr, byteLength)
-                // if (
-                //     addr > 4096 && addr < 4107
-                // ) {
-                //     console.log('********************* STORE *********************')
+                // if (addr + byteLength > 1044833 && addr <= 1044833) {
+                //     console.log('*************** STORE ***************')
                 //     console.log('Trace length', this.trace.getLength())
-                //     console.log('op', op)
-                //     console.log('numType', byteLength)
-                //     console.log('addr', addr)
-                //     console.log('value', value, 'asArray', data)
-                //     console.log('ShadowMem', this.shadowMemories[0])
-                //     console.log('Wasabi', Wasabi)
+                //     console.log('addr', addr, 'byteLength', byteLength, 'data', data)
+                //     this.trace.push(['S', addr, data])
                 // }
                 this.set_shadow_memory(target.memIdx, addr, data)
             },
 
             memory_grow: (location, memIdx, byPages, previousSizePages) => {
+                // console.log('grow')
+                // console.log('shadowMem', new Uint8Array(this.shadowMemories[0])[1044833])
                 if (this.shadowMemories.length === 0) {
                     return
                 }
                 this.growShadowMem(memIdx, byPages)
+                // console.log('shadowMem', new Uint8Array(this.shadowMemories[0])[1044833])
+                // console.log('traceLength', this.trace.getLength())
             },
 
             load: (location, op, target, memarg, value) => {
@@ -557,30 +576,25 @@ export default class Analysis implements AnalysisI<Trace> {
                     return
                 }
                 let numType = this.getByteLength(op)
-                if (addr === 5246968) {
-                    // console.log('*************** LOAD ***************')
-                    // console.log('at addr 5246968:', new Uint8Array(this.Wasabi.module.memories[0].buffer)[5246968])
-                }
                 if (this.options.extended === true) {
                     let data = this.get_actual_mem(target.memIdx, addr, numType)
                     this.trace.push(['LE', 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr, data])
-                    // if (this.trace.getLength() === 20252) {
-                    //     console.log('********************* LOAD *********************')
-                    //     console.log('Trace entry', this.trace.getLength(), ':', this.trace.getTop())
-                    //     console.log('op', op)
-                    //     console.log('numType', numType)
-                    //     console.log('addr', addr)
-                    //     console.log('value', value, 'asArray', this.get_actual_mem(target.memIdx, addr, numType))
-                    //     console.log('ShadowMem', this.shadowMemories[0])
-                    //     console.log('Wasabi', Wasabi)
-                    // }
                 }
-                if (this.mem_content_equals(target.memIdx, addr, numType)) {
-                    return
-                }
-                let data = this.get_actual_mem(target.memIdx, addr, numType)
-                this.set_shadow_memory(target.memIdx, addr, data)
-                this.trace.push(['L', 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr, data])
+                const res = this.mem_content_equals(target.memIdx, addr, numType)
+                res.forEach((r, i) => {
+                    if (r !== true) {
+                        new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i] = r as number
+                        this.trace.push(['L', 0, this.getName(Wasabi.module.info.memories[target.memIdx]), addr + i, [r as number]])
+                        // if (this.trace.getTop() == 'L;0;memory;1044833;2') {
+                        //     console.log('******** SUS LOAD *********')
+                        //     console.log('Trace length', this.trace.getLength(), op)
+                        //     console.log('addr', addr, 'byteLength', numType, 'data')
+                        //     console.log('shadowMem', new Uint8Array(this.shadowMemories[0]).slice(addr, addr + res.length).join(','))
+                        //     console.log('actualMem', new Uint8Array(this.Wasabi.module.memories[0].buffer).slice(addr, addr + res.length).join(','))
+                        // }
+                    }
+                    new Uint8Array(this.shadowMemories[0])[addr + i] = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
+                })
             },
 
             global: (location, op, idx, value) => {
@@ -607,6 +621,9 @@ export default class Analysis implements AnalysisI<Trace> {
                     let name = funcImport[1]
                     this.callStack.push({ name, idx: funcidx })
                     this.trace.push(["IC", funcidx, name])
+                }
+                if (options.extended) {
+                    this.trace.push(['C', funcidx])
                 }
             },
 
@@ -652,13 +669,33 @@ export default class Analysis implements AnalysisI<Trace> {
         }
     }
 
-    private mem_content_equals(memIdx: number, addr: number, numBytes: number) {
+    // private mem_content_equals(memIdx: number, addr: number, numBytes: number) {
+    //     // if (addr === 5246972) {
+    //     //     console.log('************* MEM CONTENT EQUALS *************')
+    //     //     console.log('memIdx', memIdx)
+    //     //     console.log('numBytes', numBytes)
+    //     //     console.log('RealMem at 5246972', new Int8Array(this.Wasabi.module.memories[0].buffer)[5246972])
+    //     //     console.log('ShadowMem at 5246972', new Int8Array(this.shadowMemories[0])[5246972])
+    //     // }
+    //     for (let i = 0; i < numBytes; i++) {
+    //         if (new Uint8Array(this.shadowMemories[memIdx])[addr + i] !== new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]) {
+    //             return false
+    //         }
+    //     }
+    //     return true
+    // }
+
+    private mem_content_equals(memIdx: number, addr: number, numBytes: number): (number | boolean)[] {
+        let result = []
         for (let i = 0; i < numBytes; i++) {
-            if (new Uint8Array(this.shadowMemories[memIdx])[addr + i] !== new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]) {
-                return false
+            const data = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
+            if (new Uint8Array(this.shadowMemories[memIdx])[addr + i] !== data) {
+                result.push(data)
+            } else {
+                result.push(true)
             }
         }
-        return true
+        return result
     }
 
     private get_actual_mem(memIdx: number, addr: number, numBytes: number): number[] {
@@ -692,6 +729,7 @@ export default class Analysis implements AnalysisI<Trace> {
     }
 
     private growShadowMem(memIdx, byPages: number) {
+        // console.log('grow')
         const newShadow = new ArrayBuffer(this.shadowMemories[memIdx].byteLength + byPages * this.MEM_PAGE_SIZE)
         new Uint8Array(this.shadowMemories[memIdx]).forEach((b, i) => {
             new Uint8Array(newShadow)[i] = b
@@ -743,11 +781,14 @@ export default class Analysis implements AnalysisI<Trace> {
         let typeIndex = 9
         if (instr.charAt(4) === 'l') {
             typeIndex = 8
-            if (instr.charAt(typeIndex) === '8') {
-                return parseInt(instr.charAt(typeIndex)) / 8
-            } else if (instr.charAt(typeIndex) === '1' || instr.charAt(typeIndex) === '3') {
-                return parseInt(instr.substring(typeIndex, 9)) / 8
-            }
+        }
+        // if (instr === 'i32.store8') {
+        //     console.log(instr, instr.charAt(typeIndex), instr.charAt(4) === 'l', instr.charAt(typeIndex) === '8', parseInt(instr.charAt(typeIndex)) / 8)
+        // }
+        if (instr.charAt(typeIndex) === '8') {
+            return parseInt(instr.charAt(typeIndex)) / 8
+        } else if (instr.charAt(typeIndex) === '1' || instr.charAt(typeIndex) === '3') {
+            return parseInt(instr.substring(typeIndex, typeIndex + 1)) / 8
         }
         return parseInt(instr.substring(1, 3)) / 8
     }
@@ -782,7 +823,8 @@ export default class Analysis implements AnalysisI<Trace> {
             }
         })
         // console.log(this.Wasabi.module.memories.length)
-        // console.log('at address 5246968:', new Uint8Array(this.Wasabi.module.memories[0].buffer)[5246968])
+        // console.log('RealMem at 5246972', new Int8Array(this.Wasabi.module.memories[0].buffer)[5246972])
+        // console.log('ShadowMem at 5246972', new Int8Array(this.shadowMemories[0])[5246972])
         // Init Tables
         this.Wasabi.module.tables.forEach((t, i) => {
             this.shadowTables.push(new WebAssembly.Table({ initial: this.Wasabi.module.tables[i].length, element: 'anyfunc' })) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')

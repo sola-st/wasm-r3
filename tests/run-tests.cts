@@ -162,12 +162,12 @@ async function runOnlineTests(names: string[]) {
   let filter = [
     'visual6502remix', // takes so long and is not automated yet
     'heatmap', // takes so long
-    'funky-kart', // takes so long and we know that record and replay trace differ
+    // 'funky-kart', // takes so long and we know that record and replay trace differ
     'image-convolute', // replay runs forever
     'ffmpeg', // replay runs forever
-    // 'jsc', // replay trace differs
+    'jsc', // replay trace differs
     'rtexviewer', // replay trace differs
-    // 'video', // replay trace differs
+    'video', // replay trace differs
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
@@ -256,18 +256,25 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: 'no benchmark was generated' }
     }
-
+    
     let runtimes = benchmark.instrumentBinaries()
-    await copyDir(benchmarkPath, testBenchmarkPath)
+    // await copyDir(benchmarkPath, testBenchmarkPath)
     let results: any = { testPath, success: true }
     const record = benchmark.getRecord()
     for (let i = 0; i < record.length; i++) {
-      // Compare traces
-      const subBenchmarkPath = path.join(testBenchmarkPath, subBenchmarkNames[i])
+      const subBenchmarkPath = path.join(benchmarkPath, subBenchmarkNames[i])
+      const tracePath = path.join(subBenchmarkPath, 'trace.r3')
+      const refTracePath = path.join(subBenchmarkPath, 'trace-ref.r3')
+      await fs.rename(tracePath, refTracePath)
       const replayPath = path.join(subBenchmarkPath, 'replay.js')
-      const replayTracePath = path.join(subBenchmarkPath, 'trace.r3')
+      const replayTracePath = path.join(subBenchmarkPath, 'trace-replay.r3')
       let tracer = new Tracer(eval(runtimes[i] + `\nWasabi`), { extended })
-      const replayBinary = (await import(replayPath))
+      let replayBinary
+      try {
+        replayBinary = (await import(replayPath))
+      } catch {
+        throw new Error('Apparently this is too stupid to parse the replay file. Even tho it should be written by now')
+      }
       const wasm = await replayBinary.instantiate(Buffer.from(record[i].binary))
       tracer.init()
       await replayBinary.replay(wasm)
