@@ -142,11 +142,39 @@ export class Trace {
             return list
         }
 
-        function parseNumber(n: string) {
-            if (n.includes('.') || n.includes('e-') || n.includes('NaN') || n.includes('Infinity')) {
-                return parseFloat(n)
+        function parseNumber(str): number {
+            str = str.trim(); // Remove leading/trailing whitespace
+
+            if (str === '' || str === '+' || str === '-') {
+                // Handle empty or only sign character
+                return NaN;
             }
-            return parseInt(n)
+
+            if (str === 'Infinity' || str === '+Infinity') {
+                return Infinity;
+            }
+
+            if (str === '-Infinity') {
+                return -Infinity;
+            }
+
+            if (!isNaN(str)) {
+                if (str.includes('.') || str.toLowerCase().includes('e')) {
+                    // Handle floats and scientific notation
+                    return parseFloat(str);
+                }
+
+                let num = BigInt(str);
+                if (num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER) {
+                    // Convert to Number if within safe range
+                    return Number(num);
+                }
+
+                //@ts-ignore
+                return num; // Return as BigInt
+            }
+
+            return NaN; // Not a number
         }
         let components = event.split(';')
         switch (components[0]) {

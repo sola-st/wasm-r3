@@ -7,23 +7,11 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "funky-kart13",
+            "name": "jsc-replay",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/funky-kart13/bin_0/replay.js",
-            "args": [
-                "run"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "funky-kart11",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/funky-kart11/bin_0/replay.js",
+            "program": "${workspaceFolder}/jsc/bin_0/replay.js",
             "args": [
                 "run"
             ]
@@ -37,7 +25,9 @@
             ],
             "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
             "args": [
-                "node"
+                "node",
+                "-t",
+                "table-exp-call-private-function-mul-table",
             ]
         },
         {
@@ -65,7 +55,7 @@
             "args": [
                 "online",
                 "-t",
-                "kittygame"
+                "rtexviewer"
             ]
         },
         {
