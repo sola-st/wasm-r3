@@ -177,8 +177,8 @@ async function runOnlineTests(names: string[]) {
     'heatmap', // takes so long
     'image-convolute', // out of memory
     'ffmpeg', // replay runs forever
-    'jsc', // replay runs forever
-    'sqlgui', // replay memory access out of bounds
+    // 'jsc', // replay runs forever
+    // 'sqlgui', // replay memory access out of bounds
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {

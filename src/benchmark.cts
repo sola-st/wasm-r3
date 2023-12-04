@@ -23,9 +23,9 @@ export default class Benchmark {
         await Promise.all(this.record.map(async ({ binary, trace }, i) => {
             const binPath = path.join(benchmarkPath, `bin_${i}`)
             await fs.mkdir(binPath)
-            if (options.trace === true) {
+            // if (options.trace === true) {
                 await fs.writeFile(path.join(binPath, 'trace.r3'), trace.toString())
-            }
+            // }
             const diskSave = `temp-trace-${i}.r3`
             await fs.writeFile(diskSave, trace.toString())
             // console.log('wrote temp trace to disk and start stream code generation')

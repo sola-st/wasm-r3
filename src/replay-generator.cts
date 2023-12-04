@@ -15,11 +15,13 @@ type GlobalSet = { type: "GlobalSet", value: number, bigInt: boolean } & ImpExp
 type Event = Call | TableCall | Store | MemGrow | TableSet | TableGrow | GlobalSet
 type Import = { module: string, name: string }
 type Result = { results: number[], reps: number }
-type Function = Import & { bodys: Event[][], results: Result[] }
+type Context = Event[]
+type Function = Import & { bodys: Context[], results: Result[] }
 type Memory = Import & WebAssembly.MemoryDescriptor
 type Table = Import & WebAssembly.TableDescriptor
 type Global = Import & WebAssembly.GlobalDescriptor & { initial: number }
-type State = { importCallStack: Function[], lastFunc?: Function, lastFuncReturn: boolean, globalScope: boolean }
+type State = { importCallStack: CallStack, lastFunc?: Function, lastFuncReturn: boolean, globalScope: boolean, importCallStackFunction: Function[] }
+type CallStack = Context[]
 
 export default class Generator {
     private code: Code
@@ -27,7 +29,7 @@ export default class Generator {
 
     constructor() {
         this.code = new Code()
-        this.state = { importCallStack: [], globalScope: true, lastFuncReturn: false }
+        this.state = { importCallStack: [this.code.initialization], globalScope: true, lastFuncReturn: false, importCallStackFunction: [] }
     }
 
     generateReplay(trace: Trace) {
@@ -69,20 +71,26 @@ export default class Generator {
             case "ImportCall":
                 this.state.globalScope = false
                 this.code.funcImports[event.idx].bodys.push([])
-                this.state.importCallStack.push(this.code.funcImports[event.idx])
+                this.state.importCallStack.push(this.code.funcImports[event.idx].bodys[this.code.funcImports[event.idx].bodys.length - 1])
+                this.state.importCallStackFunction.push(this.code.funcImports[event.idx])
                 this.state.lastFunc = this.code.funcImports[event.idx]
                 this.state.lastFuncReturn = false
                 break
             case "ImportReturn":
-                let r = this.state.lastFunc.results
+                let r = this.state.importCallStackFunction[this.state.importCallStackFunction.length - 1].results
                 if (r.length > 0) {
                     if (r.slice(-1)[0].results[0] === event.results[0]) {
+                        this.state.lastFuncReturn = true
                         r.slice(-1)[0].reps += 1
+                        this.state.importCallStack.pop()
+                        this.state.importCallStackFunction.pop()
                         break
                     }
                 }
                 this.state.lastFuncReturn = true
                 r.push({ results: event.results, reps: 1 })
+                this.state.importCallStack.pop()
+                this.state.importCallStackFunction.pop()
                 break
             case "Load":
                 this.pushEvent({
@@ -180,12 +188,21 @@ export default class Generator {
     }
 
     private pushEvent(event: Event) {
+        if (event.type === 'Call' || event.type === 'TableCall') {
+            const currentContext = this.state.importCallStack[this.state.importCallStack.length - 1]
+            currentContext.push(event)
+            return
+        }
         let currentContext = this.state.lastFunc?.bodys.slice(-1)[0]
         if (this.state.globalScope === true) {
             currentContext = this.code.initialization
         }
-        if (currentContext.slice(-1)[0]?.type === "Call" && event.type !== 'Call' && this.state.lastFuncReturn === false) {
-            currentContext.splice(currentContext.length - 1, 0, event)
+        if (currentContext.slice(-1)[0]?.type === "Call" || currentContext.slice(-1)[0]?.type === 'TableCall') {
+            if (this.state.lastFuncReturn === false) {
+                currentContext.splice(currentContext.length - 1, 0, event)
+            } else {
+                this.state.lastFunc?.bodys.slice(-1)[0].push(event)
+            }
             return
         }
         currentContext.push(event)
@@ -240,7 +257,7 @@ class Code {
             // There is a special case here: 
             // you can also import the values NaN and Infinity as globals in WebAssembly
             // Thats why whe need this if else
-            if (Number.isNaN(global.initial)) {
+            if (Number.isNaN(global.initial) || !Number.isFinite(global.initial)) {
                 if (global.name.toLocaleLowerCase() === 'infinity') {
                     stream.write(`${writeImport(global.module, global.name)}Infinity\n`)
                 } else if (global.name.toLocaleLowerCase() === 'nan') {

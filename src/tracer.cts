@@ -1,10 +1,47 @@
 import { StoreOp, LoadOp, ImpExp, Wasabi } from '../wasabi.cjs'
 import { Trace as TraceType, ConsiseTrace, ValType, ConsiseWasmEvent, WasmEvent, Ref } from '../trace.d.cjs'
 import { AnalysisI } from './analyser.cjs'
+import fs from 'fs'
+
+function parseNumber(str): number {
+    str = str.trim(); // Remove leading/trailing whitespace
+
+    if (str === '' || str === '+' || str === '-') {
+        // Handle empty or only sign character
+        return NaN;
+    }
+
+    if (str === 'Infinity' || str === '+Infinity') {
+        return Infinity;
+    }
+
+    if (str === '-Infinity') {
+        return -Infinity;
+    }
+
+    if (!isNaN(str)) {
+        if (str.includes('.') || str.toLowerCase().includes('e')) {
+            // Handle floats and scientific notation
+            return parseFloat(str);
+        }
+
+        let num = BigInt(str);
+        if (num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER) {
+            // Convert to Number if within safe range
+            return Number(num);
+        }
+
+        //@ts-ignore
+        return num; // Return as BigInt
+    }
+
+    return NaN; // Not a number
+}
 
 export class Trace {
     private trace: string[]
     private cache: string[] = []
+    private flag = true
 
     constructor() {
         this.trace = []
@@ -24,6 +61,10 @@ export class Trace {
             }
         }
         this.trace.push(eventString)
+        if (this.trace.length > 5000 && this.flag === true) {
+            fs.writeFileSync('/Users/jakob/Desktop/wasm-r3/ffmpeg/bin_0/replay-trace.r3', this.toString())
+            this.flag = false
+        }
     }
 
     private eventEquals(e1: ConsiseWasmEvent, e2: ConsiseWasmEvent) {
@@ -142,40 +183,6 @@ export class Trace {
             return list
         }
 
-        function parseNumber(str): number {
-            str = str.trim(); // Remove leading/trailing whitespace
-
-            if (str === '' || str === '+' || str === '-') {
-                // Handle empty or only sign character
-                return NaN;
-            }
-
-            if (str === 'Infinity' || str === '+Infinity') {
-                return Infinity;
-            }
-
-            if (str === '-Infinity') {
-                return -Infinity;
-            }
-
-            if (!isNaN(str)) {
-                if (str.includes('.') || str.toLowerCase().includes('e')) {
-                    // Handle floats and scientific notation
-                    return parseFloat(str);
-                }
-
-                let num = BigInt(str);
-                if (num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER) {
-                    // Convert to Number if within safe range
-                    return Number(num);
-                }
-
-                //@ts-ignore
-                return num; // Return as BigInt
-            }
-
-            return NaN; // Not a number
-        }
         let components = event.split(';')
         switch (components[0]) {
             case 'IM':
@@ -260,7 +267,7 @@ export class Trace {
                     components[0],
                     parseInt(components[1]),
                     components[2],
-                    parseInt(components[3]),
+                    parseNumber(components[3]),
                     components[4] as ValType,
                 ]
             case 'IG':
@@ -271,7 +278,7 @@ export class Trace {
                     components[3],
                     components[4] as ValType,
                     parseInt(components[5]) as 0 | 1,
-                    parseInt(components[6]),
+                    parseNumber(components[6]),
                 ]
             case 'IF':
                 return [
@@ -320,12 +327,6 @@ export class Trace {
             return list
         }
 
-        function parseNumber(n: string) {
-            if (n.includes('.')) {
-                return parseFloat(n)
-            }
-            return parseInt(n)
-        }
         let components = event.split(';')
         switch (components[0]) {
             case 'IM':
@@ -425,7 +426,7 @@ export class Trace {
                     type: 'GlobalGet',
                     idx: parseInt(components[1]),
                     name: components[2],
-                    value: parseInt(components[3]),
+                    value: parseNumber(components[3]),
                     valtype: components[4] as ValType,
                 }
             case 'IG':
@@ -434,7 +435,7 @@ export class Trace {
                     idx: parseInt(components[1]),
                     module: components[2],
                     name: components[3],
-                    initial: parseInt(components[6]),
+                    initial: parseNumber(components[6]),
                     value: components[4] as ValType,
                     mutable: parseInt(components[5]) === 1
                 }

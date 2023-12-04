@@ -27,7 +27,7 @@
             "args": [
                 "node",
                 "-t",
-                "table-exp-call-private-function-mul-table",
+                "exported-called-params-grow-mem",
             ]
         },
         {
@@ -67,8 +67,10 @@
             ],
             "program": "${workspaceFolder}/dist/src/cli/main.cjs",
             "args": [
-                "http://localhost:8000/speedtest1.html",
-                "sqllite"
+                "https://mbbill.github.io/JSC.js/demo/index.html",
+                "-b",
+                "jsc2",
+                "-e"
             ]
         },
         {
@@ -86,17 +88,22 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "gameoflife test",
+            "name": "dbg-generator",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/dist/tests/run-tests.cjs",
-            "args": [
-                "online",
-                "-t",
-                "game-of-life",
-                "-c"
-            ]
+            "program": "${workspaceFolder}/dist/src/cli/dbg-gen.cjs",
+            "args": []
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "dbg-replay-trace",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/dist/src/cli/dbg-replay.cjs",
+            "args": []
         },
     ]
 }
