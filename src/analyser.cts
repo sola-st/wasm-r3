@@ -3,6 +3,7 @@ import { createMeasure, StopMeasure } from './performance.cjs'
 import fs from 'fs/promises'
 import { Trace } from './tracer.cjs'
 import acorn from 'acorn'
+import { trimFromLastOccurance } from '../tests/test-utils.cjs'
 
 export interface AnalysisI<T> {
     getResult(): T,
@@ -85,7 +86,7 @@ export default class Analyser {
         this.contexts = this.contexts.concat(this.page.frames())
         const p_measureDataDownload = createMeasure('data download', { phase: 'record', description: `The time it takes to download all data from the browser.` })
         const p_measureTraceDownload = createMeasure('trace download', { phase: 'record', description: `The time it takes to download all traces from the browser.` })
-        const traces = await this.getResults()
+        const traces = (await this.getResults()).map(t => trimFromLastOccurance(t, 'ER'))
         p_measureTraceDownload()
         const p_measureBufferDownload = createMeasure('buffer download', { phase: 'record', description: `The time it takes to download all wasm binaries from the browser.` })
         const originalWasmBuffer = await this.getBuffers()

@@ -1,7 +1,7 @@
 import { StoreOp, LoadOp, ImpExp, Wasabi } from '../wasabi.cjs'
 import { Trace as TraceType, ConsiseTrace, ValType, ConsiseWasmEvent, WasmEvent, Ref } from '../trace.d.cjs'
 import { AnalysisI } from './analyser.cjs'
-import fs from 'fs'
+// import fs from 'fs'
 
 function parseNumber(str): number {
     str = str.trim(); // Remove leading/trailing whitespace
@@ -61,10 +61,10 @@ export class Trace {
             }
         }
         this.trace.push(eventString)
-        if (this.trace.length > 5000 && this.flag === true) {
-            fs.writeFileSync('/Users/jakob/Desktop/wasm-r3/ffmpeg/bin_0/replay-trace.r3', this.toString())
-            this.flag = false
-        }
+        // if (this.trace.length > 15000 && this.flag === true) {
+        //     fs.writeFileSync('/Users/jakob/Desktop/wasm-r3/ffmpeg/bin_0/replay-trace.r3', this.toString())
+        //     this.flag = false
+        // }
     }
 
     private eventEquals(e1: ConsiseWasmEvent, e2: ConsiseWasmEvent) {
