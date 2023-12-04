@@ -1,6 +1,7 @@
 import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
+    analyser.setExtended(false)
     const url = 'https://raylibtech.itch.io/rguiicons'
     let page = await analyser.start(url, { headless: true })
     await delay(1000)
