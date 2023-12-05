@@ -7,7 +7,8 @@ export type Options = {
     dumpTrace: boolean,
     benchmarkPath: string,
     file: string,
-    extended: boolean
+    extended: boolean,
+    noRecord: boolean,
 }
 
 export default function getOptions() {
@@ -18,7 +19,8 @@ export default function getOptions() {
         { name: 'benchmarkPath', alias: 'b', type: String },
         { name: 'headless', alias: 'h', type: Boolean },
         { name: 'file', alias: 'f', type: String },
-        { name: 'extended', alias: 'e', type: Boolean }
+        { name: 'extended', alias: 'e', type: Boolean },
+        { name: 'no-record', alias: 'n', type: Boolean}
     ]
     const options: Options & { url: string } = commandLineArgs(optionDefinitions)
     if (options.headless === undefined) {

@@ -13,7 +13,7 @@ export default async function run(url: string, options: Options) {
     code.toWriteStream(fss.createWriteStream(options.file + '.js'))
     return
   }
-  const analyser = new Analyser('./dist/src/tracer.cjs', { extended: options.extended })
+  const analyser = new Analyser('./dist/src/tracer.cjs', { extended: options.extended, noRecord: options.noRecord })
   await analyser.start(url, { headless: options.headless })
   await askQuestion(`Record is running. Enter 'Stop' to stop recording: `)
   console.log(`Record stopped. Downloading...`)

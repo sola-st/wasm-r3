@@ -15,7 +15,7 @@ export type AnalysisResult = {
     wasm: number[]
 }[]
 
-type Options = { extended: boolean }
+type Options = { extended?: boolean, noRecord?: boolean }
 export default class Analyser {
 
     private analysisPath: string
@@ -27,7 +27,7 @@ export default class Analyser {
     private p_measureUserInteraction: StopMeasure
 
 
-    constructor(analysisPath: string, options = { extended: false }) {
+    constructor(analysisPath: string, options: Options = { extended: false, noRecord: false }) {
         this.analysisPath = analysisPath
         this.options = options
     }
@@ -40,36 +40,15 @@ export default class Analyser {
         this.isRunning = true
         this.browser = await chromium.launch({ // chromium version: 119.0.6045.9 (Developer Build) (x86_64); V8 version: V8 11.9.169.3; currently in node I run version 11.8.172.13-node.12
             headless, args: [
-                '--disable-web-security',
+                // '--disable-web-security',
                 '--js-flags="--max_old_space_size=8192"'
             ]
         });
         this.page = await this.browser.newPage();
         this.page.setDefaultTimeout(120000);
-        const initScript = await this.constructInitScript()
-
-        await this.page.addInitScript({ content: initScript })
-
-        await this.page.route(`**/*.js*`, async route => {
-            let response
-            try {
-                response = await route.fetch()
-            } catch {
-                // this usually only happens when the browser is already closed. Only happens when running the test suite
-                return
-            }
-            const script = await response.text()
-            try {
-                acorn.parse(script, { ecmaVersion: 'latest' })
-                const body = `${initScript}${script}`
-                await route.fulfill({ response, body: body })
-            } catch {
-                route.fulfill({ response, body: script })
-            }
-        })
-        this.page.on('worker', worker => {
-            this.contexts.push(worker)
-        })
+        if (this.options.noRecord !== true) {
+            await this.attachRecorder()
+        }
 
         await this.page.goto(url, { timeout: 60000 })
         p_measureStart()
@@ -99,14 +78,35 @@ export default class Analyser {
         return traces.map((result, i) => ({ result: result, wasm: originalWasmBuffer[i] }))
     }
 
-    // private trim(traces: string[]) {
-    //     return traces.map(t => {
-    //         while (t.length >= 3 && t.slice(t.length - 3, t.length) !== 'ER;') {
-    //             t = t.slice(0, -1)
-    //         }
-    //         return t
-    //     })
-    // }
+    private async attachRecorder() {
+        const initScript = await this.constructInitScript()
+
+        await this.page.addInitScript({ content: initScript })
+
+        await this.page.route(`**/*.js*`, async route => {
+            let response
+            try {
+                response = await route.fetch()
+            } catch {
+                // this usually only happens when the browser is already closed. Only happens when running the test suite
+                return
+            }
+            const script = await response.text()
+            try {
+                acorn.parse(script, { ecmaVersion: 'latest' })
+                const body = `${initScript}${script}`
+                await route.fulfill({ response, body: body })
+            } catch {
+                route.fulfill({ response, body: script })
+            }
+            // const script = response.text()
+            // const body = `${initScript}${script}`
+            // await route.fulfill({ response, body: body })
+        })
+        this.page.on('worker', worker => {
+            this.contexts.push(worker)
+        })
+    }
 
     private async getResults() {
         const results = await Promise.all(this.contexts.map(async (c) => {
