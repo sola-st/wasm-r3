@@ -7,12 +7,12 @@ import { Trace } from "./tracer.cjs"
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
 import { createMeasure } from './performance.cjs'
+import { generateJavascript } from './js-generator.cjs'
 
 export type Record = { binary: number[], trace: Trace }[]
 
 type WasabiRuntime = string[]
 export default class Benchmark {
-
 
     private record: Record
     private constructor() { }
@@ -23,19 +23,19 @@ export default class Benchmark {
         await Promise.all(this.record.map(async ({ binary, trace }, i) => {
             const binPath = path.join(benchmarkPath, `bin_${i}`)
             await fs.mkdir(binPath)
-            // if (options.trace === true) {
+            if (options.trace === true) {
                 await fs.writeFile(path.join(binPath, 'trace.r3'), trace.toString())
-            // }
+            }
             const diskSave = `temp-trace-${i}.r3`
             await fs.writeFile(diskSave, trace.toString())
-            // console.log('wrote temp trace to disk and start stream code generation')
             const p_measureCodeGen = createMeasure('ir-gen', { phase: 'replay-generation', description: `The time it takes to generate the IR code for subbenchmark ${i}` })
             const code = await new Generator().generateReplayFromStream(fss.createReadStream(diskSave))
             p_measureCodeGen()
             const p_measureJSWrite = createMeasure('string-gen', { phase: 'replay-generation', description: `The time it takes to stream the replay code to the file for subbenchmark ${i}` })
-            await code.toWriteStream(fss.createWriteStream(path.join(binPath, 'replay.js')))
+            await generateJavascript(fss.createWriteStream(path.join(binPath, 'replay.js')), code)
             p_measureJSWrite()
             await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
+            await fs.rm(diskSave)
         }))
         p_measureSave()
     }

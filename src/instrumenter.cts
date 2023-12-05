@@ -5,12 +5,13 @@ import { askQuestion } from './util.cjs';
 import { Options } from './cli/options.cjs'
 import Generator from './replay-generator.cjs';
 import { initPerformance } from './performance.cjs';
+import { generateJavascript } from './js-generator.cjs';
 
 export default async function run(url: string, options: Options) {
   await initPerformance(url, 'manual-run', 'performance.ndjson')
   if (options.file !== undefined) {
     const code = await new Generator().generateReplayFromStream(fss.createReadStream(options.file))
-    code.toWriteStream(fss.createWriteStream(options.file + '.js'))
+    generateJavascript(fss.createWriteStream(options.file + '.js'), code)
     return
   }
   const analyser = new Analyser('./dist/src/tracer.cjs', { extended: options.extended, noRecord: options.noRecord })
