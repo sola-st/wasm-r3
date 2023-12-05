@@ -1,5 +1,5 @@
 import { StoreOp, LoadOp, ImpExp, Wasabi } from '../wasabi.cjs'
-import { Trace as TraceType, ConsiseTrace, ValType, ConsiseWasmEvent, WasmEvent, Ref } from '../trace.d.cjs'
+import { Trace as TraceType, ValType, WasmEvent } from '../trace.d.cjs'
 import { AnalysisI } from './analyser.cjs'
 // import fs from 'fs'
 
@@ -47,277 +47,34 @@ export class Trace {
         this.trace = []
     }
 
-    push(event: ConsiseWasmEvent | Ref) {
-        const eventString = this.stringifyEvent(event)
-        if (event[0] === 'IC' || event[0] === 'IR') {
-            const cashIndex = this.cache.findIndex(v => v === eventString)
-            // const cashIndex = this.cache.findIndex(v => this.eventEquals(v, event))
+    push(event: string) {
+        if (event.startsWith('IC') || event.startsWith('IR')) {
+            const cashIndex = this.cache.findIndex(v => v === event)
             if (cashIndex !== -1) {
                 this.trace.push(cashIndex.toString())
-                // this.trace.push([cashIndex])
                 return
             } else {
-                this.cache.push(eventString)
+                this.cache.push(event)
             }
         }
-        this.trace.push(eventString)
+        this.trace.push(event)
         // if (this.trace.length > 15000 && this.flag === true) {
         //     fs.writeFileSync('/Users/jakob/Desktop/wasm-r3/ffmpeg/bin_0/replay-trace.r3', this.toString())
         //     this.flag = false
         // }
     }
 
-    private eventEquals(e1: ConsiseWasmEvent, e2: ConsiseWasmEvent) {
-        !e1.some((f1, i) => {
-            const f2 = e2[i]
-            if (Array.isArray(f1) && Array.isArray(f2) && f1.length === f2.length) {
-                f1.some((f1, j) => f1 !== e2[i][j])
-            } else if (f1 === f2) {
-                return false
-            }
-            return true
+    forEach(callbackFn: (value: WasmEvent, index: number) => void) {
+        this.trace.forEach((e, i) => {
+            const event = this.parseEventToObj(e)
+            callbackFn(event, i)
         })
     }
 
-    into() {
-        let trace: TraceType = []
-        for (let eventString of this.trace) {
-            let e = Trace.parseEvent(eventString)
-            if (typeof e[0] === 'number') {
-                e = Trace.parseEvent(this.cache[e[0]])
-            }
-            switch (e[0]) {
-                case 'L':
-                    trace.push({ type: 'Load', idx: e[1], name: e[2], offset: e[3], data: e[4] })
-                    break
-                case 'LE':
-                    trace.push({ type: 'LoadExt', idx: e[1], name: e[2], offset: e[3], data: e[4] })
-                    break
-                case 'MG':
-                    trace.push({ type: 'MemGrow', idx: e[1], name: e[2], amount: e[3] })
-                    break
-                case 'T':
-                    trace.push({ type: 'TableGet', tableidx: e[1], name: e[2], idx: e[3], funcidx: e[4], funcName: e[5] })
-                    break
-                case 'TE':
-                    trace.push({ type: 'TableGetExt', tableidx: e[1], name: e[2], idx: e[3], funcidx: e[4], funcName: e[5] })
-                    break
-                case 'TG':
-                    trace.push({ type: 'TableGrow', idx: e[1], name: e[2], amount: e[3] })
-                    break
-                case 'G':
-                    trace.push({ type: 'GlobalGet', idx: e[1], name: e[2], value: e[3], valtype: e[4] })
-                    break
-                case 'EC':
-                    trace.push({ type: 'ExportCall', name: e[1], params: e[2] })
-                    break
-                case 'TC':
-                    trace.push({ type: 'TableCall', tableName: e[1], funcidx: e[2], params: e[3] })
-                    break
-                case 'ER':
-                    trace.push({ type: 'ExportReturn' })
-                    break
-                case 'IC':
-                    trace.push({ type: 'ImportCall', idx: e[1], name: e[2] })
-                    break
-                case 'IR':
-                    trace.push({ type: 'ImportReturn', idx: e[1], name: e[2], results: e[3] })
-                    break
-                case 'IM':
-                    trace.push({ type: 'ImportMemory', idx: e[1], module: e[2], name: e[3], initial: e[4], maximum: e[5] })
-                    break
-                case 'IT':
-                    trace.push({ type: 'ImportTable', idx: e[1], module: e[2], name: e[3], initial: e[4], maximum: e[5], element: e[6] })
-                    break
-                case 'IG':
-                    trace.push({ type: 'ImportGlobal', idx: e[1], module: e[2], name: e[3], value: e[4], mutable: e[5] === 1, initial: e[6] })
-                    break
-                case 'IF':
-                    trace.push({ type: 'ImportFunc', idx: e[1], module: e[2], name: e[3] })
-                    break
-                case 'FE':
-                    trace.push({ type: 'FuncEntry', idx: e[1], args: e[2] })
-                    break
-                case 'FR':
-                    trace.push({ type: 'FuncReturn', idx: e[1], values: e[2] })
-                    break
-                default:
-                    throw new Error(`Unknown event type ${e[0]}`)
-            }
-        }
-        return trace
-    }
-
-    private stringifyEvent(event: ConsiseWasmEvent | Ref) {
-        let eventString = ''
-        event.forEach((value, i) => {
-            if (Array.isArray(value)) {
-                value.forEach((item, i) => {
-                    eventString += item
-                    //@ts-ignore
-                    if (i < value.length - 1) {
-                        eventString += `,`
-                    }
-                })
-            } else {
-                if (value !== undefined && value !== null) {
-                    eventString += value
-                }
-            }
-            if (i < event.length - 1) {
-                eventString += ';'
-            }
-        })
-        return eventString
-    }
-
-    static parseEvent(event: string): ConsiseWasmEvent | Ref {
-        if (Number.isFinite(Number(event))) {
-            return [parseInt(event)]
-        }
-        function splitList(c?: string) {
-            let list = c?.split(',').map(parseNumber)
-            if (list === undefined || (list.length === 1 && Number.isNaN(list[0]))) {
-                return []
-            }
-            return list
-        }
-
-        let components = event.split(';')
-        switch (components[0]) {
-            case 'IM':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    components[3],
-                    parseInt(components[4]),
-                    components[5] === '' ? undefined : parseInt(components[5])
-                ]
-            case "EC":
-                return [
-                    components[0],
-                    components[1],
-                    splitList(components[2])
-                ]
-            case 'TC':
-                return [
-                    components[0],
-                    components[1],
-                    parseInt(components[2]),
-                    splitList(components[3]),
-                ]
-            case 'ER':
-                return [
-                    components[0]
-                ]
-            case "IC":
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2]
-                ]
-            case 'C':
-                return [
-                    components[0],
-                    parseInt(components[1])
-                ]
-            case "IR":
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    splitList(components[3]),
-                ]
-            case "L":
-            case 'LE':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    parseInt(components[3]),
-                    splitList(components[4]),
-                ]
-            case "MG":
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    parseInt(components[3])
-                ]
-            case "T":
-            case 'TE':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    parseInt(components[3]),
-                    parseInt(components[4]),
-                    components[5],
-                ]
-            case "TG":
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    parseInt(components[3])
-                ]
-            case 'G':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    parseNumber(components[3]),
-                    components[4] as ValType,
-                ]
-            case 'IG':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    components[3],
-                    components[4] as ValType,
-                    parseInt(components[5]) as 0 | 1,
-                    parseNumber(components[6]),
-                ]
-            case 'IF':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    components[3],
-                ]
-            case 'IT':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    components[2],
-                    components[3],
-                    parseInt(components[4]),
-                    components[5] === '' ? undefined : parseInt(components[5]),
-                    components[6] as 'anyfunc'
-                ]
-            case 'FE':
-            case 'FR':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    splitList(components[2]),
-                ]
-            case 'S':
-                return [
-                    components[0],
-                    parseInt(components[1]),
-                    splitList(components[2]),
-                ]
-            default:
-                throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}.`)
-        }
-    }
-
-    static parseEventToObj(event: string): WasmEvent {
-        if (Number.isFinite(Number(event))) {
-            throw new Error('you cannot parse an unresolved event to an object')
+    parseEventToObj(event: string): WasmEvent {
+        const cacheIdx = Number(event)
+        if (Number.isFinite(cacheIdx)) {
+            event = this.cache[cacheIdx]
         }
         function splitList(c?: string) {
             let list = c?.split(',').map(parseNumber)
@@ -360,11 +117,6 @@ export class Trace {
                     type: 'ImportCall',
                     idx: parseInt(components[1]),
                     name: components[2]
-                }
-            case 'C':
-                return {
-                    type: 'Call',
-                    idx: parseInt(components[1])
                 }
             case "IR":
                 return {
@@ -468,12 +220,6 @@ export class Trace {
                     idx: parseInt(components[1]),
                     values: splitList(components[2])
                 }
-            case 'S':
-                return {
-                    type: 'StoreExt',
-                    offset: parseInt(components[1]),
-                    data: splitList(components[2])
-                }
             default:
                 throw new Error(`${components[0]}: Not a valid trace event. The whole event: ${event}.`)
         }
@@ -488,7 +234,7 @@ export class Trace {
         self.trace = []
         let events = traceString.trim().split('\n')
         for (let event of events) {
-            self.push(Trace.parseEvent(event))
+            self.push(event)
         }
         return self
     }
@@ -531,11 +277,6 @@ export default class Analysis implements AnalysisI<Trace> {
         return this.trace
     }
 
-    getResultChunk(size: number) {
-        return this.trace
-        // return this.trace.getChunk(0, size)
-    }
-
     constructor(Wasabi: Wasabi, options = { extended: false }) {
         this.Wasabi = Wasabi
         this.options = options
@@ -567,7 +308,7 @@ export default class Analysis implements AnalysisI<Trace> {
 
             begin_function: (location, args) => {
                 if (options.extended) {
-                    this.trace.push(['FE', location.func, args])
+                    this.trace.push(`FE;${location.func};${args.join(',')}`)
                 }
                 if (this.callStack[this.callStack.length - 1] !== 'int') {
                     const exportName = this.Wasabi.module.info.functions[location.func].export[0]
@@ -577,7 +318,7 @@ export default class Analysis implements AnalysisI<Trace> {
                             for (let tableIndex = 0; tableIndex < table.length; tableIndex++) {
                                 const funcidx = this.resolveFuncIdx(table, tableIndex)
                                 if (funcidx === location.func) {
-                                    this.trace.push(["TC", this.getName(this.Wasabi.module.info.tables[i]), tableIndex, args])
+                                    this.trace.push(`TC;${this.getName(this.Wasabi.module.info.tables[i])};${tableIndex};${args.join(',')}`)
                                     return true
                                 }
                             }
@@ -586,7 +327,7 @@ export default class Analysis implements AnalysisI<Trace> {
                             throw new Error('The function you where calling from outside the wasm module is neither exported nor in a table...')
                         }
                     } else {
-                        this.trace.push(["EC", exportName, args])
+                        this.trace.push(`EC;${exportName};${args.join(',')}`)
                         this.checkMemGrow()
                         this.checkTableGrow()
                     }
@@ -603,9 +344,6 @@ export default class Analysis implements AnalysisI<Trace> {
                 for (let i = 0; i < byteLength; i++) {
                     const value = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
                     new Uint8Array(this.shadowMemories[0])[addr + i] = value
-                    // if (this.options.extended === true) {
-                    //     this.trace.push(['S', addr + i, [value]])
-                    // }
                 }
             },
 
@@ -629,13 +367,13 @@ export default class Analysis implements AnalysisI<Trace> {
                     for (let i = 0; i < byteLength; i++) {
                         data.push(new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i])
                     }
-                    this.trace.push(['LE', 0, memName, addr, data])
+                    this.trace.push(`LE;${0};${memName};${addr};${data.join(',')}`)
                 }
                 res.forEach((r, i) => {
                     if (r !== true) {
                         new Uint8Array(this.shadowMemories[0])[addr + i] = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
                         new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i] = r as number
-                        this.trace.push(['L', 0, memName, addr + i, [r as number]])
+                        this.trace.push(`L;${0};${memName};${addr + i};${[r as number]}`)
                     }
                 })
             },
@@ -650,7 +388,7 @@ export default class Analysis implements AnalysisI<Trace> {
                     // can be NaN in case of the NaN being imported to the WebAssembly Module. Google it!
                     if (this.shadowGlobals[idx] !== value && !Number.isNaN(this.shadowGlobals[idx]) && !Number.isNaN(value)) {
                         let valtype = globalInfo.valType
-                        this.trace.push(['G', idx, this.getName(globalInfo), value, valtype])
+                        this.trace.push(`G;${idx};${this.getName(globalInfo)};${value};${valtype}`)
                     }
                 }
             },
@@ -663,7 +401,7 @@ export default class Analysis implements AnalysisI<Trace> {
                 if (funcImport !== null) {
                     let name = funcImport[1]
                     this.callStack.push({ name, idx: funcidx })
-                    this.trace.push(["IC", funcidx, name])
+                    this.trace.push(`IC;${funcidx};${name}`)
                 }
             },
 
@@ -673,7 +411,7 @@ export default class Analysis implements AnalysisI<Trace> {
                     return
                 }
                 this.callStack.pop()
-                this.trace.push(['IR', func.idx, func.name, results])
+                this.trace.push(`IR;${func.idx};${func.name};${results.join(',')}`)
                 this.checkMemGrow()
                 this.checkTableGrow()
             },
@@ -681,10 +419,10 @@ export default class Analysis implements AnalysisI<Trace> {
             return_: (location, values) => {
                 this.callStack.pop()
                 if (this.options.extended === true) {
-                    this.trace.push(['FR', location.func, values])
+                    this.trace.push(`FR;${location.func};${values.join(',')}`)
                 }
                 if (this.callStack.length === 1) {
-                    this.trace.push(['ER'])
+                    this.trace.push(`ER`)
                 }
             },
 
@@ -726,14 +464,14 @@ export default class Analysis implements AnalysisI<Trace> {
             let name = this.getName(this.Wasabi.module.info.tables[tableidx])
             let funcidx = parseInt(table.get(idx).name)
             let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
-            this.trace.push(['T', tableidx, name, idx, funcidx, funcName])
+            this.trace.push(`T;${tableidx};${name};${idx};${funcidx};${funcName}`)
             this.shadowTables[0].set(0, table.get(idx))
         }
         if (this.options.extended === true) {
             let name = this.getName(this.Wasabi.module.info.tables[tableidx])
             let funcidx = parseInt(table.get(idx).name)
             let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
-            this.trace.push(['TE', tableidx, name, idx, funcidx, funcName])
+            this.trace.push(`TE;${tableidx};${name};${idx};${funcidx};${funcName}`)
         }
     }
 
@@ -768,7 +506,7 @@ export default class Analysis implements AnalysisI<Trace> {
                 let amount = mem.buffer.byteLength / this.MEM_PAGE_SIZE - this.shadowMemories[idx].byteLength / this.MEM_PAGE_SIZE
                 memGrow[idx] = amount
                 this.growShadowMem(idx, amount)
-                this.trace.push(['MG', idx, this.getName(this.Wasabi.module.info.memories[idx]), amount])
+                this.trace.push(`MG;${idx};${this.getName(this.Wasabi.module.info.memories[idx])};${amount}`)
             }
         })
     }
@@ -780,7 +518,7 @@ export default class Analysis implements AnalysisI<Trace> {
                 let amount = this.Wasabi.module.tables[idx].length - this.shadowTables[idx].length
                 tableGrow[idx] = amount
                 this.growShadowTable(idx, amount)
-                this.trace.push(['TG', idx, this.getName(this.Wasabi.module.info.tables[0]), amount])
+                this.trace.push(`TG;${idx};${this.getName(this.Wasabi.module.info.tables[0])};${amount}`)
             }
         })
     }
@@ -830,7 +568,7 @@ export default class Analysis implements AnalysisI<Trace> {
         // Init Memories
         this.Wasabi.module.info.memories.forEach((m, idx) => {
             if (m.import !== null) {
-                this.trace.push(['IM', idx, m.import[0], m.import[1], m.initial, m.maximum])
+                this.trace.push(`IM;${idx};${m.import[0]};${m.import[1]};${m.initial};${m.maximum === null ? '' : m.maximum}`)
             }
         })
         this.Wasabi.module.memories.forEach((mem, i) => {
@@ -853,20 +591,20 @@ export default class Analysis implements AnalysisI<Trace> {
         })
         this.Wasabi.module.info.tables.forEach((t, idx) => {
             if (t.import !== null) {
-                this.trace.push(['IT', idx, t.import![0], t.import![1], t.initial, t.maximum, 'anyfunc']) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
+                this.trace.push(`IT;${idx};${t.import![0]};${t.import![1]};${t.initial};${t.maximum === null ? '' : t.maximum};${'anyfunc'}`) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
             }
         })
         // Init Globals
         this.shadowGlobals = this.Wasabi.module.globals.map(g => g.value)
         this.Wasabi.module.info.globals.forEach((g, idx) => {
             if (g.import !== null) {
-                this.trace.push(['IG', idx, g.import[0], g.import[1], g.valType, g.mutability === 'Mut' ? 1 : 0, this.Wasabi.module.globals[idx].value])
+                this.trace.push(`IG;${idx};${g.import[0]};${g.import[1]};${g.valType};${g.mutability === 'Mut' ? 1 : 0};${this.Wasabi.module.globals[idx].value}`)
             }
         })
         // Init Functions
         this.Wasabi.module.info.functions.forEach((f, idx) => {
             if (f.import !== null) {
-                this.trace.push(['IF', idx, f.import![0], f.import[1]])
+                this.trace.push(`IF;${idx};${f.import![0]};${f.import[1]}`)
             }
         })
     }
@@ -887,7 +625,7 @@ export default class Analysis implements AnalysisI<Trace> {
     }
 
     private debugMemory(startAddr: number, endAddr: number) {
-        console.log(`actualMem from ${startAddr}:`, new Uint8Array(this.Wasabi.module.memories[0].buffer).slice(startAddr, endAddr).join(','))
-        console.log(`shadowMem from ${startAddr}:`, new Uint8Array(this.shadowMemories[0]).slice(startAddr, endAddr).join(','))
+        console.log(`actualMem from ${startAddr}: `, new Uint8Array(this.Wasabi.module.memories[0].buffer).slice(startAddr, endAddr).join(','))
+        console.log(`shadowMem from ${startAddr}: `, new Uint8Array(this.shadowMemories[0]).slice(startAddr, endAddr).join(','))
     }
 }

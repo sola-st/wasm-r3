@@ -7,7 +7,6 @@ import { trimFromLastOccurance } from '../tests/test-utils.cjs'
 
 export interface AnalysisI<T> {
     getResult(): T,
-    getResultChunk(size: number): T
 }
 
 export type AnalysisResult = {
