@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Worker test</title>
+</head>
+
+<body>
+  <script>
+    fetch("add.wasm")
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => WebAssembly.compile(bytes))
+      .then((module) => {
+        const instance = new WebAssembly.Instance(module, {})
+        console.log(`1 + 2 = ${instance.exports.add(1, 2)}`)
+      })
+  </script>
+</body>
+
+</html>

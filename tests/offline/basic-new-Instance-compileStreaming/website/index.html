@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Worker test</title>
+</head>
+
+<body>
+  <script>
+    WebAssembly.compileStreaming(fetch("add.wasm"))
+      .then((module) => {
+        const instance = new WebAssembly.Instance(module, {})
+        console.log(`1 + 2 = ${instance.exports.add(1, 2)}`)
+      })
+  </script>
+</body>
+
+</html>
