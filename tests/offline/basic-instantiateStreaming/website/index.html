@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Worker test</title>
+</head>
+
+<body>
+  <script>
+    WebAssembly.instantiateStreaming(fetch("add.wasm"), {})
+      .then((result) => console.log(`1 + 2 = ${result.instance.exports.add(1, 2)}`));
+  </script>
+</body>
+
+</html>
