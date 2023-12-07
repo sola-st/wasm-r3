@@ -82,6 +82,21 @@ export default class Analyser {
 
         await this.page.addInitScript({ content: initScript })
 
+        await this.page.route('**/*', async (route) => {
+            const response = await route.fetch()
+            const headers = response.headers()
+
+            // Remove or modify the CSP header
+            delete headers['content-security-policy'];
+            delete headers['content-security-policy-report-only']
+
+            await route.fulfill({
+                status: response.status(),
+                headers: headers,
+                body: await response.body()
+            });
+        })
+
         await this.page.route(`**/*.js*`, async route => {
             let response
             try {
@@ -98,9 +113,6 @@ export default class Analyser {
             } catch {
                 route.fulfill({ response, body: script })
             }
-            // const script = response.text()
-            // const body = `${initScript}${script}`
-            // await route.fulfill({ response, body: body })
         })
         this.page.on('worker', worker => {
             this.contexts.push(worker)
