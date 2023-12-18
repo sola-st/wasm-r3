@@ -25,8 +25,9 @@
   },
   "scripts": {
     "build": "tsc && node ./build.js",
+    "build-rust": "cd crates/ && cargo build --release",
     "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && wasm-pack build --target nodejs --out-dir ../../../dist/wasabi && cd ../../..",
-    "build-full": "npm run build-wasabi && npm run build",
+    "build-full": "npm run build-rust && npm run build-wasabi && npm run build",
     "test": "npm run build && node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
     "start": "npm run build && node ./dist/src/cli/main.cjs"

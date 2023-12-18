@@ -9,6 +9,7 @@ export type Options = {
     file: string,
     extended: boolean,
     noRecord: boolean,
+    rustBackend: boolean
 }
 
 export default function getOptions() {
@@ -20,11 +21,15 @@ export default function getOptions() {
         { name: 'headless', alias: 'h', type: Boolean },
         { name: 'file', alias: 'f', type: String },
         { name: 'extended', alias: 'e', type: Boolean },
-        { name: 'no-record', alias: 'n', type: Boolean}
+        { name: 'no-record', alias: 'n', type: Boolean },
+        { name: 'rustBackend', alias: 'r', type: Boolean }
     ]
     const options: Options & { url: string } = commandLineArgs(optionDefinitions)
     if (options.headless === undefined) {
         options.headless = false
+    }
+    if (options.rustBackend) {
+        console.log('CAUTION: Using experimental Rust backend')
     }
     if (fs.existsSync(options.benchmarkPath)) {
         throw new Error(`EEXIST: Directory at path ${options.benchmarkPath} does already exist`)

@@ -165,7 +165,7 @@ function compareResults(testPath: string, traceString: string, replayTraceString
   return { testPath, success: true }
 }
 
-async function runOnlineTests(names: string[]) {
+async function runOnlineTests(names: string[], options) {
   if (names.length > 0) {
     console.log('================')
     console.log('Run online tests')
@@ -178,25 +178,26 @@ async function runOnlineTests(names: string[]) {
     'visual6502remix', // takes so long and is not automated yet
     'heatmap', // takes so long
     'image-convolute', // out of memory
+    'kittygame', // too slow for rust backend
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
     const spinner = startSpinner(name)
     const testPath = path.join(process.cwd(), 'tests', 'online', name)
     const cleanUpPerformance = await initPerformance(name, 'online-auto-test', path.join(testPath, 'performance.ndjson'))
-    const report = await runOnlineTest(testPath)
+    const report = await runOnlineTest(testPath, options)
     stopSpinner(spinner)
     cleanUpPerformance()
     await writeReport(name, report)
   }
 }
 
-async function runOnlineTest(testPath: string) {
+async function runOnlineTest(testPath: string, options) {
   await cleanUp(testPath)
-  return testWebPage(testPath)
+  return testWebPage(testPath, options)
 }
 
-async function runOfflineTests(names: string[]) {
+async function runOfflineTests(names: string[], options) {
   if (names.length > 0) {
     console.log('=================')
     console.log('Run offline tests')
@@ -209,7 +210,7 @@ async function runOfflineTests(names: string[]) {
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
     const spinner = startSpinner(name)
-    const report = await runOfflineTest(name)
+    const report = await runOfflineTest(name, options)
     stopSpinner(spinner)
     await writeReport(name, report)
   }
@@ -247,17 +248,17 @@ function startServer(websitePath: string): Promise<Server> {
   })
 }
 
-async function runOfflineTest(name: string): Promise<TestReport> {
+async function runOfflineTest(name: string, options): Promise<TestReport> {
   const testPath = path.join(process.cwd(), 'tests', 'offline', name)
   const websitePath = path.join(testPath, 'website')
   await cleanUp(testPath)
   const server = await startServer(websitePath)
-  let report = await testWebPage(testPath)
+  let report = await testWebPage(testPath, options)
   server.close()
   return report
 }
 
-async function testWebPage(testPath: string): Promise<TestReport> {
+async function testWebPage(testPath: string, options): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')
   const benchmarkPath = path.join(testPath, 'benchmark')
   let analysisResult: AnalysisResult
@@ -275,7 +276,7 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     }
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
-    await benchmark.save(benchmarkPath, { trace: true })
+    await benchmark.save(benchmarkPath, { trace: true, rustBackend: options.rustBackend })
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: 'no benchmark was generated' }
@@ -326,10 +327,13 @@ async function testWebPage(testPath: string): Promise<TestReport> {
   const optionDefinitions = [
     { name: 'extended', alias: 'e', type: Boolean },
     { name: 'category', type: String, multiple: true, defaultOption: true },
-    { name: 'testcases', alias: 't', type: String, multiple: true }
+    { name: 'testcases', alias: 't', type: String, multiple: true },
+    { name: 'rustBackend', alias: 'r', type: Boolean }
   ]
   const options = commandLineArgs(optionDefinitions)
-  extended = options.extended
+  if (options.rustBackend) {
+    console.log('CAUTION: Using experimental Rust backend')
+  }
   if (options.category === undefined || options.category.includes('node')) {
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
     if (options.testcases !== undefined) {
@@ -342,14 +346,14 @@ async function testWebPage(testPath: string): Promise<TestReport> {
     if (options.testcases !== undefined) {
       testNames = testNames.filter(n => options.testcases.includes(n));
     }
-    await runOfflineTests(testNames)
+    await runOfflineTests(testNames, options)
   }
   if (options.category === undefined || options.category.includes('online')) {
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'online'));
     if (options.testcases !== undefined) {
       testNames = testNames.filter(n => options.testcases.includes(n));
     }
-    await runOnlineTests(testNames)
+    await runOnlineTests(testNames, options)
   }
   // process.stdout.write(`done running ${nodeTestNames.length + webTestNames.length} tests\n`);
 })()
