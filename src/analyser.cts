@@ -40,7 +40,8 @@ export default class Analyser {
         this.browser = await chromium.launch({ // chromium version: 119.0.6045.9 (Developer Build) (x86_64); V8 version: V8 11.9.169.3; currently in node I run version 11.8.172.13-node.12
             headless, args: [
                 // '--disable-web-security',
-                '--js-flags="--max_old_space_size=8192"'
+                '--js-flags="--max_old_space_size=8192"',
+                '--enable-experimental-web-platform-features'
             ]
         });
         this.page = await this.browser.newPage();
