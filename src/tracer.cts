@@ -48,15 +48,15 @@ export class Trace {
     }
 
     push(event: string) {
-        if (event.startsWith('IC') || event.startsWith('IR')) {
-            const cashIndex = this.cache.findIndex(v => v === event)
-            if (cashIndex !== -1) {
-                this.trace.push(cashIndex.toString())
-                return
-            } else {
-                this.cache.push(event)
-            }
-        }
+        // if (event.startsWith('IC') || event.startsWith('IR')) {
+        //     const cashIndex = this.cache.findIndex(v => v === event)
+        //     if (cashIndex !== -1) {
+        //         this.trace.push(cashIndex.toString())
+        //         return
+        //     } else {
+        //         this.cache.push(event)
+        //     }
+        // }
         this.trace.push(event)
         // if (this.trace.length > 15000 && this.flag === true) {
         //     fs.writeFileSync('/Users/jakob/Desktop/wasm-r3/ffmpeg/bin_0/replay-trace.r3', this.toString())
