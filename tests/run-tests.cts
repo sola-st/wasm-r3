@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import fss from 'fs'
 import path from 'path'
-import cp from 'child_process'
+import cp, { execSync } from 'child_process'
 import express from 'express'
 import Generator from "../src/replay-generator.cjs";
 import Tracer, { Trace } from "../src/tracer.cjs";
@@ -35,7 +35,7 @@ async function cleanUp(testPath: string) {
 }
 
 
-async function runNodeTest(name: string): Promise<TestReport> {
+async function runNodeTest(name: string, options): Promise<TestReport> {
   const testPath = path.join(process.cwd(), 'tests', 'node', name)
   await cleanUp(testPath)
   const testJsPath = path.join(testPath, 'test.js')
@@ -98,8 +98,15 @@ async function runNodeTest(name: string): Promise<TestReport> {
   }
   let replayCode
   try {
-    replayCode = await new Generator().generateReplay(trace)
-    await generateJavascript(fss.createWriteStream(replayPath), replayCode)
+    if (options.rustBackend === true) {
+      const diskSave = path.join(testPath, `temp-trace-0.r3`)
+      await fs.writeFile(diskSave, traceString)
+      execSync(`./crates/target/release/replay_gen ${diskSave} ${replayPath}`);
+    } else {
+      replayCode = await new Generator().generateReplay(trace)
+      await generateJavascript(fss.createWriteStream(replayPath), replayCode)
+    }
+
     await delay(0) // WTF why do I need this WHAT THE FUCK
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
@@ -126,7 +133,7 @@ async function runNodeTest(name: string): Promise<TestReport> {
   return result
 }
 
-async function runNodeTests(names: string[]) {
+async function runNodeTests(names: string[], options) {
   if (names.length > 0) {
     console.log('==============')
     console.log('Run node tests')
@@ -148,7 +155,7 @@ async function runNodeTests(names: string[]) {
   names = names.filter((n) => !filter.includes(n))
   // names = ["mem-imp-host-grow"]
   for (let name of names) {
-    const report = await runNodeTest(name)
+    const report = await runNodeTest(name, options)
     await writeReport(name, report)
   }
 }
@@ -339,7 +346,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     if (options.testcases !== undefined) {
       testNames = testNames.filter(n => options.testcases.includes(n));
     }
-    await runNodeTests(testNames)
+    await runNodeTests(testNames, options)
   }
   if (options.category === undefined || options.category.includes('offline')) {
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'offline'))
