@@ -27,7 +27,7 @@
             "args": [
                 "node",
                 "-t",
-                "exported-called-params-grow-mem",
+                "mem-exp-host-mod-pingpong",
             ]
         },
         {

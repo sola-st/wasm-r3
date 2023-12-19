@@ -110,14 +110,14 @@ export default class Generator {
                         this.state.lastFuncReturn = true
                         r.slice(-1)[0].reps += 1
                         this.state.importCallStack.pop()
-                        this.state.importCallStackFunction.pop()
+                        this.state.lastFunc = this.state.importCallStackFunction.pop()
                         break
                     }
                 }
                 this.state.lastFuncReturn = true
                 r.push({ results: event.results, reps: 1 })
                 this.state.importCallStack.pop()
-                this.state.importCallStackFunction.pop()
+                this.state.lastFunc = this.state.importCallStackFunction.pop()
                 break
             case "Load":
                 this.pushEvent({
