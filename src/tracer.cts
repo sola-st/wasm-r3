@@ -389,6 +389,7 @@ export default class Analysis implements AnalysisI<Trace> {
                     if (this.shadowGlobals[idx] !== value && !Number.isNaN(this.shadowGlobals[idx]) && !Number.isNaN(value)) {
                         let valtype = globalInfo.valType
                         this.trace.push(`G;${idx};${this.getName(globalInfo)};${value};${valtype}`)
+                        this.shadowGlobals[idx] = value
                     }
                 }
             },
