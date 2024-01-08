@@ -491,6 +491,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         HostEvent::ExportCall { idx, name, params } => {
             let ty = code.func_idx_to_ty.get(&(*idx as usize)).unwrap();
             let param_tys = ty.params.clone();
+            let result_count = ty.results.len();
             let idx = idx;
             let params = params
                 .iter()
@@ -498,8 +499,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .map(|(p, p_ty)| format!("({} {p})", valty_to_const(&p_ty)))
                 .collect::<Vec<String>>()
                 .join("\n");
-            // FIXME: should drop the result values in stack to make it valid
-            params + &format!("(call {idx})")
+            params + &format!("(call {idx})") + &("(drop)".repeat(result_count))
         }
         HostEvent::ExportCallTable {
             idx,
@@ -509,6 +509,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         } => {
             let ty = code.func_idx_to_ty.get(&(*idx as usize)).unwrap();
             let param_tys = ty.params.clone();
+            let result_count = ty.results.len();
             let idx = idx;
             let params = params
                 .iter()
@@ -516,8 +517,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .map(|(p, p_ty)| format!("({} {p})", valty_to_const(&p_ty)))
                 .collect::<Vec<String>>()
                 .join("\n");
-            // FIXME: should drop the result values in stack to make it valid
-            params + &format!("(call {idx})",)
+            params + &format!("(call {idx})",) + &("(drop)".repeat(result_count))
         }
         HostEvent::MutateMemory {
             addr,
