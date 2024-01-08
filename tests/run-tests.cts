@@ -10,7 +10,7 @@ import Benchmark from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
 import { Server } from 'http'
-import Analyser, { AnalysisResult } from '../src/analyser.cjs'
+import { Analyser, AnalysisResult } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
 import { generateJavascript } from '../src/js-generator.cjs'

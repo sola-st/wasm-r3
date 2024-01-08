@@ -3,11 +3,11 @@ use std::{collections::HashMap, fmt::Debug};
 use anyhow::Result;
 use walrus::{
     ir::{
-        self, BinaryOp, Binop, Call, Const, GlobalGet, GlobalSet, IfElse, Instr, LocalGet,
+        self, BinaryOp, Binop, BrIf, Call, Const, GlobalGet, GlobalSet, IfElse, Instr, LocalGet,
         LocalSet, MemArg, Store, StoreKind, Value, VisitorMut,
     },
-    FunctionBuilder, FunctionId, GlobalId, InstrLocId, LocalId, MemoryId, Module, ModuleConfig,
-    TableId, Type, TypeId, ValType,
+    FunctionBuilder, FunctionId, FunctionKind, GlobalId, InstrLocId, LocalFunction, LocalId,
+    MemoryId, Module, ModuleConfig, TableId, Type, TypeId, ValType,
 };
 use wasm_bindgen::prelude::*;
 
@@ -22,7 +22,7 @@ pub fn instrument_wasm_js(buffer: &[u8]) -> Result<JsValue, JsValue> {
 
 pub fn instrument_wasm(buffer: &[u8]) -> Result<Module> {
     let mut module = Module::from_buffer(buffer)?;
-    let trace_mem_id = module.memories.add_local(false, 30000, None); // around 2 GB
+    let trace_mem_id = module.memories.add_local(false, 10000, None); // around 2 GB
     module.exports.add("trace", trace_mem_id);
     let mem_pointer = module.globals.add_local(
         walrus::ValType::I32,
@@ -47,6 +47,24 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Module> {
         None => module.types.add(&[], &[]),
     };
     let (check_mem_id, _) = module.add_import_func("r3", "check_mem", typ);
+    // Mem check local function
+    let mut builder = FunctionBuilder::new(&mut module.types, &[], &[]);
+    builder
+        .func_body()
+        .const_(Value::I32(1000 * 64000))
+        .global_get(mem_pointer)
+        .binop(BinaryOp::I32LeU)
+        .if_else(
+            None,
+            |then| {
+                then.call(check_mem_id)
+                    .const_(Value::I32(0))
+                    .global_set(mem_pointer);
+            },
+            |_| {},
+        );
+    let check_mem_id_local = builder.finish(vec![], &mut module.funcs);
+
     let mut generator = Generator::new(
         trace_mem_id,
         mem_pointer,
@@ -55,13 +73,20 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Module> {
         module_types,
         current_type,
         check_mem_id,
+        check_mem_id_local,
     );
     // Instrument
-    module.funcs.iter_local_mut().for_each(|(_, f)| {
-        generator.set_current_func_type(module.types.get(f.ty()).clone());
-        generator.set_func_entry(true);
-        ir::dfs_pre_order_mut(&mut generator, f, f.entry_block())
+    module.funcs.iter_mut().for_each(|f| {
+        if f.id() == check_mem_id_local {
+            return;
+        }
+        if let FunctionKind::Local(f) = &mut f.kind {
+            generator.set_current_func_type(module.types.get(f.ty()).clone());
+            generator.set_func_entry(true);
+            ir::dfs_pre_order_mut(&mut generator, f, f.entry_block())
+        }
     });
+
     // dbg!(&module);
     Ok(module)
 }
@@ -203,6 +228,7 @@ struct Generator {
     current_func_type: Type,
     func_entry: bool,
     check_mem_id: FunctionId,
+    check_mem_id_local: FunctionId,
 }
 
 impl VisitorMut for Generator {
@@ -386,7 +412,7 @@ impl VisitorMut for Generator {
                             self.trace_code(opcode, offset),
                             self.save_stack(returns, offset),
                             self.increment_mem_pointer(*offset),
-                            self.check_mem(),
+                            self.call(self.check_mem_id_local),
                             self.instr(instr.clone()),
                         ])
                         .flatten(),
@@ -418,6 +444,7 @@ impl Generator {
         module_types: Types,
         current_func_type: Type,
         check_mem_id: FunctionId,
+        check_mem_id_local: FunctionId,
     ) -> Self {
         Self {
             trace_mem_id,
@@ -428,19 +455,21 @@ impl Generator {
             current_func_type,
             func_entry: true,
             check_mem_id,
+            check_mem_id_local,
         }
     }
 
     fn check_mem(&self) -> InstructionsEnum {
         InstructionsEnum::from_vec(vec![
-            // self.get_const(ir::Value::I32(64000 * 20000)),
-            // self.global_get(self.mem_pointer),
-            // self.binop(BinaryOp::I32Eq),
-            // self.check_mem_test_and_call(),
-            self.call_check_mem(),
-            self.get_const(Value::I32(0)),
-            self.global_set(self.mem_pointer)
+            self.get_const(ir::Value::I32(64000 * 20000)),
+            self.global_get(self.mem_pointer),
+            self.binop(BinaryOp::I32Eq),
+            // self.check_mem_and_call(),
         ])
+    }
+
+    fn call(&self, func: FunctionId) -> InstructionsEnum {
+        InstructionsEnum::Single((Instr::Call(Call { func }), InstrLocId::default()))
     }
 
     fn save_locals(&mut self, values: &[ValType], offset: &mut u32) -> InstructionsEnum {
@@ -619,21 +648,29 @@ impl Generator {
         InstructionsEnum::Single((Instr::Binop(Binop { op }), InstrLocId::default()))
     }
 
-    // fn check_mem_test_and_call(&self) -> InstructionsEnum {
-    //     let mut module = Module::with_config(ModuleConfig::new());
-    //     let mut builder = FunctionBuilder::new(&mut module.types, &[], &[]);
-    //     let id = builder
-    //         .dangling_instr_seq(None)
-    //         .call(self.check_mem_id)
-    //         .id();
-    //     let empty_id = builder.dangling_instr_seq(None).id();
-    //     InstructionsEnum::Single((
-    //         Instr::IfElse(IfElse {
-    //             consequent: id,
-    //             alternative: empty_id,
-    //         }),
-    //         InstrLocId::default(),
-    //     ))
+    // fn check_mem_and_call(&self) -> InstructionsEnum {
+    //     // let mut module = Module::with_config(ModuleConfig::new());
+    //     // let mut builder = FunctionBuilder::new(&mut module.types, &[], &[]);
+    //     // let id = builder
+    //     //     .dangling_instr_seq(None)
+    //     //     .call(self.check_mem_id)
+    //     //     .const_(Value::I32(0))
+    //     //     .global_set(self.mem_pointer)
+    //     //     .id();
+    //     // let empty_id = builder.dangling_instr_seq(None).id();
+    //     // InstructionsEnum::Single((
+    //     //     Instr::IfElse(IfElse {
+    //     //         consequent: id,
+    //     //         alternative: empty_id,
+    //     //     }),
+    //     //     InstrLocId::default(),
+    //     // ))
+    //     InstructionsEnum::from_vec(vec![self.branch_if()])
+    // }
+
+    // fn branch_if() -> InstructionsEnum {
+    //     // InstructionsEnum::Single((Instr::BrIf(BrIf { block }), InstrLocId::default()))
+    //     todo!()
     // }
 
     fn set_current_func_type(&mut self, typ: Type) {

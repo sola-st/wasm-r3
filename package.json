@@ -21,7 +21,8 @@
     "@webassemblyjs/wasm-parser": "^1.11.6",
     "acorn": "^8.11.2",
     "command-line-args": "^5.2.1",
-    "playwright": "^1.39.0"
+    "playwright": "^1.39.0",
+    "ws": "^8.14.2"
   },
   "scripts": {
     "build": "tsc && node ./build.js",
