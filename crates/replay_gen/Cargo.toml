@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.75"
 tempfile = "3.2.0"
-walrus = "0.20.3"
 wasmprinter = "0.2.75"
 wat = "1.0.82"
+walrus = "0.20.3"
+anyhow = "1.0.75"

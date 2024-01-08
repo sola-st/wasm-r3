@@ -2,6 +2,3 @@
 	path = wasabi
 	url = https://github.com/jakobgetz/wasabi.git
 	branch = jakob
-[submodule "r3-tracer"]
-	path = r3-tracer
-	url = https://github.com/jakobgetz/r3-tracer.git
