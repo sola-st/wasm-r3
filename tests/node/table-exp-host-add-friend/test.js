@@ -28,5 +28,5 @@ export default async function test(wasmBinary) {
     let friend = await WebAssembly.instantiate(friendBinary, friendImports)
     instance = wasm.instance
     instance.exports.table.set(0, friend.instance.exports.greet)
-    instance.exports.main()
+    instance.exports.entry()
 }

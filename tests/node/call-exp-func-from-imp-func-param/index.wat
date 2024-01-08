@@ -2,7 +2,7 @@
     (import "env" "foo" (func $foo))
     (import "env" "a" (func $a))
     (import "env" "b" (func $b))
-    (func (export "main")
+    (func (export "entry")
         call $foo
     )
     (func (export "bar") (param i32)

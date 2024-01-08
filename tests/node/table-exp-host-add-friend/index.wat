@@ -9,7 +9,7 @@
   (import "env" "foo8" (func))
   (import "env" "foo9" (func))
   (import "env" "foo10" (func))
-  (func $main (export "main")
+  (func $main (export "entry")
     i32.const 0
     call_indirect
   )

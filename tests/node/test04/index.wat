@@ -2,7 +2,7 @@
   (import "env" "add" (func $add (param i32 i32) (result i32)))
   (import "env" "sub" (func $sub (param f64 f64) (result f64)))
   (import "lib" "add" (func $lib_add (param f32 f32) (result f64)))
-  (func $main (export "main")
+  (func $main (export "entry")
     i32.const 1
     i32.const 2
     call $add

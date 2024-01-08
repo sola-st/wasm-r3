@@ -29,9 +29,11 @@ export default class Benchmark {
             }
             const diskSave = path.join(binPath, `temp-trace-${i}.r3`)
             await fs.writeFile(diskSave, trace.toString())
+            await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
             if (options.rustBackend === true) {
                 const p_measureCodeGen = createMeasure('rust-backend', { phase: 'replay-generation', description: `The time it takes for rust backend to generate javascript` })
-                execSync(`./crates/target/release/replay_gen ${diskSave} ${path.join(binPath, 'replay.js')}`);
+                execSync(`./crates/target/release/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')}`);
+                execSync(`wasm-validate ${path.join(binPath, "canned.wasm")}`)
                 p_measureCodeGen()
             } else {
                 const p_measureCodeGen = createMeasure('ir-gen', { phase: 'replay-generation', description: `The time it takes to generate the IR code for subbenchmark ${i}` })
@@ -41,7 +43,6 @@ export default class Benchmark {
                 await generateJavascript(fss.createWriteStream(path.join(binPath, 'replay.js')), code)
                 p_measureJSWrite()
             }
-            await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
             await fs.rm(diskSave)
         }))
         p_measureSave()

@@ -1,7 +1,7 @@
 (module
   (import "env" "changeMem" (func $changeMem))
   (import "env" "nop" (func $nop))
-  (func $main (export "main")
+  (func $main (export "entry")
     call $nop
     i32.const 1
     i32.load

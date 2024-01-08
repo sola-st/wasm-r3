@@ -8,6 +8,6 @@ export default async function test(wasmBinary) {
     let wasm = await WebAssembly.instantiate(wasmBinary, imports)
     instance = wasm.instance
     new Uint8Array(instance.exports.memory.buffer)[1] = 1
-    instance.exports.main()
+    instance.exports.entry()
     instance.exports.exp()
 }

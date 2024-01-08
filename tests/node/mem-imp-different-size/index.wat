@@ -1,4 +1,4 @@
 (module
   (import "env" "memory" (memory 1))
-  (func $main (export "main"))
+  (func $main (export "entry"))
 )

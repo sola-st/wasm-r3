@@ -1,6 +1,6 @@
 (module
   (import "env" "changeMem" (func $changeMem))
-  (func $main (export "main")
+  (func $main (export "entry")
     call $setup
     i32.load16_u
     (if (i32.eqz) (then unreachable))

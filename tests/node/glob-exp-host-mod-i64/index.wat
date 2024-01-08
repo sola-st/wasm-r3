@@ -1,6 +1,6 @@
 (module
   (import "env" "changeGlobal" (func $changeGlobal (param i64)))
-  (func $main (export "main")
+  (func $main (export "entry")
     i64.const 5
     call $changeGlobal
     global.get 0

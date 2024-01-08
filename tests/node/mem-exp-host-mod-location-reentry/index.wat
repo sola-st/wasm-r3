@@ -1,7 +1,7 @@
 (module
   (import "env" "changeMemAfterReentry" (func $changeMemAfterReentry))
   (import "env" "changeMemBeforeReentry" (func $changeMemBeforeReentry))
-  (func $main (export "main")
+  (func $main (export "entry")
     call $changeMemAfterReentry
     i32.const 1
     i32.load

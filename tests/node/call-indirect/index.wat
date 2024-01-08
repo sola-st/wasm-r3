@@ -1,6 +1,6 @@
 (module
     (func $a)
-    (func $main (export "main")
+    (func $main (export "entry")
     i32.const 0
     call_indirect)
     (table 1 1 funcref)

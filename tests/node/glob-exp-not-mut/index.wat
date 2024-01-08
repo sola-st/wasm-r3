@@ -1,6 +1,6 @@
 (module
   (import "env" "changeGlobal" (func $changeGlobal))
-  (func $main (export "main")
+  (func $main (export "entry")
     call $changeGlobal
     global.get 0
     drop

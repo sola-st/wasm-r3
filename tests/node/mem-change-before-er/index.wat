@@ -1,6 +1,6 @@
 (module
   (import "env" "foo" (func $foo))
-  (func $main (export "main")
+  (func $main (export "entry")
     call $foo
   )
   (func (export "exp")
