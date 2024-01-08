@@ -91,7 +91,7 @@ export default class Generator {
                 this.pushEvent({ type: 'Call', name: event.name, params: event.params })
                 break
             case 'TableCall':
-                this.pushEvent({ type: 'TableCall', tableName: event.tableName, funcidx: event.funcidx, params: event.params })
+                this.pushEvent({ type: 'TableCall', tableName: event.tableName, funcidx: event.tableidx, params: event.params })
             case 'ExportReturn':
                 this.state.globalScope = true
                 break

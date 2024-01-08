@@ -7,3 +7,6 @@ performance.db.ndjson
 performance.ndjson
 target/
 benchmark*/
+temp-trace*
+canned*
+instrumented*

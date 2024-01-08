@@ -98,15 +98,17 @@ export class Trace {
             case "EC":
                 return {
                     type: 'ExportCall',
-                    name: components[1],
-                    params: splitList(components[2])
+                    funcidx: parseInt(components[1]),
+                    name: components[2],
+                    params: splitList(components[3])
                 }
             case 'TC':
                 return {
                     type: 'TableCall',
-                    tableName: components[1],
-                    funcidx: parseInt(components[2]),
-                    params: splitList(components[3])
+                    funcidx: parseInt(components[1]),
+                    tableName: components[2],
+                    tableidx: parseInt(components[3]),
+                    params: splitList(components[4])
                 }
             case 'ER':
                 return {
@@ -318,7 +320,7 @@ export default class Analysis implements AnalysisI<Trace> {
                             for (let tableIndex = 0; tableIndex < table.length; tableIndex++) {
                                 const funcidx = this.resolveFuncIdx(table, tableIndex)
                                 if (funcidx === location.func) {
-                                    this.trace.push(`TC;${this.getName(this.Wasabi.module.info.tables[i])};${tableIndex};${args.join(',')}`)
+                                    this.trace.push(`TC;${location.func};${this.getName(this.Wasabi.module.info.tables[i])};${tableIndex};${args.join(',')}`)
                                     return true
                                 }
                             }
@@ -327,7 +329,7 @@ export default class Analysis implements AnalysisI<Trace> {
                             throw new Error('The function you where calling from outside the wasm module is neither exported nor in a table...')
                         }
                     } else {
-                        this.trace.push(`EC;${exportName};${args.join(',')}`)
+                        this.trace.push(`EC;${location.func};${exportName};${args.join(',')}`)
                         this.checkMemGrow()
                         this.checkTableGrow()
                     }
@@ -463,14 +465,14 @@ export default class Analysis implements AnalysisI<Trace> {
         let resolvedFuncIdx = this.resolveFuncIdx(table, idx)
         if (shadowTable.get(idx) !== table.get(idx)) {
             let name = this.getName(this.Wasabi.module.info.tables[tableidx])
-            let funcidx = parseInt(table.get(idx).name)
+            let funcidx = this.resolveFuncIdx(table, idx)
             let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
             this.trace.push(`T;${tableidx};${name};${idx};${funcidx};${funcName}`)
             this.shadowTables[0].set(0, table.get(idx))
         }
         if (this.options.extended === true) {
             let name = this.getName(this.Wasabi.module.info.tables[tableidx])
-            let funcidx = parseInt(table.get(idx).name)
+            let funcidx = this.resolveFuncIdx(table, idx)
             let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
             this.trace.push(`TE;${tableidx};${name};${idx};${funcidx};${funcName}`)
         }

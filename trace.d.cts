@@ -24,9 +24,9 @@ export type TableGrow = { type: 'TableGrow', idx: number, name: string, amount: 
 
 export type GlobalGet = { type: 'GlobalGet', idx: number, name: string, value: number, valtype: ValType }
 
-export type ExportCall = { type: "ExportCall", name: string, params: number[] }
+export type ExportCall = { type: "ExportCall", funcidx: number, name: string, params: number[] }
 
-export type TableCall = { type: "TableCall", tableName: string, funcidx: number, params: number[] }
+export type TableCall = { type: "TableCall", funcidx: number, tableName: string, tableidx: number, params: number[] }
 
 export type ExportReturn = { type: 'ExportReturn' }
 
