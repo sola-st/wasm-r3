@@ -6,5 +6,5 @@ export default async function test(wasmBinary) {
     }
 
     let wasm = await WebAssembly.instantiate(wasmBinary, imports)
-    wasm.instance.exports.main()
+    wasm.instance.exports.entry()
 }

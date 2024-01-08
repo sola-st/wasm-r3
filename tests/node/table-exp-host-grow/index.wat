@@ -1,6 +1,6 @@
 (module
   (import "env" "changeTable" (func $changeTable (result i32)))
-  (func $main (export "main")
+  (func $main (export "entry")
     call $changeTable
     table.get
     drop

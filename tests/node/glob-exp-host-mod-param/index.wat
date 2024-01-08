@@ -1,6 +1,6 @@
 (module
   (import "env" "changeGlobal" (func $changeGlobal (param i32 i32)))
-  (func $main (export "main")
+  (func $main (export "entry")
     i32.const 0
     i32.const 5
     call $changeGlobal

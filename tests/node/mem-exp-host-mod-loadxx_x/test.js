@@ -9,7 +9,7 @@ export default async function test(wasmBinary) {
     }
     let wasm = await WebAssembly.instantiate(wasmBinary, imports)
     instance = wasm.instance
-    instance.exports.main()
+    instance.exports.entry()
 }
 
 // if this test fails it is likely that instructions like ixx.loadxx_x dont get parsed correctly

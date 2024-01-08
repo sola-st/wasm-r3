@@ -1,6 +1,6 @@
 (module
     (import "env" "add" (func $add (param i32 i32) (result i32)))
-    (func $main (export "main") (param i32 i32)
+    (func $main (export "entry") (param i32 i32)
         local.get 1
         local.set 0
         local.get 0

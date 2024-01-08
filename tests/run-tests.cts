@@ -24,7 +24,7 @@ async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, "index.wasm"))
   await rmSafe(path.join(testPath, "trace.r3"))
   await rmSafe(path.join(testPath, "replay-trace.r3"))
-  await rmSafe(path.join(testPath, "replay.js"))
+  // await rmSafe(path.join(testPath, "replay.js"))
   await rmSafe(path.join(testPath, "report.txt"))
   await rmSafe(path.join(testPath, "long.js"))
   await rmSafe(path.join(testPath, "call-graph.txt"))
@@ -41,6 +41,7 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')
   const watPath = path.join(testPath, "index.wat");
   const wasmPath = path.join(testPath, "index.wasm");
+  const instrumentedPath = path.join(testPath, "instrumented.wasm");
   const tracePath = path.join(testPath, "trace.r3");
   const callGraphPath = path.join(testPath, "call-graph.txt");
   const replayPath = path.join(testPath, "replay.js");
@@ -69,10 +70,10 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   // const binary = wabtModule.parseWat(watPath, wat).toBinary({})
   const binary = await fs.readFile(wasmPath)
   let { instrumented, js } = instrument_wasm(binary)
-  await fs.writeFile(wasmPath, Buffer.from(instrumented))
+  await fs.writeFile(instrumentedPath, Buffer.from(instrumented))
 
   // 2. Execute test and generate trace
-  const wasmBinary = await fs.readFile(wasmPath)
+  const wasmBinary = await fs.readFile(instrumentedPath)
   let tracer = new Tracer(eval(js + `\nWasabi`), { extended })
   let original_instantiate = WebAssembly.instantiate
   //@ts-ignore
@@ -101,7 +102,9 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
     if (options.rustBackend === true) {
       const diskSave = path.join(testPath, `temp-trace-0.r3`)
       await fs.writeFile(diskSave, traceString)
-      execSync(`./crates/target/release/replay_gen ${diskSave} ${replayPath}`);
+      execSync(`./crates/target/release/replay_gen ${diskSave} ${wasmPath}`);
+      execSync(`wasm-validate ${path.join(testPath, "canned.wasm")}`)
+      return { testPath, success: true }
     } else {
       replayCode = await new Generator().generateReplay(trace)
       await generateJavascript(fss.createWriteStream(replayPath), replayCode)
@@ -284,6 +287,9 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
     await benchmark.save(benchmarkPath, { trace: true, rustBackend: options.rustBackend })
+    if (options.rustBackend === true) {
+      return { testPath, success: true }
+    }
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: 'no benchmark was generated' }

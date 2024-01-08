@@ -1,6 +1,6 @@
 (module
   (import "env" "add" (func $add (param i32 i32) (result i32)))
-  (func $main (export "main")
+  (func $main (export "entry")
     i32.const 1
     i32.const 2
     call $add

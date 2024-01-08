@@ -1,5 +1,5 @@
 (module
-  (func $main (export "main")
+  (func $main (export "entry")
     ;; i32.const 1
     ;; i32.const 8746
     ;; v128.store

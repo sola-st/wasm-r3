@@ -1,6 +1,6 @@
 (module
   (import "env" "changeGlobal" (func $changeGlobal (param f32)))
-  (func $main (export "main")
+  (func $main (export "entry")
     f32.const 5
     call $changeGlobal
     global.get 0

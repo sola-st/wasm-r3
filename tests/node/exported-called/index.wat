@@ -1,1 +1,1 @@
-(module (func $main (export "main")))
+(module (func $main (export "entry")))
