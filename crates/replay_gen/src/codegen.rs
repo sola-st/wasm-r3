@@ -317,6 +317,10 @@ pub fn generate_standalone(wasm_path: &Path, code: &Replay) -> std::io::Result<(
             write(stream, &to_write)?;
             write(stream, "\n")?;
         }
+        // handle error: duplicate export "main"
+        else if line.contains("export \"main\"") {
+            continue;
+        }
         // _start function
         else if iter.peek().is_none() {
             for (i, _f) in &code.func_imports {
