@@ -8,7 +8,6 @@ mod tests {
     use core::panic;
 
     use crate::{
-        codegen::generate_javascript, irgen::IRGenerator, opt::merge_fn_results,
         trace::encode_trace,
     };
 
@@ -98,10 +97,10 @@ mod tests {
         use std::io;
         use std::io::BufRead;
         use std::io::Read;
-        use std::io::{Seek, SeekFrom};
+        
 
         use std::path::Path;
-        use tempfile::tempfile;
+        
 
         fn visit_dirs(dir: &Path) -> io::Result<()> {
             if dir.is_dir() {

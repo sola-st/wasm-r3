@@ -1,10 +1,10 @@
 use std::fs::File;
-use std::io::{self, BufRead, Write};
+use std::io::{self, BufRead};
 use std::path::Path;
-use std::process::Command;
+
 use std::{env, fs};
 
-use replay_gen::codegen::{generate_javascript, generate_standalone, write};
+use replay_gen::codegen::{generate_javascript, generate_standalone};
 use replay_gen::irgen::IRGenerator;
 use replay_gen::opt::merge_fn_results;
 use replay_gen::trace;

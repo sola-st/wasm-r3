@@ -214,7 +214,7 @@ pub fn generate_standalone(wasm_path: &Path, code: &Replay) -> std::io::Result<(
                 let mut current = 0;
                 for r in func.results.iter() {
                     let ty = code.func_idx_to_ty.get(&(funcidx as usize)).unwrap();
-                    let param_tys = ty.params.clone();
+                    let _param_tys = ty.params.clone();
                     let new_c = current + r.reps;
                     let res = match r.results.get(0) {
                         Some(v) => format!(
@@ -240,7 +240,7 @@ pub fn generate_standalone(wasm_path: &Path, code: &Replay) -> std::io::Result<(
                     current = new_c;
                 }
                 let ty = code.func_idx_to_ty.get(&(funcidx as usize)).unwrap();
-                let param_tys = ty.params.clone();
+                let _param_tys = ty.params.clone();
                 let default_return = match ty.results.get(0) {
                     Some(v) => match v {
                         ValType::I32 => "(i32.const 0)",
@@ -306,14 +306,14 @@ pub fn generate_standalone(wasm_path: &Path, code: &Replay) -> std::io::Result<(
                 "("
             };
 
-            let to_write = (first_part.to_string()
+            let to_write = first_part.to_string()
                 + &format!(
                     "{}{} {:?}){})",
                     hack_for_diff_format,
                     &valty_to_const(&global.value),
                     &global.initial,
                     fourth_part
-                ));
+                );
             write(stream, &to_write)?;
             write(stream, "\n")?;
         }
@@ -374,7 +374,11 @@ fn hostevent_to_js(event: &HostEvent) -> String {
             .join(",")
     }
     let str = match event {
-        HostEvent::ExportCall { idx, name, params } => {
+        HostEvent::ExportCall {
+            idx: _,
+            name,
+            params,
+        } => {
             format!(
                 "instance.exports.{}({})\n",
                 name,
@@ -382,7 +386,7 @@ fn hostevent_to_js(event: &HostEvent) -> String {
             )
         }
         HostEvent::ExportCallTable {
-            idx,
+            idx: _,
             table_name,
             funcidx,
             params,
@@ -432,8 +436,8 @@ fn hostevent_to_js(event: &HostEvent) -> String {
             }
         }
         HostEvent::MutateTable {
-            tableidx,
-            funcidx,
+            tableidx: _,
+            funcidx: _,
             idx,
             func_import,
             func_name,
@@ -454,7 +458,7 @@ fn hostevent_to_js(event: &HostEvent) -> String {
             js_string
         }
         HostEvent::GrowTable {
-            idx,
+            idx: _,
             amount,
             import,
             name,
@@ -466,7 +470,7 @@ fn hostevent_to_js(event: &HostEvent) -> String {
             }
         }
         HostEvent::MutateGlobal {
-            idx,
+            idx: _,
             value,
             valtype,
             import,
@@ -492,7 +496,11 @@ fn hostevent_to_js(event: &HostEvent) -> String {
 
 fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
     let str = match event {
-        HostEvent::ExportCall { idx, name, params } => {
+        HostEvent::ExportCall {
+            idx,
+            name: _,
+            params,
+        } => {
             let ty = code.func_idx_to_ty.get(&(*idx as usize)).unwrap();
             let param_tys = ty.params.clone();
             let result_count = ty.results.len();
@@ -507,8 +515,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         }
         HostEvent::ExportCallTable {
             idx,
-            table_name,
-            funcidx,
+            table_name: _,
+            funcidx: _,
             params,
         } => {
             let ty = code.func_idx_to_ty.get(&(*idx as usize)).unwrap();
@@ -526,8 +534,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         HostEvent::MutateMemory {
             addr,
             data,
-            import,
-            name,
+            import: _,
+            name: _,
         } => {
             let mut js_string = String::new();
             for (j, byte) in data.iter().enumerate() {
@@ -539,8 +547,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         }
         HostEvent::GrowMemory {
             amount,
-            import,
-            name,
+            import: _,
+            name: _,
         } => {
             format!("(memory.grow (i32.const {})) (drop)\n", amount)
         }
@@ -548,10 +556,10 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             tableidx,
             funcidx,
             idx,
-            func_import,
-            func_name,
-            import,
-            name,
+            func_import: _,
+            func_name: _,
+            import: _,
+            name: _,
         } => {
             format!(
                 "(table.set {} (i32.const {}) (ref.func {}))",
@@ -559,10 +567,10 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             )
         }
         HostEvent::GrowTable {
-            idx,
+            idx: _,
             amount,
-            import,
-            name,
+            import: _,
+            name: _,
         } => {
             format!("(table.grow (i32.const {})) (drop)\n", amount)
         }
@@ -570,8 +578,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             idx,
             value,
             valtype,
-            import,
-            name,
+            import: _,
+            name: _,
         } => {
             let valtype = match valtype {
                 ValType::I32 => "i32.const",
