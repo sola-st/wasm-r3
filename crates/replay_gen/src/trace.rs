@@ -3,11 +3,150 @@
 //! Most usually corresponds to one wasm instruction, e.g. WasmEvent::Load corresponds to one wasm load,
 //! but some of them are not. e.g. FuncEntry and FuncReturn correspond to the entry and return of a wasm function.
 //! There are also some events that are not part of the execution like Import*, which can be removed later.
+use futures::{stream, Stream, StreamExt};
 use std::fmt::Debug;
 use std::fmt::{self, Write};
+use std::pin::Pin;
 use std::str::FromStr;
+use std::task::{Context, Poll};
+use tokio::fs::File;
+use tokio::io::{self, AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader, BufWriter};
+use tokio::sync::mpsc::{channel, Receiver, Sender};
+use walrus::ir::Load;
 
-pub type Trace = Vec<WasmEvent>;
+#[derive(Debug)]
+pub enum ErrorKind {
+    LegacyTrace,
+    UnknownTrace,
+}
+
+pub mod bin_format {
+    pub const LOAD_I32: u8 = 0x28;
+    pub const LOAD_I64: u8 = 0x29;
+    pub const LOAD_F32: u8 = 0x2A;
+    pub const LOAD_F64: u8 = 0x2B;
+    pub const LOAD_I32_8: u8 = 0x2C;
+    pub const LOAD_I32_16: u8 = 0x2E;
+    pub const LOAD_I64_8: u8 = 0x30;
+    pub const LOAD_I64_16: u8 = 0x32;
+    pub const LOAD_I64_32: u8 = 0x34;
+    pub const STORE_I32: u8 = 0x36;
+    pub const STORE_I64: u8 = 0x37;
+    pub const STORE_F32: u8 = 0x38;
+    pub const STORE_F64: u8 = 0x39;
+    pub const STORE_I32_8: u8 = 0x3A;
+    pub const STORE_I32_16: u8 = 0x3B;
+    pub const STORE_I64_8: u8 = 0x3C;
+    pub const STORE_I64_16: u8 = 0x3D;
+    pub const STORE_I64_32: u8 = 0x3E;
+    pub const CALL: u8 = 0x10;
+    pub const CALL_INDIRECT: u8 = 0x11;
+    pub const GLOBAL_GET: u8 = 0x23;
+    pub const GLOBAL_SET: u8 = 0x24;
+    pub const TABLE_GET: u8 = 0x25;
+    pub const TABLE_SET: u8 = 0x26;
+    pub const FUNC_RETURN: u8 = 0x0F;
+    // pub const MEM_GROW: u8 = 0x02;
+    // pub const TABLE_GROW: u8 = 0x02;
+    // pub const IMPORT_CALL: u8 = 0x02;
+    // pub const IMPORT_RETURN: u8 = 0x02;
+    // pub const FUNC_ENTRY: u8 = 0x02;
+    // pub const FUNC_ENTRY_TABLE: u8 = 0x02;
+    // pub const IMPORT_GLOBAL: u8 = 0x02;
+}
+
+pub struct Trace(Pin<Box<dyn Stream<Item = WasmEvent>>>);
+
+impl Trace {
+    pub fn from_text(file: File) -> Trace {
+        let reader = BufReader::new(file);
+        Trace(Box::pin(stream::unfold(reader, |mut reader| async {
+            let mut buffer = String::new();
+            reader.read_line(&mut buffer).await.unwrap();
+            let event: WasmEvent = buffer.parse().unwrap();
+            Some((event, reader))
+        })))
+    }
+
+    pub fn from_binary(file: File) {
+        let reader = io::BufReader::new(file);
+        Trace(Box::pin(stream::unfold(reader, |mut reader| async {
+            let code = reader.read_u8().await.unwrap();
+            let event = match code {
+                bin_format::LOAD_I32 => {
+                    let data = reader
+                        .read_i32()
+                        .await
+                        .unwrap()
+                        .to_le_bytes()
+                        .to_vec()
+                        .into_iter()
+                        .map(|b| F64(b as f64))
+                        .collect();
+                    let offset = reader.read_i32().await.unwrap();
+                    WasmEvent::Load {
+                        idx: 0,
+                        name: String::from("random"),
+                        offset,
+                        data,
+                    }
+                }
+                bin_format::LOAD_I64 => todo!(),
+                bin_format::LOAD_F32 => todo!(),
+                bin_format::LOAD_F64 => todo!(),
+                bin_format::LOAD_I32_8 => todo!(),
+                bin_format::LOAD_I32_16 => todo!(),
+                bin_format::LOAD_I64_8 => todo!(),
+                bin_format::LOAD_I64_16 => todo!(),
+                bin_format::LOAD_I64_32 => todo!(),
+                bin_format::STORE_I32 => todo!(),
+                bin_format::STORE_I64 => todo!(),
+                bin_format::STORE_F32 => todo!(),
+                bin_format::STORE_F64 => todo!(),
+                bin_format::STORE_I32_8 => todo!(),
+                bin_format::STORE_I32_16 => todo!(),
+                bin_format::STORE_I64_8 => todo!(),
+                bin_format::STORE_I64_16 => todo!(),
+                bin_format::STORE_I64_32 => todo!(),
+                bin_format::CALL => todo!(),
+                bin_format::CALL_INDIRECT => todo!(),
+                bin_format::GLOBAL_GET => todo!(),
+                bin_format::GLOBAL_SET => todo!(),
+                bin_format::TABLE_GET => todo!(),
+                bin_format::TABLE_SET => todo!(),
+                bin_format::FUNC_RETURN => todo!(),
+                _ => panic!("Unknown code"),
+            };
+            Some((event, reader))
+        })));
+        todo!()
+    }
+
+    // pub fn pipe<F>(&mut self, f: dyn FnMut() -> WasmEvent) {
+    //     f(self.trace);
+    // }
+
+    pub fn shadow_optimise(&mut self) {}
+
+    pub async fn to_text(self, file: &mut File) -> Result<(), std::io::Error> {
+        let mut writer = BufWriter::new(file);
+        let stream = self.0;
+        let mut stream = stream.map(|e| format!("{:?}", e));
+        while let Some(e) = stream.next().await {
+            writer.write_all(e.as_bytes()).await?;
+        }
+        writer.flush().await?;
+        Ok(())
+    }
+}
+
+impl Stream for Trace {
+    type Item = WasmEvent;
+
+    fn poll_next(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
+        self.0.poll_next_unpin(cx)
+    }
+}
 
 pub enum WasmEvent {
     // Each corresponds to a single wasm instruction.
@@ -72,13 +211,11 @@ pub enum WasmEvent {
     },
 }
 
-pub fn decode_trace(trace: Trace) -> Result<String, std::fmt::Error> {
-    let mut s = String::new();
-    for event in trace {
-        write!(&mut s, "{:?}\n", event)?;
-    }
-    Ok(s)
-}
+// pub fn encode_trace(trace: Trace) -> Result<String, std::fmt::Error> {
+//     let mut s = String::new();
+//     trace.map(|e| write!(&mut s, "{:?}\n", e));
+//     Ok(s)
+// }
 
 // TODO: this is a hack to get around the fact that the trace generated by js. Remove when we discard js based trace.
 #[derive(Copy, Clone, PartialEq)]
@@ -225,11 +362,6 @@ fn parse_tys(s: &str) -> Vec<ValType> {
     tys
 }
 
-#[derive(Debug)]
-pub enum ErrorKind {
-    LegacyTrace,
-    UnknownTrace,
-}
 impl FromStr for WasmEvent {
     type Err = ErrorKind;
 
@@ -391,3 +523,18 @@ impl Debug for WasmEvent {
         }
     }
 }
+
+// impl Trace {
+//     async fn from_stream<T>(mut stream: T) -> io::Result<Self>
+//     where
+//         T: AsyncRead + Unpin,
+//     {
+//         let mut buf = [0; 1];
+//         stream.read_exact(&mut buf);
+//         match buf[0] {
+//             0x00 => todo!(),
+//             _ => panic!(),
+//         };
+//         todo!()
+//     }
+// }

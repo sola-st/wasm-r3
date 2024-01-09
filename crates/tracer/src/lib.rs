@@ -346,7 +346,7 @@ impl VisitorMut for Generator {
                     );
                 }
                 Instr::GlobalSet(get) => {
-                    let opcode = 0x23;
+                    let opcode = 0x24;
                     let typ = self
                         .module_types
                         .get_global_type(&get.global)
@@ -363,7 +363,7 @@ impl VisitorMut for Generator {
                     );
                 }
                 Instr::TableGet(set) => {
-                    let opcode = 0x26;
+                    let opcode = 0x25;
                     let typ = self
                         .module_types
                         .get_element_type(&set.table)

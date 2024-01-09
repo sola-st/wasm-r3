@@ -1,5 +1,5 @@
 [workspace]
-members = ["replay_gen", "tracer"]
+members = ["crates/replay_gen", "crates/tracer"]
 resolver = "2"
 
 [profile.release]

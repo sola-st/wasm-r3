@@ -1,16 +1,50 @@
-use std::fs::File;
 use std::io::{self, BufRead, Write};
 use std::path::Path;
 use std::process::Command;
+use std::task::Poll;
 use std::{env, fs};
+use tokio::fs::File;
 
+use futures::{AsyncRead, Stream, StreamExt};
 use replay_gen::codegen::{generate_javascript, generate_standalone, write};
 use replay_gen::irgen::IRGenerator;
 use replay_gen::opt::merge_fn_results;
-use replay_gen::trace;
+use replay_gen::trace::{self, WasmEvent};
+use trace::Trace;
 use walrus::Module;
 
-fn main() -> io::Result<()> {
+pub struct TextStream(File);
+
+// impl Stream for TextStream<File> {
+//     type Item = String;
+
+//     fn poll_next(
+//         self: std::pin::Pin<&mut Self>,
+//         cx: &mut std::task::Context<'_>,
+//     ) -> std::task::Poll<Option<Self::Item>> {
+//         let mut reader = io::BufReader::new(file);
+//         let mut line = String::new();
+//         match reader.read_line(&mut line) {
+//             Ok(_) => Poll::Ready(Some(line)),
+//             Err(_) => Poll::Ready(None),
+//         }
+//         // let mut buf = [0; 1];
+//         // match Pin::new(&mut self.0).poll_read(cx, &mut buf) {
+//         //     Poll::Ready(Ok(n)) => {
+//         //         if n == 0 {
+//         //             Poll::Ready(None)
+//         //         } else {
+//         //             Poll::Ready(Ok(n))
+//         //         }
+//         //     }
+//         //     Poll::Ready(Err(_)) => Poll::Ready(None),
+//         //     Poll::Pending => Poll::Pending,
+//         // }
+//     }
+// }
+
+#[tokio::main]
+async fn main() -> io::Result<()> {
     // TODO: use clap to parse args. currently just panics.
     let args: Vec<String> = env::args().collect();
     let trace_path = Path::new(&args[1]);
@@ -20,26 +54,17 @@ fn main() -> io::Result<()> {
         Some(str) => Some(Path::new(str)),
         None => None,
     };
-    let file = File::open(&trace_path)?;
-    let reader = io::BufReader::new(file);
 
-    let mut trace = trace::Trace::new();
-    for line in reader.lines() {
-        let line = line?;
-        let event = match line.parse() {
-            Ok(event) => event,
-            Err(err) => match err {
-                trace::ErrorKind::LegacyTrace => continue,
-                trace::ErrorKind::UnknownTrace => panic!("error: {:?}", err),
-            },
-        };
-        trace.push(event);
-    }
+    let file = File::open(&trace_path).await?;
+    let mut trace = Trace::from_text(file);
+    trace.shadow_optimise();
+    // let file2 = File::open(&trace_path).await?;
+    // trace.to_text(file2);
 
     let buffer = &fs::read(wasm_path).unwrap();
     let module = Module::from_buffer(buffer).unwrap();
     let mut generator = IRGenerator::new(module);
-    generator.generate_replay(&trace);
+    generator.generate_replay(trace).await;
 
     // opt paths
     merge_fn_results(&mut generator.replay);

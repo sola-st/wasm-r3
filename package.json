@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@webassemblyjs/ast": "^1.11.6",
-    "@webassemblyjs/wasm-edit": "^1.11.6",
+  "@webassemblyjs/wasm-edit": "^1.11.6",
     "@webassemblyjs/wasm-parser": "^1.11.6",
     "acorn": "^8.11.2",
     "command-line-args": "^5.2.1",
@@ -26,10 +26,10 @@
   },
   "scripts": {
     "build": "tsc && node ./build.js",
-    "build-rust": "cd crates/ && cargo build --release && cd tracer && wasm-pack build --debug -t web",
+    "build-rust": "cargo build --release && cd crates/tracer && wasm-pack build --debug -t web",
     "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && wasm-pack build --target nodejs --out-dir ../../../dist/wasabi && cd ../../..",
     "build-full": "npm run build-rust && npm run build-wasabi && npm run build",
-    "test": "npm run build-rust && npm run build && node ./dist/tests/run-tests.cjs",
+    "test": "node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
     "start": "npm run build && node ./dist/src/cli/main.cjs"
   }
