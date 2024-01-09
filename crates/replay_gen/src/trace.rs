@@ -72,7 +72,7 @@ pub enum WasmEvent {
     },
 }
 
-pub fn decode_trace(trace: Trace) -> Result<String, std::fmt::Error> {
+pub fn encode_trace(trace: Trace) -> Result<String, std::fmt::Error> {
     let mut s = String::new();
     for event in trace {
         write!(&mut s, "{:?}\n", event)?;

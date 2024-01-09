@@ -9,11 +9,11 @@ mod tests {
 
     use crate::{
         codegen::generate_javascript, irgen::IRGenerator, opt::merge_fn_results,
-        trace::decode_trace,
+        trace::encode_trace,
     };
 
     #[test]
-    fn trace_encode_decode_same() -> std::io::Result<()> {
+    fn trace_decode_encode_same() -> std::io::Result<()> {
         use super::*;
         use std::fs;
         use std::io;
@@ -53,10 +53,10 @@ mod tests {
                                 trace.push(event);
                             }
                             let mut newfile = tempfile()?;
-                            let trace_str = match decode_trace(trace) {
+                            let trace_str = match encode_trace(trace) {
                                 Ok(s) => s,
                                 Err(e) => {
-                                    println!("error decoding trace: {}", e);
+                                    println!("error encoding trace: {}", e);
                                     continue;
                                 }
                             };
