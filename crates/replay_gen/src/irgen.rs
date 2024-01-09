@@ -356,6 +356,7 @@ impl IRGenerator {
                     },
                 );
             }
+            _ => { /* Ignore other events */ }
         }
     }
     fn splice_event(&mut self, event: HostEvent) {

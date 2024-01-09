@@ -55,14 +55,15 @@ async fn main() -> io::Result<()> {
         None => None,
     };
 
+    let buffer = &fs::read(wasm_path).unwrap();
+    let module = Module::from_buffer(buffer).unwrap();
+    
     let file = File::open(&trace_path).await?;
-    let mut trace = Trace::from_text(file);
+    let mut trace = Trace::from_text(file, module);
     trace.shadow_optimise();
     // let file2 = File::open(&trace_path).await?;
     // trace.to_text(file2);
 
-    let buffer = &fs::read(wasm_path).unwrap();
-    let module = Module::from_buffer(buffer).unwrap();
     let mut generator = IRGenerator::new(module);
     generator.generate_replay(trace).await;
 

@@ -6,13 +6,16 @@
 use futures::{stream, Stream, StreamExt};
 use std::fmt::Debug;
 use std::fmt::{self, Write};
+use std::os::macos::raw;
 use std::pin::Pin;
 use std::str::FromStr;
+use std::sync::Arc;
 use std::task::{Context, Poll};
 use tokio::fs::File;
 use tokio::io::{self, AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader, BufWriter};
 use tokio::sync::mpsc::{channel, Receiver, Sender};
 use walrus::ir::Load;
+use walrus::Module;
 
 #[derive(Debug)]
 pub enum ErrorKind {
@@ -68,58 +71,21 @@ impl Trace {
         })))
     }
 
-    pub fn from_binary(file: File) {
-        let reader = io::BufReader::new(file);
-        Trace(Box::pin(stream::unfold(reader, |mut reader| async {
-            let code = reader.read_u8().await.unwrap();
-            let event = match code {
-                bin_format::LOAD_I32 => {
-                    let data = reader
-                        .read_i32()
-                        .await
-                        .unwrap()
-                        .to_le_bytes()
-                        .to_vec()
-                        .into_iter()
-                        .map(|b| F64(b as f64))
-                        .collect();
-                    let offset = reader.read_i32().await.unwrap();
-                    WasmEvent::Load {
-                        idx: 0,
-                        name: String::from("random"),
-                        offset,
-                        data,
-                    }
-                }
-                bin_format::LOAD_I64 => todo!(),
-                bin_format::LOAD_F32 => todo!(),
-                bin_format::LOAD_F64 => todo!(),
-                bin_format::LOAD_I32_8 => todo!(),
-                bin_format::LOAD_I32_16 => todo!(),
-                bin_format::LOAD_I64_8 => todo!(),
-                bin_format::LOAD_I64_16 => todo!(),
-                bin_format::LOAD_I64_32 => todo!(),
-                bin_format::STORE_I32 => todo!(),
-                bin_format::STORE_I64 => todo!(),
-                bin_format::STORE_F32 => todo!(),
-                bin_format::STORE_F64 => todo!(),
-                bin_format::STORE_I32_8 => todo!(),
-                bin_format::STORE_I32_16 => todo!(),
-                bin_format::STORE_I64_8 => todo!(),
-                bin_format::STORE_I64_16 => todo!(),
-                bin_format::STORE_I64_32 => todo!(),
-                bin_format::CALL => todo!(),
-                bin_format::CALL_INDIRECT => todo!(),
-                bin_format::GLOBAL_GET => todo!(),
-                bin_format::GLOBAL_SET => todo!(),
-                bin_format::TABLE_GET => todo!(),
-                bin_format::TABLE_SET => todo!(),
-                bin_format::FUNC_RETURN => todo!(),
-                _ => panic!("Unknown code"),
-            };
-            Some((event, reader))
-        })));
-        todo!()
+    pub fn from_binary(file: File, module: &Module) -> Trace {
+        let module_types = module
+            .types
+            .iter()
+            .map(|t| t.clone())
+            .collect::<Vec<walrus::Type>>();
+        let module_types_arc = Arc::new(module_types);
+        let mut reader = io::BufReader::new(file);
+        Trace(Box::pin(stream::unfold(reader, move |mut reader| {
+            let module_types_clone = module_types_arc.clone();
+            async move {
+                let event = WasmEvent::decode(&mut reader, module_types_clone).await;
+                Some((event, reader))
+            }
+        })))
     }
 
     // pub fn pipe<F>(&mut self, f: dyn FnMut() -> WasmEvent) {
@@ -153,6 +119,10 @@ pub enum WasmEvent {
     Load {
         idx: usize,
         name: String,
+        offset: i32,
+        data: Vec<F64>,
+    },
+    Store {
         offset: i32,
         data: Vec<F64>,
     },
@@ -211,11 +181,109 @@ pub enum WasmEvent {
     },
 }
 
-// pub fn encode_trace(trace: Trace) -> Result<String, std::fmt::Error> {
-//     let mut s = String::new();
-//     trace.map(|e| write!(&mut s, "{:?}\n", e));
-//     Ok(s)
-// }
+impl WasmEvent {
+    async fn decode(reader: &mut BufReader<File>, module_types: Arc<Vec<walrus::Type>>) -> Self {
+        let code = reader.read_u8().await.unwrap();
+        match code {
+            bin_format::LOAD_I32 => WasmEvent::decode_load(reader, ValType::I32).await,
+            bin_format::LOAD_I64 => WasmEvent::decode_load(reader, ValType::I64).await,
+            bin_format::LOAD_F32 => WasmEvent::decode_load(reader, ValType::F32).await,
+            bin_format::LOAD_F64 => WasmEvent::decode_load(reader, ValType::F64).await,
+            bin_format::LOAD_I32_8 => WasmEvent::decode_load(reader, ValType::I32).await,
+            bin_format::LOAD_I32_16 => WasmEvent::decode_load(reader, ValType::I32).await,
+            bin_format::LOAD_I64_8 => WasmEvent::decode_load(reader, ValType::I64).await,
+            bin_format::LOAD_I64_16 => WasmEvent::decode_load(reader, ValType::I64).await,
+            bin_format::LOAD_I64_32 => WasmEvent::decode_load(reader, ValType::I64).await,
+            bin_format::STORE_I32 => WasmEvent::decode_store(reader, ValType::I32).await,
+            bin_format::STORE_I64 => WasmEvent::decode_store(reader, ValType::I64).await,
+            bin_format::STORE_F32 => WasmEvent::decode_store(reader, ValType::F32).await,
+            bin_format::STORE_F64 => WasmEvent::decode_store(reader, ValType::F64).await,
+            bin_format::STORE_I32_8 => WasmEvent::decode_store(reader, ValType::I32).await,
+            bin_format::STORE_I32_16 => WasmEvent::decode_store(reader, ValType::I32).await,
+            bin_format::STORE_I64_8 => WasmEvent::decode_store(reader, ValType::I64).await,
+            bin_format::STORE_I64_16 => WasmEvent::decode_store(reader, ValType::I64).await,
+            bin_format::STORE_I64_32 => WasmEvent::decode_store(reader, ValType::I64).await,
+            bin_format::CALL => WasmEvent::decode_call(reader, module_types).await,
+            bin_format::CALL_INDIRECT => todo!(),
+            bin_format::GLOBAL_GET => todo!(),
+            bin_format::GLOBAL_SET => todo!(),
+            bin_format::TABLE_GET => todo!(),
+            bin_format::TABLE_SET => todo!(),
+            bin_format::FUNC_RETURN => todo!(),
+            _ => panic!("Unknown code"),
+        }
+    }
+
+    async fn decode_call(
+        reader: &mut BufReader<File>,
+        module_types: Arc<Vec<walrus::Type>>,
+    ) -> Self {
+        let type_id = reader.read_i32().await.unwrap() as usize;
+        let typ = module_types.get(type_id).unwrap();
+        todo!("CONTINUE HERE NEXT TIME!!")
+    }
+
+    async fn decode_load(reader: &mut BufReader<File>, val_type: ValType) -> Self {
+        let data = Self::decode_data(reader, val_type).await;
+        let offset = reader.read_i32().await.unwrap();
+        WasmEvent::Load {
+            idx: 0,
+            name: String::from("random"),
+            offset,
+            data,
+        }
+    }
+
+    async fn decode_store(reader: &mut BufReader<File>, val_type: ValType) -> Self {
+        let data = Self::decode_data(reader, val_type).await;
+        let offset = reader.read_i32().await.unwrap();
+        WasmEvent::Store { offset, data }
+    }
+
+    async fn decode_data(reader: &mut BufReader<File>, val_type: ValType) -> Vec<F64> {
+        match val_type {
+            ValType::I32 => reader
+                .read_i32()
+                .await
+                .unwrap()
+                .to_le_bytes()
+                .to_vec()
+                .into_iter()
+                .map(|b| F64(b as f64))
+                .collect(),
+            ValType::I64 => reader
+                .read_i64()
+                .await
+                .unwrap()
+                .to_le_bytes()
+                .to_vec()
+                .into_iter()
+                .map(|b| F64(b as f64))
+                .collect(),
+            ValType::F32 => reader
+                .read_f32()
+                .await
+                .unwrap()
+                .to_le_bytes()
+                .to_vec()
+                .into_iter()
+                .map(|b| F64(b as f64))
+                .collect(),
+            ValType::F64 => reader
+                .read_f64()
+                .await
+                .unwrap()
+                .to_le_bytes()
+                .to_vec()
+                .into_iter()
+                .map(|b| F64(b as f64))
+                .collect(),
+            ValType::V128 => todo!(),
+            ValType::Anyref => todo!(),
+            ValType::Externref => todo!(),
+        }
+    }
+}
 
 // TODO: this is a hack to get around the fact that the trace generated by js. Remove when we discard js based trace.
 #[derive(Copy, Clone, PartialEq)]
@@ -519,6 +587,10 @@ impl Debug for WasmEvent {
                     if *mutable { '1' } else { '0' },
                     initial
                 )
+            }
+            _ => {
+                /* Ignore rest for now*/
+                Ok(())
             }
         }
     }

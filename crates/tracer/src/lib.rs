@@ -306,6 +306,7 @@ impl VisitorMut for Generator {
                     gen_seq.append(
                         &mut InstructionsEnum::from_vec(vec![
                             self.trace_code(opcode, offset),
+                            self.trace_type(&typ, offset),
                             self.save_stack(typ.params(), offset),
                             self.instr(instr.clone()),
                             self.save_stack(typ.results(), offset),
@@ -457,6 +458,14 @@ impl Generator {
             check_mem_id,
             check_mem_id_local,
         }
+    }
+
+    fn trace_type(&mut self, typ: &Type, offset: &mut u32) -> InstructionsEnum {
+        InstructionsEnum::from_vec(vec![
+            self.get_const(ir::Value::I32(typ.id().index() as i32)),
+            self.global_get(self.mem_pointer),
+            self.save_stack(&[ValType::I32], offset),
+        ])
     }
 
     fn check_mem(&self) -> InstructionsEnum {
@@ -679,5 +688,17 @@ impl Generator {
 
     fn set_func_entry(&mut self, entry: bool) {
         self.func_entry = entry;
+    }
+}
+
+fn get_byte_length(valtype: &ValType) -> i32 {
+    match valtype {
+        ValType::I32 => 4,
+        ValType::I64 => 8,
+        ValType::F32 => 4,
+        ValType::F64 => 8,
+        ValType::V128 => todo!(),
+        ValType::Externref => todo!(),
+        ValType::Funcref => todo!(),
     }
 }
