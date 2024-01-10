@@ -7,43 +7,25 @@ pub mod irgen;
 pub mod opt;
 pub mod trace;
 
-
 #[cfg(test)]
 mod tests {
-    use core::panic;
-    use std::os::unix::thread;
+    use std::{fs::File, io::BufReader, os::unix::thread};
 
-    use tokio::{
-        fs::File,
-        io::{AsyncReadExt, AsyncSeekExt, BufReader},
-    };
-
-    use crate::{
-        codegen::generate_javascript,
-        irgen::IRGenerator,
-        opt::merge_fn_results,
-        // trace::decode_trace,
-    };
-    use async_recursion::async_recursion;
-
-    #[tokio::test]
-    async fn trace_encode_decode_same() -> std::io::Result<()> {
+    fn trace_encode_decode_same() -> std::io::Result<()> {
         use super::*;
         use std::fs;
         use std::io;
         use std::io::Read;
-        use std::io::Write;
         use std::io::{BufRead, Seek, SeekFrom};
         use std::path::Path;
 
-        #[async_recursion(?Send)]
-        async fn visit_dirs(dir: &Path) -> io::Result<()> {
+        fn visit_dirs(dir: &Path) -> io::Result<()> {
             if dir.is_dir() {
                 for entry in fs::read_dir(dir)? {
                     let entry = entry?;
                     let path = entry.path();
                     if path.is_dir() {
-                        visit_dirs(&path).await?;
+                        visit_dirs(&path);
                     } else {
                         if path.extension().and_then(|s| s.to_str()) == Some("r3") {
                             if path.display().to_string().contains("pathfinding") {
@@ -55,15 +37,14 @@ mod tests {
                             let mut original_contents = Vec::new();
                             file.read_to_end(&mut original_contents)?;
 
-                            let file = File::open(&path).await?;
-                            let mut trace = trace::Trace::from_text(file);
-                            let mut newfile = File::from_std(tempfile::tempfile()?);
-                            trace.to_text(&mut newfile);
-                            newfile.seek(SeekFrom::Start(0)).await?;
+                            let mut trace = trace::Trace::from_text_file(&path);
+                            let mut newfile = tempfile::tempfile()?;
+                            // trace.to_text_file(&mut newfile);
+                            newfile.seek(SeekFrom::Start(0));
 
                             let mut new_contents = Vec::new();
                             let mut reader = BufReader::new(newfile);
-                            reader.read_to_end(&mut new_contents).await?;
+                            reader.read_to_end(&mut new_contents);
                             if !new_contents.is_empty() {
                                 assert_eq!(
                                     &original_contents[..original_contents.len()],
@@ -85,30 +66,26 @@ mod tests {
             }
             Ok(())
         }
-        visit_dirs(Path::new("../../tests")).await?;
+        visit_dirs(Path::new("../../tests"));
         Ok(())
     }
     // TODO: factor out with trace_encode_decode_same
-    #[tokio::test]
-    async fn replay_js_same_with_original() -> std::io::Result<()> {
+    fn replay_js_same_with_original() -> std::io::Result<()> {
         use super::*;
         use std::fs;
         use std::io;
         use std::io::BufRead;
         use std::io::Read;
-        
 
         use std::path::Path;
-        
 
-        #[async_recursion]
-        async fn visit_dirs(dir: &Path) -> io::Result<()> {
+        fn visit_dirs(dir: &Path) -> io::Result<()> {
             if dir.is_dir() {
                 for entry in fs::read_dir(dir)? {
                     let entry = entry?;
                     let path = entry.path();
                     if path.is_dir() {
-                        visit_dirs(&path).await?;
+                        visit_dirs(&path);
                     } else {
                         if path.file_name().and_then(|s| s.to_str()) == Some("trace.r3") // node format
                         || path.file_name().and_then(|s| s.to_str()) == Some("trace-ref.r3")
@@ -130,8 +107,7 @@ mod tests {
                             let mut old_js = String::new();
                             reader.read_to_string(&mut old_js)?;
 
-                            let trace_file = File::open(&path).await?;
-                            let trace = trace::Trace::from_text(trace_file);
+                            let trace = trace::Trace::from_text_file(&path);
                             // let mut generator = IRGenerator::new();
                             // generator.generate_replay(&trace);
                             // merge_fn_results(&mut generator.replay);
@@ -155,7 +131,7 @@ mod tests {
             }
             Ok(())
         }
-        visit_dirs(Path::new("../../tests")).await?;
+        visit_dirs(Path::new("../../tests"));
         Ok(())
     }
 }

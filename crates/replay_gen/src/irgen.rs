@@ -5,7 +5,6 @@
 //! it has on wasm state. They get translated into different host code depending on the backend.
 use std::collections::BTreeMap;
 
-use futures::StreamExt;
 use walrus::Module;
 
 use crate::trace::{Trace, ValType, WasmEvent, F64};
@@ -212,9 +211,9 @@ impl IRGenerator {
         }
     }
 
-    pub async fn generate_replay(&mut self, mut trace: Trace) -> &Replay {
-        while let Some(e) = trace.next().await {
-            self.consume_event(e);
+    pub fn generate_replay(&mut self, trace: Trace) -> &Replay {
+        for e in trace.0 {
+            self.consume_event(&e);
         }
         &self.replay
     }
@@ -229,122 +228,78 @@ impl IRGenerator {
     fn consume_event(&mut self, event: &WasmEvent) {
         match event {
             WasmEvent::FuncEntry { idx, params } => {
-                self.push_call(HostEvent::ExportCall {
-                    idx: idx.clone(),
-                    name: name.clone(),
-                    params: params.clone(),
-                });
+                self.push_call(HostEvent::ExportCall { idx: idx.clone(), name: todo!(), params: params.clone() });
             }
-            WasmEvent::FuncEntryTable {
-                idx,
-                tablename,
-                tableidx: funcidx,
-                params,
-            } => {
+            WasmEvent::FuncEntryTable { idx, tablename, tableidx: funcidx, params } => {
                 self.push_call(HostEvent::ExportCallTable {
                     idx: *idx,
-                    table_name: tablename.clone(),
+                    table_name: todo!(),
                     funcidx: *funcidx,
                     params: params.clone(),
                 });
             }
             WasmEvent::FuncReturn => {}
-            WasmEvent::Load {
-                idx,
-                offset,
-                data,
-            } => {
+            WasmEvent::Load { idx, offset, data } => {
                 self.splice_event(HostEvent::MutateMemory {
                     import: self.replay.mem_imports.contains_key(&idx),
-                    name: name.clone(),
+                    name: todo!(),
                     addr: *offset,
-                    data: data.clone(),
+                    data: todo!(),
                 });
             }
             WasmEvent::MemGrow { idx, amount } => {
                 self.splice_event(HostEvent::GrowMemory {
                     import: self.replay.mem_imports.contains_key(idx),
-                    name: name.clone(),
+                    name: todo!(),
                     amount: *amount,
                 });
             }
-            WasmEvent::TableGet {
-                tableidx,
-                idx,
-                funcidx,
-            } => {
+            WasmEvent::TableGet { tableidx, idx, funcidx } => {
                 self.splice_event(HostEvent::MutateTable {
                     tableidx: *tableidx,
                     funcidx: *funcidx,
                     import: self.replay.table_imports.contains_key(&tableidx),
-                    name: name.clone(),
+                    name: todo!(),
                     idx: *idx,
                     func_import: self.replay.func_imports.contains_key(funcidx),
-                    func_name: funcname.clone(),
+                    func_name: todo!(),
                 });
             }
             WasmEvent::TableGrow { idx, amount } => {
                 self.splice_event(HostEvent::GrowTable {
                     import: self.replay.table_imports.contains_key(idx),
-                    name: name.clone(),
+                    name: todo!(),
                     idx: *idx,
                     amount: *amount,
                 });
             }
-            WasmEvent::GlobalGet {
-                idx,
-                value,
-                valtype,
-            } => {
+            WasmEvent::GlobalGet { idx, value, valtype } => {
                 self.splice_event(HostEvent::MutateGlobal {
                     idx: *idx,
                     import: self.replay.global_imports.contains_key(&idx),
-                    name: name.clone(),
+                    name: todo!(),
                     value: *value,
                     valtype: valtype.clone(),
                 });
             }
 
             WasmEvent::ImportCall { idx, name: _name } => {
-                self.replay
-                    .func_imports
-                    .get_mut(idx)
-                    .unwrap()
-                    .bodys
-                    .push(vec![]);
+                self.replay.func_imports.get_mut(idx).unwrap().bodys.push(vec![]);
                 self.state.host_call_stack.push(*idx);
                 self.state.last_func = *idx;
             }
-            WasmEvent::ImportReturn {
-                idx: _idx,
-                results,
-            } => {
+            WasmEvent::ImportReturn { idx: _idx, results } => {
                 let current_fn_idx = self.state.host_call_stack.last().unwrap();
-                let r = &mut self
-                    .replay
-                    .func_imports
-                    .get_mut(&current_fn_idx)
-                    .unwrap()
-                    .results;
-                r.push(WriteResult {
-                    results: results.clone(),
-                    reps: 1,
-                });
+                let r = &mut self.replay.func_imports.get_mut(&current_fn_idx).unwrap().results;
+                r.push(WriteResult { results: results.clone(), reps: 1 });
                 self.state.last_func = self.state.host_call_stack.pop().unwrap();
             }
-            WasmEvent::ImportGlobal {
-                idx,
-                module,
-                name,
-                mutable,
-                initial,
-                value,
-            } => {
+            WasmEvent::ImportGlobal { idx, module, name, mutable, initial, value } => {
                 self.replay.global_imports.insert(
                     *idx,
                     Global {
                         module: module.clone(),
-                        name: name.clone(),
+                        name: todo!(),
                         value: value.clone(),
                         initial: initial.clone(),
                         mutable: *mutable,

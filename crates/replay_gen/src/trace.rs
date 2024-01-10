@@ -3,20 +3,15 @@
 //! Most usually corresponds to one wasm instruction, e.g. WasmEvent::Load corresponds to one wasm load,
 //! but some of them are not. e.g. FuncEntry and FuncReturn correspond to the entry and return of a wasm function.
 //! There are also some events that are not part of the execution like Import*, which can be removed later.
-use futures::{stream, Stream, StreamExt};
-use num_traits::{FromPrimitive, ToBytes};
+use num_traits::FromPrimitive;
 
-use std::borrow::BorrowMut;
 use std::fmt::{self};
 use std::fmt::{Debug, Display};
+use std::fs::File;
+use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::path::Path;
-use std::pin::Pin;
 use std::str::FromStr;
-use std::sync::Arc;
-use std::task::{Context, Poll};
-use tokio::fs::File;
-use tokio::io::{self, AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader, BufWriter};
-use walrus::{DataKind, Module};
+use walrus::Module;
 
 #[derive(Debug)]
 pub enum ErrorKind {
@@ -62,20 +57,27 @@ enum BinCodes {
     // IMPORT_GLOBAL = 0x02;
 }
 
-enum MemValue {
-    U8,
-    I8,
-    U16,
-    I16,
-    U32,
-    I32,
-    I64,
-    F32,
-    F64,
+#[derive(Clone)]
+pub enum LoadValue {
+    I32(i32),
+    I64(i64),
+    F32(f32),
+    F64(f64),
+}
+
+impl Into<Vec<u8>> for LoadValue {
+    fn into(self) -> Vec<u8> {
+        match self {
+            LoadValue::I32(n) => n.to_le_bytes().to_vec(),
+            LoadValue::I64(n) => n.to_le_bytes().to_vec(),
+            LoadValue::F32(n) => n.to_le_bytes().to_vec(),
+            LoadValue::F64(n) => n.to_le_bytes().to_vec(),
+        }
+    }
 }
 
 #[derive(Clone)]
-enum StoreValue {
+pub enum StoreValue {
     I8(i8),
     I16(i16),
     I32(i32),
@@ -97,159 +99,46 @@ impl Into<Vec<u8>> for StoreValue {
     }
 }
 
-pub struct ShadowMemory(Vec<u8>);
-
-impl ShadowMemory {
-    fn new(module: &Module) -> Self {
-        if module.memories.len() > 1 {
-            todo!("Multiple memories not supported yet");
-        }
-        let mut memory = ShadowMemory(vec![
-            0u8;
-            module.memories.iter().find(|m| true).map(|m| m.initial).unwrap() as usize
-        ]);
-        module.data.iter().for_each(|d| {
-            if let DataKind::Active(data) = d.kind {
-                let offset = match data.location {
-                    walrus::ActiveDataLocation::Absolute(n) => n as usize,
-                    walrus::ActiveDataLocation::Relative(_) => todo!("Relative data segment offset not supported yet"),
-                };
-                memory.store(offset, d.value);
-            }
-        });
-        memory
-    }
-
-    fn store(&mut self, offset: usize, data: impl Into<Vec<u8>>) {
-        let data = data.into();
-        self.0[offset..data.len()].copy_from_slice(&data);
-    }
-}
-
-pub struct Trace(Vec<WasmEvent>);
+pub struct Trace(pub Vec<WasmEvent>);
 
 impl Trace {
-
-    pub fn from_text_file(path: Path) -> Trace {
+    pub fn from_text_file(path: &Path) -> Result<Trace, ErrorKind> {
+        let file = File::open(path).unwrap();
         let reader = BufReader::new(file);
-        Trace(reader.lines().map(|e| e.parse()).collect())
+        Ok(Trace(reader.lines().map(|e: Result<String, std::io::Error>| e.unwrap().parse().unwrap()).collect()))
     }
 
-    pub fn from_binary(file: File, module: Module) -> Trace {
-        let mut reader = io::BufReader::new(file);
-        todo!()
-        // Trace::new(
-        //         let event = WasmEvent::decode(&mut reader).await.unwrap();
-        //         Some((event, reader))
-        //     })),
-        //     module,
-        // )
-    }
-
-    // pub fn pipe<F>(&mut self, f: dyn FnMut() -> WasmEvent) {
-    //     f(self.trace);
-    // }
-
-    pub async fn opt_shadow_mem(&mut self) {
-        // self.trace;
-        // let _ = self.trace.filter_map(|e| async {
-        //     match e {
-        //         WasmEvent::Load { idx, offset, data } => todo!(),
-        //         WasmEvent::Store { offset, data } => {
-
-        //             // shadow_mem.store(offset as usize, data);
-        //             None
-        //         }
-        //         _ => Some(e),
-        //     }
-        // });
-    }
-
-    pub fn opt_shadow_table(&mut self, module: &Module) {}
-
-    pub fn opt_shadow_global(&mut self, module: &Module) {}
-
-    pub fn opt_function_entry(&mut self) {}
-
-    pub async fn to_text(self, file: &mut File) -> Result<(), std::io::Error> {
-        let mut writer = BufWriter::new(file);
-        let stream = self.trace;
-        let mut stream = stream.map(|e| format!("{}", e));
-        while let Some(e) = stream.next().await {
-            writer.write_all(e.as_bytes()).await?;
+    pub fn from_binary_file(path: &Path, _module: Module) -> Result<Trace, ErrorKind> {
+        let file = File::open(path).unwrap();
+        let mut reader = BufReader::new(file);
+        let code = read_u8(&mut reader).unwrap();
+        let code = BinCodes::from_u8(code).ok_or(ErrorKind::UnknownTrace).unwrap();
+        let mut trace = Vec::new();
+        while let Ok(e) = WasmEvent::decode(&mut reader, &code) {
+            trace.push(e);
         }
-        writer.flush().await?;
+        Ok(Trace(trace))
+    }
+
+    pub fn to_text_file(self, path: &Path) -> Result<(), ErrorKind> {
+        let file = File::open(path).unwrap();
+        let mut writer = BufWriter::new(file);
+        self.0.iter().map(|e| format!("{}", e)).for_each(|e| {
+            let _ = writer.write_all(e.as_bytes()).unwrap();
+        });
+        writer.flush().unwrap();
         Ok(())
     }
 }
 
-impl Stream for Trace {
-    type Item = WasmEvent;
-
-    fn poll_next(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
-        self.trace.poll_next_unpin(cx)
-    }
-}
-
-struct TraceOptimiser {
-    module: Module,
-    shadow_mem: ShadowMemory,
-}
-
-impl TraceOptimiser {
-    async fn opt_shadow_mem(&self, trace: &mut Trace, module: &Module) {
-        let mut shadow_mem: ShadowMemory = ShadowMemory::new(module);
-        let mut filter = false;
-        while let Some(e) = trace.next().await {
-            match e.clone() {
-                WasmEvent::Load { idx, offset, data } => filter = true,
-                WasmEvent::Store { offset, data } => shadow_mem.store(offset as usize, data.clone()),
-                _ => {}
-            }
-        }
-        let _ = trace.filter_map(|e| async {
-            match e {
-                WasmEvent::Load { idx, offset, data } => {
-                    if filter == true {
-                        None
-                    } else {
-                        Some(e)
-                    }
-                }
-                WasmEvent::Store { offset, data } => None,
-                _ => Some(e),
-            }
-        });
-        // let _ = trace.filter_map(|e| async {
-        //     match e {
-        //         WasmEvent::Load { idx, offset, data } => todo!(),
-        //         WasmEvent::Store { offset, data } => {
-        //             shadow_mem.store(offset as usize, data);
-        //             None
-        //         }
-        //         _ => Some(e),
-        //     }
-        // });
-    }
-}
-
-#[derive(Clone)]
-enum DataEnum {
-    I32(i32),
-    I64(i64),
-    F32(f32),
-    F64(f64),
-}
-
-impl Display for DataEnum {
+impl Display for LoadValue {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            DataEnum::I32(n) => write!(f, "{}", n),
-            DataEnum::I64(n) => write!(f, "{}", n),
-            DataEnum::F32(n) => write!(f, "{}", n),
-            DataEnum::F64(n) => write!(f, "{}", n),
-        };
-        Ok(())
+            LoadValue::I32(n) => write!(f, "{}", n),
+            LoadValue::I64(n) => write!(f, "{}", n),
+            LoadValue::F32(n) => write!(f, "{}", n),
+            LoadValue::F64(n) => write!(f, "{}", n),
+        }
     }
 }
 
@@ -259,7 +148,7 @@ pub enum WasmEvent {
     Load {
         idx: usize,
         offset: i32,
-        data: DataEnum,
+        data: LoadValue,
     },
     Store {
         offset: i32,
@@ -324,29 +213,27 @@ pub enum WasmEvent {
 }
 
 impl WasmEvent {
-    async fn decode(reader: &mut BufReader<File>) -> Result<Self, ErrorKind> {
-        let code = reader.read_u8().await.unwrap();
-        let bin_code = BinCodes::from_u8(code).ok_or(ErrorKind::UnknownTrace)?;
-        match bin_code {
-            BinCodes::LoadI32 => WasmEvent::decode_load(reader, MemValue::I32).await,
-            BinCodes::LoadI64 => WasmEvent::decode_load(reader, MemValue::I64).await,
-            BinCodes::LoadF32 => WasmEvent::decode_load(reader, MemValue::F32).await,
-            BinCodes::LoadF64 => WasmEvent::decode_load(reader, MemValue::F64).await,
-            BinCodes::LoadI32_8 => WasmEvent::decode_load(reader, MemValue::I32).await,
-            BinCodes::LoadI32_16 => WasmEvent::decode_load(reader, MemValue::I32).await,
-            BinCodes::LoadI64_8 => WasmEvent::decode_load(reader, MemValue::I32).await,
-            BinCodes::LoadI64_16 => WasmEvent::decode_load(reader, MemValue::I32).await,
-            BinCodes::LoadI64_32 => WasmEvent::decode_load(reader, MemValue::I32).await,
-            BinCodes::StoreI32 => WasmEvent::decode_store(reader, StoreValue::I32(0)).await,
-            BinCodes::StoreI64 => WasmEvent::decode_store(reader, StoreValue::I64(0)).await,
-            BinCodes::StoreF32 => WasmEvent::decode_store(reader, StoreValue::F32(0)).await,
-            BinCodes::StoreF64 => WasmEvent::decode_store(reader, StoreValue::F64(0)).await,
-            BinCodes::StoreI32_8 => WasmEvent::decode_store(reader, StoreValue::I8(0)).await,
-            BinCodes::StoreI32_16 => WasmEvent::decode_store(reader, StoreValue::I16(0)).await,
-            BinCodes::StoreI64_8 => WasmEvent::decode_store(reader, StoreValue::I8(0)).await,
-            BinCodes::StoreI64_16 => WasmEvent::decode_store(reader, StoreValue::I16(0)).await,
-            BinCodes::StoreI64_32 => WasmEvent::decode_store(reader, StoreValue::I32(0)).await,
-            BinCodes::Call => WasmEvent::decode_call(reader).await,
+    fn decode(reader: &mut BufReader<File>, code: &BinCodes) -> Result<Self, ErrorKind> {
+        match code {
+            BinCodes::LoadI32 => WasmEvent::decode_load(reader, LoadValue::I32(0)),
+            BinCodes::LoadI64 => WasmEvent::decode_load(reader, LoadValue::I64(0)),
+            BinCodes::LoadF32 => WasmEvent::decode_load(reader, LoadValue::F32(0.0)),
+            BinCodes::LoadF64 => WasmEvent::decode_load(reader, LoadValue::F64(0.0)),
+            BinCodes::LoadI32_8 => WasmEvent::decode_load(reader, LoadValue::I32(0)),
+            BinCodes::LoadI32_16 => WasmEvent::decode_load(reader, LoadValue::I32(0)),
+            BinCodes::LoadI64_8 => WasmEvent::decode_load(reader, LoadValue::I64(0)),
+            BinCodes::LoadI64_16 => WasmEvent::decode_load(reader, LoadValue::I64(0)),
+            BinCodes::LoadI64_32 => WasmEvent::decode_load(reader, LoadValue::I64(0)),
+            BinCodes::StoreI32 => WasmEvent::decode_store(reader, StoreValue::I32(0)),
+            BinCodes::StoreI64 => WasmEvent::decode_store(reader, StoreValue::I64(0)),
+            BinCodes::StoreF32 => WasmEvent::decode_store(reader, StoreValue::F32(0.0)),
+            BinCodes::StoreF64 => WasmEvent::decode_store(reader, StoreValue::F64(0.0)),
+            BinCodes::StoreI32_8 => WasmEvent::decode_store(reader, StoreValue::I8(0)),
+            BinCodes::StoreI32_16 => WasmEvent::decode_store(reader, StoreValue::I16(0)),
+            BinCodes::StoreI64_8 => WasmEvent::decode_store(reader, StoreValue::I8(0)),
+            BinCodes::StoreI64_16 => WasmEvent::decode_store(reader, StoreValue::I16(0)),
+            BinCodes::StoreI64_32 => WasmEvent::decode_store(reader, StoreValue::I32(0)),
+            BinCodes::Call => WasmEvent::decode_call(reader),
             BinCodes::CallIndirect => todo!(),
             BinCodes::GlobalGet => todo!(),
             BinCodes::GlobalSet => todo!(),
@@ -357,48 +244,44 @@ impl WasmEvent {
         }
     }
 
-    async fn decode_call(reader: &mut BufReader<File>) -> Result<Self, ErrorKind> {
-        let type_id = reader.read_i32().await.map_err(|_| ErrorKind::UnknownTrace)? as usize;
+    fn decode_call(_reader: &mut BufReader<File>) -> Result<Self, ErrorKind> {
+        // let type_id = read_i32(reader).map_err(|_| ErrorKind::UnknownTrace)? as usize;
         // let typ = module_types.get(type_id).ok_or(ErrorKind::UnknownTrace)?;
         todo!("CONTINUE HERE NEXT TIME!!")
     }
 
-    async fn decode_load(reader: &mut BufReader<File>, val_type: MemValue) -> Result<Self, ErrorKind> {
-        let data = Self::decode_data(reader, val_type).await?;
-        let offset = reader.read_i32().await.map_err(|_| ErrorKind::UnknownTrace)?;
+    fn decode_load(reader: &mut BufReader<File>, mut data: LoadValue) -> Result<Self, ErrorKind> {
+        Self::decode_load_value(reader, &mut data)?;
+        let offset = read_i32(reader).map_err(|_| ErrorKind::UnknownTrace)?;
         Ok(WasmEvent::Load { idx: 0, offset, data })
     }
 
-    async fn decode_store(reader: &mut BufReader<File>, mut data: StoreValue) -> Result<Self, ErrorKind> {
-        Self::decode_store_value(reader, &mut data).await?;
-        let offset = reader.read_i32().await.map_err(|_| ErrorKind::UnknownTrace)?;
+    fn decode_store(reader: &mut BufReader<File>, mut data: StoreValue) -> Result<Self, ErrorKind> {
+        Self::decode_store_value(reader, &mut data)?;
+        let offset = read_i32(reader).map_err(|_| ErrorKind::UnknownTrace)?;
         Ok(WasmEvent::Store { offset, data })
     }
 
-    async fn decode_store_value(reader: &mut BufReader<File>, data: &mut StoreValue) -> Result<(), ErrorKind> {
+    fn decode_store_value(reader: &mut BufReader<File>, data: &mut StoreValue) -> Result<(), ErrorKind> {
         match data {
-            StoreValue::I8(v) => *v = reader.read_i8().await.map_err(|_| ErrorKind::UnknownTrace)?,
-            StoreValue::I16(v) => *v = reader.read_i16().await.map_err(|_| ErrorKind::UnknownTrace)?,
-            StoreValue::I32(v) => *v = reader.read_i32().await.map_err(|_| ErrorKind::UnknownTrace)?,
-            StoreValue::I64(v) => *v = reader.read_i64().await.map_err(|_| ErrorKind::UnknownTrace)?,
-            StoreValue::F32(v) => *v = reader.read_f32().await.map_err(|_| ErrorKind::UnknownTrace)?,
-            StoreValue::F64(v) => *v = reader.read_f64().await.map_err(|_| ErrorKind::UnknownTrace)?,
+            StoreValue::I8(v) => *v = read_i8(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+            StoreValue::I16(v) => *v = read_i16(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+            StoreValue::I32(v) => *v = read_i32(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+            StoreValue::I64(v) => *v = read_i64(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+            StoreValue::F32(v) => *v = read_f32(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+            StoreValue::F64(v) => *v = read_f64(reader).map_err(|_| ErrorKind::UnknownTrace)?,
         };
         Ok(())
     }
 
-    async fn decode_data(reader: &mut BufReader<File>, val_type: MemValue) -> Result<DataEnum, ErrorKind> {
-        match val_type {
-            MemValue::U8 => todo!(),
-            MemValue::I8 => todo!(),
-            MemValue::U16 => todo!(),
-            MemValue::I16 => todo!(),
-            MemValue::U32 => todo!(),
-            MemValue::I32 => Ok(DataEnum::I32(reader.read_i32().await.map_err(|_| ErrorKind::UnknownTrace)?)),
-            MemValue::I64 => Ok(DataEnum::I64(reader.read_i64().await.map_err(|_| ErrorKind::UnknownTrace)?)),
-            MemValue::F32 => Ok(DataEnum::F32(reader.read_f32().await.map_err(|_| ErrorKind::UnknownTrace)?)),
-            MemValue::F64 => Ok(DataEnum::F64(reader.read_f64().await.map_err(|_| ErrorKind::UnknownTrace)?)),
-        }
+    fn decode_load_value(reader: &mut BufReader<File>, data: &mut LoadValue) -> Result<(), ErrorKind> {
+        match data {
+            LoadValue::I32(v) => *v = read_i32(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+            LoadValue::I64(v) => *v = read_i64(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+            LoadValue::F32(v) => *v = read_f32(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+            LoadValue::F64(v) => *v = read_f64(reader).map_err(|_| ErrorKind::UnknownTrace)?,
+        };
+        Ok(())
     }
 }
 
@@ -563,7 +446,7 @@ impl FromStr for WasmEvent {
             "L" => Ok(WasmEvent::Load {
                 idx: components[1].parse().unwrap(),
                 offset: components[3].parse().unwrap(),
-                data: DataEnum::I32(i32::from_le_bytes(
+                data: LoadValue::I32(i32::from_le_bytes(
                     split_list(components.get(4).unwrap())
                         .iter()
                         .map(|n| n.0 as u8)
@@ -651,4 +534,46 @@ impl Display for WasmEvent {
             }
         }
     }
+}
+
+fn read_u8(reader: &mut BufReader<File>) -> anyhow::Result<u8> {
+    let mut buf = [0; 1];
+    reader.read(&mut buf)?;
+    Ok(buf[0])
+}
+
+fn read_i8(reader: &mut BufReader<File>) -> anyhow::Result<i8> {
+    let mut buf = [0; 1];
+    reader.read(&mut buf)?;
+    Ok(buf[0] as i8)
+}
+
+fn read_i16(reader: &mut BufReader<File>) -> anyhow::Result<i16> {
+    let mut buf = [0; 2];
+    reader.read(&mut buf)?;
+    Ok(i16::from_le_bytes(buf))
+}
+
+fn read_i32(reader: &mut BufReader<File>) -> anyhow::Result<i32> {
+    let mut buf = [0; 4];
+    reader.read(&mut buf)?;
+    Ok(i32::from_le_bytes(buf))
+}
+
+fn read_i64(reader: &mut BufReader<File>) -> anyhow::Result<i64> {
+    let mut buf = [0; 8];
+    reader.read(&mut buf)?;
+    Ok(i64::from_le_bytes(buf))
+}
+
+fn read_f32(reader: &mut BufReader<File>) -> anyhow::Result<f32> {
+    let mut buf = [0; 4];
+    reader.read(&mut buf)?;
+    Ok(f32::from_le_bytes(buf))
+}
+
+fn read_f64(reader: &mut BufReader<File>) -> anyhow::Result<f64> {
+    let mut buf = [0; 8];
+    reader.read(&mut buf)?;
+    Ok(f64::from_le_bytes(buf))
 }
