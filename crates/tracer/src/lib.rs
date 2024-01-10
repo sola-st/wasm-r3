@@ -708,4 +708,3 @@ fn get_byte_length(valtype: &ValType) -> i32 {
         ValType::Funcref => todo!(),
     }
 }
-f

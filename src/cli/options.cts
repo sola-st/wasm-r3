@@ -9,7 +9,8 @@ export type Options = {
     file: string,
     extended: boolean,
     noRecord: boolean,
-    rustBackend: boolean
+    rustBackend: boolean,
+    customInstrumentation: boolean,
 }
 
 export default function getOptions() {
@@ -22,7 +23,8 @@ export default function getOptions() {
         { name: 'file', alias: 'f', type: String },
         { name: 'extended', alias: 'e', type: Boolean },
         { name: 'no-record', alias: 'n', type: Boolean },
-        { name: 'rustBackend', alias: 'r', type: Boolean }
+        { name: 'rustBackend', alias: 'r', type: Boolean },
+        { name: 'customInstrumentation', alias: 'c', type: Boolean }
     ]
     const options: Options & { url: string } = commandLineArgs(optionDefinitions)
     if (options.headless === undefined) {

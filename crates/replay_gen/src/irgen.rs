@@ -5,6 +5,7 @@
 //! it has on wasm state. They get translated into different host code depending on the backend.
 use std::collections::BTreeMap;
 
+use futures::StreamExt;
 use walrus::Module;
 
 use crate::trace::{Trace, ValType, WasmEvent, F64};
@@ -211,9 +212,9 @@ impl IRGenerator {
         }
     }
 
-    pub fn generate_replay(&mut self, trace: &Trace) -> &Replay {
-        for event in trace.iter() {
-            self.consume_event(event);
+    pub async fn generate_replay(&mut self, mut trace: Trace) -> &Replay {
+        while let Some(e) = trace.next().await {
+            self.consume_event(e);
         }
         &self.replay
     }
@@ -371,14 +372,7 @@ impl IRGenerator {
     }
 
     fn idx_to_cxt(&mut self, idx: i32) -> &mut Vec<HostEvent> {
-        let current_context = self
-            .replay
-            .func_imports
-            .get_mut(&idx)
-            .unwrap()
-            .bodys
-            .last_mut()
-            .unwrap();
+        let current_context = self.replay.func_imports.get_mut(&idx).unwrap().bodys.last_mut().unwrap();
         current_context
     }
 
