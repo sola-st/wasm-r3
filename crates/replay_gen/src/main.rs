@@ -20,21 +20,8 @@ fn main() -> io::Result<()> {
         Some(str) => Some(Path::new(str)),
         None => None,
     };
-    let file = File::open(&trace_path)?;
-    let reader = io::BufReader::new(file);
 
-    let mut trace = trace::Trace::new();
-    for line in reader.lines() {
-        let line = line?;
-        let event = match line.parse() {
-            Ok(event) => event,
-            Err(err) => match err {
-                trace::ErrorKind::LegacyTrace => continue,
-                trace::ErrorKind::UnknownTrace => panic!("error: {:?}", err),
-            },
-        };
-        trace.push(event);
-    }
+    trace::Trace::from_text_file(trace_path)?;
 
     let buffer = &fs::read(wasm_path).unwrap();
     let module = Module::from_buffer(buffer).unwrap();

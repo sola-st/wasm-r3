@@ -227,7 +227,7 @@ impl IRGenerator {
 
     fn consume_event(&mut self, event: &WasmEvent) {
         match event {
-            WasmEvent::FuncEntry { idx, name, params } => {
+            WasmEvent::FuncEntry { idx, params } => {
                 self.push_call(HostEvent::ExportCall {
                     idx: idx.clone(),
                     name: name.clone(),
@@ -250,7 +250,6 @@ impl IRGenerator {
             WasmEvent::FuncReturn => {}
             WasmEvent::Load {
                 idx,
-                name,
                 offset,
                 data,
             } => {
@@ -261,7 +260,7 @@ impl IRGenerator {
                     data: data.clone(),
                 });
             }
-            WasmEvent::MemGrow { idx, name, amount } => {
+            WasmEvent::MemGrow { idx, amount } => {
                 self.splice_event(HostEvent::GrowMemory {
                     import: self.replay.mem_imports.contains_key(idx),
                     name: name.clone(),
@@ -270,10 +269,8 @@ impl IRGenerator {
             }
             WasmEvent::TableGet {
                 tableidx,
-                name,
                 idx,
                 funcidx,
-                funcname,
             } => {
                 self.splice_event(HostEvent::MutateTable {
                     tableidx: *tableidx,
@@ -285,7 +282,7 @@ impl IRGenerator {
                     func_name: funcname.clone(),
                 });
             }
-            WasmEvent::TableGrow { idx, name, amount } => {
+            WasmEvent::TableGrow { idx, amount } => {
                 self.splice_event(HostEvent::GrowTable {
                     import: self.replay.table_imports.contains_key(idx),
                     name: name.clone(),
@@ -295,7 +292,6 @@ impl IRGenerator {
             }
             WasmEvent::GlobalGet {
                 idx,
-                name,
                 value,
                 valtype,
             } => {
@@ -320,7 +316,6 @@ impl IRGenerator {
             }
             WasmEvent::ImportReturn {
                 idx: _idx,
-                name: _name,
                 results,
             } => {
                 let current_fn_idx = self.state.host_call_stack.last().unwrap();
@@ -355,6 +350,9 @@ impl IRGenerator {
                     },
                 );
             }
+            WasmEvent::Store { offset, data } => todo!(),
+            WasmEvent::TableSet { tableidx, idx, funcidx } => todo!(),
+            WasmEvent::GlobalSet { idx, value, valtype } => todo!(),
         }
     }
     fn splice_event(&mut self, event: HostEvent) {
