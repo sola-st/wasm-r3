@@ -1,7 +1,12 @@
+#[macro_use]
+extern crate num_derive;
+extern crate num_traits as some_other_ident;
+
 pub mod codegen;
 pub mod irgen;
 pub mod opt;
 pub mod trace;
+
 
 #[cfg(test)]
 mod tests {

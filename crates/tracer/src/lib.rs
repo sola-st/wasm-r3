@@ -302,6 +302,7 @@ impl VisitorMut for Generator {
                 }
                 Instr::Call(call) => {
                     let opcode = 0x10;
+                    let return_code = 0xFF;
                     let typ = self.module_types.get_by_func(&call.func).unwrap().clone();
                     gen_seq.append(
                         &mut InstructionsEnum::from_vec(vec![
@@ -309,6 +310,8 @@ impl VisitorMut for Generator {
                             self.trace_type(&typ, offset),
                             self.save_stack(typ.params(), offset),
                             self.instr(instr.clone()),
+                            self.trace_code(return_code, offset),
+                            self.trace_type(&typ, offset),
                             self.save_stack(typ.results(), offset),
                             self.increment_mem_pointer(*offset),
                         ])
@@ -317,12 +320,15 @@ impl VisitorMut for Generator {
                 }
                 Instr::CallIndirect(call) => {
                     let opcode = 0x11;
+                    let return_code = 0xFF;
                     let typ = self.module_types.get_by_id(&call.ty).unwrap().clone();
                     gen_seq.append(
                         &mut InstructionsEnum::from_vec(vec![
                             self.trace_code(opcode, offset),
                             self.save_stack(&[typ.params(), &[ValType::I32]].concat(), offset),
                             self.instr(instr.clone()),
+                            self.trace_code(return_code, offset),
+                            self.trace_type(&typ, offset),
                             self.save_stack(typ.results(), offset),
                             self.increment_mem_pointer(*offset),
                         ])

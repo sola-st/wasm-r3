@@ -227,137 +227,137 @@ impl IRGenerator {
     }
 
     fn consume_event(&mut self, event: WasmEvent) {
-        match event {
-            WasmEvent::FuncEntry { idx, name, params } => {
-                self.push_call(HostEvent::ExportCall {
-                    idx: idx.clone(),
-                    name: name.clone(),
-                    params: params.clone(),
-                });
-            }
-            WasmEvent::FuncEntryTable {
-                idx,
-                tablename,
-                tableidx: funcidx,
-                params,
-            } => {
-                self.push_call(HostEvent::ExportCallTable {
-                    idx: idx,
-                    table_name: tablename.clone(),
-                    funcidx: funcidx,
-                    params: params.clone(),
-                });
-            }
-            WasmEvent::FuncReturn => {}
-            WasmEvent::Load {
-                idx,
-                name,
-                offset,
-                data,
-            } => {
-                self.splice_event(HostEvent::MutateMemory {
-                    import: self.replay.mem_imports.contains_key(&idx),
-                    name: name.clone(),
-                    addr: offset,
-                    data: data.clone(),
-                });
-            }
-            WasmEvent::MemGrow { idx, name, amount } => {
-                self.splice_event(HostEvent::GrowMemory {
-                    import: self.replay.mem_imports.contains_key(&idx),
-                    name: name.clone(),
-                    amount: amount,
-                });
-            }
-            WasmEvent::TableGet {
-                tableidx,
-                name,
-                idx,
-                funcidx,
-                funcname,
-            } => {
-                self.splice_event(HostEvent::MutateTable {
-                    tableidx: tableidx,
-                    funcidx: funcidx,
-                    import: self.replay.table_imports.contains_key(&tableidx),
-                    name: name.clone(),
-                    idx: idx,
-                    func_import: self.replay.func_imports.contains_key(&funcidx),
-                    func_name: funcname.clone(),
-                });
-            }
-            WasmEvent::TableGrow { idx, name, amount } => {
-                self.splice_event(HostEvent::GrowTable {
-                    import: self.replay.table_imports.contains_key(&idx),
-                    name: name.clone(),
-                    idx: idx,
-                    amount: amount,
-                });
-            }
-            WasmEvent::GlobalGet {
-                idx,
-                name,
-                value,
-                valtype,
-            } => {
-                self.splice_event(HostEvent::MutateGlobal {
-                    idx: idx,
-                    import: self.replay.global_imports.contains_key(&idx),
-                    name: name.clone(),
-                    value: value,
-                    valtype: valtype.clone(),
-                });
-            }
+        // match event {
+        //     WasmEvent::FuncEntry { idx, name, params } => {
+        //         self.push_call(HostEvent::ExportCall {
+        //             idx: idx.clone(),
+        //             name: name.clone(),
+        //             params: params.clone(),
+        //         });
+        //     }
+        //     WasmEvent::FuncEntryTable {
+        //         idx,
+        //         tablename,
+        //         tableidx: funcidx,
+        //         params,
+        //     } => {
+        //         self.push_call(HostEvent::ExportCallTable {
+        //             idx: idx,
+        //             table_name: tablename.clone(),
+        //             funcidx: funcidx,
+        //             params: params.clone(),
+        //         });
+        //     }
+        //     WasmEvent::FuncReturn => {}
+        //     WasmEvent::Load {
+        //         idx,
+        //         name,
+        //         offset,
+        //         data,
+        //     } => {
+        //         self.splice_event(HostEvent::MutateMemory {
+        //             import: self.replay.mem_imports.contains_key(&idx),
+        //             name: name.clone(),
+        //             addr: offset,
+        //             data: data.clone(),
+        //         });
+        //     }
+        //     WasmEvent::MemGrow { idx, name, amount } => {
+        //         self.splice_event(HostEvent::GrowMemory {
+        //             import: self.replay.mem_imports.contains_key(&idx),
+        //             name: name.clone(),
+        //             amount: amount,
+        //         });
+        //     }
+        //     WasmEvent::TableGet {
+        //         tableidx,
+        //         name,
+        //         idx,
+        //         funcidx,
+        //         funcname,
+        //     } => {
+        //         self.splice_event(HostEvent::MutateTable {
+        //             tableidx: tableidx,
+        //             funcidx: funcidx,
+        //             import: self.replay.table_imports.contains_key(&tableidx),
+        //             name: name.clone(),
+        //             idx: idx,
+        //             func_import: self.replay.func_imports.contains_key(&funcidx),
+        //             func_name: funcname.clone(),
+        //         });
+        //     }
+        //     WasmEvent::TableGrow { idx, name, amount } => {
+        //         self.splice_event(HostEvent::GrowTable {
+        //             import: self.replay.table_imports.contains_key(&idx),
+        //             name: name.clone(),
+        //             idx: idx,
+        //             amount: amount,
+        //         });
+        //     }
+        //     WasmEvent::GlobalGet {
+        //         idx,
+        //         name,
+        //         value,
+        //         valtype,
+        //     } => {
+        //         self.splice_event(HostEvent::MutateGlobal {
+        //             idx: idx,
+        //             import: self.replay.global_imports.contains_key(&idx),
+        //             name: name.clone(),
+        //             value: value,
+        //             valtype: valtype.clone(),
+        //         });
+        //     }
 
-            WasmEvent::ImportCall { idx, name: _name } => {
-                self.replay
-                    .func_imports
-                    .get_mut(&idx)
-                    .unwrap()
-                    .bodys
-                    .push(vec![]);
-                self.state.host_call_stack.push(idx);
-                self.state.last_func = idx;
-            }
-            WasmEvent::ImportReturn {
-                idx: _idx,
-                name: _name,
-                results,
-            } => {
-                let current_fn_idx = self.state.host_call_stack.last().unwrap();
-                let r = &mut self
-                    .replay
-                    .func_imports
-                    .get_mut(&current_fn_idx)
-                    .unwrap()
-                    .results;
-                r.push(WriteResult {
-                    results: results.clone(),
-                    reps: 1,
-                });
-                self.state.last_func = self.state.host_call_stack.pop().unwrap();
-            }
-            WasmEvent::ImportGlobal {
-                idx,
-                module,
-                name,
-                mutable,
-                initial,
-                value,
-            } => {
-                self.replay.global_imports.insert(
-                    idx,
-                    Global {
-                        module: module.clone(),
-                        name: name.clone(),
-                        value: value.clone(),
-                        initial: initial.clone(),
-                        mutable: mutable,
-                    },
-                );
-            }
-            _ => { /* Ignore other events */ }
-        }
+        //     WasmEvent::ImportCall { idx, name: _name } => {
+        //         self.replay
+        //             .func_imports
+        //             .get_mut(&idx)
+        //             .unwrap()
+        //             .bodys
+        //             .push(vec![]);
+        //         self.state.host_call_stack.push(idx);
+        //         self.state.last_func = idx;
+        //     }
+        //     WasmEvent::ImportReturn {
+        //         idx: _idx,
+        //         name: _name,
+        //         results,
+        //     } => {
+        //         let current_fn_idx = self.state.host_call_stack.last().unwrap();
+        //         let r = &mut self
+        //             .replay
+        //             .func_imports
+        //             .get_mut(&current_fn_idx)
+        //             .unwrap()
+        //             .results;
+        //         r.push(WriteResult {
+        //             results: results.clone(),
+        //             reps: 1,
+        //         });
+        //         self.state.last_func = self.state.host_call_stack.pop().unwrap();
+        //     }
+        //     WasmEvent::ImportGlobal {
+        //         idx,
+        //         module,
+        //         name,
+        //         mutable,
+        //         initial,
+        //         value,
+        //     } => {
+        //         self.replay.global_imports.insert(
+        //             idx,
+        //             Global {
+        //                 module: module.clone(),
+        //                 name: name.clone(),
+        //                 value: value.clone(),
+        //                 initial: initial.clone(),
+        //                 mutable: mutable,
+        //             },
+        //         );
+        //     }
+        //     _ => { /* Ignore other events */ }
+        // }
     }
     fn splice_event(&mut self, event: HostEvent) {
         let idx = self.state.host_call_stack.last().unwrap();
@@ -375,14 +375,7 @@ impl IRGenerator {
     }
 
     fn idx_to_cxt(&mut self, idx: i32) -> &mut Vec<HostEvent> {
-        let current_context = self
-            .replay
-            .func_imports
-            .get_mut(&idx)
-            .unwrap()
-            .bodys
-            .last_mut()
-            .unwrap();
+        let current_context = self.replay.func_imports.get_mut(&idx).unwrap().bodys.last_mut().unwrap();
         current_context
     }
 
