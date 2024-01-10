@@ -92,7 +92,13 @@ impl Trace {
     //     f(self.trace);
     // }
 
-    pub fn shadow_optimise(&mut self) {}
+    pub fn opt_shadow_mem(&mut self) {}
+
+    pub fn opt_shadow_table(&mut self) {}
+    
+    pub fn opt_shadow_global(&mut self) {}
+
+    pub fn opt_function_entry(&mut self) {}
 
     pub async fn to_text(self, file: &mut File) -> Result<(), std::io::Error> {
         let mut writer = BufWriter::new(file);
