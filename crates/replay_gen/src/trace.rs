@@ -120,17 +120,23 @@ impl Stream for Trace {
     }
 }
 
+enum DataEnum {
+    I32(i32),
+    I64(i64),
+    F32(f32),
+    F64(f64)
+}
 pub enum WasmEvent {
     // Each corresponds to a single wasm instruction.
     Load {
         idx: usize,
         name: String,
         offset: i32,
-        data: Vec<F64>,
+        data: DataEnum,
     },
     Store {
         offset: i32,
-        data: Vec<F64>,
+        data: DataEnum,
     },
     MemGrow {
         idx: usize,
@@ -387,16 +393,6 @@ impl From<walrus::ValType> for ValType {
     }
 }
 
-fn from_short_str(s: &str) -> Result<ValType, ()> {
-    match s {
-        "i" => Ok(ValType::I32),
-        "I" => Ok(ValType::I64),
-        "f" => Ok(ValType::F32),
-        "F" => Ok(ValType::F64),
-        _ => Err(()),
-    }
-}
-
 fn join_vec(args: &Vec<F64>) -> String {
     args.iter()
         .map(|x| x.to_string())
@@ -426,14 +422,6 @@ fn test_parse_number() {
     // problematic case reading the trace generateed by js
     let s = "0.7614822387695312";
     assert_ne!(s, parse_number(s).unwrap().to_string());
-}
-
-fn parse_tys(s: &str) -> Vec<ValType> {
-    let mut tys = vec![];
-    for ty in s.chars() {
-        tys.push(from_short_str(&ty.to_string()).unwrap());
-    }
-    tys
 }
 
 impl FromStr for WasmEvent {

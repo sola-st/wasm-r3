@@ -59,7 +59,7 @@ async fn main() -> io::Result<()> {
     let module = Module::from_buffer(buffer).unwrap();
     
     let file = File::open(&trace_path).await?;
-    let mut trace = Trace::from_text(file, module);
+    let mut trace = Trace::from_text(file);
     trace.shadow_optimise();
     // let file2 = File::open(&trace_path).await?;
     // trace.to_text(file2);

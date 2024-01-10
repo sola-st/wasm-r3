@@ -154,7 +154,7 @@ impl IRGenerator {
         for i in module.imports.iter() {
             match i.kind {
                 walrus::ImportKind::Function(f) => {
-                    let ty = module.types.get(module.funcs.get(f).ty());
+                    let _ty = module.types.get(module.funcs.get(f).ty());
                     func_imports.insert(
                         f.index() as i32,
                         Function {

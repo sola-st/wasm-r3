@@ -91,10 +91,10 @@ mod tests {
         use std::io;
         use std::io::BufRead;
         use std::io::Read;
-        use std::io::{Seek, SeekFrom};
+        
 
         use std::path::Path;
-        use tempfile::tempfile;
+        
 
         #[async_recursion]
         async fn visit_dirs(dir: &Path) -> io::Result<()> {
