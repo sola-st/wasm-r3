@@ -83,7 +83,7 @@ export default class Analyser implements AnalyserI {
         analysisScript = analysisScript.split('exports.Trace = Trace;').join('')
         analysisScript = analysisScript.split('exports.default = Analysis;').join('')
         analysisScript = `function setupAnalysis(Wasabi) {\n ${analysisScript};\n return new Analysis(Wasabi, { extended: ${this.options.extended}})}\n`
-        const setupScript = await fs.readFile('./src/runtime.js') + '\n'
+        const setupScript = await fs.readFile('./src/wasabi-runtime.js') + '\n'
         return wasabiScript + ';' + analysisScript + ';' + setupScript + ';'
     }
 

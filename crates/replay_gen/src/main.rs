@@ -1,7 +1,7 @@
 use replay_gen::codegen::{generate_javascript, generate_standalone};
 use replay_gen::irgen::IRGenerator;
 use replay_gen::opt::Optimiser;
-use replay_gen::trace::{self, WasmEvent};
+use replay_gen::trace::WasmEvent;
 use replay_gen::trace_optimisation::{ShadowMemoryOptimiser, TraceOptimiser};
 use std::fs::File;
 use std::io::{self, BufReader};
