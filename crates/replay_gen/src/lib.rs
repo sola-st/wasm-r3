@@ -1,15 +1,25 @@
-pub mod codegen;
+use std::{fs::File, io::Write};
+
 pub mod irgen;
+pub mod jsgen;
 pub mod opt;
 pub mod trace;
+pub mod wasmgen;
+
+pub fn write(stream: &mut File, s: &str) -> std::io::Result<()> {
+    if stream.write_all(s.as_bytes()).is_err() {
+        // In Rust, we don't have an equivalent to Node.js's 'drain' event.
+        // We'll just flush the stream instead.
+        stream.flush()?;
+    }
+    Ok(())
+}
 
 #[cfg(test)]
 mod tests {
     use core::panic;
 
-    use crate::{
-        trace::encode_trace,
-    };
+    use crate::trace::encode_trace;
 
     #[test]
     fn trace_decode_encode_same() -> std::io::Result<()> {
@@ -97,10 +107,8 @@ mod tests {
         use std::io;
         use std::io::BufRead;
         use std::io::Read;
-        
 
         use std::path::Path;
-        
 
         fn visit_dirs(dir: &Path) -> io::Result<()> {
             if dir.is_dir() {

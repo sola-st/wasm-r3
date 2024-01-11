@@ -4,10 +4,11 @@ use std::path::Path;
 
 use std::{env, fs};
 
-use replay_gen::codegen::{generate_javascript, generate_standalone};
 use replay_gen::irgen::IRGenerator;
+use replay_gen::jsgen::generate_replay_javascript;
 use replay_gen::opt::merge_fn_results;
 use replay_gen::trace;
+use replay_gen::wasmgen::generate_replay_wasm;
 use walrus::Module;
 
 fn main() -> io::Result<()> {
@@ -16,7 +17,7 @@ fn main() -> io::Result<()> {
     let trace_path = Path::new(&args[1]);
     let wasm_path = Path::new(&args[2]);
     let binding = args.get(3);
-    let js_path = match &binding {
+    let replay_path = match &binding {
         Some(str) => Some(Path::new(str)),
         None => None,
     };
@@ -36,19 +37,22 @@ fn main() -> io::Result<()> {
         trace.push(event);
     }
 
+    // irgen phase
     let buffer = &fs::read(wasm_path).unwrap();
     let module = Module::from_buffer(buffer).unwrap();
     let mut generator = IRGenerator::new(module);
     generator.generate_replay(&trace);
 
-    // opt paths
+    // opt phase
     merge_fn_results(&mut generator.replay);
 
-    let is_standalone = js_path.is_none();
-    if is_standalone {
-        generate_standalone(wasm_path, &generator.replay)?;
+    // codegen phase
+    let is_standalone = replay_path.is_none();
+    let is_replay_wasm = !is_standalone && replay_path.unwrap().extension().unwrap() == "wasm";
+    if is_replay_wasm {
+        generate_replay_wasm(replay_path.unwrap(), &generator.replay)?;
     } else {
-        generate_javascript(js_path.unwrap(), &generator.replay)?;
+        generate_replay_javascript(replay_path.unwrap(), &generator.replay)?;
     }
 
     Ok(())

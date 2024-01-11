@@ -3,11 +3,14 @@
 //! Its main job is to put the right HostEvent into a right spot.
 //! HostEvent corresponds to some event in the host context, which is classified into the effect
 //! it has on wasm state. They get translated into different host code depending on the backend.
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 
 use walrus::Module;
 
-use crate::trace::{Trace, ValType, WasmEvent, F64};
+use crate::trace::{RefType, Trace, ValType, WasmEvent, F64};
+
+const MAX_WASM_FUNCTIONS: usize = 1000000;
+pub const INIT_INDEX: usize = MAX_WASM_FUNCTIONS + 1;
 
 pub struct IRGenerator {
     pub replay: Replay,
@@ -15,30 +18,100 @@ pub struct IRGenerator {
 }
 
 pub struct Replay {
-    // original index is usize but we use i32 to handle host initialization code
-    // TODO: more elegant solution
-    pub func_imports: BTreeMap<i32, Function>,
-    pub func_idx_to_ty: BTreeMap<usize, FunctionTy>,
-    pub mem_imports: BTreeMap<usize, Memory>,
-    pub table_imports: BTreeMap<usize, Table>,
-    pub global_imports: BTreeMap<usize, Global>,
-    pub modules: Vec<String>,
+    pub funcs: BTreeMap<usize, Function>,
+    pub tables: BTreeMap<usize, Table>,
+    pub mems: BTreeMap<usize, Memory>,
+    pub globals: BTreeMap<usize, Global>,
+    pub module: Module,
+}
+
+impl Replay {
+    pub fn imported_funcs(&self) -> BTreeMap<usize, Function> {
+        self.funcs
+            .iter()
+            .filter(|(_, function)| function.import.is_some())
+            .map(|(key, function)| (*key, function.clone()))
+            .collect()
+    }
+    pub fn exported_funcs(&self) -> BTreeMap<usize, Function> {
+        self.funcs
+            .iter()
+            .filter(|(_, function)| function.export.is_some())
+            .map(|(key, function)| (*key, function.clone()))
+            .collect()
+    }
+
+    pub fn imported_tables(&self) -> BTreeMap<usize, Table> {
+        self.tables
+            .iter()
+            .filter(|(_, table)| table.import.is_some())
+            .map(|(key, table)| (*key, table.clone()))
+            .collect()
+    }
+    pub fn exported_tables(&self) -> BTreeMap<usize, Table> {
+        self.tables
+            .iter()
+            .filter(|(_, table)| table.export.is_some())
+            .map(|(key, table)| (*key, table.clone()))
+            .collect()
+    }
+    pub fn imported_mems(&self) -> BTreeMap<usize, Memory> {
+        self.mems
+            .iter()
+            .filter(|(_, mem)| mem.import.is_some())
+            .map(|(key, mem)| (*key, mem.clone()))
+            .collect()
+    }
+    pub fn exported_mems(&self) -> BTreeMap<usize, Memory> {
+        self.mems
+            .iter()
+            .filter(|(_, mem)| mem.export.is_some())
+            .map(|(key, mem)| (*key, mem.clone()))
+            .collect()
+    }
+    pub fn imported_globals(&self) -> BTreeMap<usize, Global> {
+        self.globals
+            .iter()
+            .filter(|(_, global)| global.import.is_some())
+            .map(|(key, global)| (*key, global.clone()))
+            .collect()
+    }
+    pub fn exported_globals(&self) -> BTreeMap<usize, Global> {
+        self.globals
+            .iter()
+            .filter(|(_, global)| global.export.is_some())
+            .map(|(key, global)| (*key, global.clone()))
+            .collect()
+    }
+    pub fn imported_modules(&self) -> Vec<String> {
+        let mut vec: Vec<String> = self
+            .module
+            .imports
+            .iter()
+            .map(|i| i.module.clone())
+            .collect();
+
+        // delete duplicate
+        let set: HashSet<String> = vec.drain(..).collect();
+        vec.extend(set.into_iter());
+        vec
+    }
 }
 
 struct State {
-    host_call_stack: Vec<i32>,
-    last_func: i32,
+    host_call_stack: Vec<usize>,
+    last_func: usize,
 }
 
 #[derive(Clone, Debug)]
 pub enum HostEvent {
     ExportCall {
-        idx: i32,
+        idx: usize,
         name: String,
         params: Vec<F64>,
     },
     ExportCallTable {
-        idx: i32,
+        idx: usize,
         table_name: String,
         funcidx: i32,
         params: Vec<F64>,
@@ -69,7 +142,7 @@ pub enum HostEvent {
     },
     MutateTable {
         tableidx: usize,
-        funcidx: i32,
+        funcidx: usize,
         idx: i32,
         func_import: bool,
         func_name: String,
@@ -87,11 +160,23 @@ pub struct WriteResult {
 pub type Context = Vec<HostEvent>;
 
 #[derive(Clone, Debug)]
-pub struct Function {
+pub struct Import {
     pub module: String,
     pub name: String,
+}
+#[derive(Clone, Debug)]
+
+pub struct Export {
+    pub name: String,
+}
+
+#[derive(Clone, Debug)]
+pub struct Function {
+    pub import: Option<Import>,
+    pub export: Option<Export>,
     pub bodys: Vec<Context>,
     pub results: Vec<WriteResult>,
+    pub ty: FunctionTy,
 }
 
 #[derive(Clone, Debug)]
@@ -100,113 +185,174 @@ pub struct FunctionTy {
     pub results: Vec<ValType>,
 }
 
+#[derive(Clone, Debug)]
 pub struct Memory {
-    pub module: String,
-    pub name: String,
+    pub import: Option<Import>,
+    pub export: Option<Export>,
     pub initial: u32,
     pub maximum: Option<u32>,
 }
 
+#[derive(Clone, Debug)]
 pub struct Table {
-    pub module: String,
-    pub name: String,
-    // enum is better
-    pub element: String,
+    pub import: Option<Import>,
+    pub export: Option<Export>,
+    pub reftype: RefType,
     pub initial: u32,
     pub maximum: Option<u32>,
 }
 
+#[derive(Clone, Debug)]
 pub struct Global {
-    pub module: String,
-    pub name: String,
+    pub import: Option<Import>,
+    pub export: Option<Export>,
     pub mutable: bool,
     pub initial: F64,
-    pub value: ValType,
+    pub valtype: ValType,
 }
 
 impl IRGenerator {
     pub fn new(module: Module) -> Self {
-        let mut func_imports = BTreeMap::new();
-        func_imports.insert(
-            -1,
+        let mut funcs = BTreeMap::new();
+        let mut mems = BTreeMap::new();
+        let mut tables = BTreeMap::new();
+        let mut globals = BTreeMap::new();
+        funcs.insert(
+            INIT_INDEX,
             Function {
-                module: "wasm-r3".to_string(),
-                name: "initialization".to_string(),
+                import: Some(Import {
+                    module: "wasm-r3".to_string(),
+                    name: "initialization".to_string(),
+                }),
+                export: None,
+                ty: FunctionTy {
+                    params: vec![],
+                    results: vec![],
+                },
                 bodys: vec![vec![]],
                 results: vec![],
             },
         );
-        let mut mem_imports = BTreeMap::new();
-        let mut table_imports = BTreeMap::new();
-        let mut func_idx_to_ty = BTreeMap::new();
         for f in module.funcs.iter() {
-            let ty = module.types.get(f.ty());
-            func_idx_to_ty.insert(
+            let import = match &f.kind {
+                walrus::FunctionKind::Import(i) => Some(Import {
+                    module: module.imports.get(i.import).module.to_string(),
+                    name: module.imports.get(i.import).name.to_string(),
+                }),
+                _ => None,
+            };
+            let export = module.exports.get_exported_func(f.id()).map(|e| Export {
+                name: e.name.to_string(),
+            });
+            let ty = FunctionTy {
+                params: module
+                    .types
+                    .get(f.ty())
+                    .params()
+                    .iter()
+                    .map(|p| (*p).into())
+                    .collect(),
+                results: module
+                    .types
+                    .get(f.ty())
+                    .results()
+                    .iter()
+                    .map(|p| (*p).into())
+                    .collect(),
+            };
+            funcs.insert(
                 f.id().index(),
-                FunctionTy {
-                    params: ty.params().iter().map(|p| (*p).into()).collect(),
-                    results: ty.results().iter().map(|p| (*p).into()).collect(),
+                Function {
+                    import,
+                    export,
+                    ty,
+                    bodys: vec![],
+                    results: vec![],
                 },
             );
         }
 
-        for i in module.imports.iter() {
-            match i.kind {
-                walrus::ImportKind::Function(f) => {
-                    let _ty = module.types.get(module.funcs.get(f).ty());
-                    func_imports.insert(
-                        f.index() as i32,
-                        Function {
-                            module: i.module.to_string(),
-                            name: i.name.to_string(),
-                            bodys: vec![],
-                            results: vec![],
-                        },
-                    );
-                }
-                walrus::ImportKind::Table(tid) => {
-                    let table = module.tables.get(tid);
-                    table_imports.insert(
-                        tid.index(),
-                        Table {
-                            module: i.module.to_string(),
-                            name: i.name.to_string(),
-                            // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
-                            element: "anyfunc".to_string(),
-                            initial: table.initial,
-                            maximum: table.maximum,
-                        },
-                    );
-                }
-                walrus::ImportKind::Memory(mid) => {
-                    let m = module.memories.get(mid);
-                    mem_imports.insert(
-                        mid.index(),
-                        Memory {
-                            module: i.module.to_string(),
-                            name: i.name.to_string(),
-                            initial: m.initial,
-                            maximum: m.maximum,
-                        },
-                    );
-                }
-                // Global is handled by the trace.
-                walrus::ImportKind::Global(_) => {}
-            }
+        for g in module.globals.iter() {
+            let import = match g.kind {
+                walrus::GlobalKind::Import(i) => Some(Import {
+                    module: module.imports.get(i).module.to_string(),
+                    name: module.imports.get(i).name.to_string(),
+                }),
+                walrus::GlobalKind::Local(_) => None,
+            };
+            let export = module.exports.get_exported_global(g.id()).map(|e| Export {
+                name: e.name.to_string(),
+            });
+            globals.insert(
+                g.id().index(),
+                Global {
+                    import,
+                    export,
+                    valtype: g.ty.into(),
+                    mutable: g.mutable,
+                    // this is wrong, which will be updated by ImportGlobal
+                    // TODO: more elegant solution
+                    initial: F64(0.0),
+                },
+            );
+        }
+
+        for t in module.tables.iter() {
+            let import = match t.import {
+                Some(i) => Some(Import {
+                    module: module.imports.get(i).module.to_string(),
+                    name: module.imports.get(i).name.to_string(),
+                }),
+                None => None,
+            };
+            let export = module.exports.get_exported_table(t.id()).map(|e| Export {
+                name: e.name.to_string(),
+            });
+            tables.insert(
+                t.id().index(),
+                Table {
+                    import,
+                    export,
+                    reftype: RefType::Anyref,
+                    initial: t.initial,
+                    maximum: t.maximum,
+                },
+            );
+        }
+
+        for m in module.memories.iter() {
+            let import = match m.import {
+                Some(i) => Some(Import {
+                    module: module.imports.get(i).module.to_string(),
+                    name: module.imports.get(i).name.to_string(),
+                }),
+                None => None,
+            };
+            let export = module.exports.get_exported_memory(m.id()).map(|e| Export {
+                name: e.name.to_string(),
+            });
+            mems.insert(
+                m.id().index(),
+                Memory {
+                    import,
+                    export,
+                    initial: m.initial,
+                    maximum: m.maximum,
+                },
+            );
         }
         Self {
             replay: Replay {
-                func_imports,
-                mem_imports,
-                table_imports,
-                func_idx_to_ty,
-                global_imports: BTreeMap::new(),
-                modules: Vec::new(),
+                funcs,
+                tables,
+                mems,
+                globals,
+                module,
             },
-            // -1 is the _start function
+            // INIT_INDEX is the _start function
             state: State {
-                host_call_stack: vec![-1], //
-                last_func: -1,
+                host_call_stack: vec![INIT_INDEX], //
+                last_func: INIT_INDEX,
             },
         }
     }
@@ -255,7 +401,7 @@ impl IRGenerator {
                 data,
             } => {
                 self.splice_event(HostEvent::MutateMemory {
-                    import: self.replay.mem_imports.contains_key(&idx),
+                    import: self.replay.imported_mems().contains_key(&idx),
                     name: name.clone(),
                     addr: *offset,
                     data: data.clone(),
@@ -263,7 +409,7 @@ impl IRGenerator {
             }
             WasmEvent::MemGrow { idx, name, amount } => {
                 self.splice_event(HostEvent::GrowMemory {
-                    import: self.replay.mem_imports.contains_key(idx),
+                    import: self.replay.imported_mems().contains_key(idx),
                     name: name.clone(),
                     amount: *amount,
                 });
@@ -278,16 +424,16 @@ impl IRGenerator {
                 self.splice_event(HostEvent::MutateTable {
                     tableidx: *tableidx,
                     funcidx: *funcidx,
-                    import: self.replay.table_imports.contains_key(&tableidx),
+                    import: self.replay.imported_tables().contains_key(&tableidx),
                     name: name.clone(),
                     idx: *idx,
-                    func_import: self.replay.func_imports.contains_key(funcidx),
+                    func_import: self.replay.imported_funcs().contains_key(funcidx),
                     func_name: funcname.clone(),
                 });
             }
             WasmEvent::TableGrow { idx, name, amount } => {
                 self.splice_event(HostEvent::GrowTable {
-                    import: self.replay.table_imports.contains_key(idx),
+                    import: self.replay.imported_tables().contains_key(idx),
                     name: name.clone(),
                     idx: *idx,
                     amount: *amount,
@@ -301,7 +447,7 @@ impl IRGenerator {
             } => {
                 self.splice_event(HostEvent::MutateGlobal {
                     idx: *idx,
-                    import: self.replay.global_imports.contains_key(&idx),
+                    import: self.replay.imported_globals().contains_key(&idx),
                     name: name.clone(),
                     value: *value,
                     valtype: valtype.clone(),
@@ -309,12 +455,7 @@ impl IRGenerator {
             }
 
             WasmEvent::ImportCall { idx, name: _name } => {
-                self.replay
-                    .func_imports
-                    .get_mut(idx)
-                    .unwrap()
-                    .bodys
-                    .push(vec![]);
+                self.replay.funcs.get_mut(idx).unwrap().bodys.push(vec![]);
                 self.state.host_call_stack.push(*idx);
                 self.state.last_func = *idx;
             }
@@ -324,12 +465,7 @@ impl IRGenerator {
                 results,
             } => {
                 let current_fn_idx = self.state.host_call_stack.last().unwrap();
-                let r = &mut self
-                    .replay
-                    .func_imports
-                    .get_mut(&current_fn_idx)
-                    .unwrap()
-                    .results;
+                let r = &mut self.replay.funcs.get_mut(&current_fn_idx).unwrap().results;
                 r.push(WriteResult {
                     results: results.clone(),
                     reps: 1,
@@ -338,23 +474,15 @@ impl IRGenerator {
             }
             WasmEvent::ImportGlobal {
                 idx,
-                module,
-                name,
-                mutable,
+                module: _,
+                name: _,
+                mutable: _,
                 initial,
-                value,
-            } => {
-                self.replay.global_imports.insert(
-                    *idx,
-                    Global {
-                        module: module.clone(),
-                        name: name.clone(),
-                        value: value.clone(),
-                        initial: initial.clone(),
-                        mutable: *mutable,
-                    },
-                );
-            }
+                value: _,
+            } => match self.replay.globals.get_mut(idx) {
+                Some(g) => g.initial = *initial,
+                None => todo!(),
+            },
         }
     }
     fn splice_event(&mut self, event: HostEvent) {
@@ -372,10 +500,10 @@ impl IRGenerator {
         }
     }
 
-    fn idx_to_cxt(&mut self, idx: i32) -> &mut Vec<HostEvent> {
+    fn idx_to_cxt(&mut self, idx: usize) -> &mut Vec<HostEvent> {
         let current_context = self
             .replay
-            .func_imports
+            .funcs
             .get_mut(&idx)
             .unwrap()
             .bodys
@@ -383,10 +511,4 @@ impl IRGenerator {
             .unwrap();
         current_context
     }
-
-    // fn add_module(&mut self, module: &String) {
-    //     if !self.replay.modules.contains(module) {
-    //         self.replay.modules.push(module.clone());
-    //     }
-    // }
 }

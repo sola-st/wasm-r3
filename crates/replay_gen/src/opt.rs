@@ -1,7 +1,7 @@
 use crate::irgen::{Replay, WriteResult};
 
 pub fn merge_fn_results(replay: &mut Replay) {
-    for (_i, f) in &mut replay.func_imports {
+    for (_i, f) in &mut replay.funcs {
         let mut new_results: Vec<WriteResult> = vec![];
         for v in &f.results {
             match new_results.last() {
