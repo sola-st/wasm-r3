@@ -6,6 +6,7 @@ pub mod codegen;
 pub mod irgen;
 pub mod opt;
 pub mod trace;
+pub mod trace_optimisation;
 
 #[cfg(test)]
 mod tests {
@@ -37,7 +38,7 @@ mod tests {
                             let mut original_contents = Vec::new();
                             file.read_to_end(&mut original_contents)?;
 
-                            let mut trace = trace::Trace::from_text_file(&path);
+                            // let mut trace = trace::Trace::from_text_file(&path);
                             let mut newfile = tempfile::tempfile()?;
                             // trace.to_text_file(&mut newfile);
                             newfile.seek(SeekFrom::Start(0));
@@ -107,7 +108,7 @@ mod tests {
                             let mut old_js = String::new();
                             reader.read_to_string(&mut old_js)?;
 
-                            let trace = trace::Trace::from_text_file(&path);
+                            // let trace = trace::Trace::from_text_file(&path);
                             // let mut generator = IRGenerator::new();
                             // generator.generate_replay(&trace);
                             // merge_fn_results(&mut generator.replay);

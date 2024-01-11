@@ -7,7 +7,7 @@ use std::collections::BTreeMap;
 
 use walrus::Module;
 
-use crate::trace::{Trace, ValType, WasmEvent, F64};
+use crate::trace::{ValType, WasmEvent, F64};
 
 pub struct IRGenerator {
     pub replay: Replay,
@@ -211,12 +211,12 @@ impl IRGenerator {
         }
     }
 
-    pub fn generate_replay(&mut self, trace: Trace) -> &Replay {
-        for e in trace.0 {
-            self.consume_event(&e);
-        }
-        &self.replay
-    }
+    // pub fn generate_replay(&mut self, trace: Trace) -> &Replay {
+    //     for e in trace.0 {
+    //         self.consume_event(e);
+    //     }
+    //     &self.replay
+    // }
 
     fn push_call(&mut self, event: HostEvent) {
         let idx = self.state.host_call_stack.last().unwrap();
@@ -225,16 +225,16 @@ impl IRGenerator {
         current_context.push(event.clone());
     }
 
-    fn consume_event(&mut self, event: &WasmEvent) {
+    pub fn consume_event(&mut self, event: WasmEvent) {
         match event {
             WasmEvent::FuncEntry { idx, params } => {
                 self.push_call(HostEvent::ExportCall { idx: idx.clone(), name: todo!(), params: params.clone() });
             }
             WasmEvent::FuncEntryTable { idx, tablename, tableidx: funcidx, params } => {
                 self.push_call(HostEvent::ExportCallTable {
-                    idx: *idx,
+                    idx: idx,
                     table_name: todo!(),
-                    funcidx: *funcidx,
+                    funcidx,
                     params: params.clone(),
                 });
             }
@@ -243,50 +243,50 @@ impl IRGenerator {
                 self.splice_event(HostEvent::MutateMemory {
                     import: self.replay.mem_imports.contains_key(&idx),
                     name: todo!(),
-                    addr: *offset,
+                    addr: offset,
                     data: todo!(),
                 });
             }
             WasmEvent::MemGrow { idx, amount } => {
                 self.splice_event(HostEvent::GrowMemory {
-                    import: self.replay.mem_imports.contains_key(idx),
+                    import: self.replay.mem_imports.contains_key(&idx),
                     name: todo!(),
-                    amount: *amount,
+                    amount: amount,
                 });
             }
             WasmEvent::TableGet { tableidx, idx, funcidx } => {
                 self.splice_event(HostEvent::MutateTable {
-                    tableidx: *tableidx,
-                    funcidx: *funcidx,
+                    tableidx: tableidx,
+                    funcidx: funcidx,
                     import: self.replay.table_imports.contains_key(&tableidx),
                     name: todo!(),
-                    idx: *idx,
-                    func_import: self.replay.func_imports.contains_key(funcidx),
+                    idx: idx,
+                    func_import: self.replay.func_imports.contains_key(&funcidx),
                     func_name: todo!(),
                 });
             }
             WasmEvent::TableGrow { idx, amount } => {
                 self.splice_event(HostEvent::GrowTable {
-                    import: self.replay.table_imports.contains_key(idx),
+                    import: self.replay.table_imports.contains_key(&idx),
                     name: todo!(),
-                    idx: *idx,
-                    amount: *amount,
+                    idx: idx,
+                    amount: amount,
                 });
             }
             WasmEvent::GlobalGet { idx, value, valtype } => {
                 self.splice_event(HostEvent::MutateGlobal {
-                    idx: *idx,
+                    idx: idx,
                     import: self.replay.global_imports.contains_key(&idx),
                     name: todo!(),
-                    value: *value,
+                    value: value,
                     valtype: valtype.clone(),
                 });
             }
 
-            WasmEvent::ImportCall { idx, name: _name } => {
-                self.replay.func_imports.get_mut(idx).unwrap().bodys.push(vec![]);
-                self.state.host_call_stack.push(*idx);
-                self.state.last_func = *idx;
+            WasmEvent::ImportCall { idx } => {
+                self.replay.func_imports.get_mut(&idx).unwrap().bodys.push(vec![]);
+                self.state.host_call_stack.push(idx);
+                self.state.last_func = idx;
             }
             WasmEvent::ImportReturn { idx: _idx, results } => {
                 let current_fn_idx = self.state.host_call_stack.last().unwrap();
@@ -296,13 +296,13 @@ impl IRGenerator {
             }
             WasmEvent::ImportGlobal { idx, module, name, mutable, initial, value } => {
                 self.replay.global_imports.insert(
-                    *idx,
+                    idx,
                     Global {
                         module: module.clone(),
                         name: todo!(),
                         value: value.clone(),
                         initial: initial.clone(),
-                        mutable: *mutable,
+                        mutable: mutable,
                     },
                 );
             }

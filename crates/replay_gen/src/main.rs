@@ -1,11 +1,12 @@
 use replay_gen::codegen::{generate_javascript, generate_standalone};
 use replay_gen::irgen::IRGenerator;
 use replay_gen::opt::Optimiser;
-use replay_gen::trace::{self};
-use std::io::{self};
+use replay_gen::trace::{self, WasmEvent};
+use replay_gen::trace_optimisation::{ShadowMemoryOptimiser, TraceOptimiser};
+use std::fs::File;
+use std::io::{self, BufReader};
 use std::path::Path;
 use std::{env, fs};
-use trace::Trace;
 use walrus::Module;
 
 fn main() -> io::Result<()> {
@@ -19,16 +20,19 @@ fn main() -> io::Result<()> {
         None => None,
     };
 
-    let mut trace = Trace::from_text_file(trace_path).unwrap();
-
+    let file = File::open(trace_path).unwrap();
+    let mut reader = BufReader::new(file);
     let buffer = &fs::read(wasm_path).unwrap();
     let module = Module::from_buffer(buffer).unwrap();
-
-    // opt trace
-    Optimiser::shadow_mem(&mut trace, &module);
-
+    let mut shadow_mem_optimiser = ShadowMemoryOptimiser::new(&module);
     let mut generator = IRGenerator::new(module);
-    generator.generate_replay(trace);
+    while let Ok(event) = WasmEvent::decode_string(&mut reader) {
+        let event = match shadow_mem_optimiser.consume_event(event) {
+            Some(e) => e,
+            None => continue,
+        };
+        generator.consume_event(event);
+    }
 
     // opt replay
     Optimiser::merge_fn_results(&mut generator.replay);
