@@ -102,9 +102,14 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   let replayCode
   try {
     if (options.rustBackend === true) {
-      execSync(`./crates/target/release/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
-      execSync(`wasm-validate  ${mergedWasmPath}`)
-      return { testPath, success: true }
+      if (options.extended == true) {
+        execSync(`./crates/target/release/replay_gen ${tracePath} ${wasmPath} ${replayJsPath}`);
+      } else {
+        execSync(`./crates/target/release/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
+        // we validate and early return as for single wasm accuracy test doesn't make sense
+        execSync(`wasm-validate  ${replayWasmPath}`)
+        return { testPath, success: true }
+      }
     } else {
       replayCode = await new Generator().generateReplay(trace)
       await generateJavascript(fss.createWriteStream(replayJsPath), replayCode)
@@ -185,11 +190,10 @@ async function runOnlineTests(names: string[], options) {
   }
   // ignore specific tests
   let filter = [
-    'ogv', // wasm only: export "_start" does not work without imported replay binary. low prio.
     // TODO: make big loads trace smaller
-    'image-convolute', // js: utf decode error wasm: Code function's size is too big
-    'kittygame', // wasm only: error: Code function's size is too big
-    'funky-kart', // wasm only: error: Code function's size is too big
+    'image-convolute', // wasm: Code function's size is too big. js: utf decode error
+    'kittygame', // wasm: error: Code function's size is too big
+    'funky-kart', // wasm: error: Code function's size is too big
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
