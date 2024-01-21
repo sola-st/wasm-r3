@@ -142,8 +142,10 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
         if current_module == "main" {
             let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
             write(stream, "(func (export \"_start\") (export \"main\")\n")?;
-            for event in initialization {
-                write(stream, &format!("{}", hostevent_to_wat(event, code)))?
+            if let Some(initialization) = initialization {
+                for event in initialization {
+                    write(stream, &format!("{}", hostevent_to_wat(&event, code)))?
+                }
             }
             write(stream, "(return)\n)")?;
         } else {
@@ -167,18 +169,20 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
                 let tystr = get_functy_strs(&func.ty);
                 write(stream, &format!("(func (export \"{name}\") {tystr}\n",))?;
                 for (i, body) in func.bodys.iter().enumerate() {
-                    let mut bodystr = String::new();
-                    let _body = for event in body {
-                        bodystr += &hostevent_to_wat(event, code)
-                    };
-                    write(
-                        stream,
-                        &format!(
-                            "(if
-                            (i64.eq (global.get {global_idx}) (i64.const {i}))
-                            (then {bodystr}))\n"
-                        ),
-                    )?;
+                    if let Some(body) = body {
+                        let mut bodystr = String::new();
+                        let _body = for event in body {
+                            bodystr += &hostevent_to_wat(event, code);
+                        };
+                        write(
+                            stream,
+                            &format!(
+                                "(if
+                                    (i64.eq (global.get {global_idx}) (i64.const {i}))
+                                    (then {bodystr}))\n"
+                            ),
+                        )?;
+                    }
                 }
                 write(
                     stream,

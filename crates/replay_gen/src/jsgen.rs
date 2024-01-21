@@ -100,7 +100,9 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
                 &format!("switch ({}) {{\n", write_func_global(funcidx)),
             )?;
             for (i, body) in func.bodys.iter().enumerate() {
-                write_body(stream, body, i)?;
+                if let Some(body) = body {
+                    write_body(stream, body, i)?
+                }
             }
             write(stream, "}\n")?;
         }
@@ -111,11 +113,14 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
     write(stream, "export function replay(wasm) {")?;
     write(stream, "instance = wasm.instance\n")?;
     let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
-    for event in initialization {
-        let str = hostevent_to_js(event);
-        writeln!(stream, "{}", str)?;
+    if let Some(initialization) = initialization {
+        for event in initialization {
+            let str = hostevent_to_js(&event);
+            writeln!(stream, "{}", str)?;
+        }
+        write(stream, "}\n")?;
     }
-    write(stream, "}\n")?;
+
     write(stream, "export function instantiate(wasmBinary) {\n")?;
     write(
         stream,

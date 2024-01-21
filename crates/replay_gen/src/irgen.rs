@@ -174,7 +174,7 @@ pub struct Export {
 pub struct Function {
     pub import: Option<Import>,
     pub export: Option<Export>,
-    pub bodys: Vec<Context>,
+    pub bodys: Vec<Option<Context>>,
     pub results: Vec<WriteResult>,
     pub ty: FunctionTy,
 }
@@ -229,7 +229,7 @@ impl IRGenerator {
                     params: vec![],
                     results: vec![],
                 },
-                bodys: vec![vec![]],
+                bodys: vec![Some(vec![])],
                 results: vec![],
             },
         );
@@ -368,7 +368,9 @@ impl IRGenerator {
         let idx = self.state.host_call_stack.last().unwrap();
         let current_context = self.idx_to_cxt(*idx);
 
-        current_context.push(event.clone());
+        if let Some(current_context) = current_context {
+            current_context.push(event.clone())
+        }
     }
 
     fn consume_event(&mut self, event: &WasmEvent) {
@@ -455,7 +457,12 @@ impl IRGenerator {
             }
 
             WasmEvent::ImportCall { idx, name: _name } => {
-                self.replay.funcs.get_mut(idx).unwrap().bodys.push(vec![]);
+                self.replay
+                    .funcs
+                    .get_mut(idx)
+                    .unwrap()
+                    .bodys
+                    .push(Some(vec![]));
                 self.state.host_call_stack.push(*idx);
                 self.state.last_func = *idx;
             }
@@ -492,15 +499,19 @@ impl IRGenerator {
         let current_context = self.idx_to_cxt(*idx);
 
         if last_import_call {
-            current_context.insert(current_context.len() - 1, event);
+            if let Some(current_context) = current_context {
+                current_context.insert(current_context.len() - 1, event)
+            }
         } else {
             let last_idx = &self.state.last_func;
             let last_context = self.idx_to_cxt(*last_idx);
-            last_context.push(event.clone());
+            if let Some(last_context) = last_context {
+                last_context.push(event.clone())
+            }
         }
     }
 
-    fn idx_to_cxt(&mut self, idx: usize) -> &mut Vec<HostEvent> {
+    fn idx_to_cxt(&mut self, idx: usize) -> &mut Option<Vec<HostEvent>> {
         let current_context = self
             .replay
             .funcs
