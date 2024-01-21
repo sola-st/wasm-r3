@@ -139,6 +139,99 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             )?;
         }
         // functions
+
+        for (funcidx, func) in &code.imported_funcs() {
+            let import = func.import.clone().unwrap();
+            if import.module != *current_module {
+                continue;
+            }
+            // TODO: better handling of initialization
+            if *funcidx == INIT_INDEX {
+                continue;
+            }
+            let funcidx = *funcidx;
+            let name = func.import.clone().unwrap().name.clone();
+            let global_idx = format!("$global_{}", funcidx.to_string());
+            let func = code.funcs.get(&funcidx).unwrap();
+            write(
+                stream,
+                &format!("(global {global_idx} (mut i64) (i64.const 0))\n"),
+            )?;
+            let tystr = get_functy_strs(&func.ty);
+            write(
+                stream,
+                &format!("(func ${name} (export \"{name}\") {tystr}\n",),
+            )?;
+            for (i, body) in func.bodys.iter().enumerate() {
+                if let Some(body) = body {
+                    let mut bodystr = String::new();
+                    let _body = for event in body {
+                        bodystr += &hostevent_to_wat(event, code);
+                    };
+                    write(
+                        stream,
+                        &format!(
+                            "(if
+                                    (i64.eq (global.get {global_idx}) (i64.const {i}))
+                                    (then {bodystr}))\n"
+                        ),
+                    )?;
+                }
+            }
+            write(
+                stream,
+                &format!(
+                    "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n"
+                ),
+            )?;
+            let mut current = 0;
+            for r in func.results.iter() {
+                let ty = &code.funcs.get(&funcidx).unwrap().ty;
+                let _param_tys = ty.params.clone();
+                let new_c = current + r.reps;
+                let c1 = current + 1;
+                let c2 = new_c + 1;
+                let res = match r.results.get(0) {
+                    Some(v) => format!(
+                        "(return ({} {v}))",
+                        valty_to_const(ty.results.get(0).unwrap())
+                    ),
+                    None => "(return)".to_owned(),
+                };
+                write(
+                    stream,
+                    &format!(
+                        " (if
+                            (i32.and
+                              (i64.ge_s (global.get {global_idx}) (i64.const {c1}))
+                              (i64.lt_s (global.get {global_idx}) (i64.const {c2}))
+                            )
+                            (then
+                                {res}
+                            )
+                          )"
+                    ),
+                )?;
+                current = new_c;
+            }
+            let ty = &code.funcs.get(&funcidx).unwrap().ty;
+            let _param_tys = ty.params.clone();
+            let default_return = match ty.results.get(0) {
+                Some(v) => match v {
+                    ValType::I32 => "(i32.const 0)",
+                    ValType::I64 => "(i64.const 0)",
+                    ValType::F32 => "(f32.const 0)",
+                    ValType::F64 => "(f64.const 0)",
+                    ValType::V128 => todo!(),
+                    ValType::Anyref => todo!(),
+                    ValType::Externref => todo!(),
+                },
+                None => "",
+            };
+            write(stream, &format!("(return {})", default_return))?;
+            write(stream, ")\n")?;
+        }
+
         if current_module == "main" {
             let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
             write(stream, "(func (export \"_start\") (export \"main\")\n")?;
@@ -148,95 +241,6 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
                 }
             }
             write(stream, "(return)\n)")?;
-        } else {
-            for (funcidx, func) in &code.imported_funcs() {
-                let import = func.import.clone().unwrap();
-                if import.module != *current_module {
-                    continue;
-                }
-                // TODO: better handling of initialization
-                if *funcidx == INIT_INDEX {
-                    continue;
-                }
-                let funcidx = *funcidx;
-                let name = func.import.clone().unwrap().name.clone();
-                let global_idx = format!("$global_{}", funcidx.to_string());
-                let func = code.funcs.get(&funcidx).unwrap();
-                write(
-                    stream,
-                    &format!("(global {global_idx} (mut i64) (i64.const 0))\n"),
-                )?;
-                let tystr = get_functy_strs(&func.ty);
-                write(stream, &format!("(func (export \"{name}\") {tystr}\n",))?;
-                for (i, body) in func.bodys.iter().enumerate() {
-                    if let Some(body) = body {
-                        let mut bodystr = String::new();
-                        let _body = for event in body {
-                            bodystr += &hostevent_to_wat(event, code);
-                        };
-                        write(
-                            stream,
-                            &format!(
-                                "(if
-                                    (i64.eq (global.get {global_idx}) (i64.const {i}))
-                                    (then {bodystr}))\n"
-                            ),
-                        )?;
-                    }
-                }
-                write(
-                    stream,
-                    &format!(
-                    "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n"
-                ),
-                )?;
-                let mut current = 0;
-                for r in func.results.iter() {
-                    let ty = &code.funcs.get(&funcidx).unwrap().ty;
-                    let _param_tys = ty.params.clone();
-                    let new_c = current + r.reps;
-                    let c1 = current + 1;
-                    let c2 = new_c + 1;
-                    let res = match r.results.get(0) {
-                        Some(v) => format!(
-                            "(return ({} {v}))",
-                            valty_to_const(ty.results.get(0).unwrap())
-                        ),
-                        None => "(return)".to_owned(),
-                    };
-                    write(
-                        stream,
-                        &format!(
-                            " (if
-                            (i32.and
-                              (i64.ge_s (global.get {global_idx}) (i64.const {c1}))
-                              (i64.lt_s (global.get {global_idx}) (i64.const {c2}))
-                            )
-                            (then
-                                {res}
-                            )
-                          )"
-                        ),
-                    )?;
-                    current = new_c;
-                }
-                let ty = &code.funcs.get(&funcidx).unwrap().ty;
-                let _param_tys = ty.params.clone();
-                let default_return = match ty.results.get(0) {
-                    Some(v) => match v {
-                        ValType::I32 => "(i32.const 0)",
-                        ValType::I64 => "(i64.const 0)",
-                        ValType::F32 => "(f32.const 0)",
-                        ValType::F64 => "(f64.const 0)",
-                        ValType::V128 => todo!(),
-                        ValType::Anyref => todo!(),
-                        ValType::Externref => todo!(),
-                    },
-                    None => "",
-                };
-                write(stream, &format!("(return {})", default_return))?;
-                write(stream, ")\n")?;
-            }
         }
 
         write(stream, ")\n")?;
@@ -258,6 +262,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
         "--rename-export-conflicts",
         "--enable-reference-types",
         "--enable-multimemory",
+        "--enable-bulk-memory",
         "index.wasm",
         "index",
     ]
@@ -275,6 +280,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
         .args([
             "--enable-reference-types",
             "--enable-gc",
+            "--enable-bulk-memory",
             // for handling inlining of imported globals. Without this glob-merge node test will fail.
             "--simplify-globals",
             "merged.wasm",
@@ -359,7 +365,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         }
         HostEvent::MutateTable {
             tableidx,
-            funcidx,
+            funcidx: _,
             idx,
             func_import: _,
             func_name,
@@ -369,12 +375,13 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             format!("(table.set {tableidx} (i32.const {idx}) (ref.func ${func_name}))",)
         }
         HostEvent::GrowTable {
-            idx: _,
+            idx,
             amount,
             import: _,
             name: _,
         } => {
-            format!("(table.grow (i32.const {})) (drop)\n", amount)
+            // TODO: check if (ref.null func) is correct
+            format!("(table.grow {idx} (ref.null func) (i32.const {amount})) (drop)\n")
         }
         HostEvent::MutateGlobal {
             idx,

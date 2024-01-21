@@ -6,7 +6,7 @@ use std::{env, fs};
 
 use replay_gen::irgen::IRGenerator;
 use replay_gen::jsgen::generate_replay_javascript;
-use replay_gen::opt::{discard_empty_body, merge_fn_results};
+use replay_gen::opt::{discard_empty_body, merge_fn_results, split_big_body};
 use replay_gen::trace;
 use replay_gen::wasmgen::generate_replay_wasm;
 use walrus::Module;
@@ -46,6 +46,7 @@ fn main() -> io::Result<()> {
     // opt phase
     merge_fn_results(&mut generator.replay);
     discard_empty_body(&mut generator.replay);
+    split_big_body(&mut generator.replay);
 
     // codegen phase
     let is_standalone = replay_path.is_none();
