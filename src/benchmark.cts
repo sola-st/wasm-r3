@@ -36,7 +36,7 @@ export default class Benchmark {
                     execSync(`./crates/target/release/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.js')}`);
                 } else {
                     execSync(`./crates/target/release/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.wasm')}`);
-                    execSync(`. ~/.bashrc && t8 ${path.join(binPath, "replay.wasm")}`)
+                    execSync(`wasm-tools validate -f all ${path.join(binPath, "replay.wasm")}`)
                 }
                 p_measureCodeGen()
             } else {

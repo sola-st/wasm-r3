@@ -190,10 +190,8 @@ async function runOnlineTests(names: string[], options) {
   }
   // ignore specific tests
   let filter = [
-    // TODO: make big loads trace smaller
-    'image-convolute', // wasm: Code function's size is too big. js: utf decode error
-    'kittygame', // wasm: error: Code function's size is too big
-    'funky-kart', // wasm: error: Code function's size is too big
+    'heatmap', // works fine, but too long so we skip it
+    'image-convolute', // asm2wasm - f64-to-int is too large
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
@@ -292,7 +290,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
     await benchmark.save(benchmarkPath, options)
-    if (options.rustBackend === true) {
+    if (options.rustBackend === true && options.extended === false) {
       return { testPath, success: true }
     }
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)

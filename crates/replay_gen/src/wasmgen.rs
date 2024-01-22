@@ -60,7 +60,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
 
             write(
                 stream,
-                &format!("(import \"index\" \"{name}\" (table ${name} {initial} {reftype}))\n",),
+                &format!("(import \"index\" \"{name}\" (table ${name} {initial} {reftype:?}))\n",),
             )?;
         }
 
@@ -135,7 +135,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             let reftype = table.reftype.clone();
             write(
                 stream,
-                &format!("(table (export \"{name}\") {initial} {maximum} {reftype})\n",),
+                &format!("(table (export \"{name}\") {initial} {maximum} {reftype:?})\n",),
             )?;
         }
         // functions
