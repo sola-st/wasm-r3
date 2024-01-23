@@ -290,7 +290,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
     await benchmark.save(benchmarkPath, options)
-    if (options.rustBackend === true && options.extended === false) {
+    if (options.rustBackend === true && options.extended != true) {
       return { testPath, success: true }
     }
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
