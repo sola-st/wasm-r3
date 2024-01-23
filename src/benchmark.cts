@@ -24,18 +24,16 @@ export default class Benchmark {
         await Promise.all(this.record.map(async ({ binary, trace }, i) => {
             const binPath = path.join(benchmarkPath, `bin_${i}`)
             await fs.mkdir(binPath)
-            if (options.trace === true) {
-                await fs.writeFile(path.join(binPath, 'trace.r3'), trace.toString())
-            }
+            await fs.writeFile(path.join(binPath, 'trace.r3'), trace.toString())
             const diskSave = path.join(binPath, `temp-trace-${i}.r3`)
             await fs.writeFile(diskSave, trace.toString())
             await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
             if (options.rustBackend === true) {
                 const p_measureCodeGen = createMeasure('rust-backend', { phase: 'replay-generation', description: `The time it takes for rust backend to generate javascript` })
                 if (options.extended) {
-                    execSync(`./crates/target/release/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.js')}`);
+                    execSync(`./crates/target/debug/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.js')}`);
                 } else {
-                    execSync(`./crates/target/release/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.wasm')}`);
+                    execSync(`./crates/target/debug/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.wasm')}`);
                     execSync(`wasm-tools validate -f all ${path.join(binPath, "replay.wasm")}`)
                 }
                 p_measureCodeGen()

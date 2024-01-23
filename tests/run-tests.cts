@@ -103,9 +103,9 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   try {
     if (options.rustBackend === true) {
       if (options.extended == true) {
-        execSync(`./crates/target/release/replay_gen ${tracePath} ${wasmPath} ${replayJsPath}`);
+        execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayJsPath}`);
       } else {
-        execSync(`./crates/target/release/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
+        execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
         // we validate and early return as for single wasm accuracy test doesn't make sense
         execSync(`wasm-validate  ${replayWasmPath}`)
         return { testPath, success: true }
@@ -198,16 +198,12 @@ async function runOnlineTests(names: string[], options) {
     const spinner = startSpinner(name)
     const testPath = path.join(process.cwd(), 'tests', 'online', name)
     const cleanUpPerformance = await initPerformance(name, 'online-auto-test', path.join(testPath, 'performance.ndjson'))
-    const report = await runOnlineTest(testPath, options)
+    await cleanUp(testPath);
+    const report = await testWebPage(testPath, options)
     stopSpinner(spinner)
     cleanUpPerformance()
     await writeReport(name, report)
   }
-}
-
-async function runOnlineTest(testPath: string, options) {
-  await cleanUp(testPath)
-  return testWebPage(testPath, options)
 }
 
 async function runOfflineTests(names: string[], options) {
@@ -218,12 +214,17 @@ async function runOfflineTests(names: string[], options) {
   }
   // ignore specific tests
   let filter = [
-    'sqllite'
+    'sqllite',
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
     const spinner = startSpinner(name)
-    const report = await runOfflineTest(name, options)
+    const testPath = path.join(process.cwd(), 'tests', 'offline', name)
+    const websitePath = path.join(testPath, 'website')
+    await cleanUp(testPath)
+    const server = await startServer(websitePath)
+    let report = await testWebPage(testPath, options)
+    server.close()
     stopSpinner(spinner)
     await writeReport(name, report)
   }
@@ -261,15 +262,6 @@ function startServer(websitePath: string): Promise<Server> {
   })
 }
 
-async function runOfflineTest(name: string, options): Promise<TestReport> {
-  const testPath = path.join(process.cwd(), 'tests', 'offline', name)
-  const websitePath = path.join(testPath, 'website')
-  await cleanUp(testPath)
-  const server = await startServer(websitePath)
-  let report = await testWebPage(testPath, options)
-  server.close()
-  return report
-}
 
 async function testWebPage(testPath: string, options): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')

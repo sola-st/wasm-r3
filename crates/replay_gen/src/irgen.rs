@@ -15,6 +15,7 @@ pub const INIT_INDEX: usize = MAX_WASM_FUNCTIONS + 1;
 pub struct IRGenerator {
     pub replay: Replay,
     state: State,
+    flag: bool,
 }
 
 pub struct Replay {
@@ -354,6 +355,7 @@ impl IRGenerator {
                 host_call_stack: vec![INIT_INDEX], //
                 last_func: INIT_INDEX,
             },
+            flag: true,
         }
     }
 
@@ -365,6 +367,7 @@ impl IRGenerator {
     }
 
     fn push_call(&mut self, event: HostEvent) {
+        self.flag = true;
         let idx = self.state.host_call_stack.last().unwrap();
         let current_context = self.idx_to_cxt(*idx);
 
@@ -471,6 +474,7 @@ impl IRGenerator {
                 name: _name,
                 results,
             } => {
+                self.flag = false;
                 let current_fn_idx = self.state.host_call_stack.last().unwrap();
                 let r = &mut self.replay.funcs.get_mut(&current_fn_idx).unwrap().results;
                 r.push(WriteResult {
@@ -493,12 +497,15 @@ impl IRGenerator {
         }
     }
     fn splice_event(&mut self, event: HostEvent) {
-        let idx = self.state.host_call_stack.last().unwrap();
-        let last_idx = self.state.last_func;
-        let last_import_call = *idx == last_idx;
+        if self.flag {
+            let idx = self.state.host_call_stack.last().unwrap();
+        let current_context = self.idx_to_cxt(*idx);
         let current_context = self.idx_to_cxt(*idx);
 
-        if last_import_call {
+        if flag {
+            let current_context = self.idx_to_cxt(*idx);
+
+        if flag {
             if let Some(current_context) = current_context {
                 current_context.insert(current_context.len() - 1, event)
             }
