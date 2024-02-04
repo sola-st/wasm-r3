@@ -1,10 +1,11 @@
-use std::collections::HashSet;
+use std::collections::{BTreeMap, HashSet};
 use std::io::Write;
 use std::process::Command;
+use std::vec;
 use std::{fs::File, path::Path};
 
 use crate::irgen::{FunctionTy, HostEvent, INIT_INDEX};
-use crate::trace::ValType;
+use crate::trace::{ValType, F64};
 use crate::{irgen::Replay, write};
 
 pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Result<()> {
@@ -24,6 +25,8 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
         let mut module_wat_file = File::create(&module_wat_path)?;
         let stream = &mut module_wat_file;
         write(stream, "(module\n")?;
+
+        let mut data_segments: Vec<Vec<F64>> = vec![];
 
         // Import part
         for (_memidx, memory) in &code.exported_mems() {
@@ -165,9 +168,23 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             for (i, body) in func.bodys.iter().enumerate() {
                 if let Some(body) = body {
                     let mut bodystr = String::new();
-                    let _body = for event in body {
-                        bodystr += &hostevent_to_wat(event, code);
-                    };
+                    let mut memory_writes = BTreeMap::new();
+                    for event in body {
+                        match event {
+                            HostEvent::MutateMemory {
+                                addr,
+                                data,
+                                import: _,
+                                name: _,
+                            } => {
+                                memory_writes.insert(addr, data);
+                            }
+                            _ => bodystr += &hostevent_to_wat(event, code),
+                        }
+                    }
+                    if memory_writes.len() > 0 {
+                        merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
+                    }
                     write(
                         stream,
                         &format!(
@@ -231,6 +248,14 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             write(stream, &format!("(return {})", default_return))?;
             write(stream, ")\n")?;
         }
+        for data_segment in data_segments {
+            write(stream, "(data \"")?;
+            for byte in data_segment {
+                let byte = byte.0 as usize;
+                write(stream, &format!("\\{byte:02x}",))?;
+            }
+            write(stream, "\")\n")?;
+        }
 
         if current_module == "main" {
             let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
@@ -291,6 +316,57 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
         .expect("Failed to execute wasm-opt");
 
     Ok(())
+}
+
+fn merge_memory_writes(
+    bodystr: &mut String,
+    memory_writes: BTreeMap<&i32, &Vec<F64>>,
+    data_segments: &mut Vec<Vec<F64>>,
+) {
+    let mut partitions: Vec<(i32, Vec<F64>)> = Vec::new();
+    let mut current_partition: Vec<F64> = Vec::new();
+    let mut last_key: Option<i32> = None;
+    let mut start_key: Option<i32> = None;
+
+    for (key, value) in memory_writes {
+        match last_key {
+            Some(last_key) if last_key + 1 == *key => {
+                current_partition.extend(value);
+            }
+            _ => {
+                if !current_partition.is_empty() {
+                    partitions.push((start_key.unwrap(), current_partition));
+                }
+                current_partition = value.clone();
+                start_key = Some(*key);
+            }
+        }
+        last_key = Some(*key);
+    }
+
+    if !current_partition.is_empty() {
+        partitions.push((start_key.unwrap(), current_partition));
+    }
+
+    for (start_addr, data) in partitions {
+        let memoryinit_threshold = 9;
+        if data.len() >= memoryinit_threshold {
+            let data_segment_idx = data_segments.len();
+            let data_len = data.len();
+            bodystr.push_str(&format!(
+                    "(memory.init {data_segment_idx} (i32.const {start_addr}) (i32.const 0) (i32.const {data_len}))\n",
+                ));
+            data_segments.push(data);
+        } else {
+            // merging 4 bytes and 8 bytes is also possible
+            for (j, byte) in data.iter().enumerate() {
+                let addr = start_addr + j as i32;
+                bodystr.push_str(&format!(
+                    "(i32.store8 (i32.const {addr}) (i32.const {byte}))\n",
+                ));
+            }
+        }
+    }
 }
 
 fn valty_to_const(valty: &ValType) -> String {

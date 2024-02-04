@@ -499,8 +499,6 @@ impl IRGenerator {
     fn splice_event(&mut self, event: HostEvent) {
         let flag = self.flag;
         let idx = self.state.host_call_stack.last().unwrap();
-        let last_idx = self.state.last_func;
-        let last_import_call = *idx == last_idx;
         let current_context = self.idx_to_cxt(*idx);
 
         if flag {
