@@ -497,13 +497,9 @@ impl IRGenerator {
         }
     }
     fn splice_event(&mut self, event: HostEvent) {
-        if self.flag {
-            let idx = self.state.host_call_stack.last().unwrap();
+        let flag = self.flag;
+        let idx = self.state.host_call_stack.last().unwrap();
         let current_context = self.idx_to_cxt(*idx);
-        let current_context = self.idx_to_cxt(*idx);
-
-        if flag {
-            let current_context = self.idx_to_cxt(*idx);
 
         if flag {
             if let Some(current_context) = current_context {
