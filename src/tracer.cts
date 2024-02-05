@@ -363,7 +363,6 @@ export default class Analysis implements AnalysisI<Trace> {
                 const addr = target.addr + memarg.offset
                 const memName = this.getName(Wasabi.module.info.memories[target.memIdx])
                 let byteLength = this.getByteLength(op)
-                const res = this.mem_content_equals(target.memIdx, addr, byteLength)
                 if (this.options.extended === true) {
                     let data = []
                     for (let i = 0; i < byteLength; i++) {
@@ -371,13 +370,14 @@ export default class Analysis implements AnalysisI<Trace> {
                     }
                     this.trace.push(`LE;${0};${memName};${addr};${data.join(',')}`)
                 }
-                res.forEach((r, i) => {
-                    if (r !== true) {
+                if (!this.mem_content_equals(target.memIdx, addr, byteLength)) {
+                    for (let i = 0; i < byteLength; i++) {
+                        let r = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
                         new Uint8Array(this.shadowMemories[0])[addr + i] = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
                         new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i] = r as number
                         this.trace.push(`L;${0};${memName};${addr + i};${[r as number]}`)
                     }
-                })
+                }
             },
 
             global: (location, op, idx, value) => {
@@ -446,17 +446,14 @@ export default class Analysis implements AnalysisI<Trace> {
         }
     }
 
-    private mem_content_equals(memIdx: number, addr: number, numBytes: number): (number | boolean)[] {
+    private mem_content_equals(memIdx: number, addr: number, numBytes: number): boolean {
         let result = []
         for (let i = 0; i < numBytes; i++) {
             const data = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
-            if (new Uint8Array(this.shadowMemories[memIdx])[addr + i] !== data) {
-                result.push(data)
-            } else {
-                result.push(true)
-            }
+            if (new Uint8Array(this.shadowMemories[memIdx])[addr + i] !== data)
+                return false
         }
-        return result
+        return true
     }
 
     private tableGetEvent(tableidx: number, idx: number) {

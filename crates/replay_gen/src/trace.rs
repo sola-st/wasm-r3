@@ -3,8 +3,8 @@
 //! Most usually corresponds to one wasm instruction, e.g. WasmEvent::Load corresponds to one wasm load,
 //! but some of them are not. e.g. FuncEntry and FuncReturn correspond to the entry and return of a wasm function.
 //! There are also some events that are not part of the execution like Import*, which can be removed later.
-use std::fmt::Debug;
 use std::fmt::{self, Write};
+use std::fmt::{Debug, Display};
 use std::str::FromStr;
 
 pub type Trace = Vec<WasmEvent>;
@@ -26,7 +26,7 @@ pub enum WasmEvent {
         tableidx: usize,
         name: String,
         idx: i32,
-        funcidx: i32,
+        funcidx: usize,
         funcname: String,
     },
     TableGrow {
@@ -41,7 +41,7 @@ pub enum WasmEvent {
         valtype: ValType,
     },
     ImportCall {
-        idx: i32,
+        idx: usize,
         name: String,
     },
     ImportReturn {
@@ -51,12 +51,12 @@ pub enum WasmEvent {
     },
     // These do not correspond to a wasm instruction, but used to track control flow
     FuncEntry {
-        idx: i32,
+        idx: usize,
         name: String,
         params: Vec<F64>,
     },
     FuncEntryTable {
-        idx: i32,
+        idx: usize,
         tablename: String,
         tableidx: i32,
         params: Vec<F64>,
@@ -89,7 +89,7 @@ impl fmt::Display for F64 {
         if self.0.is_infinite() {
             write!(f, "Infinity")
         } else if self.0.is_nan() {
-            write!(f, "nan")
+            write!(f, "NaN")
         } else {
             write!(f, "{}", self.0)
         }
@@ -120,7 +120,7 @@ impl std::str::FromStr for F64 {
     }
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum ValType {
     I32,
     I64,
@@ -131,7 +131,24 @@ pub enum ValType {
     Externref,
 }
 
-impl Debug for ValType {
+#[derive(Clone, PartialEq)]
+pub enum RefType {
+    Anyref,
+}
+impl fmt::Display for RefType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "anyfunc")
+    }
+}
+// TODO: make this more elegant
+// This is currently done for outputting to WAT.
+impl fmt::Debug for RefType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "funcref")
+    }
+}
+
+impl Display for ValType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::I32 => write!(f, "i32"),
@@ -328,7 +345,7 @@ impl Debug for WasmEvent {
                 value,
                 valtype,
             } => {
-                write!(f, "G;{};{};{};{:?}", idx, name, value, valtype)
+                write!(f, "G;{};{};{};{}", idx, name, value, valtype)
             }
             WasmEvent::FuncEntry { name, params, idx } => {
                 write!(f, "EC{};{};{}", idx, name, join_vec(params))
@@ -361,7 +378,7 @@ impl Debug for WasmEvent {
             } => {
                 write!(
                     f,
-                    "IG;{};{};{};{:?};{};{}",
+                    "IG;{};{};{};{};{};{}",
                     idx,
                     module,
                     name,

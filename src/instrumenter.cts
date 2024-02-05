@@ -20,5 +20,5 @@ export default async function run(url: string, options: Options) {
   console.log(`Record stopped. Downloading...`)
   const results = await analyser.stop()
   console.log('Download done. Generating Benchmark...')
-  Benchmark.fromAnalysisResult(results).save(options.benchmarkPath, { trace: options.dumpTrace, rustBackend: options.rustBackend })
+  Benchmark.fromAnalysisResult(results).save(options.benchmarkPath, options)
 }

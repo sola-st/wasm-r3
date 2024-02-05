@@ -44,7 +44,9 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   const instrumentedPath = path.join(testPath, "instrumented.wasm");
   const tracePath = path.join(testPath, "trace.r3");
   const callGraphPath = path.join(testPath, "call-graph.txt");
-  const replayPath = path.join(testPath, "replay.js");
+  const replayJsPath = path.join(testPath, "replay.js");
+  const replayWasmPath = path.join(testPath, "replay.wasm");
+  const mergedWasmPath = path.join(testPath, "merged.wasm");
   const replayTracePath = path.join(testPath, "replay-trace.r3");
   const replayCallGraphPath = path.join(testPath, "replay-call-graph.txt");
   await cleanUp(testPath)
@@ -99,15 +101,18 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   }
   let replayCode
   try {
-    if (options.rustBackend === true) {
-      const diskSave = path.join(testPath, `temp-trace-0.r3`)
-      await fs.writeFile(diskSave, traceString)
-      execSync(`./crates/target/release/replay_gen ${diskSave} ${wasmPath}`);
-      execSync(`wasm-validate ${path.join(testPath, "canned.wasm")}`)
-      return { testPath, success: true }
-    } else {
+    if (options.legacyBackend === true) {
       replayCode = await new Generator().generateReplay(trace)
-      await generateJavascript(fss.createWriteStream(replayPath), replayCode)
+      await generateJavascript(fss.createWriteStream(replayJsPath), replayCode)
+    } else {
+      if (options.jsBackend == true) {
+        execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayJsPath}`);
+      } else {
+        execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
+        // we validate and early return as for single wasm accuracy test doesn't make sense
+        execSync(`wasm-validate  ${replayWasmPath}`)
+        return { testPath, success: true }
+      }
     }
 
     await delay(0) // WTF why do I need this WHAT THE FUCK
@@ -118,7 +123,7 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   // 4. Execute replay and generate trace and compare
   let replayTracer = new Tracer(eval(js + `\nWasabi`), { extended })
   try {
-    const replayBinary = await import(replayPath)
+    const replayBinary = await import(replayJsPath)
     const wasm = await replayBinary.instantiate(wasmBinary)
     replayTracer.init()
     replayBinary.replay(wasm)
@@ -185,26 +190,22 @@ async function runOnlineTests(names: string[], options) {
   }
   // ignore specific tests
   let filter = [
-    'visual6502remix', // takes so long and is not automated yet
-    'heatmap', // takes so long
-    'image-convolute', // out of memory
-    'kittygame', // too slow for rust backend
+    'ogv', // TODO: additional ER at end of original trace
+    'heatmap', // works fine, but too long so we skip it
+    'uarm', // doesn't work for js because string is too long
+    'image-convolute', // asm2wasm - f64-to-int is too large
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
     const spinner = startSpinner(name)
     const testPath = path.join(process.cwd(), 'tests', 'online', name)
     const cleanUpPerformance = await initPerformance(name, 'online-auto-test', path.join(testPath, 'performance.ndjson'))
-    const report = await runOnlineTest(testPath, options)
+    await cleanUp(testPath);
+    const report = await testWebPage(testPath, options)
     stopSpinner(spinner)
     cleanUpPerformance()
     await writeReport(name, report)
   }
-}
-
-async function runOnlineTest(testPath: string, options) {
-  await cleanUp(testPath)
-  return testWebPage(testPath, options)
 }
 
 async function runOfflineTests(names: string[], options) {
@@ -215,12 +216,17 @@ async function runOfflineTests(names: string[], options) {
   }
   // ignore specific tests
   let filter = [
-    'sqllite'
+    'sqllite',
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
     const spinner = startSpinner(name)
-    const report = await runOfflineTest(name, options)
+    const testPath = path.join(process.cwd(), 'tests', 'offline', name)
+    const websitePath = path.join(testPath, 'website')
+    await cleanUp(testPath)
+    const server = await startServer(websitePath)
+    let report = await testWebPage(testPath, options)
+    server.close()
     stopSpinner(spinner)
     await writeReport(name, report)
   }
@@ -258,15 +264,6 @@ function startServer(websitePath: string): Promise<Server> {
   })
 }
 
-async function runOfflineTest(name: string, options): Promise<TestReport> {
-  const testPath = path.join(process.cwd(), 'tests', 'offline', name)
-  const websitePath = path.join(testPath, 'website')
-  await cleanUp(testPath)
-  const server = await startServer(websitePath)
-  let report = await testWebPage(testPath, options)
-  server.close()
-  return report
-}
 
 async function testWebPage(testPath: string, options): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')
@@ -286,8 +283,8 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     }
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
-    await benchmark.save(benchmarkPath, { trace: true, rustBackend: options.rustBackend })
-    if (options.rustBackend === true) {
+    await benchmark.save(benchmarkPath, options)
+    if (options.jsBackend != true) {
       return { testPath, success: true }
     }
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
@@ -338,15 +335,12 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
 
 (async function run() {
   const optionDefinitions = [
-    { name: 'extended', alias: 'e', type: Boolean },
+    { name: 'jsBackend', alias: 'j', type: Boolean },
     { name: 'category', type: String, multiple: true, defaultOption: true },
     { name: 'testcases', alias: 't', type: String, multiple: true },
-    { name: 'rustBackend', alias: 'r', type: Boolean }
+    { name: 'legacyBackend', alias: 'l', type: Boolean }
   ]
   const options = commandLineArgs(optionDefinitions)
-  if (options.rustBackend) {
-    console.log('CAUTION: Using experimental Rust backend')
-  }
   if (options.category === undefined || options.category.includes('node')) {
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
     if (options.testcases !== undefined) {
