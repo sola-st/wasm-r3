@@ -46,12 +46,12 @@ fn main() -> io::Result<()> {
     // opt phase
     merge_fn_results(&mut generator.replay);
     discard_empty_body(&mut generator.replay);
-    split_big_body(&mut generator.replay);
 
     // codegen phase
     let is_standalone = replay_path.is_none();
     let is_replay_wasm = !is_standalone && replay_path.unwrap().extension().unwrap() == "wasm";
     if is_replay_wasm {
+        split_big_body(&mut generator.replay); // works only for wasm
         generate_replay_wasm(replay_path.unwrap(), &generator.replay)?;
     } else {
         generate_replay_javascript(replay_path.unwrap(), &generator.replay)?;

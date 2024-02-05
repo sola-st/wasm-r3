@@ -2,9 +2,13 @@
 
 This folder contains the source code for the Wasm-R3 tool.
 
+## Prerequisites
+
+- wasm-tools
+
 ## Building
 
-When first cloning the repository you want to install all dependencies. From the root of this repository run: 
+When first cloning the repository you want to install all dependencies. From the root of this repository run:
 ```
 npm install
 ```

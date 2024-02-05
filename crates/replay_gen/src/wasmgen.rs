@@ -392,7 +392,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             let params = params
                 .iter()
                 .zip(param_tys.clone())
-                .map(|(p, p_ty)| format!("({} {p})", valty_to_const(&p_ty)))
+                .map(|(p, p_ty)| format!("({} {p:?})", valty_to_const(&p_ty)))
                 .collect::<Vec<String>>()
                 .join("\n");
             params + &format!("(call ${name})") + &("(drop)".repeat(result_count))

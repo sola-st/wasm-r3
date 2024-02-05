@@ -28,22 +28,22 @@ export default class Benchmark {
             const diskSave = path.join(binPath, `temp-trace-${i}.r3`)
             await fs.writeFile(diskSave, trace.toString())
             await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
-            if (options.rustBackend === true) {
-                const p_measureCodeGen = createMeasure('rust-backend', { phase: 'replay-generation', description: `The time it takes for rust backend to generate javascript` })
-                if (options.extended) {
-                    execSync(`./crates/target/debug/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.js')}`);
-                } else {
-                    execSync(`./crates/target/debug/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.wasm')}`);
-                    execSync(`wasm-tools validate -f all ${path.join(binPath, "replay.wasm")}`)
-                }
-                p_measureCodeGen()
-            } else {
+            if (options.legacyBackend == true) {
                 const p_measureCodeGen = createMeasure('ir-gen', { phase: 'replay-generation', description: `The time it takes to generate the IR code for subbenchmark ${i}` })
                 const code = await new Generator().generateReplayFromStream(fss.createReadStream(diskSave))
                 p_measureCodeGen()
                 const p_measureJSWrite = createMeasure('string-gen', { phase: 'replay-generation', description: `The time it takes to stream the replay code to the file for subbenchmark ${i}` })
                 await generateJavascript(fss.createWriteStream(path.join(binPath, 'replay.js')), code)
                 p_measureJSWrite()
+            } else {
+                const p_measureCodeGen = createMeasure('rust-backend', { phase: 'replay-generation', description: `The time it takes for rust backend to generate javascript` })
+                if (options.jsBackend) {
+                    execSync(`./crates/target/debug/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.js')}`);
+                } else {
+                    execSync(`./crates/target/debug/replay_gen ${diskSave} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.wasm')}`);
+                    execSync(`wasm-tools validate -f all ${path.join(binPath, "replay.wasm")}`)
+                }
+                p_measureCodeGen()
             }
             await fs.rm(diskSave)
         }))

@@ -118,8 +118,8 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
             let str = hostevent_to_js(&event);
             writeln!(stream, "{}", str)?;
         }
-        write(stream, "}\n")?;
     }
+    write(stream, "}\n")?;
 
     write(stream, "export function instantiate(wasmBinary) {\n")?;
     write(

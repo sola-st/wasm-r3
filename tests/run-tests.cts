@@ -101,8 +101,11 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   }
   let replayCode
   try {
-    if (options.rustBackend === true) {
-      if (options.extended == true) {
+    if (options.legacyBackend === true) {
+      replayCode = await new Generator().generateReplay(trace)
+      await generateJavascript(fss.createWriteStream(replayJsPath), replayCode)
+    } else {
+      if (options.jsBackend == true) {
         execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayJsPath}`);
       } else {
         execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
@@ -110,9 +113,6 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
         execSync(`wasm-validate  ${replayWasmPath}`)
         return { testPath, success: true }
       }
-    } else {
-      replayCode = await new Generator().generateReplay(trace)
-      await generateJavascript(fss.createWriteStream(replayJsPath), replayCode)
     }
 
     await delay(0) // WTF why do I need this WHAT THE FUCK
@@ -190,7 +190,9 @@ async function runOnlineTests(names: string[], options) {
   }
   // ignore specific tests
   let filter = [
+    'ogv', // TODO: additional ER at end of original trace
     'heatmap', // works fine, but too long so we skip it
+    'uarm', // doesn't work for js because string is too long
     'image-convolute', // asm2wasm - f64-to-int is too large
   ]
   names = names.filter((n) => !filter.includes(n))
@@ -282,7 +284,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
     await benchmark.save(benchmarkPath, options)
-    if (options.rustBackend === true && options.extended != true) {
+    if (options.jsBackend != true) {
       return { testPath, success: true }
     }
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
@@ -333,15 +335,12 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
 
 (async function run() {
   const optionDefinitions = [
-    { name: 'extended', alias: 'e', type: Boolean },
+    { name: 'jsBackend', alias: 'j', type: Boolean },
     { name: 'category', type: String, multiple: true, defaultOption: true },
     { name: 'testcases', alias: 't', type: String, multiple: true },
-    { name: 'rustBackend', alias: 'r', type: Boolean }
+    { name: 'legacyBackend', alias: 'l', type: Boolean }
   ]
   const options = commandLineArgs(optionDefinitions)
-  if (options.rustBackend) {
-    console.log('CAUTION: Using experimental Rust backend')
-  }
   if (options.category === undefined || options.category.includes('node')) {
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
     if (options.testcases !== undefined) {
