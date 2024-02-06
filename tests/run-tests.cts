@@ -146,7 +146,10 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
 
 function writeSummary(type: string, testCount: number, successfull: number, roundTripTimes: DOMHighResTimeStamp[]) {
   const fail = testCount - successfull
-  const avgRoundTripTime = roundTripTimes.reduce((p, c) => p + c) / roundTripTimes.length
+  let avgRoundTripTime = undefined
+  if (roundTripTimes.length > 0) {
+    avgRoundTripTime = roundTripTimes.reduce((p, c) => p + c) / roundTripTimes.length
+  }
   console.log(`finished running ${testCount} ${type} testcases. Pass: ${successfull}, Fail: ${fail}, FailRate: ${fail / testCount * 100}%, Avg time: ${avgRoundTripTime}`);
 }
 
@@ -231,7 +234,7 @@ async function runOnlineTests(names: string[], options) {
     cleanUpPerformance()
     await writeReport(name, report)
     if (report.success === true) {
-    successfull++
+      successfull++
     }
     if (report.roundTripTime !== undefined) {
       roundTripTimes.push(report.roundTripTime)
