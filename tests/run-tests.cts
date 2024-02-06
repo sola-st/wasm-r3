@@ -314,7 +314,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
   let analysisResult: AnalysisResult
   try {
     const p_roundTrip = createMeasure('round-trip time', { description: 'The time it takes to start the browser instance, load the webpage, record the interaction, download the data, and generate the replay', phase: 'all' })
-    const analyser = new Analyser('./dist/src/tracer.cjs', { extended })
+    const analyser = new Analyser('./dist/src/tracer.cjs', options)
     analysisResult = await (await import(testJsPath)).default(analyser)
     const blockExtended = analyser.getExtended()
 
@@ -385,7 +385,9 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     { name: 'jsBackend', alias: 'j', type: Boolean },
     { name: 'category', type: String, multiple: true, defaultOption: true },
     { name: 'testcases', alias: 't', type: String, multiple: true },
-    { name: 'legacyBackend', alias: 'l', type: Boolean }
+    { name: 'legacyBackend', alias: 'l', type: Boolean },
+    { name: 'firefox', alias: 'f', type: Boolean },
+    { name: 'webkit', alias: 'w', type: Boolean }
   ]
   const options = commandLineArgs(optionDefinitions)
   if (options.category === undefined || options.category.includes('node')) {

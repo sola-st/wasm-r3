@@ -1,4 +1,4 @@
-import { Browser, chromium, Frame, Page, Worker } from 'playwright'
+import { Browser, chromium, firefox, Frame, Page, webkit, Worker } from 'playwright'
 import { createMeasure, StopMeasure } from './performance.cjs'
 import fs from 'fs/promises'
 import { Trace } from './tracer.cjs'
@@ -14,11 +14,10 @@ export type AnalysisResult = {
     wasm: number[]
 }[]
 
-type Options = { extended?: boolean, noRecord?: boolean }
 export default class Analyser {
 
     private analysisPath: string
-    private options: Options
+    private options
     private browser: Browser
     private page: Page
     private contexts: (Frame | Worker)[] = []
@@ -26,7 +25,7 @@ export default class Analyser {
     private p_measureUserInteraction: StopMeasure
 
 
-    constructor(analysisPath: string, options: Options = { extended: false, noRecord: false }) {
+    constructor(analysisPath: string, options) {
         this.analysisPath = analysisPath
         this.options = options
     }
@@ -37,7 +36,8 @@ export default class Analyser {
         }
         const p_measureStart = createMeasure('start', { phase: 'record', description: `The time it takes start the chromium browser and open the webpage until the 'load' event is fired.` })
         this.isRunning = true
-        this.browser = await chromium.launch({ // chromium version: 119.0.6045.9 (Developer Build) (x86_64); V8 version: V8 11.9.169.3; currently in node I run version 11.8.172.13-node.12
+        let browser = this.options.firefox ? firefox : this.options.webkit ? webkit : chromium;
+        this.browser = await browser.launch({ // chromium version: 119.0.6045.9 (Developer Build) (x86_64); V8 version: V8 11.9.169.3; currently in node I run version 11.8.172.13-node.12
             headless, args: [
                 // '--disable-web-security',
                 '--js-flags="--max_old_space_size=8192"',
