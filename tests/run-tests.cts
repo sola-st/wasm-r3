@@ -151,11 +151,12 @@ function writeSummary(type: string, testCount: number, successfull: number, roun
 }
 
 async function runNodeTests(names: string[], options) {
-  if (names.length > 0) {
-    console.log('==============')
-    console.log('Run node tests')
-    console.log('==============')
+  if (names.length === 0) {
+    return
   }
+  console.log('==============')
+  console.log('Run node tests')
+  console.log('==============')
   // ignore specific tests
   let filter = [
     'rust-tictactoe',
@@ -202,13 +203,14 @@ function compareResults(testPath: string, traceString: string, replayTraceString
 }
 
 async function runOnlineTests(names: string[], options) {
-  if (names.length > 0) {
-    console.log('================')
-    console.log('Run online tests')
-    console.log('================')
-    console.log('WARNING: You need a working internet connection')
-    console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
+  if (names.length === 0) {
+    return
   }
+  console.log('================')
+  console.log('Run online tests')
+  console.log('================')
+  console.log('WARNING: You need a working internet connection')
+  console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
   // ignore specific tests
   let filter = [
     'ogv', // TODO: additional ER at end of original trace
@@ -239,11 +241,12 @@ async function runOnlineTests(names: string[], options) {
 }
 
 async function runOfflineTests(names: string[], options) {
-  if (names.length > 0) {
-    console.log('=================')
-    console.log('Run offline tests')
-    console.log('=================')
+  if (names.length === 0) {
+    return
   }
+  console.log('=================')
+  console.log('Run offline tests')
+  console.log('=================')
   // ignore specific tests
   let filter = [
     'sqllite',
