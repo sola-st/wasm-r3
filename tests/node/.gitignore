@@ -1,3 +1,6 @@
+*.wasm
+*.wat
+!index.wat
 replay-trace.r3
 replay.js
 report.txt
