@@ -2,22 +2,22 @@ import fs from 'fs/promises'
 import { rmSafe } from '../tests/test-utils.cjs'
 
 type PerformanceInfo = {
-    phase: 'record' | 'replay-generation' | 'replay',
+    phase: 'record' | 'replay-generation' | 'replay' | 'all',
     description: string
 }
 
-export type StopMeasure = () => void
+export type StopMeasure = () => PerformanceMeasure
 export function createMeasure(name: string, detail: PerformanceInfo): StopMeasure {
     const start = name + 'start'
     const end = name + '_end'
     performance.mark(start)
     return () => {
         performance.mark(end)
-        performance.measure(name, { start, end, detail })
+        return performance.measure(name, { start, end, detail })
     }
 }
 
-type Type = 'manual-run' | 'offline-auto-test' | 'online-auto-test'
+type Type = 'manual-run' | 'offline-auto-test' | 'online-auto-test' | 'node-auto-test'
 export async function initPerformance(app: string, type: Type, filePath?: string) {
     const timeStamp = Date.now()
     const dBPath = 'performance.db.ndjson'

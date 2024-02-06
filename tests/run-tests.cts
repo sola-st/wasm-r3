@@ -14,6 +14,7 @@ import Analyser, { AnalysisResult } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
 import { generateJavascript } from '../src/js-generator.cjs'
+import { createMeasure } from '../src/performance.cjs'
 
 let extended = false
 
@@ -54,6 +55,7 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   // 1. Instrument with Wasabi !!Please use the newest version
   const indexRsPath = path.join(testPath, 'index.rs')
   const indexCPath = path.join(testPath, 'index.c')
+  const p_roundTrip = createMeasure('round-trip time', { description: 'The time it takes to start the browser instance, load the webpage, record the interaction, download the data, and generate the replay', phase: 'all' })
   if (fss.existsSync(indexRsPath)) {
     cp.execSync(`rustc --crate-type cdylib ${indexRsPath} --target wasm32-unknown-unknown --crate-type cdylib -o ${wasmPath}`, { stdio: 'ignore' })
     cp.execSync(`wasm2wat ${wasmPath} -o ${watPath}`)
@@ -111,14 +113,14 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
         execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
         // we validate and early return as for single wasm accuracy test doesn't make sense
         execSync(`wasm-validate  ${replayWasmPath}`)
-        return { testPath, success: true }
+        return { testPath, roundTripTime: p_roundTrip().duration, success: true }
       }
     }
-
     await delay(0) // WTF why do I need this WHAT THE FUCK
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
+  let roundTripTime = p_roundTrip().duration
 
   // 4. Execute replay and generate trace and compare
   let replayTracer = new Tracer(eval(js + `\nWasabi`), { extended })
@@ -128,17 +130,24 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
     replayTracer.init()
     replayBinary.replay(wasm)
   } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
+    return { testPath, roundTripTime, success: false, reason: e.stack }
   }
   let replayTraceString = replayTracer.getResult().toString();
   await fs.writeFile(replayTracePath, replayTraceString);
 
   const result = compareResults(testPath, traceString, replayTraceString)
+  result.roundTripTime = roundTripTime
   if (result.success === false) {
     return result
   }
 
   return result
+}
+
+function writeSummary(type: string, testCount: number, successfull: number, roundTripTimes: DOMHighResTimeStamp[]) {
+  const fail = testCount - successfull
+  const avgRoundTripTime = roundTripTimes.reduce((p, c) => p + c) / roundTripTimes.length
+  console.log(`finished running ${testCount} ${type} testcases. Pass: ${successfull}, Fail: ${fail}, FailRate: ${fail / testCount * 100}%, Avg time: ${avgRoundTripTime}`);
 }
 
 async function runNodeTests(names: string[], options) {
@@ -161,11 +170,23 @@ async function runNodeTests(names: string[], options) {
     'table-exp-host-add-friend',
   ]
   names = names.filter((n) => !filter.includes(n))
+  let successfull = 0;
   // names = ["mem-imp-host-grow"]
+  let roundTripTimes = []
   for (let name of names) {
+    const testPath = path.join(process.cwd(), 'tests', 'node', name)
+    const cleanUpPerformance = await initPerformance(name, 'node-auto-test', path.join(testPath, 'performance.ndjson'))
     const report = await runNodeTest(name, options)
+    cleanUpPerformance()
     await writeReport(name, report)
+    if (report.success === true) {
+      successfull++
+    }
+    if (report.roundTripTime !== undefined) {
+      roundTripTimes.push(report.roundTripTime)
+    }
   }
+  writeSummary('node', names.length, successfull, roundTripTimes);
 }
 
 function compareResults(testPath: string, traceString: string, replayTraceString: string): TestReport {
@@ -196,6 +217,8 @@ async function runOnlineTests(names: string[], options) {
     'image-convolute', // asm2wasm - f64-to-int is too large
   ]
   names = names.filter((n) => !filter.includes(n))
+  let successfull = 0;
+  let roundTripTimes = []
   for (let name of names) {
     const spinner = startSpinner(name)
     const testPath = path.join(process.cwd(), 'tests', 'online', name)
@@ -205,7 +228,14 @@ async function runOnlineTests(names: string[], options) {
     stopSpinner(spinner)
     cleanUpPerformance()
     await writeReport(name, report)
+    if (report.success === true) {
+    successfull++
+    }
+    if (report.roundTripTime !== undefined) {
+      roundTripTimes.push(report.roundTripTime)
+    }
   }
+  writeSummary('online', names.length, successfull, roundTripTimes);
 }
 
 async function runOfflineTests(names: string[], options) {
@@ -219,6 +249,8 @@ async function runOfflineTests(names: string[], options) {
     'sqllite',
   ]
   names = names.filter((n) => !filter.includes(n))
+  let successfull = 0;
+  let roundTripTimes = []
   for (let name of names) {
     const spinner = startSpinner(name)
     const testPath = path.join(process.cwd(), 'tests', 'offline', name)
@@ -229,12 +261,19 @@ async function runOfflineTests(names: string[], options) {
     server.close()
     stopSpinner(spinner)
     await writeReport(name, report)
+    if (report.success === true) {
+      successfull++
+    }
+    if (report.roundTripTime !== undefined) {
+      roundTripTimes.push(report.roundTripTime)
+    }
   }
+  writeSummary('offline', names.length, successfull, roundTripTimes);
 }
 
 type Success = { success: true }
 type Failure = { success: false, reason: string }
-type TestReport = { testPath: string } & (Success | Failure)
+type TestReport = { testPath: string, roundTripTime?: DOMHighResTimeStamp } & (Success | Failure)
 async function writeReport(name: string, report: TestReport) {
   const totalLength = 45;
   if (totalLength < name.length) {
@@ -246,11 +285,15 @@ async function writeReport(name: string, report: TestReport) {
   const testReportPath = path.join(report.testPath, 'report.txt')
   if (report.success === true) {
     await fs.writeFile(testReportPath, 'Test successfull')
-    process.stdout.write(`\u2713\n`)
+    process.stdout.write(`\u2713`)
   } else {
-    process.stdout.write(`\u2717\t\t${testReportPath}\n`)
+    process.stdout.write(`\u2717\t\t${testReportPath}`)
     await fs.writeFile(testReportPath, report.reason)
   }
+  if (report.roundTripTime !== undefined) {
+    process.stdout.write(`\t\tround-trip-time: ${report.roundTripTime}`)
+  }
+  process.stdout.write(`\n`)
 }
 
 function startServer(websitePath: string): Promise<Server> {
@@ -270,6 +313,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
   const benchmarkPath = path.join(testPath, 'benchmark')
   let analysisResult: AnalysisResult
   try {
+    const p_roundTrip = createMeasure('round-trip time', { description: 'The time it takes to start the browser instance, load the webpage, record the interaction, download the data, and generate the replay', phase: 'all' })
     const analyser = new Analyser('./dist/src/tracer.cjs', { extended })
     analysisResult = await (await import(testJsPath)).default(analyser)
     const blockExtended = analyser.getExtended()
@@ -284,12 +328,14 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult)
     await benchmark.save(benchmarkPath, options)
+    let m = p_roundTrip()
+    let roundTripTime = m.duration
     if (options.jsBackend != true) {
-      return { testPath, success: true }
+      return { testPath, roundTripTime, success: true }
     }
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
     if (subBenchmarkNames.length === 0) {
-      return { testPath, success: false, reason: 'no benchmark was generated' }
+      return { testPath, roundTripTime, success: false, reason: 'no benchmark was generated' }
     }
 
     let runtimes = benchmark.instrumentBinaries()
@@ -319,6 +365,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
 
       // 5. Check if original trace and replay trace match
       const newResult = compareResults(testPath, traceString, replayTraceString)
+      results.roundTripTime = roundTripTime
       if (newResult.success === false) {
         results.success = false;
         if (results.reason === undefined) {
