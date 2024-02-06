@@ -10,9 +10,9 @@ export default async function test(analyser) {
   // await delay(500)
   // await button.click()
 
-  const nextButton = page.locator('#button')
-  await nextButton.wasabi({state: 'visible'})
-  const N = 5
+  const nextButton = page.locator('#next')
+  await nextButton.waitFor({state: 'visible'})
+  const N = 10
   for (let i = 0; i < N; i++) {
     await nextButton.click()
     await delay(1000)
