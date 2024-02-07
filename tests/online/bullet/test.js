@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://magnum.graphics/showcase/bullet/'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   const mainCanv = page.locator('#canvas')
   await mainCanv.waitFor({state: 'visible'})

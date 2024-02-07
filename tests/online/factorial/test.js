@@ -3,7 +3,7 @@ import { expect } from 'playwright/test'
 
 export default async function test(analyser) {
   const url = 'https://www.hellorust.com/demos/factorial/index.html'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   const textInput = page.locator('#input')
   await textInput.waitFor({state: 'visible'})
