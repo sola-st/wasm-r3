@@ -221,6 +221,7 @@ async function runOnlineTests(names: string[], options) {
     'uarm', // doesn't work for js because string is too long
     'image-convolute', // asm2wasm - f64-to-int is too large
     'lichess', // failing test
+    'livesplit' // uses simd, filter for now
   ]
   names = names.filter((n) => !filter.includes(n))
   let successfull = 0;
