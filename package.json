@@ -27,6 +27,7 @@
     "build-full": "npm run build-rust && npm run build-wasabi && npm run build",
     "test": "npm run build-rust && npm run build && node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
-    "start": "npm run build && node ./dist/src/cli/main.cjs"
+    "start": "npm run build && node ./dist/src/cli/main.cjs",
+    "eval-port-js": "npm run build && node ./dist/tests/test-js-runtimes.cjs"
   }
 }

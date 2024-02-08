@@ -7,14 +7,10 @@ export default async function test(analyser) {
   const canvas = page.locator('#mandelImage')
   await canvas.waitFor({state: 'visible'})
 
-  console.log('visible')
-
   await canvas.click({
     button: 'left',
     position: {x: 200, y: 200},
   })
-  
-  console.log('clicked')
 
   await delay(10000)
 

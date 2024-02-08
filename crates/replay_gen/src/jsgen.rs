@@ -12,8 +12,8 @@ use crate::{
 pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Result<()> {
     let mut file = File::create(&out_path)?;
     let stream = &mut file;
-    write(stream, "import fs from 'fs'\n")?;
-    write(stream, "import path from 'path'\n")?;
+    // write(stream, "import fs from 'fs'\n")?;
+    // write(stream, "import path from 'path'\n")?;
     write(stream, "let instance\n")?;
     write(stream, "let imports = {}\n")?;
 
@@ -127,7 +127,12 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
         "return WebAssembly.instantiate(wasmBinary, imports)\n",
     )?;
     write(stream, "}\n")?;
-    write(stream, "if (process.argv[2] === 'run') {\n")?;
+    write(stream, "let firstArg\n")?;
+    write(stream, "if (typeof Deno === 'undefined'){firstArg=process.argv[2]}else{firstArg=Deno.args[0]}\n")?;
+    write(stream, "if (firstArg === 'run') {\n")?;
+    write(stream, "let nodeModules;\n")?;
+    write(stream, "if (typeof Deno === 'undefined') { nodeModules = Promise.all([import('path'),import('fs')])}else{nodeModules=Promise.all([import('node:path'),import('node:fs')])}\n")?;
+    write(stream, "nodeModules.then(([path,fs])=>{")?;
     write(
         stream,
         "const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n",
@@ -137,7 +142,7 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
         stream,
         "instantiate(wasmBinary).then((wasm) => replay(wasm))\n",
     )?;
-    write(stream, "}\n")?;
+    write(stream, "})}\n")?;
     Ok(())
 }
 

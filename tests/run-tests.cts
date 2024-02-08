@@ -5,7 +5,7 @@ import cp, { execSync } from 'child_process'
 import express from 'express'
 import Generator from "../src/replay-generator.cjs";
 import Tracer, { Trace } from "../src/tracer.cjs";
-import { copyDir, delay, getDirectoryNames, rmSafe, startSpinner, stopSpinner, trimFromLastOccurance } from "./test-utils.cjs";
+import { copyDir, delay, getDirectoryNames, writeWithSpaces, rmSafe, startSpinner, stopSpinner, trimFromLastOccurance } from "./test-utils.cjs";
 import Benchmark from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
@@ -283,13 +283,7 @@ type Success = { success: true }
 type Failure = { success: false, reason: string }
 type TestReport = { testPath: string, roundTripTime?: DOMHighResTimeStamp } & (Success | Failure)
 async function writeReport(name: string, report: TestReport) {
-  const totalLength = 45;
-  if (totalLength < name.length) {
-    throw new Error("Total length should oe greater than or equal to the length of the initial word.");
-  }
-  const spacesLength = totalLength - name.length;
-  const spaces = " ".repeat(spacesLength);
-  process.stdout.write(`${name}${spaces}`)
+  writeWithSpaces(name)
   const testReportPath = path.join(report.testPath, 'report.txt')
   if (report.success === true) {
     await fs.writeFile(testReportPath, 'Test successfull')
