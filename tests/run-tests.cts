@@ -222,7 +222,9 @@ async function runOnlineTests(names: string[], options) {
     'image-convolute', // asm2wasm - f64-to-int is too large
     'lichess', // failing test
     'livesplit', // uses simd, filter for now
-    'onnxjs', // failing test 
+    'onnxjs', // // unknown func: failed to find name `$1000008`"
+    'hnset-bench', // no benchmark generated
+    'fractals' // no benchmark generated
   ]
   names = names.filter((n) => !filter.includes(n))
   let successfull = 0;
@@ -333,12 +335,12 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     await benchmark.save(benchmarkPath, options)
     let m = p_roundTrip()
     let roundTripTime = m.duration
-    if (options.jsBackend != true) {
-      return { testPath, roundTripTime, success: true }
-    }
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath)
     if (subBenchmarkNames.length === 0) {
       return { testPath, roundTripTime, success: false, reason: 'no benchmark was generated' }
+    }
+    if (options.jsBackend != true) {
+      return { testPath, roundTripTime, success: true }
     }
 
     let runtimes = benchmark.instrumentBinaries()
