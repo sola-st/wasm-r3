@@ -163,7 +163,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             let tystr = get_functy_strs(&func.ty);
             write(
                 stream,
-                &format!("(func ${name} (export \"{name}\") {tystr}\n",),
+                &format!("(func ${name} (@name \"r3 {name}\") (export \"{name}\") {tystr}\n",),
             )?;
             for (i, body) in func.bodys.iter().enumerate() {
                 if let Some(body) = body {
@@ -259,7 +259,10 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
 
         if current_module == "main" {
             let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
-            write(stream, "(func (export \"_start\") (export \"main\")\n")?;
+            write(
+                stream,
+                "(func (@name \"r3 main\")(export \"_start\") (export \"main\")\n",
+            )?;
             if let Some(initialization) = initialization {
                 for event in initialization {
                     write(stream, &format!("{}", hostevent_to_wat(&event, code)))?
@@ -288,6 +291,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
         "--enable-reference-types",
         "--enable-multimemory",
         "--enable-bulk-memory",
+        "--debuginfo",
         "index.wasm",
         "index",
     ]
@@ -306,6 +310,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             "--enable-reference-types",
             "--enable-gc",
             "--enable-bulk-memory",
+            "--debuginfo",
             // for handling inlining of imported globals. Without this glob-merge node test will fail.
             "--simplify-globals",
             "merged.wasm",
