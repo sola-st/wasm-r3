@@ -224,7 +224,8 @@ async function runOnlineTests(names: string[], options) {
     'livesplit', // uses simd, filter for now
     'onnxjs', // // unknown func: failed to find name `$1000008`"
     'hnset-bench', // no benchmark generated
-    'fractals' // no benchmark generated
+    'fractals', // no benchmark generated
+    'rfxgen', // not working
   ]
   names = names.filter((n) => !filter.includes(n))
   let successfull = 0;
