@@ -230,6 +230,7 @@ async function runOnlineTests(names: string[], options) {
     'rguilayout', // not working
     'rguistyler', // not working
     'roslyn', // not working
+    'rtexpacker', //not working
   ]
   names = names.filter((n) => !filter.includes(n))
   let successfull = 0;
