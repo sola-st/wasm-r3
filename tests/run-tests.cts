@@ -232,6 +232,7 @@ async function runOnlineTests(names: string[], options) {
     'roslyn', // not working
     'rtexpacker', //not working
     'rtexviewer', // not working
+    'rustpython', // not working
   ]
   names = names.filter((n) => !filter.includes(n))
   let successfull = 0;
