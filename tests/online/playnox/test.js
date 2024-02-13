@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://playnox.xyz/'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   const goButton = page.getByText('Yes, I like data.')
   await goButton.waitFor({state: 'visible'})
