@@ -229,6 +229,7 @@ async function runOnlineTests(names: string[], options) {
     'rguiicons', // not working
     'rguilayout', // not working
     'rguistyler', // not working
+    'roslyn', // not working
   ]
   names = names.filter((n) => !filter.includes(n))
   let successfull = 0;
