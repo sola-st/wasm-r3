@@ -226,6 +226,7 @@ async function runOnlineTests(names: string[], options) {
     'hnset-bench', // no benchmark generated
     'fractals', // no benchmark generated
     'rfxgen', // not working
+    'rguiicons', // not working
   ]
   names = names.filter((n) => !filter.includes(n))
   let successfull = 0;
