@@ -241,6 +241,7 @@ async function runOnlineTests(names: string[], options) {
     'sqlpractice', // not working
     'takahirox', // not working
     'timestretch', // not working
+    'wheel', // not working
   ]
   names = names.filter((n) => !filter.includes(n))
   let successfull = 0;
