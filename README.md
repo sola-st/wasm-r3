@@ -5,16 +5,22 @@ This folder contains the source code for the Wasm-R3 tool.
 ## Prerequisites
 
 - wasm-tools
+- wasm-pack
+- wasmtime
 
 ## Building
 
 When first cloning the repository you want to install all dependencies. From the root of this repository run:
 ```
-npm install
+npm install && npx playwright install
 ```
 To build Wasm-R3 with all its dependencies (specifically `Wasabi` and the `playwright chromium browser`) run:
 ```
 npm run build-full
+```
+Also add the path to binaryen to your PATH e.g.
+```
+echo 'export PATH=$PATH:~/wasm-r3/binaryen/bin' >> ~/.profile
 ```
 If you built and installed all the dependencies already and you make some changes to the Wasm-R3 source code only it is enough to run:
 ```

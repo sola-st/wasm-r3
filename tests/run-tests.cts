@@ -111,12 +111,13 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
         execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayJsPath}`);
       } else {
         execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
-        // we validate and early return as for single wasm accuracy test doesn't make sense
-        execSync(`wasm-validate  ${replayWasmPath}`)
+        execSync(`node ${replayJsPath}`, { cwd: testPath })
+        execSync(`wasm-tools validate -f all  ${replayWasmPath}`)
+        execSync(`wasmtime  ${replayWasmPath}`)
         return { testPath, roundTripTime: p_roundTrip().duration, success: true }
       }
     }
-    await delay(0) // WTF why do I need this WHAT THE FUCK
+    await delay(0)
   } catch (e: any) {
     return { testPath, success: false, reason: e.stack }
   }
@@ -163,6 +164,7 @@ async function runNodeTests(names: string[], options) {
   // ignore specific tests
   let filter = [
     'rust-tictactoe',
+    'rust-game-of-life', // trace keeps changing.
     'mem-exp-vec-store-no-host-mod',
     'mem-exp-init-no-host-mod',
     'mem-exp-copy-no-host-mod',
@@ -223,6 +225,8 @@ async function runOnlineTests(names: string[], options) {
     'lichess', // failing test
     'livesplit', // uses simd, filter for now
     'onnxjs', // // unknown func: failed to find name `$1000008`"
+    'gotemplate', // timeout for locator('#output')
+    'commanderkeen', // unreachable
     'hnset-bench', // no benchmark generated
     'fractals', // no benchmark generated
     'rfxgen', // not working

@@ -1,8 +1,10 @@
-use std::collections::{BTreeMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::io::Write;
 use std::process::Command;
-use std::vec;
+use std::{fs, vec};
 use std::{fs::File, path::Path};
+
+use walrus::{Import, Module};
 
 use crate::irgen::{FunctionTy, HostEvent, INIT_INDEX};
 use crate::trace::{ValType, F64};
@@ -98,29 +100,28 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
                 Some(max) => max.to_string(),
                 None => "".to_string(),
             };
-            if module == *current_module {
-                write(
-                    stream,
-                    &format!("(memory (export \"{name}\") {initial} {maximum})\n",),
-                )?;
-            } else {
-                write(
-                    stream,
-                    &format!("(import \"{module}\" \"{name}\" (memory {initial} {maximum}))\n",),
-                )?;
-            }
+
+            write(
+                stream,
+                &format!("(import \"{module}\" \"{name}\" (memory {initial} {maximum}))\n",),
+            )?;
         }
         for (_i, global) in &code.imported_globals() {
             let import = global.import.clone().unwrap();
             if import.module != *current_module {
                 continue;
             }
+
+            let module = import.module.clone();
             let name = import.name.clone();
             let valtype = global.valtype.clone();
-            let initial = global.initial;
+            let typedecl = match global.mutable {
+                true => format!("(mut {valtype})"),
+                false => format!("{valtype}"),
+            };
             write(
                 stream,
-                &format!("(global (export \"{name}\") {valtype} ({valtype}.const {initial:?}))\n",),
+                &format!("(import \"{module}\" \"{name}\" (global ${name} {typedecl}))\n",),
             )?;
         }
         // tables
@@ -129,6 +130,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             if import.module != *current_module {
                 continue;
             }
+            let module = import.module.clone();
             let name = import.name.clone();
             let initial = table.initial;
             let maximum = match table.maximum {
@@ -138,7 +140,9 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             let reftype = table.reftype.clone();
             write(
                 stream,
-                &format!("(table (export \"{name}\") {initial} {maximum} {reftype:?})\n",),
+                &format!(
+                    "(import \"{module}\" \"{name}\" (table {initial} {maximum} {reftype:?}))\n",
+                ),
             )?;
         }
         // functions
@@ -281,6 +285,146 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
         let mut modle_wasm_file = File::create(&module_wasm_path).unwrap();
         modle_wasm_file.write_all(&binary).unwrap();
     }
+
+    generate_replay_js(replay_path, &module_set, code)?;
+    generate_single_wasm(replay_path, &module_set)?;
+
+    Ok(())
+}
+
+fn generate_replay_js(
+    replay_path: &Path,
+    module_set: &HashSet<&String>,
+    code: &Replay,
+) -> Result<(), std::io::Error> {
+    let replay_js_path = replay_path.parent().unwrap().join(&format!("replay.js"));
+    let stream = &mut File::create(replay_js_path).unwrap();
+
+    for (_i, memory) in &code.imported_mems() {
+        let import = memory.import.clone().unwrap();
+        let module = import.module.clone();
+        let name = import.name.clone();
+        let module_name = &format!("{module}_{name}");
+        let initial = memory.initial;
+        let maximum = match memory.maximum {
+            Some(max) => max.to_string(),
+            None => "undefined".to_string(),
+        };
+
+        write(
+            stream,
+            &format!(
+                "const {module_name} = new WebAssembly.Memory({{ initial: {initial}, maximum: {maximum} }})\n"
+            ),
+        )?;
+    }
+    for (_i, global) in &code.imported_globals() {
+        let import = global.import.clone().unwrap();
+        let module = import.module.clone();
+        let name = import.name.clone();
+        let module_name = &format!("{module}_{name}");
+        let valtype = global.valtype.clone();
+        let mutable = global.mutable;
+        let initial = global.initial;
+        write(
+            stream,
+            &format!(
+                "const {module_name} = new WebAssembly.Global({{ value: '{valtype}', mutable: {mutable}}}, {initial})\n"
+            ),
+        )?;
+    }
+    for (_i, table) in &code.imported_tables() {
+        let import = table.import.clone().unwrap();
+        let module = import.module.clone();
+        let name = import.name.clone();
+        let module_name = &format!("{module}_{name}");
+        let initial = table.initial;
+        let maximum = match table.maximum {
+            Some(max) => max.to_string(),
+            None => "undefined".to_string(),
+        };
+        let reftype = table.reftype.clone();
+        write(
+            stream,
+            &format!(
+                "const {module_name} = new WebAssembly.Table({{ initial: {initial}, maximum: {maximum}, element: '{reftype}'}})\n",)
+        )?;
+    }
+    write(stream, "\n")?;
+    let var_name = "index".to_string();
+    let iterable = std::iter::once(&var_name).chain(module_set.clone().into_iter());
+    for current_module in iterable {
+        let wasm_path = replay_path
+            .parent()
+            .unwrap()
+            .join(&format!("{current_module}.wasm"));
+        let buffer = &fs::read(wasm_path).unwrap();
+        let walrus_module = Module::from_buffer(buffer).unwrap();
+        let module_set = walrus_module
+            .imports
+            .iter()
+            .map(|import| &import.module)
+            .collect::<HashSet<_>>();
+        let module_escaped = current_module.replace(|c: char| !c.is_alphanumeric(), "_");
+        let object = format!("{module_escaped}Import");
+        let mut import_object_str = format!("const {object}  = {{}}\n");
+        for module in module_set {
+            import_object_str += &format!("{object}['{module}'] = {{}}\n");
+        }
+        for import in walrus_module.imports.iter() {
+            let module = &import.module;
+            let module_escaped = module.replace(|c: char| !c.is_alphanumeric(), "_");
+            let name = &import.name;
+            let module_name = &format!("{module_escaped}_{name}");
+            let value = match import.kind {
+                walrus::ImportKind::Function(_) => {
+                    format!("(...args) => {{ return {module_escaped}.exports['{name}'](...args) }}")
+                }
+                _ => {
+                    if module == "index" {
+                        format!("index.exports.{name}")
+                    } else {
+                        format!("{module_name}")
+                    }
+                }
+            };
+            import_object_str += &format!("{object}['{module}']['{name}'] = {value}\n",);
+        }
+
+        write(
+            stream,
+            &format!(
+                "{import_object_str}
+const {module_escaped} = new WebAssembly.Instance(new WebAssembly.Module(await readFile(\"{current_module}.wasm\")), {module_escaped}Import)\n\n",
+            ),
+        )?;
+    }
+
+    write(
+        stream,
+        "main.exports.main();
+async function readFile(filename) {
+let data;
+if (typeof Deno !== 'undefined') {
+    data = await Deno.readFile(filename);
+} else if (typeof process !== 'undefined') {
+    const fs = await import('fs').then(module => module.promises);
+    data = await fs.readFile(filename);
+} else if (typeof Bun !== 'undefined') {
+    data = await Bun.fs.readFile(filename, 'utf8');
+} else {
+    throw new Error('Not suppported');
+}
+return data;
+} ",
+    )?;
+    Ok(())
+}
+
+fn generate_single_wasm(
+    replay_path: &Path,
+    module_set: &HashSet<&String>,
+) -> Result<(), std::io::Error> {
     let module_args = module_set
         .iter()
         .map(|module| vec![format!("{}.wasm", module), module.to_string()])
@@ -298,12 +442,105 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
     .iter()
     .cloned()
     .chain(module_args.iter().map(|s| s.as_str()))
-    .chain(["-o", "merged.wasm"]);
+    .chain(["-o", "merged_1.wasm"]);
     let _output = Command::new("wasm-merge")
         .current_dir(replay_path.parent().unwrap())
         .args(args)
         .output()
         .expect("Failed to execute wasm-merge");
+
+    let wasm_path = replay_path
+        .parent()
+        .unwrap()
+        .join(&format!("merged_1.wasm"));
+    let buffer = &fs::read(wasm_path).unwrap();
+    let walrus_module = Module::from_buffer(buffer).unwrap();
+    let mut module_map: HashMap<String, Vec<&Import>> = HashMap::new();
+    for import in walrus_module.imports.iter() {
+        let import_vec = module_map
+            .entry(import.module.clone())
+            .or_insert_with(Vec::new);
+        if !import_vec.iter().any(|i| i.name == import.name) {
+            import_vec.push(import);
+        }
+    }
+    for (module, import_list) in &module_map {
+        let module_wasm_path = replay_path
+            .parent()
+            .unwrap()
+            .join(&format!("{module}_merge.wasm"));
+        let stream = &mut File::create(&module_wasm_path).unwrap();
+
+        let export_list =
+            import_list
+                .iter()
+                .map(|import| {
+                    let name = &import.name;
+                    match &import.kind {
+                        walrus::ImportKind::Memory(mid) => {
+                            let memory = walrus_module.memories.get(*mid);
+                            let initial = memory.initial;
+                            let maximum = match memory.maximum {
+                                Some(max) => max.to_string(),
+                                None => "".to_string(),
+                            };
+                            format!("(memory (export \"{name}\") {initial} {maximum})\n",)
+                        }
+                        walrus::ImportKind::Global(gid) => {
+                            let global = walrus_module.globals.get(*gid);
+                            let valtype = global.ty;
+                            // TODO: this might be wrong
+                            let initial = 0;
+                            format!("(global (export \"{name}\") {valtype} ({valtype}.const {initial:?}))\n",)
+                        }
+                        walrus::ImportKind::Table(tid) => {
+                            let table = walrus_module.tables.get(*tid);
+                            let initial = table.initial;
+                            let maximum = match table.maximum {
+                                Some(max) => max.to_string(),
+                                None => "".to_string(),
+                            };
+                            let reftype = match table.element_ty {
+                                walrus::ValType::Externref => "externref",
+                                walrus::ValType::Funcref => "funcref",
+                                _ => unreachable!("table cannot contain non-funcref or externref"),
+                            };
+                            format!("(table (export \"{name}\") {initial} {maximum} {reftype})\n",)
+                        },
+                        walrus::ImportKind::Function(_) => {
+                            unreachable!("it never imports function here")
+                        }
+                    }
+                })
+                .collect::<Vec<String>>()
+                .join("\n");
+        write!(stream, "(module {export_list})")?;
+    }
+
+    let module_args = module_map
+        .iter()
+        .map(|(module, _)| vec![format!("{}_merge.wasm", module), module.to_string()])
+        .flatten()
+        .collect::<Vec<String>>();
+    let args = [
+        "--rename-export-conflicts",
+        "--enable-reference-types",
+        "--enable-multimemory",
+        "--enable-bulk-memory",
+        "--debuginfo",
+        "merged_1.wasm",
+        "index",
+    ]
+    .iter()
+    .cloned()
+    .chain(module_args.iter().map(|s| s.as_str()))
+    .chain(["-o", "merged_2.wasm"]);
+    let _output = Command::new("wasm-merge")
+        .current_dir(replay_path.parent().unwrap())
+        .args(args)
+        .output()
+        .expect("Failed to execute wasm-merge");
+
     let _output = Command::new("wasm-opt")
         .current_dir(replay_path.parent().unwrap())
         .args([
@@ -313,13 +550,11 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
             "--debuginfo",
             // for handling inlining of imported globals. Without this glob-merge node test will fail.
             "--simplify-globals",
-            "merged.wasm",
+            "merged_2.wasm",
             "-o",
             replay_path.to_str().unwrap(),
         ])
-        .output()
-        .expect("Failed to execute wasm-opt");
-
+        .output()?;
     Ok(())
 }
 

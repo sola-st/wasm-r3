@@ -3,7 +3,7 @@ import { expect } from 'playwright/test'
 
 export default async function test(analyser) {
   const url = 'https://gotemplate.io/'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   const templateText = page.locator('#input-tmpl')
   await templateText.waitFor({state: 'visible'})
