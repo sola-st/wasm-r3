@@ -15,7 +15,7 @@ import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
 import { generateJavascript } from '../src/js-generator.cjs'
 import { createMeasure } from '../src/performance.cjs'
-import { online_filter } from './online_filter.cjs'
+import { node_filter, offline_filter, online_filter } from './filter.cjs'
 
 let extended = false
 
@@ -163,20 +163,8 @@ async function runNodeTests(names: string[], options) {
   console.log('Run node tests')
   console.log('==============')
   // ignore specific tests
-  let filter = [
-    'rust-tictactoe',
-    'rust-game-of-life', // trace keeps changing.
-    'mem-exp-vec-store-no-host-mod',
-    'mem-exp-init-no-host-mod',
-    'mem-exp-copy-no-host-mod',
-    'mem-exp-fill-no-host-mod',
-    'mem-exp-host-mod-load-vec',
-    'table-exp-host-mod',
-    'table-exp-host-grow',
-    'funky-kart',
-    'table-exp-host-add-friend',
-  ]
-  names = names.filter((n) => !filter.includes(n))
+
+  names = names.filter((n) => !node_filter.includes(n))
   let successfull = 0;
   // names = ["mem-imp-host-grow"]
   let roundTripTimes = []
@@ -248,10 +236,7 @@ async function runOfflineTests(names: string[], options) {
   console.log('Run offline tests')
   console.log('=================')
   // ignore specific tests
-  let filter = [
-    'sqllite',
-  ]
-  names = names.filter((n) => !filter.includes(n))
+  names = names.filter((n) => !offline_filter.includes(n))
   let successfull = 0;
   let roundTripTimes = []
   for (let name of names) {
