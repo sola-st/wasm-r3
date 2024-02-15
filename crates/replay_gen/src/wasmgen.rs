@@ -1,10 +1,10 @@
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, HashSet};
 use std::io::Write;
 use std::process::Command;
 use std::{fs, vec};
 use std::{fs::File, path::Path};
 
-use walrus::{Import, Module};
+use walrus::Module;
 
 use crate::irgen::{FunctionTy, HostEvent, INIT_INDEX};
 use crate::trace::{ValType, F64};
@@ -287,7 +287,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
     }
 
     generate_replay_js(replay_path, &module_set, code)?;
-    generate_single_wasm(replay_path, &module_set)?;
+    generate_single_wasm(replay_path, &module_set, code)?;
 
     Ok(())
 }
@@ -424,20 +424,28 @@ return data;
 fn generate_single_wasm(
     replay_path: &Path,
     module_set: &HashSet<&String>,
+    code: &Replay,
 ) -> Result<(), std::io::Error> {
-    let module_args = module_set
+    let mut module_args = module_set
         .iter()
         .map(|module| vec![format!("{}.wasm", module), module.to_string()])
         .flatten()
         .collect::<Vec<String>>();
+    // some shuffling of module args to make --rename-export-conflicts work
+    if let Some(index) = module_args.iter().position(|x| *x == "main.wasm") {
+        let main_wasm = module_args.remove(index);
+        let main = module_args.remove(index);
+        module_args.insert(0, main_wasm);
+        module_args.insert(1, main);
+        module_args.insert(2, "index.wasm".to_string());
+        module_args.insert(3, "index".to_string());
+    }
     let args = [
         "--rename-export-conflicts",
         "--enable-reference-types",
         "--enable-multimemory",
         "--enable-bulk-memory",
         "--debuginfo",
-        "index.wasm",
-        "index",
     ]
     .iter()
     .cloned()
@@ -449,77 +457,80 @@ fn generate_single_wasm(
         .output()
         .expect("Failed to execute wasm-merge");
 
-    let wasm_path = replay_path
-        .parent()
-        .unwrap()
-        .join(&format!("merged_1.wasm"));
-    let buffer = &fs::read(wasm_path).unwrap();
-    let walrus_module = Module::from_buffer(buffer).unwrap();
-    let mut module_map: HashMap<String, Vec<&Import>> = HashMap::new();
-    for import in walrus_module.imports.iter() {
-        let import_vec = module_map
-            .entry(import.module.clone())
-            .or_insert_with(Vec::new);
-        if !import_vec.iter().any(|i| i.name == import.name) {
-            import_vec.push(import);
+    let module_list = code.imported_modules();
+    for module in &module_list {
+        let module_wat_path = replay_path
+            .parent()
+            .unwrap()
+            .join(&format!("{module}_merge.wat"));
+        let stream = &mut File::create(&module_wat_path).unwrap();
+
+        write!(stream, "(module\n")?;
+        for (_, mem) in code.imported_mems() {
+            match mem.import {
+                Some(import) => {
+                    if import.module == *module {
+                        let name = import.name;
+                        let initial = mem.initial;
+                        let maximum = match mem.maximum {
+                            Some(max) => max.to_string(),
+                            None => "".to_string(),
+                        };
+                        write!(stream, "(memory (export \"{name}\") {initial} {maximum})\n")?;
+                    }
+                }
+                None => {}
+            }
         }
-    }
-    for (module, import_list) in &module_map {
+        for (_, table) in code.imported_tables() {
+            match table.import {
+                Some(import) => {
+                    if import.module == *module {
+                        let name = import.name;
+                        let initial = table.initial;
+                        let maximum = match table.maximum {
+                            Some(max) => max.to_string(),
+                            None => "".to_string(),
+                        };
+                        let reftype = &table.reftype;
+                        write!(
+                            stream,
+                            "(table (export \"{name}\") {initial} {maximum} {reftype})\n"
+                        )?;
+                    }
+                }
+                None => {}
+            }
+        }
+        for (_, global) in code.imported_globals() {
+            match global.import {
+                Some(import) => {
+                    if import.module == *module {
+                        let name = import.name;
+                        let initial = global.initial;
+                        let valtype = global.valtype.clone();
+                        write!(
+                            stream,
+                            "(global (export \"{name}\") {valtype} ({valtype}.const {initial:?}))\n"
+                        )?;
+                    }
+                }
+                None => {}
+            }
+        }
+        write!(stream, ")\n")?;
+        let binary = wat::parse_file(module_wat_path.clone()).unwrap();
         let module_wasm_path = replay_path
             .parent()
             .unwrap()
             .join(&format!("{module}_merge.wasm"));
-        let stream = &mut File::create(&module_wasm_path).unwrap();
-
-        let export_list =
-            import_list
-                .iter()
-                .map(|import| {
-                    let name = &import.name;
-                    match &import.kind {
-                        walrus::ImportKind::Memory(mid) => {
-                            let memory = walrus_module.memories.get(*mid);
-                            let initial = memory.initial;
-                            let maximum = match memory.maximum {
-                                Some(max) => max.to_string(),
-                                None => "".to_string(),
-                            };
-                            format!("(memory (export \"{name}\") {initial} {maximum})\n",)
-                        }
-                        walrus::ImportKind::Global(gid) => {
-                            let global = walrus_module.globals.get(*gid);
-                            let valtype = global.ty;
-                            // TODO: this might be wrong
-                            let initial = 0;
-                            format!("(global (export \"{name}\") {valtype} ({valtype}.const {initial:?}))\n",)
-                        }
-                        walrus::ImportKind::Table(tid) => {
-                            let table = walrus_module.tables.get(*tid);
-                            let initial = table.initial;
-                            let maximum = match table.maximum {
-                                Some(max) => max.to_string(),
-                                None => "".to_string(),
-                            };
-                            let reftype = match table.element_ty {
-                                walrus::ValType::Externref => "externref",
-                                walrus::ValType::Funcref => "funcref",
-                                _ => unreachable!("table cannot contain non-funcref or externref"),
-                            };
-                            format!("(table (export \"{name}\") {initial} {maximum} {reftype})\n",)
-                        },
-                        walrus::ImportKind::Function(_) => {
-                            unreachable!("it never imports function here")
-                        }
-                    }
-                })
-                .collect::<Vec<String>>()
-                .join("\n");
-        write!(stream, "(module {export_list})")?;
+        let mut modle_wasm_file = File::create(&module_wasm_path).unwrap();
+        modle_wasm_file.write_all(&binary).unwrap();
     }
 
-    let module_args = module_map
+    let module_args = module_list
         .iter()
-        .map(|(module, _)| vec![format!("{}_merge.wasm", module), module.to_string()])
+        .map(|module| vec![format!("{module}_merge.wasm"), module.to_string()])
         .flatten()
         .collect::<Vec<String>>();
     let args = [

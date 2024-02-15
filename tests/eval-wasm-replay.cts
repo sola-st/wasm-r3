@@ -2,8 +2,7 @@ import cp from 'child_process'
 import fs from 'fs/promises'
 import path from 'path'
 import { writeWithSpaces } from './test-utils.cjs'
-import { exit } from 'process'
-
+import { online_filter } from './online_filter.cjs'
 const onlinePath = './tests/online'
 const wizeng = process.env.WIZENG || 'wizeng.x86-64-linux';
 
@@ -15,15 +14,11 @@ async function run() {
         return
     }
     let folders = await fs.readdir(onlinePath);
-    let exclude = [
-        'commanderkeen', // wizard STACK_OVERFLOW
-        'jqkungfu', // wizard doesnt end
-        'fib', // takes too long
-        'onnxjs', // unknown func: failed to find name `$1000008`"
-        'hnset-bench', // no benchmark generated
-        'fractals' // no benchmark generated
-    ];
-    folders = folders.filter(folder => !exclude.includes(folder));
+    let custom_filter = online_filter.concat([
+        'fib' // takes to long
+    ])
+    folders = folders.filter(folder => !custom_filter.includes(folder));
+    // folders = ['mandelbrot']
     for (let folder of folders) {
         let benchmarkPath = path.join(onlinePath, folder, 'benchmark')
         let subBenchmarks

@@ -15,6 +15,7 @@ import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
 import { generateJavascript } from '../src/js-generator.cjs'
 import { createMeasure } from '../src/performance.cjs'
+import { online_filter } from './online_filter.cjs'
 
 let extended = false
 
@@ -217,33 +218,7 @@ async function runOnlineTests(names: string[], options) {
   console.log('WARNING: You need a working internet connection')
   console.log('WARNING: Tests depend on third party websites. If those websites changed since this testsuite was created, it might not work')
   // ignore specific tests
-  let filter = [
-    'ogv', // TODO: additional ER at end of original trace
-    'heatmap', // works fine, but too long so we skip it
-    'uarm', // doesn't work for js because string is too long
-    'image-convolute', // asm2wasm - f64-to-int is too large
-    'lichess', // failing test
-    'livesplit', // uses simd, filter for now
-    'onnxjs', // // unknown func: failed to find name `$1000008`"
-    'gotemplate', // timeout for locator('#output')
-    'commanderkeen', // unreachable
-    'hnset-bench', // no benchmark generated
-    'fractals', // no benchmark generated
-    'rfxgen', // not working
-    'rguiicons', // not working
-    'rguilayout', // not working
-    'rguistyler', // not working
-    'roslyn', // not working
-    'rtexpacker', //not working
-    'rtexviewer', // not working
-    'rustpython', // not working
-    'skeletal', // not working
-    'sqlpractice', // not working
-    'takahirox', // not working
-    'timestretch', // not working
-    'wheel', // not working
-  ]
-  names = names.filter((n) => !filter.includes(n))
+  names = names.filter((n) => !online_filter.includes(n))
   let successfull = 0;
   let roundTripTimes = []
   for (let name of names) {
