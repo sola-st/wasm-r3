@@ -63,7 +63,21 @@ function setup() {
         printWelcome()
         self.originalWasmBuffer.push(Array.from(new Uint8Array(buffer)))
         // const p_instrumenting = performanceEvent(`instrumentation of wasm binary ${this_i}`)
-        const { instrumented, js } = instrument_wasm(new Uint8Array(buffer));
+        try {
+            const { instrumented, js } = instrument_wasm(new Uint8Array(buffer));
+        } catch (e) {
+            console.error('Instrumentation failed. Downloading the original data')
+            let blob = new Blob([buffer.bytes]);
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "filename.txt";
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
         // self.performanceList.push(p_instrumenting.stop())
         wasabis.push(eval(js + '\nWasabi'))
         buffer = new Uint8Array(instrumented)
@@ -74,7 +88,7 @@ function setup() {
         result.then(({ module, instance }) => {
             wireInstanceExports(instance, this_i)
             self.analysis[this_i].init()
-            
+
         })
         // self.performanceList.push(p_instantiationTime.stop())
         return result

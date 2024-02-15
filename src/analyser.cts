@@ -42,7 +42,7 @@ export default class Analyser {
                 // '--disable-web-security',
                 '--js-flags="--max_old_space_size=8192"',
                 '--enable-experimental-web-platform-features'
-            ]
+            ], downloadsPath: 'Downloads'
         });
         this.page = await this.browser.newPage();
         this.page.setDefaultTimeout(120000);
