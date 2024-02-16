@@ -65,6 +65,20 @@ function setup() {
         // const p_instrumenting = performanceEvent(`instrumentation of wasm binary ${this_i}`)
         try {
             const { instrumented, js } = instrument_wasm(new Uint8Array(buffer));
+            // self.performanceList.push(p_instrumenting.stop())
+            wasabis.push(eval(js + '\nWasabi'))
+            buffer = new Uint8Array(instrumented)
+            importObject = importObjectWithHooks(importObject, this_i)
+            self.analysis.push(setupAnalysis(wasabis[this_i]))
+            let result
+            result = original_instantiate(buffer, importObject)
+            result.then(({ module, instance }) => {
+                wireInstanceExports(instance, this_i)
+                self.analysis[this_i].init()
+
+            })
+            // self.performanceList.push(p_instantiationTime.stop())
+            return result
         } catch (e) {
             console.error('Instrumentation failed. Downloading the original data')
             let blob = new Blob([buffer.bytes]);
@@ -78,20 +92,6 @@ function setup() {
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
         }
-        // self.performanceList.push(p_instrumenting.stop())
-        wasabis.push(eval(js + '\nWasabi'))
-        buffer = new Uint8Array(instrumented)
-        importObject = importObjectWithHooks(importObject, this_i)
-        self.analysis.push(setupAnalysis(wasabis[this_i]))
-        let result
-        result = original_instantiate(buffer, importObject)
-        result.then(({ module, instance }) => {
-            wireInstanceExports(instance, this_i)
-            self.analysis[this_i].init()
-
-        })
-        // self.performanceList.push(p_instantiationTime.stop())
-        return result
     };
     // replace instantiateStreaming
     WebAssembly.instantiateStreaming = async function (source, obj) {
