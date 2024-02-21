@@ -159,4 +159,4 @@ const names = [
 //   "video",
 //   "multiplyInt",
 ];
-run(names, 5);
+run(names, 2);
