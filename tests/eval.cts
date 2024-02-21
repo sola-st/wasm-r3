@@ -27,7 +27,9 @@ async function run(names: string[], repeat: number) {
   }
   let firstEntry = true;
   for (let i = 0; i < repeat; i++) {
+    console.log('repetition', i)
     for (let name of names) {
+      console.log('test', name)
       cp.execSync(`npm t -- online -t ${name}`);
       const testPath = path.join("tests/online", name);
       const performancePath = path.join(testPath, "performance.ndjson");
@@ -47,9 +49,9 @@ async function run(names: string[], repeat: number) {
         roundTripTime:
           parsed["round-trip_time"].duration -
           parsed["user_interaction"].duration,
-        replayGenTime: parsed["rust-backend"].duration,
+        replayGenTime: parsed["replay-generation"].duration,
         traceSize,
-        relativeReplayGenTime: parsed["rust-backend"].duration / traceSize,
+        relativeReplayGenTime: parsed["replay-generation"].duration / traceSize,
       };
       summary[name].results.push(roundResult);
       if (firstEntry === true) {
@@ -92,9 +94,9 @@ async function run(names: string[], repeat: number) {
     current.replayGenTimeMean /= repeat;
     current.relativeReplayGenTimeMean /= repeat;
     
-    summary.replayGenTimeMean += current.replayGenTime;
+    summary.replayGenTimeMean += current.replayGenTimeMean;
     summary.relativeReplayGenTimeMean += current.relativeReplayGenTimeMean;
-    summary.roundTripTimeMean += current.roundTripTime;
+    summary.roundTripTimeMean += current.roundTripTimeMean;
     summary.relativeRoundTripTimeMean += current.relativeRoundTripTime;
     if (Number.isFinite(stats.loadsRatio)) {
       summary.loadsRatioMean += stats.loadsRatio;
@@ -140,23 +142,22 @@ async function run(names: string[], repeat: number) {
 
 const names = [
   "boa",
-//   "commanderkeen",
-//   "ffmpeg",
-//   "fib",
-//   "fig",
-//   "funky-kart",
+  "commanderkeen",
+  "ffmpeg",
+  "fib",
+  "figma-startpage",
+  "funky-kart",
   "game-of-life",
-//   "guiicons",
-//   "handy-tools",
-//   "heatmap",
-//   "jsc",
-//   "kittygame",
-//   "jsc",
-//   "pathfinding",
-//   "riconpacker",
-//   "rtexviewer",
-//   "sqlgui",
-//   "video",
-//   "multiplyInt",
+  "guiicons",
+  "handy-tools",
+  "jsc",
+  "kittygame",
+  "jsc",
+  "pathfinding",
+  "riconpacker",
+  "rtexviewer",
+  "sqlgui",
+  "video",
+  "multiplyInt",
 ];
-run(names, 2);
+run(names, 5);

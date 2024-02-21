@@ -47,6 +47,10 @@ export default class Benchmark {
           );
           p_measureCodeGen();
         } else {
+          const p_replayGen = createMeasure("replay-generation", {
+            phase: "replay-generation",
+            description: `The time it takes to generate the replay`,
+          });
           const p_measureCodeGen = createMeasure("ir-gen", {
             phase: "replay-generation",
             description: `The time it takes to generate the IR code for subbenchmark ${i}`,
@@ -64,7 +68,8 @@ export default class Benchmark {
             code
           );
           p_measureJSWrite();
-        } 
+          p_replayGen()
+        }
         await fs.writeFile(
           path.join(binPath, "index.wasm"),
           Buffer.from(binary)

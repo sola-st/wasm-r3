@@ -110,7 +110,6 @@ export default class Analyser {
     p_measureBufferDownload();
     p_measureDataDownload();
     const stats = await this.getStats();
-    await fs.writeFile("stats.json", JSON.stringify(stats));
     this.contexts = [];
     this.browser.close();
     this.isRunning = false;
@@ -206,7 +205,7 @@ export default class Analyser {
               });
             return stats;
           } catch {
-            return {};
+            return [];
           }
         });
         return stats;
