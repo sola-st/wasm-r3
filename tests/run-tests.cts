@@ -319,6 +319,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
       trace: true,
       rustBackend: options.rustBackend,
     });
+    p_roundTrip();
     let subBenchmarkNames = await getDirectoryNames(benchmarkPath);
     if (subBenchmarkNames.length === 0) {
       return { testPath, success: false, reason: "no benchmark was generated" };
