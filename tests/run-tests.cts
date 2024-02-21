@@ -77,11 +77,6 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   // const wat = await fs.readFile(watPath)
   // const wabtModule = await wabt()
   // const binary = wabtModule.parseWat(watPath, wat).toBinary({})
-  const p_roundTrip = createMeasure("round-trip time", {
-    description:
-      "The time it takes to start the browser instance, load the webpage, record the interaction, download the data, and generate the replay",
-    phase: "all",
-  });
   const binary = await fs.readFile(wasmPath);
   let { instrumented, js } = instrument_wasm(binary);
   await fs.writeFile(wasmPath, Buffer.from(instrumented));
@@ -300,6 +295,11 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
   let analysisResult: AnalysisResult;
   try {
     const analyser = new Analyser("./dist/src/tracer.cjs", { extended });
+    const p_roundTrip = createMeasure("round-trip time", {
+      description:
+        "The time it takes to start the browser instance, load the webpage, record the interaction, download the data, and generate the replay",
+      phase: "all",
+    });
     analysisResult = await (await import(testJsPath)).default(analyser);
     const blockExtended = analyser.getExtended();
 
