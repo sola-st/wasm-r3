@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import fss from "fs";
+import fss, { stat } from "fs";
 import path from "path";
 import Generator from "./replay-generator.cjs";
 import { AnalysisResult } from "./analyser.cjs";
@@ -10,7 +10,7 @@ import { instrument_wasm } from "../wasabi/wasabi_js.js";
 import { createMeasure } from "./performance.cjs";
 import { generateJavascript } from "./js-generator.cjs";
 
-export type Record = { binary: number[]; trace: Trace }[];
+export type Record = { binary: number[]; trace: Trace; statistic?: any }[];
 
 type WasabiRuntime = string[];
 export default class Benchmark {
@@ -28,12 +28,10 @@ export default class Benchmark {
     });
     await fs.mkdir(benchmarkPath);
     await Promise.all(
-      this.record.map(async ({ binary, trace }, i) => {
+      this.record.map(async ({ binary, trace, statistic }, i) => {
         const binPath = path.join(benchmarkPath, `bin_${i}`);
         await fs.mkdir(binPath);
-        if (options.trace === true) {
-          await fs.writeFile(path.join(binPath, "trace.r3"), trace.toString());
-        }
+        await fs.writeFile(path.join(binPath, "trace.r3"), trace.toString());
         const diskSave = path.join(binPath, `temp-trace-${i}.r3`);
         await fs.writeFile(diskSave, trace.toString());
         if (options.rustBackend === true) {
@@ -66,12 +64,18 @@ export default class Benchmark {
             code
           );
           p_measureJSWrite();
-        }
+        } 
         await fs.writeFile(
           path.join(binPath, "index.wasm"),
           Buffer.from(binary)
         );
         await fs.rm(diskSave);
+        if (statistic !== undefined) {
+          await fs.writeFile(
+            path.join(binPath, "stats.json"),
+            JSON.stringify(statistic)
+          );
+        }
       })
     );
     p_measureSave();
@@ -98,6 +102,7 @@ export default class Benchmark {
     self.record = result.map((r) => ({
       trace: Trace.fromString(r.result),
       binary: r.wasm,
+      statistic: r.statistic,
     }));
     return self;
   }
