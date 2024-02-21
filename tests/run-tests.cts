@@ -20,7 +20,7 @@ import { instrument_wasm } from "../wasabi/wasabi_js.js";
 import { Server } from "http";
 import Analyser, { AnalysisResult } from "../src/analyser.cjs";
 import commandLineArgs from "command-line-args";
-import { initPerformance } from "../src/performance.cjs";
+import { createMeasure, initPerformance } from "../src/performance.cjs";
 import { generateJavascript } from "../src/js-generator.cjs";
 
 let extended = false;
@@ -77,6 +77,11 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   // const wat = await fs.readFile(watPath)
   // const wabtModule = await wabt()
   // const binary = wabtModule.parseWat(watPath, wat).toBinary({})
+  const p_roundTrip = createMeasure("round-trip time", {
+    description:
+      "The time it takes to start the browser instance, load the webpage, record the interaction, download the data, and generate the replay",
+    phase: "all",
+  });
   const binary = await fs.readFile(wasmPath);
   let { instrumented, js } = instrument_wasm(binary);
   await fs.writeFile(wasmPath, Buffer.from(instrumented));
