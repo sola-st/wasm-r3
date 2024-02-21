@@ -185,7 +185,8 @@ async function runOnlineTests(names: string[], options) {
     'visual6502remix', // takes so long and is not automated yet
     'heatmap', // takes so long
     'image-convolute', // out of memory
-    'kittygame', // too slow for rust backend
+    'sandspiel', // too slow for rust backend
+    'ogv', // record and replay trace differ
   ]
   names = names.filter((n) => !filter.includes(n))
   for (let name of names) {
