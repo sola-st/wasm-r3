@@ -1,1 +1,19 @@
-[{},{"loads":25619336,"relevantLoads":161,"tableGets":4428,"relevantTableGets":0,"globalGets":130407,"relevantGlobalGets":0,"functionEntries":6903889,"relevantFunctionEntries":591,"functionExits":6903889,"relevantFunctionExits":591,"calls":8725240,"relevantCalls":1821942,"callReturns":8725240,"relevantCallReturns":1821942}]
+[
+    {},
+    {
+        "loads": 25619336,
+        "relevantLoads": 161,
+        "tableGets": 4428,
+        "relevantTableGets": 0,
+        "globalGets": 130407,
+        "relevantGlobalGets": 0,
+        "functionEntries": 6903889,
+        "relevantFunctionEntries": 591,
+        "functionExits": 6903889,
+        "relevantFunctionExits": 591,
+        "calls": 8725240,
+        "relevantCalls": 1821942,
+        "callReturns": 8725240,
+        "relevantCallReturns": 1821942
+    }
+]
