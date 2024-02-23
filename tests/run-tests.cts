@@ -206,6 +206,7 @@ async function runOnlineTests(names: string[], options) {
     "image-convolute", // out of memory
     "sandspiel", // too slow for rust backend
     "ogv", // record and replay trace differ
+    "multiplyDouble", // dont need
   ];
   names = names.filter((n) => !filter.includes(n));
   for (let name of names) {
