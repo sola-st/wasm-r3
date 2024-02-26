@@ -10,10 +10,18 @@ export const node_filter = [
     'table-exp-host-grow',
     'funky-kart',
     'table-exp-host-add-friend',
+    // 'fib',
+    // ffmpeg
+    // fib
+    // jsc
+    // multiplyDouble
+    // multiplyInt
+    // virtualkc
 ]
 
 export const offline_filter = [
     'sqllite',
+    // 'multiple-wasm-files-mainframe', recover from custom-instr-3
 ]
 
 export const online_filter = [
@@ -32,7 +40,6 @@ export const online_filter = [
     'video', // empty benchmark generated
     'wasmsh', // empty benchmark generated
     'rfxgen', // not working
-    'rguiicons', // not working
     'rguilayout', // not working
     'rguistyler', // not working
     'roslyn', // not working

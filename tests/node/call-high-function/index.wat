@@ -1,0 +1,15 @@
+(module
+    (func $main (export "entry")
+        call 10
+    )
+    (func)
+    (func)
+    (func)
+    (func)
+    (func)
+    (func)
+    (func)
+    (func)
+    (func)
+    (func)
+)

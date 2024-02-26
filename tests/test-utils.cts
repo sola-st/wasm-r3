@@ -69,9 +69,14 @@ export function trimFromLastOccurance(str: string, substring: string) {
 export function writeWithSpaces(name: string) {
     const totalLength = 45;
     if (totalLength < name.length) {
-      throw new Error("Total length should oe greater than or equal to the length of the initial word.");
+        throw new Error("Total length should oe greater than or equal to the length of the initial word.");
     }
     const spacesLength = totalLength - name.length;
     const spaces = " ".repeat(spacesLength);
     process.stdout.write(`${name}${spaces}`)
+}
+
+export async function findWatNames(dirPath: string) {
+    let files = await fs.readdir(dirPath);
+    return files.filter(f => path.parse(f).ext === ".wat");
 }

@@ -86,15 +86,6 @@ export class Trace {
 
         let components = event.split(';')
         switch (components[0]) {
-            case 'IM':
-                return {
-                    type: 'ImportMemory',
-                    idx: parseInt(components[1]),
-                    module: components[2],
-                    name: components[3],
-                    initial: parseInt(components[4]),
-                    maximum: components[5] === '' ? undefined : parseInt(components[5])
-                }
             case "EC":
                 return {
                     type: 'ExportCall',
@@ -182,33 +173,6 @@ export class Trace {
                     name: components[2],
                     value: parseNumber(components[3]),
                     valtype: components[4] as ValType,
-                }
-            case 'IG':
-                return {
-                    type: 'ImportGlobal',
-                    idx: parseInt(components[1]),
-                    module: components[2],
-                    name: components[3],
-                    initial: parseNumber(components[6]),
-                    value: components[4] as ValType,
-                    mutable: parseInt(components[5]) === 1
-                }
-            case 'IF':
-                return {
-                    type: 'ImportFunc',
-                    idx: parseInt(components[1]),
-                    module: components[2],
-                    name: components[3],
-                }
-            case 'IT':
-                return {
-                    type: 'ImportTable',
-                    idx: parseInt(components[1]),
-                    module: components[2],
-                    name: components[3],
-                    initial: parseInt(components[4]),
-                    maximum: components[5] === '' ? undefined : parseInt(components[5]),
-                    element: components[6] as 'anyfunc'
                 }
             case 'FE':
                 return {
@@ -566,11 +530,6 @@ export default class Analysis implements AnalysisI<Trace> {
 
     init() {
         // Init Memories
-        this.Wasabi.module.info.memories.forEach((m, idx) => {
-            if (m.import !== null) {
-                this.trace.push(`IM;${idx};${m.import[0]};${m.import[1]};${m.initial};${m.maximum === null ? '' : m.maximum}`)
-            }
-        })
         this.Wasabi.module.memories.forEach((mem, i) => {
             let isImported = this.Wasabi.module.info.memories[i].import !== null
             if (isImported) {
@@ -589,24 +548,8 @@ export default class Analysis implements AnalysisI<Trace> {
                 this.shadowTables[i].set(y, t.get(y))
             }
         })
-        this.Wasabi.module.info.tables.forEach((t, idx) => {
-            if (t.import !== null) {
-                this.trace.push(`IT;${idx};${t.import![0]};${t.import![1]};${t.initial};${t.maximum === null ? '' : t.maximum};${'anyfunc'}`) // want to replace anyfunc through t.refType but it holds the wrong string ('funcref')
-            }
-        })
         // Init Globals
         this.shadowGlobals = this.Wasabi.module.globals.map(g => g.value)
-        this.Wasabi.module.info.globals.forEach((g, idx) => {
-            if (g.import !== null) {
-                this.trace.push(`IG;${idx};${g.import[0]};${g.import[1]};${g.valType};${g.mutability === 'Mut' ? 1 : 0};${this.Wasabi.module.globals[idx].value}`)
-            }
-        })
-        // Init Functions
-        this.Wasabi.module.info.functions.forEach((f, idx) => {
-            if (f.import !== null) {
-                this.trace.push(`IF;${idx};${f.import![0]};${f.import[1]}`)
-            }
-        })
     }
 
     private debugLoad(op: LoadOp, addr: number, byteLength: number) {

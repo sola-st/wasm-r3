@@ -5,19 +5,21 @@ import cp, { execSync } from 'child_process'
 import express from 'express'
 import Generator from "../src/replay-generator.cjs";
 import Tracer, { Trace } from "../src/tracer.cjs";
-import { copyDir, delay, getDirectoryNames, writeWithSpaces, rmSafe, startSpinner, stopSpinner, trimFromLastOccurance } from "./test-utils.cjs";
+import { delay, findWatNames, writeWithSpaces, getDirectoryNames, rmSafe, startSpinner, stopSpinner, trimFromLastOccurance } from "./test-utils.cjs";
 import Benchmark from '../src/benchmark.cjs';
 //@ts-ignore
 import { instrument_wasm } from '../wasabi/wasabi_js.js'
 import { Server } from 'http'
-import Analyser, { AnalysisResult } from '../src/analyser.cjs'
+import { Analyser, AnalysisResult, CustomAnalyser } from '../src/analyser.cjs'
 import commandLineArgs from 'command-line-args'
 import { initPerformance } from '../src/performance.cjs'
 import { generateJavascript } from '../src/js-generator.cjs'
 import { createMeasure } from '../src/performance.cjs'
 import { node_filter, offline_filter, online_filter } from './filter.cjs'
 
+
 let extended = false
+let frontend; // will be set later by options
 
 async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, "gen.js"))
@@ -32,30 +34,97 @@ async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, "call-graph.txt"))
   await rmSafe(path.join(testPath, "replay-call-graph.txt"))
   await rmSafe(path.join(testPath, "long.cjs"))
-  await rmSafe(path.join(testPath, 'benchmark'))
+  await rmSafe(path.join(testPath, frontend))
   await rmSafe(path.join(testPath, 'test-benchmark'))
+  await rmSafe(path.join(testPath, 'test-runtime.js'))
+}
+
+async function runNodeTestCustom(name: string, options): Promise<TestReport> {
+  const testPath = path.join(process.cwd(), 'tests', 'node', name)
+  const benchmarkPath = path.join(testPath, frontend)
+  await cleanUp(testPath)
+  await fs.mkdir(benchmarkPath)
+  const testJsPath = path.join(testPath, 'test.js')
+  const watPath = path.join(testPath, "index.wat");
+  const testJsRuntimePath = path.join(benchmarkPath, 'test-runtime.js')
+  const wasmPath = path.join(benchmarkPath, "index.wasm");
+  const instrumentedPath = path.join(benchmarkPath, "instrumented.wasm");
+  const tracePath = path.join(benchmarkPath, "trace.bin");
+  const traceStringPath = path.join(benchmarkPath, "trace.r3");
+  const callGraphPath = path.join(benchmarkPath, "call-graph.txt");
+  const replayPath = path.join(benchmarkPath, "replay.js");
+  const replayTracePath = path.join(benchmarkPath, "replay-trace.bin");
+  const replayTraceStringPath = path.join(benchmarkPath, "replay-trace.r3");
+  const replayCallGraphPath = path.join(benchmarkPath, "replay-call-graph.txt");
+
+  // 1. Instrument with Wasabi !!Please use the newest version
+  const indexRsPath = path.join(benchmarkPath, 'index.rs')
+  const indexCPath = path.join(benchmarkPath, 'index.c')
+  if (fss.existsSync(indexRsPath)) {
+    cp.execSync(`rustc --crate-type cdylib ${indexRsPath} --target wasm32-unknown-unknown --crate-type cdylib -o ${wasmPath}`, { stdio: 'ignore' })
+    cp.execSync(`wasm2wat ${wasmPath} -o ${watPath}`)
+  } else if (fss.existsSync(indexCPath)) {
+    // TODO
+  } else {
+    cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
+  }
+
+  try {
+    let runtime = await fs.readFile('./dist/node-runtime.js', 'utf-8');
+    let testText = await fs.readFile(testJsPath, 'utf-8');
+    await fs.writeFile(testJsRuntimePath, `import fs from 'fs';\n${testText};\n${runtime};`);
+    let test = await import(testJsRuntimePath)
+    let check_mem = test.setup(tracePath)
+    let wasmBinary = fss.readFileSync(wasmPath)
+    await test.default(wasmBinary)
+    check_mem()
+    execSync(`./target/release/replay_gen stringify ${tracePath} ${wasmPath} ${traceStringPath}`)
+
+    execSync(`./target/release/replay_gen generate ${tracePath} ${wasmPath} true ${replayPath}`);
+
+    let replay = await fs.readFile(replayPath, 'utf-8');
+    await fs.rm(replayPath);
+    await fs.writeFile(replayPath, `${replay};\n${runtime};`);
+    let replayBinary = await import(replayPath)
+    let check_mem_2 = replayBinary.setup(replayTracePath)
+    let wasm = await replayBinary.instantiate(wasmBinary)
+    await replayBinary.replay(wasm)
+    check_mem_2();
+    execSync(`./target/release/replay_gen stringify ${replayTracePath} ${wasmPath} ${replayTraceStringPath}`)
+
+    let traceString = await fs.readFile(traceStringPath, 'utf-8')
+    let replayTraceString = await fs.readFile(replayTraceStringPath, 'utf-8')
+    const comparison = compareResults(benchmarkPath, traceString, replayTraceString)
+    return comparison
+  } catch (e: any) {
+    if (typeof e === 'string') {
+      return { testPath: benchmarkPath, success: false, reason: e }
+    }
+    return { testPath: benchmarkPath, success: false, reason: e.stack }
+  }
 }
 
 
 async function runNodeTest(name: string, options): Promise<TestReport> {
   const testPath = path.join(process.cwd(), 'tests', 'node', name)
+  const benchmarkPath = path.join(testPath, frontend)
   await cleanUp(testPath)
+  await fs.mkdir(benchmarkPath)
   const testJsPath = path.join(testPath, 'test.js')
   const watPath = path.join(testPath, "index.wat");
-  const wasmPath = path.join(testPath, "index.wasm");
-  const instrumentedPath = path.join(testPath, "instrumented.wasm");
-  const tracePath = path.join(testPath, "trace.r3");
-  const callGraphPath = path.join(testPath, "call-graph.txt");
-  const replayJsPath = path.join(testPath, "replay.js");
-  const replayWasmPath = path.join(testPath, "replay.wasm");
-  const mergedWasmPath = path.join(testPath, "merged.wasm");
-  const replayTracePath = path.join(testPath, "replay-trace.r3");
-  const replayCallGraphPath = path.join(testPath, "replay-call-graph.txt");
-  await cleanUp(testPath)
+  const wasmPath = path.join(benchmarkPath, "index.wasm");
+  const instrumentedPath = path.join(benchmarkPath, "instrumented.wasm");
+  const tracePath = path.join(benchmarkPath, "trace.r3");
+  const callGraphPath = path.join(benchmarkPath, "call-graph.txt");
+  const replayJsPath = path.join(benchmarkPath, "replay.js");
+  const replayWasmPath = path.join(benchmarkPath, "replay.wasm");
+  const mergedWasmPath = path.join(benchmarkPath, "merged.wasm");
+  const replayTracePath = path.join(benchmarkPath, "replay-trace.r3");
+  const replayCallGraphPath = path.join(benchmarkPath, "replay-call-graph.txt");
 
   // 1. Instrument with Wasabi !!Please use the newest version
-  const indexRsPath = path.join(testPath, 'index.rs')
-  const indexCPath = path.join(testPath, 'index.c')
+  const indexRsPath = path.join(benchmarkPath, 'index.rs')
+  const indexCPath = path.join(benchmarkPath, 'index.c')
   const p_roundTrip = createMeasure('round-trip time', { description: 'The time it takes to start the browser instance, load the webpage, record the interaction, download the data, and generate the replay', phase: 'all' })
   if (fss.existsSync(indexRsPath)) {
     cp.execSync(`rustc --crate-type cdylib ${indexRsPath} --target wasm32-unknown-unknown --crate-type cdylib -o ${wasmPath}`, { stdio: 'ignore' })
@@ -65,10 +134,10 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   } else {
     cp.execSync(`wat2wasm ${watPath} -o ${wasmPath}`);
   }
-  // const wasabiCommand = `wasabi ${wasmPath} --node -o ${testPath}`
+  // const wasabiCommand = `wasabi ${wasmPath} --node -o ${benchmarkPath}`
   // cp.exec(wasabiCommand, { stdio: 'ignore' });
   // fss.rename(wasabiRuntimePathJS, wasabiRuntimePath)
-  // fss.rename(path.join(testPath, 'long.js'), path.join(testPath, 'long.cjs'))
+  // fss.rename(path.join(benchmarkPath, 'long.js'), path.join(benchmarkPath, 'long.cjs'))
   // modifyRuntime(wasabiRuntimePath)
   // const wat = await fs.readFile(watPath)
   // const wabtModule = await wabt()
@@ -90,7 +159,7 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   try {
     await (await import(testJsPath)).default(wasmBinary)
   } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
+    return { testPath: benchmarkPath, success: false, reason: e.stack }
   }
   let trace = tracer.getResult()
   let traceString = trace.toString();
@@ -100,7 +169,7 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   try {
     trace = Trace.fromString(traceString)
   } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
+    return { testPath: benchmarkPath, success: false, reason: e.stack }
   }
   let replayCode
   try {
@@ -109,18 +178,18 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
       await generateJavascript(fss.createWriteStream(replayJsPath), replayCode)
     } else {
       if (options.jsBackend == true) {
-        execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayJsPath}`);
+        execSync(`./target/release/replay_gen generate ${tracePath} ${wasmPath} false ${replayJsPath}`);
       } else {
-        execSync(`./crates/target/debug/replay_gen ${tracePath} ${wasmPath} ${replayWasmPath}`);
-        execSync(`node ${replayJsPath}`, { cwd: testPath })
+        execSync(`./target/release/replay_gen generate ${tracePath} ${wasmPath} false ${replayWasmPath}`);
+        execSync(`node ${replayJsPath}`, { cwd: benchmarkPath })
         execSync(`wasm-tools validate -f all  ${replayWasmPath}`)
         execSync(`wasmtime  ${replayWasmPath}`)
-        return { testPath, roundTripTime: p_roundTrip().duration, success: true }
+        return { testPath: benchmarkPath, roundTripTime: p_roundTrip().duration, success: true }
       }
     }
     await delay(0)
   } catch (e: any) {
-    return { testPath, success: false, reason: e.stack }
+    return { testPath: benchmarkPath, success: false, reason: e.stack }
   }
   let roundTripTime = p_roundTrip().duration
 
@@ -132,12 +201,12 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
     replayTracer.init()
     replayBinary.replay(wasm)
   } catch (e: any) {
-    return { testPath, roundTripTime, success: false, reason: e.stack }
+    return { testPath: benchmarkPath, roundTripTime, success: false, reason: e.stack }
   }
   let replayTraceString = replayTracer.getResult().toString();
   await fs.writeFile(replayTracePath, replayTraceString);
 
-  const result = compareResults(testPath, traceString, replayTraceString)
+  const result = compareResults(benchmarkPath, traceString, replayTraceString)
   result.roundTripTime = roundTripTime
   if (result.success === false) {
     return result
@@ -156,14 +225,11 @@ function writeSummary(type: string, testCount: number, successfull: number, roun
 }
 
 async function runNodeTests(names: string[], options) {
-  if (names.length === 0) {
-    return
+  if (names.length > 0) {
+    console.log('==============')
+    console.log('Run node tests')
+    console.log('==============')
   }
-  console.log('==============')
-  console.log('Run node tests')
-  console.log('==============')
-  // ignore specific tests
-
   names = names.filter((n) => !node_filter.includes(n))
   let successfull = 0;
   // names = ["mem-imp-host-grow"]
@@ -171,7 +237,12 @@ async function runNodeTests(names: string[], options) {
   for (let name of names) {
     const testPath = path.join(process.cwd(), 'tests', 'node', name)
     const cleanUpPerformance = await initPerformance(name, 'node-auto-test', path.join(testPath, 'performance.ndjson'))
-    const report = await runNodeTest(name, options)
+    let report
+    if (options.customFrontend === true) {
+      report = await runNodeTestCustom(name, options)
+    } else {
+      report = await runNodeTest(name, options)
+    }
     cleanUpPerformance()
     await writeReport(name, report)
     if (report.success === true) {
@@ -214,7 +285,12 @@ async function runOnlineTests(names: string[], options) {
     const testPath = path.join(process.cwd(), 'tests', 'online', name)
     const cleanUpPerformance = await initPerformance(name, 'online-auto-test', path.join(testPath, 'performance.ndjson'))
     await cleanUp(testPath);
-    const report = await testWebPage(testPath, options)
+    let report;
+    if (options.customFrontend) {
+      report = await await testWebPageCustomInstrumentation(testPath, options);
+    } else {
+      report = await await testWebPage(testPath, options)
+    }
     stopSpinner(spinner)
     cleanUpPerformance()
     await writeReport(name, report)
@@ -245,7 +321,12 @@ async function runOfflineTests(names: string[], options) {
     const websitePath = path.join(testPath, 'website')
     await cleanUp(testPath)
     const server = await startServer(websitePath)
-    let report = await testWebPage(testPath, options)
+    let report;
+    if (options.customFrontend) {
+      report = await testWebPageCustomInstrumentation(testPath, options);
+    } else {
+      report = await testWebPage(testPath, options)
+    }
     server.close()
     stopSpinner(spinner)
     await writeReport(name, report)
@@ -290,9 +371,51 @@ function startServer(websitePath: string): Promise<Server> {
 }
 
 
+async function testWebPageCustomInstrumentation(testPath: string, options): Promise<TestReport> {
+  const testJsPath = path.join(testPath, 'test.js')
+  const benchmarkPath = path.join(testPath, frontend)
+
+  let analysisResult: AnalysisResult
+  try {
+    const analyser = new CustomAnalyser(benchmarkPath, { javascript: true })
+    const test = await import(testJsPath)
+    analysisResult = await test.default(analyser)
+    const subBenchmarkNames = await fs.readdir(benchmarkPath);
+    if (subBenchmarkNames.length === 0) {
+      return { testPath, success: false, reason: 'No benchmark has been generated' }
+    }
+    for (let subBenchmark of subBenchmarkNames) {
+      const traceFilePath = path.join(benchmarkPath, subBenchmark, 'trace.bin');
+      const traceTextPath = path.join(benchmarkPath, subBenchmark, 'trace.r3');
+      const replayTracePath = path.join(benchmarkPath, subBenchmark, 'trace-replay.bin');
+      const replayTextTracePath = path.join(benchmarkPath, subBenchmark, 'trace-replay.r3');
+      const wasmPath = path.join(benchmarkPath, subBenchmark, 'index.wasm')
+      const replayPath = path.join(benchmarkPath, subBenchmark, 'replay.js')
+      execSync(`./target/release/replay_gen stringify ${traceFilePath} ${wasmPath} ${traceTextPath}`)
+      let runtime = await fs.readFile('./dist/node-runtime.js', 'utf-8');
+      let replay = await fs.readFile(replayPath, 'utf-8');
+      await fs.rm(replayPath);
+      await fs.writeFile(replayPath, `${replay};\n${runtime};`);
+      let replayBinary = await import(replayPath)
+      let check_mem = replayBinary.setup(replayTracePath)
+      let wasmBinary = fss.readFileSync(wasmPath);
+      let wasm = await replayBinary.instantiate(wasmBinary)
+      replayBinary.replay(wasm)
+      check_mem();
+      execSync(`./target/release/replay_gen stringify ${replayTracePath} ${wasmPath} ${replayTextTracePath}`)
+      let traceString = await fs.readFile(traceTextPath, 'utf-8')
+      let replayTraceString = await fs.readFile(replayTextTracePath, 'utf-8')
+      const comparison = compareResults(testPath, traceString, replayTraceString)
+      return comparison
+    }
+  } catch (e) {
+    return { testPath, success: false, reason: e.stack }
+  }
+}
+
 async function testWebPage(testPath: string, options): Promise<TestReport> {
   const testJsPath = path.join(testPath, 'test.js')
-  const benchmarkPath = path.join(testPath, 'benchmark')
+  const benchmarkPath = path.join(testPath, frontend)
   let analysisResult: AnalysisResult
   try {
     const p_roundTrip = createMeasure('round-trip time', { description: 'The time it takes to start the browser instance, load the webpage, record the interaction, download the data, and generate the replay', phase: 'all' })
@@ -364,14 +487,24 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
 
 (async function run() {
   const optionDefinitions = [
-    { name: 'jsBackend', alias: 'j', type: Boolean },
     { name: 'category', type: String, multiple: true, defaultOption: true },
     { name: 'testcases', alias: 't', type: String, multiple: true },
+    { name: 'customFrontend', alias: 'c', type: Boolean },
+    { name: 'firefoxFrontend', alias: 'f', type: Boolean },
+    { name: 'webkitFrontend', alias: 'w', type: Boolean },
+    { name: 'jsBackend', alias: 'j', type: Boolean },
     { name: 'legacyBackend', alias: 'l', type: Boolean },
-    { name: 'firefox', alias: 'f', type: Boolean },
-    { name: 'webkit', alias: 'w', type: Boolean }
   ]
   const options = commandLineArgs(optionDefinitions)
+  if (options.customFrontend === true) {
+    frontend = 'custom'
+  } else if (options.firefoxFrontend === true) {
+    frontend = 'firefox'
+  } else if (options.webkitFrontend === true) {
+    frontend = 'webkit'
+  } else {
+    frontend = 'benchmark'
+  }
   if (options.category === undefined || options.category.includes('node')) {
     let testNames = await getDirectoryNames(path.join(process.cwd(), 'tests', 'node'));
     if (options.testcases !== undefined) {

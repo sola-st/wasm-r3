@@ -8,3 +8,9 @@ trace.r3
 index.wasm
 long.cjs
 index.wasabi.cjs
+trace.bin
+trace.bin.lookup
+test-runtime.js
+trace.bin
+replay-trace.bin
+replay-trace.bin.lookup

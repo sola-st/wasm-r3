@@ -12,8 +12,8 @@ use crate::{
 pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Result<()> {
     let mut file = File::create(&out_path)?;
     let stream = &mut file;
-    // write(stream, "import fs from 'fs'\n")?;
-    // write(stream, "import path from 'path'\n")?;
+    write(stream, "import fs from 'fs'\n")?;
+    write(stream, "import path from 'path'\n")?;
     write(stream, "let instance\n")?;
     write(stream, "let imports = {}\n")?;
 
@@ -42,10 +42,7 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
         let Import { module, name } = global.import.clone().unwrap();
         if global.initial.0.is_nan() || !global.initial.0.is_finite() {
             if name.to_lowercase() == "infinity" {
-                write(
-                    stream,
-                    &format!("{}Infinity\n", write_import(&module, &name)),
-                )?;
+                write(stream, &format!("{}Infinity\n", write_import(&module, &name)))?;
             } else if name.to_lowercase() == "nan" {
                 write(stream, &format!("{}NaN\n", write_import(&module, &name)))?;
             } else {
@@ -77,10 +74,7 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
                 table.reftype
             ),
         )?;
-        write(
-            stream,
-            &format!("{}{name}\n", write_import(&module, &name),),
-        )?;
+        write(stream, &format!("{}{name}\n", write_import(&module, &name),))?;
     }
     // Imported functions
     for (funcidx, func) in &code.imported_funcs() {
@@ -90,15 +84,9 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
             continue;
         }
         write(stream, &format!("let {} = 0\n", write_func_global(funcidx)))?;
-        write(
-            stream,
-            &format!("{}() => {{\n", write_import(&module, &name)),
-        )?;
+        write(stream, &format!("{}() => {{\n", write_import(&module, &name)))?;
         if !func.bodys.is_empty() {
-            write(
-                stream,
-                &format!("switch ({}) {{\n", write_func_global(funcidx)),
-            )?;
+            write(stream, &format!("switch ({}) {{\n", write_func_global(funcidx)))?;
             for (i, body) in func.bodys.iter().enumerate() {
                 if let Some(body) = body {
                     write_body(stream, body, i)?
@@ -122,13 +110,13 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
     write(stream, "}\n")?;
 
     write(stream, "export function instantiate(wasmBinary) {\n")?;
-    write(
-        stream,
-        "return WebAssembly.instantiate(wasmBinary, imports)\n",
-    )?;
+    write(stream, "return WebAssembly.instantiate(wasmBinary, imports)\n")?;
     write(stream, "}\n")?;
     write(stream, "let firstArg\n")?;
-    write(stream, "if (typeof Deno === 'undefined'){firstArg=process.argv[2]}else{firstArg=Deno.args[0]}\n")?;
+    write(
+        stream,
+        "if (typeof Deno === 'undefined'){firstArg=process.argv[2]}else{firstArg=Deno.args[0]}\n",
+    )?;
     write(stream, "if (firstArg === 'run') {\n")?;
     write(stream, "let nodeModules;\n")?;
     write(stream, "if (typeof Deno === 'undefined') { nodeModules = Promise.all([import('path'),import('fs')])}else{nodeModules=Promise.all([import('node:path'),import('node:fs')])}\n")?;
@@ -138,10 +126,7 @@ pub fn generate_replay_javascript(out_path: &Path, code: &Replay) -> std::io::Re
         "const p = path.join(path.dirname(import.meta.url).replace(/^file:/, ''), 'index.wasm')\n",
     )?;
     write(stream, "const wasmBinary = fs.readFileSync(p)\n")?;
-    write(
-        stream,
-        "instantiate(wasmBinary).then((wasm) => replay(wasm))\n",
-    )?;
+    write(stream, "instantiate(wasmBinary).then((wasm) => replay(wasm))\n")?;
     write(stream, "})}\n")?;
     Ok(())
 }
@@ -158,11 +143,7 @@ fn write_import(module: &str, name: &str) -> String {
     format!("imports['{}']['{}'] = ", module, name)
 }
 
-fn write_results(
-    stream: &mut File,
-    results: &[WriteResult],
-    func_global: &str,
-) -> std::io::Result<()> {
+fn write_results(stream: &mut File, results: &[WriteResult], func_global: &str) -> std::io::Result<()> {
     let mut current = 0;
     for r in results {
         let new_c = current + r.reps;
@@ -198,30 +179,13 @@ fn write_body(stream: &mut File, b: &Context, i: usize) -> std::io::Result<()> {
 
 fn hostevent_to_js(event: &HostEvent) -> String {
     fn write_params_string(params: &[F64]) -> String {
-        params
-            .iter()
-            .map(|p| p.to_string())
-            .collect::<Vec<String>>()
-            .join(",")
+        params.iter().map(|p| p.to_string()).collect::<Vec<String>>().join(",")
     }
     let str = match event {
-        HostEvent::ExportCall {
-            idx: _,
-            name,
-            params,
-        } => {
-            format!(
-                "instance.exports.{}({})\n",
-                name,
-                write_params_string(&params)
-            )
+        HostEvent::ExportCall { idx: _, name, params } => {
+            format!("instance.exports.{}({})\n", name, write_params_string(&params))
         }
-        HostEvent::ExportCallTable {
-            idx: _,
-            table_name,
-            funcidx,
-            params,
-        } => {
+        HostEvent::ExportCallTable { idx: _, table_name, funcidx, params } => {
             format!(
                 "instance.exports.{}.get({})({})\n",
                 table_name,
@@ -229,21 +193,11 @@ fn hostevent_to_js(event: &HostEvent) -> String {
                 write_params_string(&params)
             )
         }
-        HostEvent::MutateMemory {
-            addr,
-            data,
-            import,
-            name,
-        } => {
+        HostEvent::MutateMemory { addr, data, import, name } => {
             let mut js_string = String::new();
             for (j, byte) in data.iter().enumerate() {
                 if *import {
-                    js_string += &format!(
-                        "new Uint8Array({}.buffer)[{}] = {}\n",
-                        name,
-                        addr + j as i32,
-                        byte
-                    );
+                    js_string += &format!("new Uint8Array({}.buffer)[{}] = {}\n", name, addr + j as i32, byte);
                 } else {
                     js_string += &format!(
                         "new Uint8Array(instance.exports.{}.buffer)[{}] = {}\n",
@@ -255,11 +209,7 @@ fn hostevent_to_js(event: &HostEvent) -> String {
             }
             js_string
         }
-        HostEvent::GrowMemory {
-            amount,
-            import,
-            name,
-        } => {
+        HostEvent::GrowMemory { amount, import, name } => {
             if *import {
                 format!("{}.grow({})\n", name, amount)
             } else {
@@ -288,25 +238,14 @@ fn hostevent_to_js(event: &HostEvent) -> String {
             js_string.push_str(")\n");
             js_string
         }
-        HostEvent::GrowTable {
-            idx: _,
-            amount,
-            import,
-            name,
-        } => {
+        HostEvent::GrowTable { idx: _, amount, import, name } => {
             if *import {
                 format!("{}.grow({})\n", name, amount)
             } else {
                 format!("instance.exports.{}.grow({})\n", name, amount)
             }
         }
-        HostEvent::MutateGlobal {
-            idx: _,
-            value,
-            valtype,
-            import,
-            name,
-        } => {
+        HostEvent::MutateGlobal { idx: _, value, valtype, import, name } => {
             if *import {
                 format!("{}.value = {}\n", name, value)
             } else {

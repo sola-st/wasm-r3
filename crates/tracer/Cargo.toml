@@ -1,0 +1,26 @@
+[package]
+name = "tracer"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib"]
+# path = "src/lib.rs"
+
+[[bin]]
+name = "tracer"
+path = "src/main.rs"
+
+[dependencies]
+wasm-bindgen = "0.2"
+serde-wasm-bindgen = "0.4"
+walrus = "0.20.3"
+anyhow = "1.0.75"
+wasmprinter = "0.2.75"
+wat = "1.0.82"
+js-sys = "0.3.67"
+wasmparser = "0.119.0"
+regex = "1.10.3"
+serde = { version = "1.0.195", features = ["serde_derive"] }

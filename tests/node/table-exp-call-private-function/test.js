@@ -1,5 +1,3 @@
-import fs from 'fs'
-
 export default async function test(wasmBinary) {
     let instance
     let imports = {}
@@ -7,5 +5,3 @@ export default async function test(wasmBinary) {
     instance = wasm.instance
     instance.exports.table.get(0)()
 }
-// const wasmBinary = fs.readFileSync('/Users/jakob/Desktop/wasm-r3/tests/node/table-exp-call-private-function/index.wasm')
-// test(wasmBinary)
