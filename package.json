@@ -31,6 +31,7 @@
     "test": "node ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
     "start": "npm run build && node ./dist/src/cli/main.cjs",
-    "eval": "npm run build && node ./dist/tests/eval.cjs"
+    "eval": "npm run build && node ./dist/tests/eval.cjs",
+    "replay-time": "npm run build && node ./dist/tests/replay-exec-time.cjs"
   }
 }

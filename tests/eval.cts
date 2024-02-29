@@ -52,6 +52,7 @@ async function run(names: string[], repeat: number) {
         replayGenTime: parsed["replay-generation"].duration,
         traceSize,
         relativeReplayGenTime: parsed["replay-generation"].duration / traceSize,
+        recordTime: parsed["user_interaction"].duration
       };
       summary[name].results.push(roundResult);
       if (firstEntry === true) {
@@ -143,20 +144,20 @@ async function run(names: string[], repeat: number) {
 const names = [
   // "boa",
   // "commanderkeen",
-  // "ffmpeg",
+  "ffmpeg",
   "fib",
   // "figma-startpage",
   // "funky-kart",
   // "game-of-life",
   // "guiicons",
-  // "handy-tools",
+  "handy-tools",
   // "jsc",
   // "kittygame",
   // "pathfinding",
   // "riconpacker",
   // "rtexviewer",
-  // "sqlgui",
+  "sqlgui",
   // "video",
-  // "multiplyInt",
+  "multiplyInt",
 ];
-run(names, 1);
+run(names, 5);
