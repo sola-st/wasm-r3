@@ -19,7 +19,7 @@
   "dependencies": {
     "acorn": "^8.11.2",
     "command-line-args": "^5.2.1",
-    "playwright": "^1.41.2",
+    "playwright": "^1.42.1",
     "ws": "^8.14.2"
   },
   "scripts": {

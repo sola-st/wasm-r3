@@ -6,6 +6,10 @@ use std::{
 use js_sys::Uint8Array;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
+use wasmparser::WasmFeatures;
+
+const IGNORE_TABLE: bool = true;
+const IGNORE_GLOBAL: bool = true;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Output {
@@ -89,7 +93,9 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             functions.push(Function::from_func_import(l)?);
             func_idx += 1;
         } else if l.starts_with("(import") && l.contains("(global") {
-            globals.push(Global::from_global_import(l)?);
+            if IGNORE_GLOBAL == false {
+                globals.push(Global::from_global_import(l)?);
+            }
         } else if l.starts_with("(import") && l.contains("(memory") {
             let mem = extract_definition(l.into(), "(memory")?;
             shadows.push(transform_to_shadow(mem, SHADOW_MEM)?);
@@ -98,36 +104,48 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             shadows.push(transform_to_shadow(l.into(), SHADOW_MEM)?);
             memories.push(false);
         } else if l.starts_with("(import") && l.contains("(table") {
-            // FOR SHADOW TABLE, THIS CURRENTLY ONLY SUPPORTS 1 TABLE
-            // let table = extract_definition(l.into(), "(table")?;
-            // shadows.push(transform_to_shadow(table, SHADOW_TABLE)?);
-            tables.push(Table { public: true });
-            // FOR SHADOW TABLE, THIS CURRENTLY ONLY SUPPORTS 1 TABLE
+            if IGNORE_TABLE == false {
+                // FOR SHADOW TABLE, THIS CURRENTLY ONLY SUPPORTS 1 TABLE
+                // let table = extract_definition(l.into(), "(table")?;
+                // shadows.push(transform_to_shadow(table, SHADOW_TABLE)?);
+                tables.push(Table { public: true });
+                // FOR SHADOW TABLE, THIS CURRENTLY ONLY SUPPORTS 1 TABLE
+            }
         } else if l.starts_with("(table") {
-            // shadows.push(transform_to_shadow(l.into(), SHADOW_TABLE)?);
-            tables.push(Table { public: false });
+            if IGNORE_TABLE == false {
+                // shadows.push(transform_to_shadow(l.into(), SHADOW_TABLE)?);
+                tables.push(Table { public: false });
+            }
         } else if l.starts_with("(func") {
             let type_idx = get_type_idx_by_func_def(l)?;
             types_by_functions.insert(func_idx, types.get(type_idx as usize).unwrap().clone());
             functions.push(Function::from_func(l)?);
             func_idx += 1;
         } else if l.starts_with("(global") {
-            globals.push(Global::from_global(l)?);
+            if IGNORE_GLOBAL == false {
+                globals.push(Global::from_global(l)?);
+            }
         } else if l.starts_with("(export") && l.contains("(global") {
-            let global_idx = get_exp_index(l)?;
-            globals[global_idx].public = true;
+            if IGNORE_GLOBAL == false {
+                let global_idx = get_exp_index(l)?;
+                globals[global_idx].public = true;
+            }
         } else if l.starts_with("(export") && l.contains("(memory") {
             let memory_idx = get_exp_index(l)?;
             memories[memory_idx] = true;
         } else if l.starts_with("(export") && l.contains("(table") {
-            let table_idx = get_exp_index(l)?;
-            tables[table_idx].public = true;
+            if IGNORE_TABLE == false {
+                let table_idx = get_exp_index(l)?;
+                tables[table_idx].public = true;
+            }
         } else if l.starts_with("(export") && l.contains("(func") {
             let func_idx = get_exp_index_func(l, &functions)?;
             functions.get_mut(func_idx).unwrap().public = true;
             functions.get_mut(func_idx).unwrap().exported = true;
         } else if l.starts_with("(elem") {
-            elem_func_public(l, &mut functions, &tables)?;
+            if IGNORE_TABLE == false {
+                elem_func_public(l, &mut functions, &tables)?;
+            }
         }
     }
 
@@ -164,10 +182,12 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 "(import \"{}\" \"{}\" (func {}))",
                 IMPORT_MODULE, CHECK_MEM_IMPORT_NAME, CHECK_MEM
             ));
-            gen_wat.push(format!(
-                "(import \"{}\" \"{}\" (func {}))",
-                IMPORT_MODULE, CHECK_TABLE_IMPORT_NAME, CHECK_TABLE
-            ))
+            if IGNORE_TABLE == false {
+                gen_wat.push(format!(
+                    "(import \"{}\" \"{}\" (func {}))",
+                    IMPORT_MODULE, CHECK_TABLE_IMPORT_NAME, CHECK_TABLE
+                ));
+            }
         } else if l.starts_with("(imp") && l.contains("(func") {
             gen_wat.push(l);
             func_idx += 1;
@@ -238,21 +258,34 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             // gen_wat.extend(trace_stack_value(called_type.results.get(0), offset));
             // gen_wat.extend(increment_mem_pointer(offset));
             // gen_wat.push("))".into());
-            // REPLACE THE FOLLOWING WITH THE ABOVE FOR THE SHADOW MEMORY OPTIMISATION
-            gen_wat.extend(trace_u8(0x11, offset));
-            gen_wat.extend(trace_u32(table_idx, offset));
+            // REPLACE THE FOLLOWING WITH THE ABOVE FOR THE SHADOW TABLE OPTIMISATION
+            // gen_wat.extend(trace_u8(0x11, offset));
+            // gen_wat.extend(trace_u32(table_idx, offset));
+            // gen_wat.extend(trace_stack_value(Some(&ValType::I32), offset));
+            // gen_wat.push(format!("local.get {}", LOCAL_I32));
+            // gen_wat.push(format!("table.get {}", table_idx));
+            // gen_wat.push(format!("global.get {}", TABLE_POINTER));
+            // gen_wat.push(format!("local.set {}", LOCAL_ADDR));
+            // gen_wat.extend(save_funcref(offset));
+            // gen_wat.push("drop".into());
+            // gen_wat.extend(increment_mem_pointer(offset));
+            // gen_wat.push(l);
+            // gen_wat.extend(trace_u8(0xFE, offset));
+            // gen_wat.push(format!("global.get {}", MEM_POINTER));
+            // gen_wat.push(format!("local.get {}", LOCAL_ADDR));
+            // gen_wat.push(store_value(&ValType::I32, offset));
+            // gen_wat.extend(trace_u32(called_type.idx, offset));
+            // gen_wat.extend(trace_stack_value(called_type.results.get(0), offset));
+            // gen_wat.extend(increment_mem_pointer(offset));
+
+            gen_wat.extend(trace_u8(0x10, offset));
+
             gen_wat.extend(trace_stack_value(Some(&ValType::I32), offset));
-            gen_wat.push(format!("local.get {}", LOCAL_I32));
-            gen_wat.push(format!("table.get {}", table_idx));
-            gen_wat.push(format!("global.get {}", TABLE_POINTER));
-            gen_wat.push(format!("local.set {}", LOCAL_ADDR));
-            gen_wat.extend(save_funcref(offset));
-            gen_wat.push("drop".into());
             gen_wat.extend(increment_mem_pointer(offset));
             gen_wat.push(l);
-            gen_wat.extend(trace_u8(0xFE, offset));
+            gen_wat.extend(trace_u8(0xFF, offset));
             gen_wat.push(format!("global.get {}", MEM_POINTER));
-            gen_wat.push(format!("local.get {}", LOCAL_ADDR));
+            gen_wat.push(format!("local.get {}", LOCAL_I32));
             gen_wat.push(store_value(&ValType::I32, offset));
             gen_wat.extend(trace_u32(called_type.idx, offset));
             gen_wat.extend(trace_stack_value(called_type.results.get(0), offset));
@@ -339,41 +372,55 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             gen_wat.push(format!("local.get {}", typ.to_local()));
             gen_wat.push(l);
         } else if l.starts_with("table.get") {
-            let table_idx = get_table_idx_by_table_get(&l)?;
-            gen_wat.extend(trace_u8(0x25, offset));
-            gen_wat.extend(trace_u32(table_idx, offset));
-            gen_wat.extend(trace_stack_value(Some(&ValType::I32), offset));
-            gen_wat.push(l);
-            gen_wat.extend(save_funcref(offset));
-            gen_wat.extend(increment_mem_pointer(offset));
-        } else if l.starts_with("table.set") {
-            gen_wat.extend(trace_u8(0x26, offset));
-            gen_wat.extend(trace_store_stack(&ValType::Funcref, None, offset));
-            gen_wat.push(l);
-            gen_wat.extend(increment_mem_pointer(offset));
-        } else if l.starts_with("global.get") {
-            let global_idx = get_global_idx(&l, &globals)?;
-            let global = globals.get(global_idx as usize).unwrap();
-            if global.should_be_traced() {
-                gen_wat.extend(trace_u8(0x23, offset));
-                gen_wat.extend(trace_u8(global.valtype.get_code(), offset));
-                gen_wat.extend(trace_u32(global_idx, offset));
+            if IGNORE_TABLE == false {
+                let table_idx = get_table_idx_by_table_get(&l)?;
+                gen_wat.extend(trace_u8(0x25, offset));
+                gen_wat.extend(trace_u32(table_idx, offset));
+                gen_wat.extend(trace_stack_value(Some(&ValType::I32), offset));
                 gen_wat.push(l);
-                gen_wat.extend(trace_stack_value(Some(&global.valtype), offset));
+                gen_wat.extend(save_funcref(offset));
+                gen_wat.extend(increment_mem_pointer(offset));
+            }
+        } else if l.starts_with("table.set") {
+            if IGNORE_TABLE == false {
+                gen_wat.extend(trace_u8(0x26, offset));
+                gen_wat.extend(trace_store_stack(&ValType::Funcref, None, offset));
+                gen_wat.push(l);
                 gen_wat.extend(increment_mem_pointer(offset));
             } else {
                 gen_wat.push(l);
             }
-        } else if l.starts_with("global.set") {
-            let global_idx = get_global_idx(&l, &globals)?;
-            let global = globals.get(global_idx as usize).unwrap();
-            if global.should_be_traced() {
-                gen_wat.extend(trace_u8(0x24, offset));
-                gen_wat.extend(trace_u8(global.valtype.get_code(), offset));
-                gen_wat.extend(trace_u32(global_idx, offset));
-                gen_wat.extend(trace_stack_value(Some(&global.valtype), offset));
+        } else if l.starts_with("global.get") {
+            if IGNORE_GLOBAL == false {
+                let global_idx = get_global_idx(&l, &globals)?;
+                let global = globals.get(global_idx as usize).unwrap();
+                if global.should_be_traced() {
+                    gen_wat.extend(trace_u8(0x23, offset));
+                    gen_wat.extend(trace_u8(global.valtype.get_code(), offset));
+                    gen_wat.extend(trace_u32(global_idx, offset));
+                    gen_wat.push(l);
+                    gen_wat.extend(trace_stack_value(Some(&global.valtype), offset));
+                    gen_wat.extend(increment_mem_pointer(offset));
+                } else {
+                    gen_wat.push(l);
+                }
+            } else {
                 gen_wat.push(l);
-                gen_wat.extend(increment_mem_pointer(offset));
+            }
+        } else if l.starts_with("global.set") {
+            if IGNORE_GLOBAL == false {
+                let global_idx = get_global_idx(&l, &globals)?;
+                let global = globals.get(global_idx as usize).unwrap();
+                if global.should_be_traced() {
+                    gen_wat.extend(trace_u8(0x24, offset));
+                    gen_wat.extend(trace_u8(global.valtype.get_code(), offset));
+                    gen_wat.extend(trace_u32(global_idx, offset));
+                    gen_wat.extend(trace_stack_value(Some(&global.valtype), offset));
+                    gen_wat.push(l);
+                    gen_wat.extend(increment_mem_pointer(offset));
+                } else {
+                    gen_wat.push(l);
+                }
             } else {
                 gen_wat.push(l);
             }
@@ -381,6 +428,7 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             adapt_export_func_idx(&mut l)?;
             gen_wat.push(l);
         } else if l.starts_with("(elem") {
+            // if IGNORE_TABLE == false {
             adapt_elem_func_idx(&mut l, &mut functions)?;
             // FOR SHADOW TABLE OPT. THIS SUPPORTS ONLY ONE TABLE CURRENTLY
             //     gen_wat.push(transform_to_shadow(
@@ -388,6 +436,7 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             //         &format!("(table {SHADOW_TABLE})"),
             //     )?);
             gen_wat.push(l);
+            // }
         } else if l.starts_with("(data") {
             // gen_wat.push(transform_to_shadow(l.clone(), SHADOW_MEM)?);
             gen_wat.push(l);
@@ -409,14 +458,16 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 "(global {} (export \"{}\") (mut i32) (i32.const 0))",
                 MEM_POINTER, MEM_POINTER_EXPORT_NAME
             ));
-            gen_wat.push(format!(
-                "(table {} (export \"{}\") {} funcref)",
-                FUNCREF_TABLE, FUNCREF_TABLE_EXPORT_NAME, FUNCREF_TABLE_SIZE
-            ));
-            gen_wat.push(format!(
-                "(global {} (export \"{}\") (mut i32) (i32.const 0))",
-                TABLE_POINTER, TABLE_POINTER_EXPORT_NAME
-            ));
+            if IGNORE_TABLE == false {
+                gen_wat.push(format!(
+                    "(table {} (export \"{}\") {} funcref)",
+                    FUNCREF_TABLE, FUNCREF_TABLE_EXPORT_NAME, FUNCREF_TABLE_SIZE
+                ));
+                gen_wat.push(format!(
+                    "(global {} (export \"{}\") (mut i32) (i32.const 0))",
+                    TABLE_POINTER, TABLE_POINTER_EXPORT_NAME
+                ));
+            }
             gen_wat.push(format!(
                 "(global {} (mut i32) (i32.const 0))",
                 INTERNAL_CALL_GLOBAL
@@ -440,14 +491,22 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
     let gen = gen_wat.clone();
     // return Err(Box::leak(gen.into_boxed_str()));
     match wat::parse_str(gen_wat) {
-        Ok(buffer) => match wasmparser::Validator::new().validate_all(&buffer) {
+        Ok(buffer) => match wasmparser::Validator::new_with_features(WasmFeatures::all())
+            .validate_all(&buffer)
+        {
             Ok(_) => Ok(Output {
                 stats,
                 instrumented: buffer,
             }),
-            Err(_) => Err(Box::leak(gen.into_boxed_str())),
+            Err(_) => {
+                println!("HELLO");
+                Err(Box::leak(gen.into_boxed_str()))
+            }
         },
-        Err(_) => Err(Box::leak(gen.into_boxed_str())),
+        Err(_) => {
+            println!("HELLO 2");
+            Err(Box::leak(gen.into_boxed_str()))
+        }
     }
 }
 
@@ -551,7 +610,7 @@ fn is_new_section(wat: Option<&&str>) -> bool {
                 false
             }
         }
-        None => true,
+        None => false,
     }
 }
 
@@ -608,6 +667,7 @@ fn get_func_idx_by_call_instr(
     input: &mut String,
     functions: &Vec<Function>,
 ) -> Result<u32, &'static str> {
+    let offset = if IGNORE_TABLE == false { 2 } else { 1 };
     let parts: Vec<&str> = input.split_whitespace().collect();
 
     if parts.len() < 2 {
@@ -617,7 +677,7 @@ fn get_func_idx_by_call_instr(
         for (i, f) in functions.iter().enumerate() {
             if let Some(id) = &f.identifier {
                 if id == parts[1] {
-                    *input = format!("call {}", i + 2);
+                    *input = format!("call {}", i + offset);
                     return Ok(i as u32);
                 }
             }
@@ -628,7 +688,7 @@ fn get_func_idx_by_call_instr(
         Ok(number) => number,
         Err(_) => return Err("Couldnt extract func idx from call instr"),
     };
-    *input = vec![parts[0], " ", &(idx + 2).to_string()].concat();
+    *input = vec![parts[0], " ", &(idx + offset as u32).to_string()].concat();
     Ok(idx)
 }
 
@@ -640,7 +700,11 @@ fn adapt_export_func_idx(input: &mut String) -> Result<(), &'static str> {
     };
     let funcidx_str = caps.get(2).ok_or("No funcidx found")?.as_str();
     let mut funcidx: i32 = funcidx_str.parse().map_err(|_| "Funcidx parsing failed")?;
-    funcidx += 2;
+    if IGNORE_TABLE == false {
+        funcidx += 2;
+    } else {
+        funcidx += 1;
+    }
     *input = re.replace(input, format!("$1 {}", funcidx)).to_string();
     Ok(())
 }
@@ -680,7 +744,8 @@ fn adapt_elem_func_idx(input: &mut String, functions: &Vec<Function>) -> Result<
                 .parse::<usize>()
                 .map_err(|_| "Couldnt func idx in elem section")?
         };
-        parts[i] = (func_idx + 2).to_string();
+        let offset = if IGNORE_TABLE == false { 2 } else { 1 };
+        parts[i] = (func_idx + offset).to_string();
     }
     parts.push(")".into());
     *input = parts.join(" ");
@@ -1047,7 +1112,9 @@ fn trace_return(gen_wat: &mut Vec<String>, offset: &mut u32) {
     gen_wat.push(format!("global.set {}", INTERNAL_CALL_GLOBAL));
     gen_wat.push("))".into());
     gen_wat.extend(check_mem());
-    gen_wat.extend(check_table());
+    if IGNORE_TABLE == false {
+        gen_wat.extend(check_table());
+    }
 }
 
 fn transform_to_shadow(wat: String, identifier: &str) -> Result<String, &'static str> {
