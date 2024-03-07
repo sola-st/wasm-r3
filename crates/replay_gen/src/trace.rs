@@ -52,6 +52,7 @@ pub enum BinCodes {
     TableGet = 0x25,
     TableSet = 0x26,
     FuncEntry = 0x02,
+    TableEntry = 0x03,
     FuncReturn = 0x0F,
     MemGrow = 0x40,
     // TABLE_GROW = 0x02;
@@ -215,6 +216,7 @@ impl WasmEvent {
                     BinCodes::FuncReturn => WasmEvent::decode_func_return(reader),
                     BinCodes::CallReturn => WasmEvent::decode_call_return(reader, module_types),
                     BinCodes::FuncEntry => WasmEvent::decode_func_entry(reader, module_types),
+                    BinCodes::TableEntry => WasmEvent::decode_table_entry(reader, module_types),
                     BinCodes::MemGrow => WasmEvent::decode_mem_grow(reader),
                 }?;
                 Ok(events)
@@ -335,6 +337,32 @@ impl WasmEvent {
             })
             .collect();
         let ret = vec![WasmEvent::FuncEntry { idx, params }];
+        Ok(ret)
+    }
+
+    fn decode_table_entry(reader: &mut BufReader<File>, module_types: ModuleTypes) -> Result<Vec<Self>, ErrorKind> {
+        let idx = read_i32(reader).map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode func idx for func entry")))?
+            as usize;
+        let type_id = read_i32(reader)
+            .map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode type idx for func entry")))?
+            as usize;
+        let typ = module_types
+            .get(type_id)
+            .ok_or(ErrorKind::TypeIdNotInModule(format!("for decode func entry: {}", type_id)))?;
+        let params = typ
+            .params()
+            .into_iter()
+            .map(|p| match p {
+                walrus::ValType::I32 => F64(read_i32(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
+                walrus::ValType::I64 => F64(read_i64(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
+                walrus::ValType::F32 => F64(read_f32(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
+                walrus::ValType::F64 => F64(read_f64(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
+                walrus::ValType::V128 => todo!(),
+                walrus::ValType::Externref => todo!(),
+                walrus::ValType::Funcref => todo!(),
+            })
+            .collect();
+        let ret = vec![WasmEvent::FuncEntryTable { idx, tableidx: 0, params }];
         Ok(ret)
     }
 

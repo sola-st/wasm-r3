@@ -209,7 +209,6 @@ export class CustomAnalyser implements AnalyserI {
         this.wss.on('connection', async function connection(ws, request) {
             ws.on('error', console.error)
             ws.on('message', async function message(data) {
-                // throw new Error("MESSAGE")
                 let buffer: Buffer;
                 if (data instanceof ArrayBuffer) {
                     // Convert ArrayBuffer to Buffer
@@ -225,7 +224,7 @@ export class CustomAnalyser implements AnalyserI {
                 const trace = buffer.slice(0, hrefStartIndex)
                 const hrefBytes = buffer.slice(hrefStartIndex, buffer.length - 2)
                 const href = new TextDecoder().decode(hrefBytes)
-
+                
                 if (type === 0) {
                     if (traceContexts[href] === undefined) {
                         const subBenchmarkPath = path.join(benchmarkPath, href)
@@ -246,6 +245,7 @@ export class CustomAnalyser implements AnalyserI {
                     let array = new Uint8Array(trace)
                     let idxes = convertUint8ArrayToI32Array(array).join('\n')
                     lookupContexts[href].write(idxes)
+                    console.log("Wrote")
                 } else {
                     throw new Error(`Type ${type} of data is neither trace nor lookup`)
                 }
@@ -279,7 +279,7 @@ export class CustomAnalyser implements AnalyserI {
 
         await this.page.goto(url, { timeout: 60000 })
         p_measureStart()
-        this.p_measureUserInteraction = createMeasure('user interaction', { phase: 'record', description: `The time the user interacts with the webpage during recording, from the time the 'loal' event got fired in the browser until the user stopps the recording.` })
+        this.p_measureUserInteraction = createMeasure('user interaction', { phase: 'record', description: `The time the user interacts with the webpage during recording, from the time the 'load' event got fired in the browser until the user stops the recording.` })
         return this.page
     }
 
@@ -292,7 +292,7 @@ export class CustomAnalyser implements AnalyserI {
         this.contexts = this.contexts.concat(this.page.frames())
         const p_measureDataDownload = createMeasure('data download', { phase: 'record', description: `The time it takes to download all data from the browser.` })
         await this.traceToServer()
-        await askQuestion("Downloading trace. Continue? ")
+        // await askQuestion("Downloading trace. Continue? ")
         console.log("Downloading buffers...")
         const p_measureBufferDownload = createMeasure('buffer download', { phase: 'record', description: `The time it takes to download all wasm binaries from the browser.` })
         const originalWasmBuffer = await this.getBuffers()

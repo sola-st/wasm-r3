@@ -40,7 +40,7 @@ pub fn instrument_wasm_js(buffer: &[u8]) -> Result<JsValue, JsValue> {
 
 const TRACE_MEM: &str = "$trace_mem";
 const TRACE_MEM_PAGES: u32 = 10_000;
-const TRACE_MEM_MAX_FILL: u32 = 7_000;
+const TRACE_MEM_MAX_FILL: u32 = 700;
 const TRACE_MEM_EXPORT_NAME: &str = "trace";
 const MEM_POINTER: &str = "$mem_pointer";
 const MEM_POINTER_EXPORT_NAME: &str = "trace_byte_length";
@@ -61,9 +61,13 @@ const LOCAL_I32: &str = "$i32";
 const LOCAL_I64: &str = "$i64";
 const LOCAL_F32: &str = "$f32";
 const LOCAL_F64: &str = "$f64";
-const INTERNAL_CALL_GLOBAL: &str = "$internal_call";
 const SHADOW_MEM: &str = "$shadow_mem";
 const SHADOW_TABLE: &str = "$shadow_table";
+const CALL_STACK: &str = "$call_stack";
+const CALL_STACK_ADDR: &str = "$call_stack_addr";
+const CALL_STACK_SIZE: u32 = 1_000;
+const INTERNAL: u8 = 1;
+const EXTERNAL: u8 = 0;
 
 pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
     let mut orig_wat = wasmprinter::print_bytes(buffer).unwrap();
@@ -104,18 +108,24 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             shadows.push(transform_to_shadow(l.into(), SHADOW_MEM)?);
             memories.push(false);
         } else if l.starts_with("(import") && l.contains("(table") {
-            if IGNORE_TABLE == false {
-                // FOR SHADOW TABLE, THIS CURRENTLY ONLY SUPPORTS 1 TABLE
-                // let table = extract_definition(l.into(), "(table")?;
-                // shadows.push(transform_to_shadow(table, SHADOW_TABLE)?);
-                tables.push(Table { public: true });
-                // FOR SHADOW TABLE, THIS CURRENTLY ONLY SUPPORTS 1 TABLE
-            }
+            // if IGNORE_TABLE == false {
+            // FOR SHADOW TABLE, THIS CURRENTLY ONLY SUPPORTS 1 TABLE
+            // let table = extract_definition(l.into(), "(table")?;
+            // shadows.push(transform_to_shadow(table, SHADOW_TABLE)?);
+            tables.push(Table {
+                public: true,
+                elem: HashMap::new(),
+            });
+            // FOR SHADOW TABLE, THIS CURRENTLY ONLY SUPPORTS 1 TABLE
+            // }
         } else if l.starts_with("(table") {
-            if IGNORE_TABLE == false {
-                // shadows.push(transform_to_shadow(l.into(), SHADOW_TABLE)?);
-                tables.push(Table { public: false });
-            }
+            // if IGNORE_TABLE == false {
+            // shadows.push(transform_to_shadow(l.into(), SHADOW_TABLE)?);
+            tables.push(Table {
+                public: false,
+                elem: HashMap::new(),
+            });
+            // }
         } else if l.starts_with("(func") {
             let type_idx = get_type_idx_by_func_def(l)?;
             types_by_functions.insert(func_idx, types.get(type_idx as usize).unwrap().clone());
@@ -134,18 +144,19 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             let memory_idx = get_exp_index(l)?;
             memories[memory_idx] = true;
         } else if l.starts_with("(export") && l.contains("(table") {
-            if IGNORE_TABLE == false {
-                let table_idx = get_exp_index(l)?;
-                tables[table_idx].public = true;
-            }
+            // if IGNORE_TABLE == false {
+            let table_idx = get_exp_index(l)?;
+            tables[table_idx].public = true;
+            // }
         } else if l.starts_with("(export") && l.contains("(func") {
             let func_idx = get_exp_index_func(l, &functions)?;
             functions.get_mut(func_idx).unwrap().public = true;
             functions.get_mut(func_idx).unwrap().exported = true;
         } else if l.starts_with("(elem") {
-            if IGNORE_TABLE == false {
-                elem_func_public(l, &mut functions, &tables)?;
-            }
+            // if IGNORE_TABLE == false {
+            elem_func_public(l, &mut functions, &tables)?;
+            // }
+            parse_elem(l, &mut tables)?;
         }
     }
 
@@ -213,13 +224,31 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             if func.exported || func.in_public_table {
                 // if false {
                 stats.instrumented_function_entries_based_on_my_own_count += 1;
-                gen_wat.push(format!("global.get {}", INTERNAL_CALL_GLOBAL));
+                gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+                gen_wat.push(format!("i32.load8_u {}", CALL_STACK));
+                gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+                gen_wat.push(format!("i32.const 1"));
+                gen_wat.push(format!("i32.add"));
+                gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
+                gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+                gen_wat.push(format!("i32.const {}", INTERNAL));
+                gen_wat.push(format!("i32.store8"));
                 gen_wat.push("i32.eqz".into());
                 gen_wat.push("(if (then".into());
-                gen_wat.extend(trace_u8(0x02, offset));
-                gen_wat.extend(trace_u32(func_idx, offset));
-                gen_wat.extend(trace_u32(typ.idx, offset));
-                gen_wat.extend(typ.trace_params(offset));
+                if func.exported == true {
+                    gen_wat.extend(trace_u8(0x02, offset));
+                    gen_wat.extend(trace_u32(func_idx, offset));
+                    gen_wat.extend(trace_u32(typ.idx, offset));
+                    gen_wat.extend(typ.trace_params(offset));
+                } else {
+                    gen_wat.extend(trace_u8(0x03, offset));
+                    gen_wat.extend(trace_u32(
+                        *tables.get(0).unwrap().elem.get(&func_idx).unwrap(),
+                        offset,
+                    ));
+                    gen_wat.extend(trace_u32(typ.idx, offset));
+                    gen_wat.extend(typ.trace_params(offset));
+                }
                 gen_wat.extend(increment_mem_pointer(offset));
                 gen_wat.push(") (else))".into());
             }
@@ -231,90 +260,58 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             }
             gen_wat.push(l);
         } else if l.starts_with("call_indirect") {
-            let called_type_idx = get_type_idx_by_call_indirect(&l)?;
-            let called_type = types.get(called_type_idx).unwrap();
-            let table_idx = get_table_idx_by_call_indirect(&l)?;
-            // SHADOW TABLE OPTIMISATION
-            // gen_wat.push(format!("local.tee {}", LOCAL_ADDR));
-            // gen_wat.push(format!("table.get"));
-            // gen_wat.push(format!("local.tee {}", LOCAL_FUNCREF));
-            // gen_wat.push(format!("local.get {}", LOCAL_ADDR));
-            // gen_wat.push(format!("table.get {}", SHADOW_TABLE));
-            // gen_wat.push(format!("ref.eq"));
-            // gen_wat.push(format!("(if (then) (else"));
-            // gen_wat.extend(trace_u8(0x11, offset));
-            // gen_wat.push(format!("local.get {}", LOCAL_ADDR));
-            // gen_wat.extend(trace_u32(table_idx, offset));
-            // gen_wat.push(format!("local.get {}", LOCAL_FUNCREF));
-            // gen_wat.extend(save_funcref(offset));
-            // gen_wat.push("drop".into());
-            // gen_wat.extend(increment_mem_pointer(offset));
-            // gen_wat.push(l);
-            // gen_wat.extend(trace_u8(0xFE, offset));
-            // gen_wat.push(format!("global.get {}", MEM_POINTER));
-            // gen_wat.push(format!("local.get {}", LOCAL_ADDR));
-            // gen_wat.push(store_value(&ValType::I32, offset));
-            // gen_wat.extend(trace_u32(called_type.idx, offset));
-            // gen_wat.extend(trace_stack_value(called_type.results.get(0), offset));
-            // gen_wat.extend(increment_mem_pointer(offset));
-            // gen_wat.push("))".into());
-            // REPLACE THE FOLLOWING WITH THE ABOVE FOR THE SHADOW TABLE OPTIMISATION
-            // gen_wat.extend(trace_u8(0x11, offset));
-            // gen_wat.extend(trace_u32(table_idx, offset));
-            // gen_wat.extend(trace_stack_value(Some(&ValType::I32), offset));
-            // gen_wat.push(format!("local.get {}", LOCAL_I32));
-            // gen_wat.push(format!("table.get {}", table_idx));
-            // gen_wat.push(format!("global.get {}", TABLE_POINTER));
-            // gen_wat.push(format!("local.set {}", LOCAL_ADDR));
-            // gen_wat.extend(save_funcref(offset));
-            // gen_wat.push("drop".into());
-            // gen_wat.extend(increment_mem_pointer(offset));
-            // gen_wat.push(l);
-            // gen_wat.extend(trace_u8(0xFE, offset));
-            // gen_wat.push(format!("global.get {}", MEM_POINTER));
-            // gen_wat.push(format!("local.get {}", LOCAL_ADDR));
-            // gen_wat.push(store_value(&ValType::I32, offset));
-            // gen_wat.extend(trace_u32(called_type.idx, offset));
-            // gen_wat.extend(trace_stack_value(called_type.results.get(0), offset));
-            // gen_wat.extend(increment_mem_pointer(offset));
+            if IGNORE_TABLE == false {
+                let called_type_idx = get_type_idx_by_call_indirect(&l)?;
+                let called_type = types.get(called_type_idx).unwrap();
+                let table_idx = get_table_idx_by_call_indirect(&l)?;
 
-            gen_wat.extend(trace_u8(0x10, offset));
+                gen_wat.extend(trace_u8(0x10, offset));
 
-            gen_wat.extend(trace_stack_value(Some(&ValType::I32), offset));
-            gen_wat.extend(increment_mem_pointer(offset));
-            gen_wat.push(l);
-            gen_wat.extend(trace_u8(0xFF, offset));
-            gen_wat.push(format!("global.get {}", MEM_POINTER));
-            gen_wat.push(format!("local.get {}", LOCAL_I32));
-            gen_wat.push(store_value(&ValType::I32, offset));
-            gen_wat.extend(trace_u32(called_type.idx, offset));
-            gen_wat.extend(trace_stack_value(called_type.results.get(0), offset));
-            gen_wat.extend(increment_mem_pointer(offset));
+                gen_wat.extend(trace_stack_value(Some(&ValType::I32), offset));
+                gen_wat.extend(increment_mem_pointer(offset));
+                gen_wat.push(l);
+                gen_wat.extend(trace_u8(0xFF, offset));
+                gen_wat.push(format!("global.get {}", MEM_POINTER));
+                gen_wat.push(format!("local.get {}", LOCAL_I32));
+                gen_wat.push(store_value(&ValType::I32, offset));
+                gen_wat.extend(trace_u32(called_type.idx, offset));
+                gen_wat.extend(trace_stack_value(called_type.results.get(0), offset));
+                gen_wat.extend(increment_mem_pointer(offset));
+            } else {
+                gen_wat.push(l);
+            }
         } else if l.starts_with("call") {
             stats.calls += 1;
             let called_func_idx = get_func_idx_by_call_instr(&mut l, &functions)?;
             let called_function = functions.get(called_func_idx as usize).unwrap();
-            if called_function.exported {
-                gen_wat.push(format!("global.get {}", INTERNAL_CALL_GLOBAL));
-                gen_wat.push("i32.const 1".into());
-                gen_wat.push("i32.add".into());
-                gen_wat.push(format!("global.set {}", INTERNAL_CALL_GLOBAL));
-            }
             if called_function.imported {
+                gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+                gen_wat.push(format!("i32.const 1"));
+                gen_wat.push(format!("i32.add"));
+                gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
+                gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+                gen_wat.push(format!("i32.const {}", EXTERNAL));
+                gen_wat.push(format!("i32.store8 {}", CALL_STACK));
                 // if false {
-                gen_wat.push("i32.const 0".into());
-                gen_wat.push(format!("global.set {}", INTERNAL_CALL_GLOBAL));
-                stats.instrumented_calls += 1;
                 let called_type = types_by_functions.get(&called_func_idx).unwrap();
                 gen_wat.extend(trace_u8(0x10, offset));
                 gen_wat.extend(trace_u32(called_func_idx, offset));
                 gen_wat.extend(increment_mem_pointer(offset));
                 gen_wat.push(l);
+                // gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+                // gen_wat.push(format!("i32.load8_u {}", CALL_STACK));
+                // gen_wat.push(format!("i32.eqz"));
+                // gen_wat.push(format!("(if (then"));
+                gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+                gen_wat.push(format!("i32.const 1"));
+                gen_wat.push(format!("i32.sub"));
+                gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
                 gen_wat.extend(trace_u8(0xFF, offset));
                 gen_wat.extend(trace_u32(called_func_idx, offset));
                 gen_wat.extend(trace_u32(called_type.idx, offset));
                 gen_wat.extend(trace_stack_value(called_type.results.get(0), offset));
                 gen_wat.extend(increment_mem_pointer(offset));
+                // gen_wat.push(format!(") (else))"));
             } else {
                 gen_wat.push(l);
             }
@@ -350,6 +347,10 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 gen_wat.push(format!("i32.const {}", offs));
                 gen_wat.push("i32.add".into());
             }
+            gen_wat.push(format!("local.tee {}", LOCAL_ADDR));
+            gen_wat.push(format!("local.get {}", typ.to_local()));
+            gen_wat.push(to_shadow_store_instr(&typ)?);
+            gen_wat.push(format!("local.get {}", LOCAL_ADDR));
             gen_wat.push(store_value(&ValType::I32, offset));
             gen_wat.push(format!("global.get {}", MEM_POINTER));
             gen_wat.push(format!("local.get {}", typ.to_local()));
@@ -454,6 +455,7 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 "(memory {} (export \"{}\") {})",
                 TRACE_MEM, TRACE_MEM_EXPORT_NAME, TRACE_MEM_PAGES
             ));
+            gen_wat.push(format!("(memory {} {})", CALL_STACK, CALL_STACK_SIZE));
             gen_wat.push(format!(
                 "(global {} (export \"{}\") (mut i32) (i32.const 0))",
                 MEM_POINTER, MEM_POINTER_EXPORT_NAME
@@ -469,8 +471,8 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 ));
             }
             gen_wat.push(format!(
-                "(global {} (mut i32) (i32.const 0))",
-                INTERNAL_CALL_GLOBAL
+                "(global {} (mut i32) (i32.const 1))",
+                CALL_STACK_ADDR
             ));
             gen_wat.extend(shadows.clone());
             gen_wat.push(")".into())
@@ -803,6 +805,30 @@ fn elem_func_public(
     Ok(())
 }
 
+fn parse_elem(input: &str, tables: &mut Vec<Table>) -> Result<(), &'static str> {
+    println!("{}", input);
+    let mut e = input.split_whitespace().collect::<Vec<_>>().into_iter();
+    for _ in 0..5 {
+        e.next();
+    }
+    let e = e
+        .collect::<Vec<_>>()
+        .into_iter()
+        .map(|s| {
+            println!("{}", s);
+            s.replace(")", "")
+                .parse::<u32>()
+                .map_err(|_| "Couldnt parse elem section")
+        })
+        .collect::<Result<Vec<u32>, &'static str>>()?;
+    dbg!(&tables);
+    let t = tables.get_mut(0).unwrap();
+    e.into_iter().enumerate().for_each(|(i, e)| {
+        t.elem.insert(e, i as u32);
+    });
+    Ok(())
+}
+
 fn get_type_idx_by_func_def(input: &str) -> Result<u32, &'static str> {
     let start_pattern = "(type ";
     let start = input.find(start_pattern).ok_or("Type pattern not found")?;
@@ -1100,17 +1126,17 @@ fn get_type_idx_by_call_indirect(wat: &str) -> Result<usize, &'static str> {
 }
 
 fn trace_return(gen_wat: &mut Vec<String>, offset: &mut u32) {
-    gen_wat.push(format!("global.get {}", INTERNAL_CALL_GLOBAL));
-    gen_wat.push("i32.eqz".into());
+    gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+    gen_wat.push(format!("i32.const 1"));
+    gen_wat.push(format!("i32.sub"));
+    gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
+    gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+    gen_wat.push(format!("i32.const 1"));
+    gen_wat.push("i32.eq".into());
     gen_wat.push("(if (then".into());
     gen_wat.extend(trace_u8(0x0F, offset));
     gen_wat.extend(increment_mem_pointer(offset));
-    gen_wat.push(") (else".into());
-    gen_wat.push(format!("global.get {}", INTERNAL_CALL_GLOBAL));
-    gen_wat.push("i32.const 1".into());
-    gen_wat.push("i32.sub".into());
-    gen_wat.push(format!("global.set {}", INTERNAL_CALL_GLOBAL));
-    gen_wat.push("))".into());
+    gen_wat.push(") (else))".into());
     gen_wat.extend(check_mem());
     if IGNORE_TABLE == false {
         gen_wat.extend(check_table());
@@ -1132,6 +1158,17 @@ fn to_shadow_mem_instr(instr: &str) -> Result<String, &'static str> {
     parts.insert(1, SHADOW_MEM);
     let shadow = parts.join(" ");
     Ok(shadow)
+}
+
+fn to_shadow_store_instr(typ: &ValType) -> Result<String, &'static str> {
+    match typ {
+        ValType::U8 => Ok(format!("i32.store8 {}", SHADOW_MEM)),
+        ValType::I32 => Ok(format!("i32.store {}", SHADOW_MEM)),
+        ValType::I64 => Ok(format!("i64.store {}", SHADOW_MEM)),
+        ValType::F32 => Ok(format!("f32.store {}", SHADOW_MEM)),
+        ValType::F64 => Ok(format!("f64.store {}", SHADOW_MEM)),
+        ValType::Funcref => Err("cannot store funcref"),
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -1339,8 +1376,10 @@ impl Function {
     }
 }
 
+#[derive(Debug)]
 struct Table {
     public: bool,
+    elem: HashMap<u32, u32>,
 }
 
 /// please provide something like "(memory" or "(global" or "(table" as keyword

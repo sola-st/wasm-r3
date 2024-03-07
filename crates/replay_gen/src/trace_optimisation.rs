@@ -234,8 +234,6 @@ impl FuncEntryTransformer {
                             }
                         }
                     }
-                    dbg!(idx);
-                    dbg!(&self.pub_functions);
                     panic!("The called function is neither exported nor in an public table")
                 }
             },
@@ -246,12 +244,13 @@ impl FuncEntryTransformer {
 
 enum Scope {
     Internal,
-    External(usize),
+    External,
 }
 
 pub struct CallOptimiser {
     call_stack: Vec<Scope>,
     import_functions: Vec<()>,
+    event: usize,
 }
 
 impl CallOptimiser {
@@ -262,15 +261,28 @@ impl CallOptimiser {
                 import_functions.push(());
             }
         });
-        CallOptimiser { import_functions, call_stack: vec![Scope::External(0)] }
+        CallOptimiser {
+            import_functions,
+            call_stack: vec![Scope::External],
+            event: 0,
+        }
     }
 }
 
 impl TraceOptimiser for CallOptimiser {
     fn discard_event(&mut self, event: &WasmEvent) -> bool {
+        self.event += 1;
         match event {
-            WasmEvent::FuncEntry { .. } => {
+            WasmEvent::FuncEntry { .. } | WasmEvent::FuncEntryTable { .. } => {
                 let mut keep = true;
+                match self.call_stack.last() {
+                    Some(_) => {},
+                    None => {
+                        let x = format!("Call stack length {}, event {}", self.call_stack.len(), self.event);
+                        let y: Result<String, String> = Err(x);
+                        y.unwrap();
+                    }
+                }
                 if let Scope::Internal = self.call_stack.last().unwrap() {
                     keep = false
                 }
@@ -289,7 +301,7 @@ impl TraceOptimiser for CallOptimiser {
                 if let None = self.import_functions.get(*idx) {
                     false
                 } else {
-                    self.call_stack.push(Scope::External(*idx));
+                    self.call_stack.push(Scope::External);
                     true
                 }
             }
@@ -297,12 +309,12 @@ impl TraceOptimiser for CallOptimiser {
                 if let None = self.import_functions.get(*funcidx as usize) {
                     false
                 } else {
-                    self.call_stack.push(Scope::External(*funcidx as usize));
+                    self.call_stack.push(Scope::External);
                     true
                 }
             }
             WasmEvent::CallReturn { .. } => {
-                if let Scope::External(_) = self.call_stack.last().unwrap() {
+                if let Scope::External = self.call_stack.last().unwrap() {
                     self.call_stack.pop();
                     true
                 } else {
