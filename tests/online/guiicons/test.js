@@ -1,9 +1,9 @@
 import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
-    analyser.setExtended(false)
     const url = 'https://raylibtech.itch.io/rguiicons'
     let page = await analyser.start(url, { headless: true })
+    await delay(10000) // wait until instrumentation is done
     await delay(1000)
     // How to animate this properly?
     // We need to obtain the canvas inside the iframe and then click around

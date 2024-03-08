@@ -40,8 +40,9 @@ class CDPSessionDispatcher extends _dispatcher.Dispatcher {
       result: await this._object.send(params.method, params.params)
     };
   }
-  async detach() {
-    return this._object.detach();
+  async detach(_, metadata) {
+    metadata.potentiallyClosesScope = true;
+    await this._object.detach();
   }
 }
 exports.CDPSessionDispatcher = CDPSessionDispatcher;

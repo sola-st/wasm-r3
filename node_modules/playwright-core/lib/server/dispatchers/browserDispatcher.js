@@ -8,7 +8,6 @@ var _browser = require("../browser");
 var _browserContextDispatcher = require("./browserContextDispatcher");
 var _cdpSessionDispatcher = require("./cdpSessionDispatcher");
 var _dispatcher = require("./dispatcher");
-var _instrumentation = require("../instrumentation");
 var _browserContext = require("../browserContext");
 var _selectors = require("../selectors");
 var _artifactDispatcher = require("./artifactDispatcher");
@@ -53,10 +52,12 @@ class BrowserDispatcher extends _dispatcher.Dispatcher {
   async stopPendingOperations(params, metadata) {
     await this._object.stopPendingOperations(params.reason);
   }
-  async close() {
-    await this._object.close();
+  async close(params, metadata) {
+    metadata.potentiallyClosesScope = true;
+    await this._object.close(params);
   }
-  async killForTests() {
+  async killForTests(_, metadata) {
+    metadata.potentiallyClosesScope = true;
     await this._object.killForTests();
   }
   async defaultUserAgentForTest() {
@@ -145,7 +146,9 @@ class ConnectedBrowserDispatcher extends _dispatcher.Dispatcher {
     };
   }
   async cleanupContexts() {
-    await Promise.all(Array.from(this._contexts).map(context => context.close((0, _instrumentation.serverSideCallMetadata)())));
+    await Promise.all(Array.from(this._contexts).map(context => context.close({
+      reason: 'Global context cleanup (connection terminated)'
+    })));
   }
 }
 exports.ConnectedBrowserDispatcher = ConnectedBrowserDispatcher;

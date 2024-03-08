@@ -6,10 +6,17 @@ export const node_filter = [
     'mem-exp-copy-no-host-mod',
     'mem-exp-fill-no-host-mod',
     'mem-exp-host-mod-load-vec',
-    'table-exp-host-mod',
-    'table-exp-host-grow',
+    'mem-exp-host-grow',
+    'mem-exp-host-grow-no-return',
+    'mem-imp-host-grow',
     'funky-kart',
     'table-exp-host-add-friend',
+    'table-exp-host-grow',
+    'table-exp-host-mod',
+    'table-exp-host-mod-multiple',
+    'tale-exp-internal-mod',
+    'table-imp-host-mod',
+    'table-exp-call-private-function-mul-table'
     // 'fib',
     // ffmpeg
     // fib

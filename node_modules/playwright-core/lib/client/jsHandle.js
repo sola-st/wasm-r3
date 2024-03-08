@@ -9,6 +9,7 @@ exports.parseResult = parseResult;
 exports.serializeArgument = serializeArgument;
 var _channelOwner = require("./channelOwner");
 var _serializers = require("../protocol/serializers");
+let _Symbol$asyncDispose;
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -24,7 +25,7 @@ var _serializers = require("../protocol/serializers");
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+_Symbol$asyncDispose = Symbol.asyncDispose;
 class JSHandle extends _channelOwner.ChannelOwner {
   static from(handle) {
     return handle._object;
@@ -73,11 +74,14 @@ class JSHandle extends _channelOwner.ChannelOwner {
   asElement() {
     return null;
   }
+  async [_Symbol$asyncDispose]() {
+    await this.dispose();
+  }
   async dispose() {
     return await this._channel.dispose();
   }
   async _objectCount() {
-    return this._wrapApiCall(async () => {
+    return await this._wrapApiCall(async () => {
       const {
         count
       } = await this._channel.objectCount();

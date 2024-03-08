@@ -232,7 +232,7 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
                 gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
                 gen_wat.push(format!("i32.const {}", INTERNAL));
-                gen_wat.push(format!("i32.store8"));
+                gen_wat.push(format!("i32.store8 {}", CALL_STACK));
                 gen_wat.push("i32.eqz".into());
                 gen_wat.push("(if (then".into());
                 if func.exported == true {
@@ -285,6 +285,7 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             let called_func_idx = get_func_idx_by_call_instr(&mut l, &functions)?;
             let called_function = functions.get(called_func_idx as usize).unwrap();
             if called_function.imported {
+                stats.instrumented_calls += 1;
                 gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
                 gen_wat.push(format!("i32.const 1"));
                 gen_wat.push(format!("i32.add"));
@@ -806,7 +807,6 @@ fn elem_func_public(
 }
 
 fn parse_elem(input: &str, tables: &mut Vec<Table>) -> Result<(), &'static str> {
-    println!("{}", input);
     let mut e = input.split_whitespace().collect::<Vec<_>>().into_iter();
     for _ in 0..5 {
         e.next();
@@ -815,13 +815,11 @@ fn parse_elem(input: &str, tables: &mut Vec<Table>) -> Result<(), &'static str> 
         .collect::<Vec<_>>()
         .into_iter()
         .map(|s| {
-            println!("{}", s);
             s.replace(")", "")
                 .parse::<u32>()
                 .map_err(|_| "Couldnt parse elem section")
         })
         .collect::<Result<Vec<u32>, &'static str>>()?;
-    dbg!(&tables);
     let t = tables.get_mut(0).unwrap();
     e.into_iter().enumerate().for_each(|(i, e)| {
         t.elem.insert(e, i as u32);
@@ -936,20 +934,6 @@ fn get_mem_offset(wasm_text: &String) -> Result<Option<u32>, &'static str> {
         .find(|&part| part.starts_with("offset="))
         .and_then(|offset_part| offset_part.strip_prefix("offset="))
         .and_then(|number_str| number_str.parse::<u32>().ok());
-    // if parts.len() < 3 {
-    //     if let Some(_) = offset {
-    //         // dbg!("CHANGE");
-    //         // dbg!(&wasm_text);
-    //         *wasm_text = parts[0].to_string();
-    //         // dbg!(&wasm_text);
-    //     }
-    // } else {
-    //     // dbg!("CHANGE");
-    //     // dbg!(&wasm_text);
-    //     *wasm_text = format!("{} {}", parts[0], parts[2]);
-    //     // dbg!(&wasm_text);
-    //     // dbg!(&offset);
-    // }
     Ok(offset)
     // Ok(Some(0))
 }

@@ -16,7 +16,7 @@ var _progress = require("../progress");
 var _crBrowser = require("../chromium/crBrowser");
 var _helper = require("../helper");
 var _transport = require("../../protocol/transport");
-var _debugLogger = require("../../common/debugLogger");
+var _debugLogger = require("../../utils/debugLogger");
 var _processLauncher = require("../../utils/processLauncher");
 var _timeoutSettings = require("../../common/timeoutSettings");
 var _instrumentation = require("../instrumentation");
@@ -204,7 +204,7 @@ class AndroidDevice extends _instrumentation.SdkObject {
     for (const connection of this._browserConnections) await connection.close();
     if (this._driverPromise) {
       const driver = await this._driver();
-      driver === null || driver === void 0 ? void 0 : driver.close();
+      driver === null || driver === void 0 || driver.close();
     }
     await this._backend.close();
     this._android._deviceClosed(this);

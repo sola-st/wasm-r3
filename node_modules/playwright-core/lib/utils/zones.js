@@ -96,5 +96,4 @@ function runWithFinally(func, finallyFunc) {
     throw e;
   }
 }
-const zones = new ZoneManager();
-exports.zones = zones;
+const zones = exports.zones = new ZoneManager();

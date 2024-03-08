@@ -39,16 +39,16 @@ fn generate(args: Vec<String>) -> io::Result<()> {
     let mut generator = IRGenerator::new(Module::from_buffer(buffer).unwrap());
     let module = Module::from_buffer(buffer).unwrap();
     let trace = if binary == "true" {
-        let mut shadow_mem_optimiser = ShadowMemoryOptimiser::new(&module);
-        let mut shadow_table_optimiser = ShadowTableOptimiser::new(&module);
-        let mut func_entry_transformer = FuncEntryTransformer::new(&module);
+        // let mut shadow_mem_optimiser = ShadowMemoryOptimiser::new(&module);
+        // let mut shadow_table_optimiser = ShadowTableOptimiser::new(&module);
+        // let mut func_entry_transformer = FuncEntryTransformer::new(&module);
         let mut call_optimiser = CallOptimiser::new(&module);
         Trace::new(trace_path, &module, true)
             .map(|e| e.unwrap())
-            .filter(|e| call_optimiser.discard_event(e))
+            // .filter(|e| call_optimiser.discard_event(e))
             // .filter(|e| shadow_mem_optimiser.discard_event(e))
-            .filter(|e| shadow_table_optimiser.discard_event(e))
-            .map(|e| func_entry_transformer.transform_event(e))
+            // .filter(|e| shadow_table_optimiser.discard_event(e))
+            // .map(|e| func_entry_transformer.transform_event(e))
             .for_each(|e| generator.consume_event(e));
     } else {
         Trace::new(trace_path, &module, false)

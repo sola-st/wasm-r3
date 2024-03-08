@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.keypadLocation = exports.Touchscreen = exports.Mouse = exports.Keyboard = void 0;
 var _utils = require("../utils");
 var keyboardLayout = _interopRequireWildcard(require("./usKeyboardLayout"));
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -24,8 +24,7 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
  * limitations under the License.
  */
 
-const keypadLocation = keyboardLayout.keypadLocation;
-exports.keypadLocation = keypadLocation;
+const keypadLocation = exports.keypadLocation = keyboardLayout.keypadLocation;
 const kModifiers = ['Alt', 'Control', 'Meta', 'Shift'];
 class Keyboard {
   constructor(raw, page) {
@@ -95,30 +94,23 @@ class Keyboard {
       return keys;
     }
     const tokens = split(key);
-    const promises = [];
     key = tokens[tokens.length - 1];
-    for (let i = 0; i < tokens.length - 1; ++i) promises.push(this.down(tokens[i]));
-    promises.push(this.down(key));
-    if (options.delay) {
-      await Promise.all(promises);
-      await new Promise(f => setTimeout(f, options.delay));
-    }
-    promises.push(this.up(key));
-    for (let i = tokens.length - 2; i >= 0; --i) promises.push(this.up(tokens[i]));
-    await Promise.all(promises);
+    for (let i = 0; i < tokens.length - 1; ++i) await this.down(tokens[i]);
+    await this.down(key);
+    if (options.delay) await new Promise(f => setTimeout(f, options.delay));
+    await this.up(key);
+    for (let i = tokens.length - 2; i >= 0; --i) await this.up(tokens[i]);
   }
   async _ensureModifiers(modifiers) {
     for (const modifier of modifiers) {
       if (!kModifiers.includes(modifier)) throw new Error('Unknown modifier ' + modifier);
     }
     const restore = Array.from(this._pressedModifiers);
-    const promises = [];
     for (const key of kModifiers) {
       const needDown = modifiers.includes(key);
       const isDown = this._pressedModifiers.has(key);
-      if (needDown && !isDown) promises.push(this.down(key));else if (!needDown && isDown) promises.push(this.up(key));
+      if (needDown && !isDown) await this.down(key);else if (!needDown && isDown) await this.up(key);
     }
-    await Promise.all(promises);
     return restore;
   }
   _modifiers() {
@@ -139,7 +131,11 @@ class Mouse {
     this._page = page;
     this._keyboard = this._page.keyboard;
   }
-  async move(x, y, options = {}) {
+  async move(x, y, options = {}, metadata) {
+    if (metadata) metadata.point = {
+      x,
+      y
+    };
     const {
       steps = 1
     } = options;
@@ -153,7 +149,11 @@ class Mouse {
       await this._raw.move(middleX, middleY, this._lastButton, this._buttons, this._keyboard._modifiers(), !!options.forClick);
     }
   }
-  async down(options = {}) {
+  async down(options = {}, metadata) {
+    if (metadata) metadata.point = {
+      x: this._x,
+      y: this._y
+    };
     const {
       button = 'left',
       clickCount = 1
@@ -162,7 +162,11 @@ class Mouse {
     this._buttons.add(button);
     await this._raw.down(this._x, this._y, this._lastButton, this._buttons, this._keyboard._modifiers(), clickCount);
   }
-  async up(options = {}) {
+  async up(options = {}, metadata) {
+    if (metadata) metadata.point = {
+      x: this._x,
+      y: this._y
+    };
     const {
       button = 'left',
       clickCount = 1
@@ -171,7 +175,11 @@ class Mouse {
     this._buttons.delete(button);
     await this._raw.up(this._x, this._y, button, this._buttons, this._keyboard._modifiers(), clickCount);
   }
-  async click(x, y, options = {}) {
+  async click(x, y, options = {}, metadata) {
+    if (metadata) metadata.point = {
+      x: this._x,
+      y: this._y
+    };
     const {
       delay = null,
       clickCount = 1
@@ -281,7 +289,11 @@ class Touchscreen {
     this._raw = raw;
     this._page = page;
   }
-  async tap(x, y) {
+  async tap(x, y, metadata) {
+    if (metadata) metadata.point = {
+      x,
+      y
+    };
     if (!this._page._browserContext._options.hasTouch) throw new Error('hasTouch must be enabled on the browser context before using the touchscreen.');
     await this._raw.tap(x, y, this._page.keyboard._modifiers());
   }

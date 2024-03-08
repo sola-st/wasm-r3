@@ -4,7 +4,7 @@
 // use tracer::instrument_wasm;
 
 // fn main() {
-//     let test_name = "tests/funky-kart";
+//     let test_name = "tests/uarm";
 //     let buffer = &fs::read(format!("{}.wasm", test_name)).unwrap();
 //     let _ = match instrument_wasm(buffer) {
 //         Ok(output) => {
