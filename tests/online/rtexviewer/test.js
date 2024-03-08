@@ -2,10 +2,10 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://raylibtech.itch.io/rtexviewer'
-  let page = await analyser.start(url, { headless: false })
+  let page = await analyser.start(url, { headless: true })
 
-  const canv = page.locator('#canvas') 
-  await canv.waitFor({state: 'visible'})
+  // const canv = page.locator('#canvas') 
+  // await canv.waitFor({state: 'visible'})
 
   await delay(10000)
   // How to animate this properly?

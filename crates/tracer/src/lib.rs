@@ -68,6 +68,7 @@ const CALL_STACK_ADDR: &str = "$call_stack_addr";
 const CALL_STACK_SIZE: u32 = 1_000;
 const INTERNAL: u8 = 1;
 const EXTERNAL: u8 = 0;
+const IN_ENVIRONMENT: &str = "$in_environment";
 
 pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
     let mut orig_wat = wasmprinter::print_bytes(buffer).unwrap();
@@ -235,23 +236,37 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 gen_wat.push(format!("i32.store8 {}", CALL_STACK));
                 gen_wat.push("i32.eqz".into());
                 gen_wat.push("(if (then".into());
-                if func.exported == true {
-                    gen_wat.extend(trace_u8(0x02, offset));
-                    gen_wat.extend(trace_u32(func_idx, offset));
-                    gen_wat.extend(trace_u32(typ.idx, offset));
-                    gen_wat.extend(typ.trace_params(offset));
-                } else {
-                    gen_wat.extend(trace_u8(0x03, offset));
-                    gen_wat.extend(trace_u32(
-                        *tables.get(0).unwrap().elem.get(&func_idx).unwrap(),
-                        offset,
-                    ));
-                    gen_wat.extend(trace_u32(typ.idx, offset));
-                    gen_wat.extend(typ.trace_params(offset));
-                }
+                gen_wat.extend(trace_u8(0x02, offset));
+                gen_wat.extend(trace_u32(func_idx, offset));
+                gen_wat.extend(trace_u32(typ.idx, offset));
+                gen_wat.extend(typ.trace_params(offset));
                 gen_wat.extend(increment_mem_pointer(offset));
+                gen_wat.push(format!("i32.const 0"));
+                gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
                 gen_wat.push(") (else))".into());
             }
+            // else if func.in_public_table {
+            //     gen_wat.push(format!("global.get {}", IN_ENVIRONMENT));
+            //     gen_wat.push(format!("(if (then"));
+            //     gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+            //     gen_wat.push(format!("i32.const 1"));
+            //     gen_wat.push(format!("i32.add"));
+            //     gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
+            //     gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+            //     gen_wat.push(format!("i32.const {}", INTERNAL));
+            //     gen_wat.push(format!("i32.store8 {}", CALL_STACK));
+            //     gen_wat.extend(trace_u8(0x03, offset));
+            //     gen_wat.extend(trace_u32(
+            //         *tables.get(0).unwrap().elem.get(&func_idx).unwrap(),
+            //         offset,
+            //     ));
+            //     gen_wat.extend(trace_u32(typ.idx, offset));
+            //     gen_wat.extend(typ.trace_params(offset));
+            //     gen_wat.extend(increment_mem_pointer(offset));
+            //     gen_wat.push(format!("i32.const 0"));
+            //     gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
+            //     gen_wat.push(") (else))".into());
+            // }
             func_idx += 1;
         } else if l == "return" {
             let func = functions.get((func_idx - 1) as usize).unwrap();
@@ -259,6 +274,9 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             if func.exported {
                 trace_return(&mut gen_wat, offset);
             }
+            // else if func.in_public_table {
+            //     trace_return_table_func(&mut gen_wat, offset);
+            // }
             gen_wat.push(l);
         } else if l.starts_with("call_indirect") {
             if IGNORE_TABLE == false {
@@ -299,6 +317,8 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 gen_wat.extend(trace_u8(0x10, offset));
                 gen_wat.extend(trace_u32(called_func_idx, offset));
                 gen_wat.extend(increment_mem_pointer(offset));
+                gen_wat.push(format!("i32.const 1"));
+                gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
                 gen_wat.push(l);
                 // gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
                 // gen_wat.push(format!("i32.load8_u {}", CALL_STACK));
@@ -348,15 +368,15 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             if let Some(offs) = offs {
                 gen_wat.push(format!("i32.const {}", offs));
                 gen_wat.push("i32.add".into());
+                gen_wat.push(format!("local.tee {}", LOCAL_ADDR));
             }
-            gen_wat.push(format!("local.tee {}", LOCAL_ADDR));
             gen_wat.push(format!("local.get {}", typ.to_local()));
-            gen_wat.push(to_shadow_store_instr(&typ)?);
+            gen_wat.push(to_shadow_store_instr(code)?);
             gen_wat.push(format!("local.get {}", LOCAL_ADDR));
             gen_wat.push(store_value(&ValType::I32, offset));
             gen_wat.push(format!("global.get {}", MEM_POINTER));
             gen_wat.push(format!("local.get {}", typ.to_local()));
-            gen_wat.push(store_value(&typ, offset));
+            gen_wat.push(load_to_trace(code, offset)?);
             gen_wat.extend(increment_mem_pointer(offset));
             // end
             gen_wat.push(") (else))".into());
@@ -476,6 +496,10 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 "(global {} (mut i32) (i32.const 1))",
                 CALL_STACK_ADDR
             ));
+            gen_wat.push(format!(
+                "(global {} (mut i32) (i32.const 1))",
+                IN_ENVIRONMENT
+            ));
             gen_wat.extend(shadows.clone());
             gen_wat.push(")".into())
         } else {
@@ -487,6 +511,9 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             if func.exported {
                 trace_return(&mut gen_wat, offset);
             }
+            // else if func.in_public_table {
+            //     trace_return_table_func(&mut gen_wat, offset);
+            // }
             gen_wat.push(")".into());
             inside_func = false;
         }
@@ -1117,7 +1144,7 @@ fn trace_return(gen_wat: &mut Vec<String>, offset: &mut u32) {
     gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
     gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
     gen_wat.push(format!("i32.const 1"));
-    gen_wat.push("i32.eq".into());
+    gen_wat.push(format!("i32.eq"));
     gen_wat.push("(if (then".into());
     gen_wat.extend(trace_u8(0x0F, offset));
     gen_wat.extend(increment_mem_pointer(offset));
@@ -1126,6 +1153,27 @@ fn trace_return(gen_wat: &mut Vec<String>, offset: &mut u32) {
     if IGNORE_TABLE == false {
         gen_wat.extend(check_table());
     }
+}
+
+fn trace_return_table_func(gen_wat: &mut Vec<String>, offset: &mut u32) {
+    gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+    gen_wat.push(format!("i32.const 2"));
+    gen_wat.push(format!("i32.sub"));
+    gen_wat.push(format!("i32.load8_u"));
+    gen_wat.push(format!("i32.eqz"));
+    gen_wat.push(format!("(if (then"));
+    gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+    gen_wat.push(format!("i32.const 1"));
+    gen_wat.push(format!("i32.sub"));
+    gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
+    gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+    gen_wat.push(format!("i32.const 1"));
+    gen_wat.push(format!("i32.eq"));
+    gen_wat.push("(if (then".into());
+    gen_wat.extend(trace_u8(0x0F, offset));
+    gen_wat.extend(increment_mem_pointer(offset));
+    gen_wat.push(") (else))".into());
+    gen_wat.push(") (else))".into());
 }
 
 fn transform_to_shadow(wat: String, identifier: &str) -> Result<String, &'static str> {
@@ -1145,14 +1193,69 @@ fn to_shadow_mem_instr(instr: &str) -> Result<String, &'static str> {
     Ok(shadow)
 }
 
-fn to_shadow_store_instr(typ: &ValType) -> Result<String, &'static str> {
+fn to_shadow_store_instr(typ: u8) -> Result<String, &'static str> {
     match typ {
-        ValType::U8 => Ok(format!("i32.store8 {}", SHADOW_MEM)),
-        ValType::I32 => Ok(format!("i32.store {}", SHADOW_MEM)),
-        ValType::I64 => Ok(format!("i64.store {}", SHADOW_MEM)),
-        ValType::F32 => Ok(format!("f32.store {}", SHADOW_MEM)),
-        ValType::F64 => Ok(format!("f64.store {}", SHADOW_MEM)),
-        ValType::Funcref => Err("cannot store funcref"),
+        0x28 => Ok(format!("i32.store {}", SHADOW_MEM)),
+        0x29 => Ok(format!("i64.store8 {}", SHADOW_MEM)),
+        0x2A => Ok(format!("f32.store {}", SHADOW_MEM)),
+        0x2B => Ok(format!("f64.store {}", SHADOW_MEM)),
+        0x2C => Ok(format!("i32.store8 {}", SHADOW_MEM)),
+        0x2E => Ok(format!("i32.store16 {}", SHADOW_MEM)),
+        0x30 => Ok(format!("i64.store8 {}", SHADOW_MEM)),
+        0x32 => Ok(format!("i64.store16 {}", SHADOW_MEM)),
+        0x34 => Ok(format!("i64.store32 {}", SHADOW_MEM)),
+        _ => Err("Type not transformable into store instruction"),
+    }
+}
+
+fn load_to_trace(typ: u8, offset: &mut u32) -> Result<String, &'static str> {
+    match typ {
+        0x28 => {
+            let s = Ok(format!("i32.store {} offset={}", TRACE_MEM, offset));
+            *offset += 4;
+            s
+        }
+        0x29 => {
+            let s = Ok(format!("i64.store {} offset={}", TRACE_MEM, offset));
+            *offset += 8;
+            s
+        }
+        0x2A => {
+            let s = Ok(format!("f32.store {} offset={}", TRACE_MEM, offset));
+            *offset += 4;
+            s
+        }
+        0x2B => {
+            let s = Ok(format!("f64.store {} offset={}", TRACE_MEM, offset));
+            *offset += 8;
+            s
+        }
+        0x2C => {
+            let s = Ok(format!("i32.store8 {} offset={}", TRACE_MEM, offset));
+            *offset += 1;
+            s
+        }
+        0x2E => {
+            let s = Ok(format!("i32.store16 {} offset={}", TRACE_MEM, offset));
+            *offset += 2;
+            s
+        }
+        0x30 => {
+            let s = Ok(format!("i64.store8 {} offset={}", TRACE_MEM, offset));
+            *offset += 1;
+            s
+        }
+        0x32 => {
+            let s = Ok(format!("i64.store16 {} offset={}", TRACE_MEM, offset));
+            *offset += 2;
+            s
+        }
+        0x34 => {
+            let s = Ok(format!("i64.store32 {} offset={}", TRACE_MEM, offset));
+            *offset += 4;
+            s
+        }
+        _ => Err("Type not transformable into store instruction"),
     }
 }
 

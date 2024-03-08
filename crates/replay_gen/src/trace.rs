@@ -3,7 +3,8 @@
 //! Most usually corresponds to one wasm instruction, e.g. WasmEvent::Load corresponds to one wasm load,
 //! but some of them are not. e.g. FuncEntry and FuncReturn correspond to the entry and return of a wasm function.
 //! There are also some events that are not part of the execution like Import*, which can be removed later.
-use num_traits::FromPrimitive;
+use num_traits::{FromPrimitive, ToBytes};
+use walrus::ir::Load;
 
 use std::fmt::{self};
 use std::fmt::{Debug, Display};
@@ -66,6 +67,7 @@ pub enum BinCodes {
 #[derive(Clone, Debug)]
 pub enum LoadValue {
     I8(u8),
+    I16(i16),
     I32(i32),
     I64(i64),
     F32(f32),
@@ -76,6 +78,7 @@ impl Into<Vec<u8>> for LoadValue {
     fn into(self) -> Vec<u8> {
         match self {
             LoadValue::I8(n) => n.to_le_bytes().to_vec(),
+            LoadValue::I16(n) => n.to_le_bytes().to_vec(),
             LoadValue::I32(n) => n.to_le_bytes().to_vec(),
             LoadValue::I64(n) => n.to_le_bytes().to_vec(),
             LoadValue::F32(n) => n.to_le_bytes().to_vec(),
@@ -88,6 +91,7 @@ impl Into<Vec<F64>> for LoadValue {
     fn into(self) -> Vec<F64> {
         match self {
             LoadValue::I8(n) => n.to_le_bytes().map(|b| F64(b as f64)).to_vec(),
+            LoadValue::I16(n) => n.to_le_bytes().map(|b| F64(b as f64)).to_vec(),
             LoadValue::I32(n) => n.to_le_bytes().map(|b| F64(b as f64)).to_vec(),
             LoadValue::I64(n) => n.to_le_bytes().map(|b| F64(b as f64)).to_vec(),
             LoadValue::F32(n) => n.to_le_bytes().map(|b| F64(b as f64)).to_vec(),
@@ -123,6 +127,7 @@ impl Display for LoadValue {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             LoadValue::I8(n) => write!(f, "{}", n),
+            LoadValue::I16(n) => write!(f, "{}", n),
             LoadValue::I32(n) => write!(f, "{}", n),
             LoadValue::I64(n) => write!(f, "{}", n),
             LoadValue::F32(n) => write!(f, "{}", n),
@@ -188,15 +193,15 @@ impl WasmEvent {
                 // dbg!(&code);
                 let module_types = get_module_type(module);
                 let events = match code {
-                    BinCodes::LoadI32 => WasmEvent::decode_load(reader, LoadValue::I32(0)),
-                    BinCodes::LoadI64 => WasmEvent::decode_load(reader, LoadValue::I64(0)),
-                    BinCodes::LoadF32 => WasmEvent::decode_load(reader, LoadValue::F32(0.0)),
-                    BinCodes::LoadF64 => WasmEvent::decode_load(reader, LoadValue::F64(0.0)),
-                    BinCodes::LoadI32_8 => WasmEvent::decode_load(reader, LoadValue::I32(0)),
-                    BinCodes::LoadI32_16 => WasmEvent::decode_load(reader, LoadValue::I32(0)),
-                    BinCodes::LoadI64_8 => WasmEvent::decode_load(reader, LoadValue::I64(0)),
-                    BinCodes::LoadI64_16 => WasmEvent::decode_load(reader, LoadValue::I64(0)),
-                    BinCodes::LoadI64_32 => WasmEvent::decode_load(reader, LoadValue::I64(0)),
+                    BinCodes::LoadI32 => WasmEvent::decode_load(reader, code),
+                    BinCodes::LoadI64 => WasmEvent::decode_load(reader, code),
+                    BinCodes::LoadF32 => WasmEvent::decode_load(reader, code),
+                    BinCodes::LoadF64 => WasmEvent::decode_load(reader, code),
+                    BinCodes::LoadI32_8 => WasmEvent::decode_load(reader, code),
+                    BinCodes::LoadI32_16 => WasmEvent::decode_load(reader, code),
+                    BinCodes::LoadI64_8 => WasmEvent::decode_load(reader, code),
+                    BinCodes::LoadI64_16 => WasmEvent::decode_load(reader, code),
+                    BinCodes::LoadI64_32 => WasmEvent::decode_load(reader, code),
                     BinCodes::StoreI32 => WasmEvent::decode_store(reader, StoreValue::I32(0), &ValType::I32),
                     BinCodes::StoreI64 => WasmEvent::decode_store(reader, StoreValue::I64(0), &ValType::I64),
                     BinCodes::StoreF32 => WasmEvent::decode_store(reader, StoreValue::F32(0.0), &ValType::F32),
@@ -397,8 +402,27 @@ impl WasmEvent {
         Ok(vec![WasmEvent::Call { idx }])
     }
 
-    fn decode_load(reader: &mut BufReader<File>, mut data: LoadValue) -> Result<Vec<Self>, ErrorKind> {
+    // fn decode_load(reader: &mut BufReader<File>, mut data: LoadValue) -> Result<Vec<Self>, ErrorKind> {
+    //     let offset = read_i32(reader).map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode load offset")))?;
+    //     Self::decode_load_value(reader, &mut data)?;
+    //     Ok(vec![WasmEvent::Load { idx: 0, offset, data }])
+    // }
+
+    fn decode_load(reader: &mut BufReader<File>, typ: BinCodes) -> Result<Vec<Self>, ErrorKind> {
         let offset = read_i32(reader).map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode load offset")))?;
+
+        let mut data = match typ {
+            BinCodes::LoadI32 => LoadValue::I32(0),
+            BinCodes::LoadI64 => LoadValue::I64(0),
+            BinCodes::LoadF32 => LoadValue::F32(0.0),
+            BinCodes::LoadF64 => LoadValue::F64(0.0),
+            BinCodes::LoadI32_8 => LoadValue::I8(0),
+            BinCodes::LoadI32_16 => LoadValue::I16(0),
+            BinCodes::LoadI64_8 => LoadValue::I8(0),
+            BinCodes::LoadI64_16 => LoadValue::I16(0),
+            BinCodes::LoadI64_32 => LoadValue::I32(0),
+            _ => return Err(ErrorKind::UnknownTrace),
+        };
         Self::decode_load_value(reader, &mut data)?;
         Ok(vec![WasmEvent::Load { idx: 0, offset, data }])
     }
@@ -457,6 +481,9 @@ impl WasmEvent {
         match data {
             LoadValue::I8(v) => {
                 *v = read_u8(reader).map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode load value")))?
+            }
+            LoadValue::I16(v) => {
+                *v = read_i16(reader).map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode load value")))?
             }
             LoadValue::I32(v) => {
                 *v = read_i32(reader).map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode load value")))?
