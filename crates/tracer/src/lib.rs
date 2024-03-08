@@ -221,8 +221,8 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             gen_wat.push(typ.locals_wat());
             local_count += 6 + typ.results.len();
             let func = functions.get(func_idx as usize).unwrap();
-            if func.exported || func.in_public_table {
-                // if false {
+            // if func.exported || func.in_public_table {
+            if func.exported {
                 stats.instrumented_function_entries_based_on_my_own_count += 1;
                 gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
                 gen_wat.push(format!("i32.load8_u {}", CALL_STACK));
@@ -255,7 +255,8 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             func_idx += 1;
         } else if l == "return" {
             let func = functions.get((func_idx - 1) as usize).unwrap();
-            if func.exported || func.in_public_table {
+            // if func.exported || func.in_public_table {
+            if func.exported {
                 trace_return(&mut gen_wat, offset);
             }
             gen_wat.push(l);
@@ -482,8 +483,8 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
         }
         if is_new_section(orig_wat.peek()) && inside_func {
             let func = functions.get((func_idx - 1) as usize).unwrap();
-            if func.exported || func.in_public_table {
-                // if false {
+            // if func.exported || func.in_public_table {
+            if func.exported {
                 trace_return(&mut gen_wat, offset);
             }
             gen_wat.push(")".into());
