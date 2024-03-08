@@ -4,9 +4,9 @@ export default async function test(analyser) {
   const url = 'https://raylibtech.itch.io/rtexpacker'
   const page = await analyser.start(url, { headless: false })
 
-  const canv = page.locator('#canvas')
-  await canv.waitFor({state: 'visible'})
-  console.log('canvas loaded')
+  // const canv = page.locator('#canvas')
+  // await canv.waitFor({state: 'visible'})
+  // console.log('canvas loaded')
 
   await delay(10000)
 

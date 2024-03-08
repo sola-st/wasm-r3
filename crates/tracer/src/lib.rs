@@ -835,6 +835,7 @@ fn elem_func_public(
 }
 
 fn parse_elem(input: &str, tables: &mut Vec<Table>) -> Result<(), &'static str> {
+    dbg!(&input);
     let mut e = input.split_whitespace().collect::<Vec<_>>().into_iter();
     for _ in 0..5 {
         e.next();
