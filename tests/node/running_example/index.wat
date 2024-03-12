@@ -1,7 +1,7 @@
 (module
   (import "env" "changeMem" (func $changeMemHost (param i32 i32)))
   (func $changeMemWasm (param i32 i32)
-    (i32.store (local.get 0) (local.get 1)))
+    (i32.store8 (local.get 0) (local.get 1)))
   (func $main (export "entry")
     (call $changeMemWasm (i32.const 0) (i32.const 1))
     (call $changeMemHost (i32.const 5) (i32.const 1))
