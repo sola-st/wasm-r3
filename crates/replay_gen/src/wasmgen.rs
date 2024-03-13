@@ -165,6 +165,13 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
                             HostEvent::MutateMemory { addr, data, import: _, name: _ } => {
                                 memory_writes.insert(addr, data);
                             }
+                            HostEvent::ExportCall { .. } | HostEvent::ExportCallTable { .. } => {
+                                if memory_writes.len() > 0 {
+                                    merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
+                                }
+                                memory_writes = BTreeMap::new();
+                                bodystr += &hostevent_to_wat(event, code);
+                            }
                             _ => bodystr += &hostevent_to_wat(event, code),
                         }
                     }
