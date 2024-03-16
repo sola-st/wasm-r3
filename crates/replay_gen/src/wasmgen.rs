@@ -274,6 +274,16 @@ fn generate_replay_js(replay_path: &Path, module_set: &HashSet<&String>, code: &
     let replay_js_path = replay_path.parent().unwrap().join(&format!("replay.js"));
     let stream = &mut File::create(replay_js_path).unwrap();
 
+    write(
+        stream,
+        &format!(
+            // I think it works only for node now.
+            // TODO: make it work for deno and bun
+            "import fs from 'fs'
+let instance;
+export async function instantiate(wasmBinary) {{\n"
+        ),
+    )?;
     for (_i, memory) in &code.imported_mems() {
         let import = memory.import.clone().unwrap();
         let module = import.module.clone();
@@ -345,11 +355,11 @@ fn generate_replay_js(replay_path: &Path, module_set: &HashSet<&String>, code: &
             let module_name = &format!("{module_escaped}_{name}");
             let value = match import.kind {
                 walrus::ImportKind::Function(_) => {
-                    format!("(...args) => {{ return {module_escaped}.exports['{name}'](...args) }}")
+                    format!("(...args) => {{ return {module_escaped}.instance.exports['{name}'](...args) }}")
                 }
                 _ => {
                     if module == "index" {
-                        format!("index.exports.{name}")
+                        format!("index.instance.exports.{name}")
                     } else {
                         format!("{module_name}")
                     }
@@ -362,21 +372,23 @@ fn generate_replay_js(replay_path: &Path, module_set: &HashSet<&String>, code: &
             stream,
             &format!(
                 "{import_object_str}
-const {module_escaped} = new WebAssembly.Instance(new WebAssembly.Module(await readFile(\"{current_module}.wasm\")), {module_escaped}Import)\n\n",
+const {module_escaped} = await WebAssembly.instantiate(await readFile(\"{current_module}.wasm\"), {module_escaped}Import)\n\n",
             ),
         )?;
     }
+    write(stream, &format!("return main}}\n"))?;
 
     write(
         stream,
-        "main.exports.main();
+        "export function replay(wasm) {instance = wasm.instance; instance.exports.main();}
 async function readFile(filename) {
 let data;
 if (typeof Deno !== 'undefined') {
     data = await Deno.readFile(filename);
 } else if (typeof process !== 'undefined') {
     const fs = await import('fs').then(module => module.promises);
-    data = await fs.readFile(filename);
+    const path = await import('path');
+    data = await fs.readFile(path.join(path.dirname(import.meta.url).replace(/^file:/, ''), filename));
 } else if (typeof Bun !== 'undefined') {
     data = await Bun.fs.readFile(filename, 'utf8');
 } else {

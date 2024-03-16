@@ -80,7 +80,13 @@ async function runNodeTestCustom(name: string, options): Promise<TestReport> {
     check_mem()
     execSync(`./target/release/replay_gen stringify ${tracePath} ${wasmPath} ${traceStringPath}`)
 
-    execSync(`./target/release/replay_gen generate ${tracePath} ${wasmPath} true ${replayPath}`);
+    if (options.jsBackend == true) {
+      execSync(`/Users/don/Desktop/local-r3/./target/release/replay_gen generate ${tracePath} ${wasmPath} true ${replayPath}`);
+    } else {
+      const replayWasmPath = path.join(benchmarkPath, "replay.wasm");
+      execSync(`/Users/don/Desktop/local-r3/./target/release/replay_gen generate ${tracePath} ${wasmPath} true ${replayWasmPath}`);
+    }
+
 
     let replay = await fs.readFile(replayPath, 'utf-8');
     await fs.rm(replayPath);
@@ -377,7 +383,7 @@ async function testWebPageCustomInstrumentation(testPath: string, options): Prom
 
   let analysisResult: AnalysisResult
   try {
-    const analyser = new CustomAnalyser(benchmarkPath, { javascript: true })
+    const analyser = new CustomAnalyser(benchmarkPath, { javascript: options.jsBackend })
     const test = await import(testJsPath)
     analysisResult = await test.default(analyser)
     const subBenchmarkNames = await fs.readdir(benchmarkPath);

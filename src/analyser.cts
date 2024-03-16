@@ -224,7 +224,7 @@ export class CustomAnalyser implements AnalyserI {
                 const trace = buffer.slice(0, hrefStartIndex)
                 const hrefBytes = buffer.slice(hrefStartIndex, buffer.length - 2)
                 const href = new TextDecoder().decode(hrefBytes)
-                
+
                 if (type === 0) {
                     if (traceContexts[href] === undefined) {
                         const subBenchmarkPath = path.join(benchmarkPath, href)
@@ -306,6 +306,7 @@ export class CustomAnalyser implements AnalyserI {
         const binName = 'index.wasm'
         const watName = 'index.wat'
         const replayName = 'replay.js'
+        const replayWasm = 'replay.wasm'
         const traceName = 'trace.bin'
         const traceTextName = 'trace.r3'
         const p_measureCodeGen = createMeasure('rust-backend', { phase: 'replay-generation', description: `The time it takes for rust backend to generate javascript` })
@@ -317,13 +318,19 @@ export class CustomAnalyser implements AnalyserI {
             const binPath = path.join(subBenchmarkPath, binName)
             const watPath = path.join(subBenchmarkPath, watName)
             const jsPath = path.join(subBenchmarkPath, replayName)
+            const wasmPath = path.join(subBenchmarkPath, replayWasm)
             execSync(`wasm-tools print ${binPath} -o ${watPath}`)
             console.log(i, "done")
             console.log(i, "stringify trace...")
             execSync(`./target/release/replay_gen stringify ${tracePath} ${binPath} ${traceTextPath}`)
             console.log(i, "done")
             console.log(i, "generate replay...")
-            execSync(`./target/release/replay_gen generate ${tracePath} ${binPath} true ${jsPath}`);
+            if (this.javascript) {
+                execSync(`./target/release/replay_gen generate ${tracePath} ${binPath} true ${jsPath}`);
+            } else {
+                execSync(`./target/release/replay_gen generate ${tracePath} ${binPath} true ${wasmPath}`);
+            }
+
             console.log(i, "done")
         })
         p_measureCodeGen()
