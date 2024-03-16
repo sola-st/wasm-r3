@@ -16,7 +16,6 @@ export const node_filter = [
   "table-exp-host-mod-multiple",
   "tale-exp-internal-mod",
   "table-imp-host-mod",
-  "table-exp-call-private-function-mul-table",
   // table function call
   "call-exp-after-import-call-table-get",
   "table-exp-call-private-function",
@@ -55,8 +54,6 @@ export const online_filter = [
   "rguilayout", // not working
   "rguistyler", // not working
   "roslyn", // not working
-  // "rtexpacker", //not working
-  // "rtexviewer", // not working
   "rustpython", // not working
   "skeletal", // not working
   "sqlpractice", // not working

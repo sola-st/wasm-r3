@@ -4,7 +4,7 @@ export default async function test(analyser) {
     // analyser.setExtended(false)
     const url = 'https://www.funkykarts.rocks/demo.html'
     let page = await analyser.start(url, { headless: true })
-    await delay(5000)
+    await delay(50000)
     const canvas = await page.$('#display')
     const canvasBox = await canvas.boundingBox();
     const startButtonX = Math.floor(canvasBox.x + canvasBox.width * 9 / 10);
