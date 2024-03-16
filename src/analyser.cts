@@ -312,6 +312,9 @@ export class CustomAnalyser implements AnalyserI {
         const p_measureCodeGen = createMeasure('rust-backend', { phase: 'replay-generation', description: `The time it takes for rust backend to generate javascript` })
         originalWasmBuffer.forEach(({ href, buffer }, i) => {
             const subBenchmarkPath = path.join(this.benchmarkPath, href)
+            if (!fss.existsSync(path.join(subBenchmarkPath))) {
+                return
+            }
             fss.writeFileSync(path.join(subBenchmarkPath, binName), new Int8Array(buffer))
             const tracePath = path.join(subBenchmarkPath, traceName)
             const traceTextPath = path.join(subBenchmarkPath, traceTextName)
