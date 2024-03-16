@@ -185,7 +185,7 @@ fn hostevent_to_js(event: &HostEvent) -> String {
         HostEvent::ExportCall { idx: _, name, params } => {
             format!("instance.exports.{}({})\n", name, write_params_string(&params))
         }
-        HostEvent::ExportCallTable { idx: _, table_name, funcidx, params } => {
+        HostEvent::ExportCallTable { tableidx: _, table_name, offset: funcidx, params } => {
             format!(
                 "instance.exports.{}.get({})({})\n",
                 table_name,

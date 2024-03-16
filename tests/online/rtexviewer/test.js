@@ -7,7 +7,7 @@ export default async function test(analyser) {
   // const canv = page.locator('#canvas') 
   // await canv.waitFor({state: 'visible'})
 
-  await delay(10000)
+  await delay(10_000)
   // How to animate this properly?
   // We need to obtain the canvas inside the iframe and then click around
   // const iframe = await page.$('#game_drop')

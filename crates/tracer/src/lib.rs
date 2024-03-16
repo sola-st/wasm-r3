@@ -70,6 +70,7 @@ const CALL_STACK_SIZE: u32 = 1_000;
 const INTERNAL: u8 = 1;
 const EXTERNAL: u8 = 0;
 const IN_ENVIRONMENT: &str = "$in_environment";
+const CALLED_FROM_ENV: &str = "$table_call";
 
 pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
     let mut orig_wat = wasmprinter::print_bytes(buffer).unwrap();
@@ -222,10 +223,9 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             }
             gen_wat.push(l);
             gen_wat.push(typ.locals_wat());
-            local_count += 6 + typ.results.len();
+            local_count += 7 + typ.results.len();
             let func = functions.get(func_idx as usize).unwrap();
-            // if func.exported || func.in_public_table {
-            if func.exported {
+            if func.exported || func.in_public_table {
                 stats.instrumented_function_entries_based_on_my_own_count += 1;
                 gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
                 gen_wat.push(format!("i32.load8_u {}", CALL_STACK));
@@ -238,42 +238,38 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 gen_wat.push(format!("i32.store8 {}", CALL_STACK));
                 gen_wat.push("i32.eqz".into());
                 gen_wat.push("(if (then".into());
+            }
+            if func.exported {
                 gen_wat.extend(trace_u8(0x02, offset));
                 gen_wat.extend(trace_u32(func_idx, offset));
                 gen_wat.extend(trace_u32(typ.idx, offset));
                 gen_wat.extend(typ.trace_params(offset));
                 gen_wat.extend(increment_mem_pointer(offset));
-                gen_wat.push(format!("i32.const 0"));
-                gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
+                // gen_wat.push(format!("i32.const 0"));
+                // gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
+                gen_wat.push(") (else))".into());
+            } else if func.in_public_table {
+                // gen_wat.push(format!("global.get {}", IN_ENVIRONMENT));
+                // gen_wat.push(format!("(if (then"));
+                // gen_wat.push(format!("i32.const 1"));
+                // gen_wat.push(format!("local.set {}", CALLED_FROM_ENV));
+                gen_wat.extend(trace_u8(0x03, offset));
+                gen_wat.extend(trace_u32(
+                    *tables.get(0).unwrap().elem.get(&func_idx).unwrap(),
+                    offset,
+                ));
+                gen_wat.extend(trace_u32(typ.idx, offset));
+                gen_wat.extend(typ.trace_params(offset));
+                gen_wat.extend(increment_mem_pointer(offset));
+                // gen_wat.push(format!("i32.const 0"));
+                // gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
                 gen_wat.push(") (else))".into());
             }
-            // else if func.in_public_table {
-            //     gen_wat.push(format!("global.get {}", IN_ENVIRONMENT));
-            //     gen_wat.push(format!("(if (then"));
-            //     gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
-            //     gen_wat.push(format!("i32.const 1"));
-            //     gen_wat.push(format!("i32.add"));
-            //     gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
-            //     gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
-            //     gen_wat.push(format!("i32.const {}", INTERNAL));
-            //     gen_wat.push(format!("i32.store8 {}", CALL_STACK));
-            //     gen_wat.extend(trace_u8(0x03, offset));
-            //     gen_wat.extend(trace_u32(
-            //         *tables.get(0).unwrap().elem.get(&func_idx).unwrap(),
-            //         offset,
-            //     ));
-            //     gen_wat.extend(trace_u32(typ.idx, offset));
-            //     gen_wat.extend(typ.trace_params(offset));
-            //     gen_wat.extend(increment_mem_pointer(offset));
-            //     gen_wat.push(format!("i32.const 0"));
-            //     gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
-            //     gen_wat.push(") (else))".into());
-            // }
             func_idx += 1;
         } else if l == "return" {
             let func = functions.get((func_idx - 1) as usize).unwrap();
-            // if func.exported || func.in_public_table {
-            if func.exported {
+            if func.exported || func.in_public_table {
+                // if func.exported {
                 trace_return(&mut gen_wat, offset);
             }
             // else if func.in_public_table {
@@ -319,8 +315,8 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 gen_wat.extend(trace_u8(0x10, offset));
                 gen_wat.extend(trace_u32(called_func_idx, offset));
                 gen_wat.extend(increment_mem_pointer(offset));
-                gen_wat.push(format!("i32.const 1"));
-                gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
+                // gen_wat.push(format!("i32.const 1"));
+                // gen_wat.push(format!("global.set {}", IN_ENVIRONMENT));
                 gen_wat.push(l);
                 // gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
                 // gen_wat.push(format!("i32.load8_u {}", CALL_STACK));
@@ -498,10 +494,10 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
                 "(global {} (mut i32) (i32.const 1))",
                 CALL_STACK_ADDR
             ));
-            gen_wat.push(format!(
-                "(global {} (mut i32) (i32.const 1))",
-                IN_ENVIRONMENT
-            ));
+            // gen_wat.push(format!(
+            //     "(global {} (mut i32) (i32.const 1))",
+            //     IN_ENVIRONMENT
+            // ));
             gen_wat.extend(shadows.clone());
             gen_wat.push(")".into())
         } else {
@@ -509,8 +505,8 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
         }
         if is_new_section(orig_wat.peek()) && inside_func {
             let func = functions.get((func_idx - 1) as usize).unwrap();
-            // if func.exported || func.in_public_table {
-            if func.exported {
+            if func.exported || func.in_public_table {
+                // if func.exported {
                 trace_return(&mut gen_wat, offset);
             }
             // else if func.in_public_table {
@@ -842,7 +838,15 @@ fn parse_elem(
     functions: &Vec<Function>,
 ) -> Result<(), &'static str> {
     dbg!(&input);
-    let mut e = input.split_whitespace().collect::<Vec<_>>().into_iter();
+    let e = input.split_whitespace().collect::<Vec<_>>();
+    let offset = match e.get(3) {
+        Some(e) => e
+            .replace(")", "")
+            .parse::<u32>()
+            .map_err(|_| "Could not extract offset from elem section")?,
+        None => return Err("Could not extract offset from elem section"),
+    };
+    let mut e = e.into_iter();
     for _ in 0..5 {
         e.next();
     }
@@ -873,7 +877,7 @@ fn parse_elem(
         .collect::<Result<Vec<u32>, &'static str>>()?;
     let t = tables.get_mut(0).unwrap();
     e.into_iter().enumerate().for_each(|(i, e)| {
-        t.elem.insert(e, i as u32);
+        t.elem.insert(e, i as u32 + offset);
     });
     Ok(())
 }
@@ -1178,26 +1182,26 @@ fn trace_return(gen_wat: &mut Vec<String>, offset: &mut u32) {
     }
 }
 
-fn trace_return_table_func(gen_wat: &mut Vec<String>, offset: &mut u32) {
-    gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
-    gen_wat.push(format!("i32.const 2"));
-    gen_wat.push(format!("i32.sub"));
-    gen_wat.push(format!("i32.load8_u"));
-    gen_wat.push(format!("i32.eqz"));
-    gen_wat.push(format!("(if (then"));
-    gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
-    gen_wat.push(format!("i32.const 1"));
-    gen_wat.push(format!("i32.sub"));
-    gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
-    gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
-    gen_wat.push(format!("i32.const 1"));
-    gen_wat.push(format!("i32.eq"));
-    gen_wat.push("(if (then".into());
-    gen_wat.extend(trace_u8(0x0F, offset));
-    gen_wat.extend(increment_mem_pointer(offset));
-    gen_wat.push(") (else))".into());
-    gen_wat.push(") (else))".into());
-}
+// fn trace_return_table_func(gen_wat: &mut Vec<String>, offset: &mut u32) {
+//     gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+//     gen_wat.push(format!("i32.const 2"));
+//     gen_wat.push(format!("i32.sub"));
+//     gen_wat.push(format!("i32.load8_u"));
+//     gen_wat.push(format!("i32.eqz"));
+//     gen_wat.push(format!("(if (then"));
+//     gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+//     gen_wat.push(format!("i32.const 1"));
+//     gen_wat.push(format!("i32.sub"));
+//     gen_wat.push(format!("global.set {}", CALL_STACK_ADDR));
+//     gen_wat.push(format!("global.get {}", CALL_STACK_ADDR));
+//     gen_wat.push(format!("i32.const 1"));
+//     gen_wat.push(format!("i32.eq"));
+//     gen_wat.push("(if (then".into());
+//     gen_wat.extend(trace_u8(0x0F, offset));
+//     gen_wat.extend(increment_mem_pointer(offset));
+//     gen_wat.push(") (else))".into());
+//     gen_wat.push(") (else))".into());
+// }
 
 fn transform_to_shadow(wat: String, identifier: &str) -> Result<String, &'static str> {
     let mut parts: Vec<&str> = wat

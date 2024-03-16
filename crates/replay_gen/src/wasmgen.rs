@@ -609,7 +609,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .join("\n");
             params + &format!("(call ${name})") + &("(drop)".repeat(result_count))
         }
-        HostEvent::ExportCallTable { idx, table_name: _, funcidx, params } => {
+        HostEvent::ExportCallTable { tableidx: idx, table_name: _, offset: funcidx, params } => {
             let func = code.funcs.get(idx).unwrap();
 
             let param_tys = func.ty.params.clone();

@@ -230,7 +230,7 @@ impl FuncEntryTransformer {
                     for (i, table) in self.shadow_tables.iter().enumerate() {
                         for (offset, c) in table.content.iter().enumerate() {
                             if c == &idx {
-                                return WasmEvent::FuncEntryTable { idx: offset, tableidx: i, params };
+                                return WasmEvent::FuncEntryTable { funcidx: offset, offset: i, params };
                             }
                         }
                     }

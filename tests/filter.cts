@@ -17,10 +17,10 @@ export const node_filter = [
   "tale-exp-internal-mod",
   "table-imp-host-mod",
   // table function call
-  "call-exp-after-import-call-table-get",
-  "table-exp-call-private-function",
+  // "call-exp-after-import-call-table-get",
+  // "table-exp-call-private-function",
   "table-exp-call-private-function-mul-table",
-  "table-exp-call-private-function-params",
+  // "table-exp-call-private-function-params",
   // 'fib',
   // ffmpeg
   // fib
@@ -44,7 +44,7 @@ export const online_filter = [
   "livesplit", // uses simd, filter for now
   "onnxjs", // // unknown func: failed to find name `$1000008`"
   "gotemplate", // timeout for locator('#output')
-  "commanderkeen", // unreachable
+  // "commanderkeen", // unreachable
   "playnox", // test doesn't end
   "hnset-bench", // no benchmark generated
   "fractals", // no benchmark generated

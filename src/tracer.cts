@@ -282,10 +282,15 @@ export default class Analysis implements AnalysisI<Trace> {
                     if (CALLED_WITH_TABLE_GET) {
                         if (!this.Wasabi.module.tables.some((table, i) => {
                             for (let tableIndex = 0; tableIndex < table.length; tableIndex++) {
-                                const funcidx = this.resolveFuncIdx(table, tableIndex)
-                                if (funcidx === location.func) {
-                                    this.trace.push(`TC;${location.func};${this.getName(this.Wasabi.module.info.tables[i])};${tableIndex};${args.join(',')}`)
-                                    return true
+                                let funcidx
+                                try {
+                                    funcidx = this.resolveFuncIdx(table, tableIndex)
+                                    if (funcidx === location.func) {
+                                        this.trace.push(`TC;${location.func};${this.getName(this.Wasabi.module.info.tables[i])};${tableIndex};${args.join(',')}`)
+                                        return true
+                                    }
+                                } catch {
+                                    // do nothing
                                 }
                             }
                             return false

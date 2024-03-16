@@ -42,7 +42,7 @@ fn generate(args: Vec<String>) -> io::Result<()> {
         // let mut shadow_mem_optimiser = ShadowMemoryOptimiser::new(&module);
         // let mut shadow_table_optimiser = ShadowTableOptimiser::new(&module);
         // let mut func_entry_transformer = FuncEntryTransformer::new(&module);
-        let mut call_optimiser = CallOptimiser::new(&module);
+        // let mut call_optimiser = CallOptimiser::new(&module);
         Trace::new(trace_path, &module, true)
             .map(|e| e.unwrap())
             // .filter(|e| call_optimiser.discard_event(e))

@@ -108,9 +108,9 @@ pub enum HostEvent {
         params: Vec<F64>,
     },
     ExportCallTable {
-        idx: usize,
+        tableidx: usize,
         table_name: String,
-        funcidx: i32,
+        offset: i32,
         params: Vec<F64>,
     },
     GrowMemory {
@@ -353,7 +353,7 @@ impl IRGenerator {
                         // FIXME: last_table_get is not correct.
                         // see node/table-exp-call-private-function-mul-table
                         self.push_call(HostEvent::ExportCallTable {
-                            idx: self.state.last_table_get,
+                            tableidx: self.state.last_table_get,
                             table_name: self
                                 .replay
                                 .tables
@@ -363,22 +363,27 @@ impl IRGenerator {
                                 .clone()
                                 .unwrap()
                                 .name,
-                            funcidx: idx as i32,
+                            offset: idx as i32,
                             params,
                         });
                     }
                 };
             }
-            WasmEvent::FuncEntryTable { idx, tableidx: funcidx, params } => {
-                let table = self.replay.tables.get(&funcidx).unwrap();
+            WasmEvent::FuncEntryTable { offset, params, .. } => {
+                let table = match self.replay.tables.get(&0) {
+                    Some(t) => t,
+                    None => {
+                        panic!()
+                    }
+                };
                 let table_name = match table.import.clone() {
                     Some(i) => i.name,
                     None => table.export.as_ref().unwrap().name.clone(),
                 };
                 self.push_call(HostEvent::ExportCallTable {
-                    idx,
+                    tableidx: 0,
                     table_name,
-                    funcidx: funcidx as i32,
+                    offset: offset as i32,
                     params: params.clone(),
                 });
             }
