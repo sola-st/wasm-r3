@@ -1,5 +1,5 @@
 export default async function test(analyser) {
-    analyser.setExtended(false)
+    // analyser.setExtended(false)
     const url = 'https://takahirox.github.io/WebAssembly-benchmark/tests/imageConvolute.html'
     const page = await analyser.start(url, { headless: false })
     const buttonLocator = page.locator('#run_button')

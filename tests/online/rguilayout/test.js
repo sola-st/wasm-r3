@@ -4,12 +4,13 @@ export default async function test(analyser) {
   const url = 'https://raylibtech.itch.io/rguilayout'
   const page = await analyser.start(url, { headless: false })
 
-  const canv = page.locator('#canvas')
-  await canv.waitFor({state: 'visible'})
-  console.log('canvas loaded')
+  await delay(10_000)
+
+  // const canv = page.locator('#canvas')
+  // await canv.waitFor({state: 'visible'})
+  // console.log('canvas loaded')
 
 
-  await delay(10000)
 
   return await analyser.stop()
 }

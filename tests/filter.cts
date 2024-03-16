@@ -36,10 +36,10 @@ export const offline_filter = [
 ];
 
 export const online_filter = [
-  "ogv", // TODO: additional ER at end of original trace
+  // "ogv", // TODO: additional ER at end of original trace
   "heatmap", // works fine, but too long so we skip it
   // "uarm", // doesn't work for js because string is too long
-  "image-convolute", // asm2wasm - f64-to-int is too large
+  // "image-convolute", // asm2wasm - f64-to-int is too large
   "lichess", // failing test
   "livesplit", // uses simd, filter for now
   "onnxjs", // // unknown func: failed to find name `$1000008`"
@@ -50,9 +50,9 @@ export const online_filter = [
   "fractals", // no benchmark generated
   "video", // empty benchmark generated
   "wasmsh", // empty benchmark generated
-  "rfxgen", // not working
-  "rguilayout", // not working
-  "rguistyler", // not working
+  // "rfxgen", // not working
+  // "rguilayout", // not working
+  // "rguistyler", // not working
   "roslyn", // not working
   "rustpython", // not working
   "skeletal", // not working
