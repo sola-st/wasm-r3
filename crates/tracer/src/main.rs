@@ -4,7 +4,7 @@
 // use tracer::instrument_wasm;
 
 // fn main() {
-//     let test_name = "tests/heatmap";
+//     let test_name = "tests/pathfinding";
 //     let buffer = &fs::read(format!("{}.wasm", test_name)).unwrap();
 //     let _ = match instrument_wasm(buffer) {
 //         Ok(output) => {

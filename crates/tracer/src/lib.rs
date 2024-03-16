@@ -1,6 +1,7 @@
 use std::{
     collections::HashMap,
     fmt::{format, Debug},
+    fs,
 };
 
 use js_sys::Uint8Array;
@@ -72,6 +73,7 @@ const IN_ENVIRONMENT: &str = "$in_environment";
 
 pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
     let mut orig_wat = wasmprinter::print_bytes(buffer).unwrap();
+    // fs::write("tests/wat.wat", &orig_wat).expect("Couldnt write wat");
     if orig_wat == "(module)" {
         orig_wat = "(module\n)".into();
     }
@@ -157,7 +159,7 @@ pub fn instrument_wasm(buffer: &[u8]) -> Result<Output, &'static str> {
             // if IGNORE_TABLE == false {
             elem_func_public(l, &mut functions, &tables)?;
             // }
-            parse_elem(l, &mut tables)?;
+            parse_elem(l, &mut tables, &functions)?;
         }
     }
 
@@ -834,7 +836,11 @@ fn elem_func_public(
     Ok(())
 }
 
-fn parse_elem(input: &str, tables: &mut Vec<Table>) -> Result<(), &'static str> {
+fn parse_elem(
+    input: &str,
+    tables: &mut Vec<Table>,
+    functions: &Vec<Function>,
+) -> Result<(), &'static str> {
     dbg!(&input);
     let mut e = input.split_whitespace().collect::<Vec<_>>().into_iter();
     for _ in 0..5 {
@@ -844,9 +850,25 @@ fn parse_elem(input: &str, tables: &mut Vec<Table>) -> Result<(), &'static str> 
         .collect::<Vec<_>>()
         .into_iter()
         .map(|s| {
-            s.replace(")", "")
-                .parse::<u32>()
-                .map_err(|_| "Couldnt parse elem section")
+            let s = &s.replace(")", "");
+            s.parse::<u32>().or_else(|_| {
+                let mut i = 0;
+                let f = functions.iter().find(|f| {
+                    i += 1;
+                    if let Some(id) = &f.identifier {
+                        id == s
+                    } else {
+                        false
+                    }
+                });
+                match f {
+                    Some(f) => Ok(i),
+                    None => {
+                        dbg!(s);
+                        Err("Couldnt parse elem section")
+                    }
+                }
+            })
         })
         .collect::<Result<Vec<u32>, &'static str>>()?;
     let t = tables.get_mut(0).unwrap();
