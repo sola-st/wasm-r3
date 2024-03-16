@@ -329,20 +329,22 @@ function compareResults(
 ): TestReport {
   let t = traceString.split("\n");
   let rt = replayTraceString.split("\n");
+  let diffIdx;
   if (
     t.some((e, i) => {
       if (e === "") {
         return false;
       }
       if (e !== rt[i]) {
-        console.log(i, ": ", e, "!==", rt[i]);
+        diffIdx = i;
         return true;
       } else {
         return false;
       }
     })
   ) {
-    let reason = `[Expected]\n`;
+    let reason = `First diff in line ${diffIdx}\n\n`;
+    reason += `[Expected]\n`;
     reason += traceString;
     reason += `\n\n`;
     reason += `[Actual]\n`;

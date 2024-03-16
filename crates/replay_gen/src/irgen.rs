@@ -111,6 +111,7 @@ pub enum HostEvent {
         tableidx: usize,
         table_name: String,
         offset: i32,
+        funcidx: usize,
         params: Vec<F64>,
     },
     GrowMemory {
@@ -352,24 +353,25 @@ impl IRGenerator {
                     None => {
                         // FIXME: last_table_get is not correct.
                         // see node/table-exp-call-private-function-mul-table
-                        self.push_call(HostEvent::ExportCallTable {
-                            tableidx: self.state.last_table_get,
-                            table_name: self
-                                .replay
-                                .tables
-                                .get(&self.state.last_table_get)
-                                .unwrap()
-                                .import
-                                .clone()
-                                .unwrap()
-                                .name,
-                            offset: idx as i32,
-                            params,
-                        });
+                        // self.push_call(HostEvent::ExportCallTable {
+                        //     tableidx: self.state.last_table_get,
+                        //     table_name: self
+                        //         .replay
+                        //         .tables
+                        //         .get(&self.state.last_table_get)
+                        //         .unwrap()
+                        //         .import
+                        //         .clone()
+                        //         .unwrap()
+                        //         .name,
+                        //     offset: idx as i32,
+                        //     params,
+                        // });
+                        panic!()
                     }
                 };
             }
-            WasmEvent::FuncEntryTable { offset, params, .. } => {
+            WasmEvent::FuncEntryTable { offset, params, funcidx } => {
                 let table = match self.replay.tables.get(&0) {
                     Some(t) => t,
                     None => {
@@ -383,6 +385,7 @@ impl IRGenerator {
                 self.push_call(HostEvent::ExportCallTable {
                     tableidx: 0,
                     table_name,
+                    funcidx,
                     offset: offset as i32,
                     params: params.clone(),
                 });

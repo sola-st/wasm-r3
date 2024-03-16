@@ -609,8 +609,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .join("\n");
             params + &format!("(call ${name})") + &("(drop)".repeat(result_count))
         }
-        HostEvent::ExportCallTable { tableidx: idx, table_name: _, offset: funcidx, params } => {
-            let func = code.funcs.get(idx).unwrap();
+        HostEvent::ExportCallTable { tableidx, table_name, offset, params, funcidx } => {
+            let func = code.funcs.get(funcidx).unwrap();
 
             let param_tys = func.ty.params.clone();
             let result_tys = func.ty.results.clone();
@@ -621,7 +621,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .map(|(p, p_ty)| format!("({} {p})", valty_to_const(&p_ty)))
                 .collect::<Vec<String>>()
                 .join("\n");
-            params + &format!("(call_indirect {tystr} (i32.const {funcidx}))",) + &("(drop)".repeat(result_tys.len()))
+            // find another way to get the type string
+            params + &format!("(call_indirect (param) (result) (i32.const {offset}))",) + &("(drop)".repeat(result_tys.len()))
         }
         HostEvent::MutateMemory { addr, data, import: _, name: _ } => {
             let mut js_string = String::new();
