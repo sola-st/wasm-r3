@@ -168,8 +168,8 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
                             HostEvent::ExportCall { .. } | HostEvent::ExportCallTable { .. } => {
                                 if memory_writes.len() > 0 {
                                     merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
+                                    memory_writes = BTreeMap::new();
                                 }
-                                memory_writes = BTreeMap::new();
                                 bodystr += &hostevent_to_wat(event, code);
                             }
                             _ => bodystr += &hostevent_to_wat(event, code),
@@ -539,12 +539,12 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
 fn merge_memory_writes(bodystr: &mut String, memory_writes: BTreeMap<&i32, &Vec<F64>>, data_segments: &mut Vec<Vec<F64>>) {
     let mut partitions: Vec<(i32, Vec<F64>)> = Vec::new();
     let mut current_partition: Vec<F64> = Vec::new();
-    let mut last_key: Option<i32> = None;
+    let mut exp_key: Option<i32> = None;
     let mut start_key: Option<i32> = None;
 
     for (key, value) in memory_writes {
-        match last_key {
-            Some(last_key) if last_key + 1 == *key => {
+        match exp_key {
+            Some(exp_key) if exp_key == *key => {
                 current_partition.extend(value);
             }
             _ => {
@@ -555,7 +555,7 @@ fn merge_memory_writes(bodystr: &mut String, memory_writes: BTreeMap<&i32, &Vec<
                 start_key = Some(*key);
             }
         }
-        last_key = Some(*key);
+        exp_key = Some(*key + value.len() as i32);
     }
 
     if !current_partition.is_empty() {
