@@ -219,7 +219,7 @@ impl IRGenerator {
             INIT_INDEX,
             Function {
                 import: Some(Import {
-                    module: "wasm-r3".to_string(),
+                    module: "main".to_string(),
                     name: "initialization".to_string(),
                 }),
                 export: None,
