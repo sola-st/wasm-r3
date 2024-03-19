@@ -1223,7 +1223,7 @@ fn to_shadow_mem_instr(instr: &str) -> Result<String, &'static str> {
 fn to_shadow_store_instr(typ: u8) -> Result<String, &'static str> {
     match typ {
         0x28 => Ok(format!("i32.store {}", SHADOW_MEM)),
-        0x29 => Ok(format!("i64.store8 {}", SHADOW_MEM)),
+        0x29 => Ok(format!("i64.store {}", SHADOW_MEM)),
         0x2A => Ok(format!("f32.store {}", SHADOW_MEM)),
         0x2B => Ok(format!("f64.store {}", SHADOW_MEM)),
         0x2C => Ok(format!("i32.store8 {}", SHADOW_MEM)),
