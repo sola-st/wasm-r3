@@ -30,9 +30,10 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
                 Some(max) => max.to_string(),
                 None => "".to_string(),
             };
+            let shared = if memory.shared { "shared" } else { "" };
             write(
                 stream,
-                &format!("(import \"index\" \"{name}\" (memory {initial} {maximum}))\n",),
+                &format!("(import \"index\" \"{name}\" (memory {initial} {maximum} {shared}))\n",),
             )?;
         }
 
@@ -92,10 +93,11 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
                 Some(max) => max.to_string(),
                 None => "".to_string(),
             };
+            let shared = if memory.shared { "shared" } else { "" };
 
             write(
                 stream,
-                &format!("(import \"{module}\" \"{name}\" (memory {initial} {maximum}))\n",),
+                &format!("(import \"{module}\" \"{name}\" (memory {initial} {maximum} {shared}))\n",),
             )?;
         }
         for (_i, global) in &code.imported_globals() {
@@ -294,10 +296,13 @@ export async function instantiate(wasmBinary) {{\n"
             Some(max) => max.to_string(),
             None => "undefined".to_string(),
         };
+        let shared = memory.shared;
 
         write(
             stream,
-            &format!("const {module_name} = new WebAssembly.Memory({{ initial: {initial}, maximum: {maximum} }})\n"),
+            &format!(
+                "const {module_name} = new WebAssembly.Memory({{ initial: {initial}, maximum: {maximum}, shared: {shared} }})\n"
+            ),
         )?;
     }
     for (_i, global) in &code.imported_globals() {

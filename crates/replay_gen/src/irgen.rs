@@ -189,6 +189,7 @@ pub struct Memory {
     pub export: Option<Export>,
     pub initial: u32,
     pub maximum: Option<u32>,
+    pub shared: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -314,7 +315,13 @@ impl IRGenerator {
                 .map(|e| Export { name: e.name.to_string() });
             mems.insert(
                 m.id().index(),
-                Memory { import, export, initial: m.initial, maximum: m.maximum },
+                Memory {
+                    import,
+                    export,
+                    initial: m.initial,
+                    maximum: m.maximum,
+                    shared: m.shared,
+                },
             );
         }
         Self {

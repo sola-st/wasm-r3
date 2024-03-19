@@ -47,7 +47,6 @@ export const online_filter = [
   // "commanderkeen", // unreachable
   "playnox", // test doesn't end
   "hnset-bench", // no benchmark generated
-  "fractals", // no benchmark generated
   "video", // empty benchmark generated
   "wasmsh", // empty benchmark generated
   // "rfxgen", // not working
