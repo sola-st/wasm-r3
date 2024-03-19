@@ -9,7 +9,7 @@ async function clicker(loc, pos) {
 }
 
 export default async function test(analyser) {
-  analyser.setExtended(false)
+  //analyser.setExtended(false)
   const url = 'https://sandspiel.club/'
   const page = await analyser.start(url, { headless: true })
 

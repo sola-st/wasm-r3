@@ -1,8 +1,9 @@
 import { delay } from '../../../dist/tests/test-utils.cjs'
+import {test, expect} from '@playwright/test'
 
 export default async function test(analyser) {
   const url = 'https://takahirox.github.io/WebAssembly-benchmark/'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   const collLink = page.getByText('collisionDetection')
   await collLink.waitFor({state: 'visible'})
@@ -22,7 +23,7 @@ export default async function test(analyser) {
   await runButton.click()
   console.log('runbutton clicked')
   
-  const messageSpan = frameLoclocator('#message')
+  const messageSpan = frameLoc.locator('#message')
   await messageSpan.waitFor({state: 'visible'})
   await expect(messageSpan).toContainText('Done', {timeout: 100000}) 
 
