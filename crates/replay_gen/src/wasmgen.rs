@@ -11,7 +11,8 @@ use crate::trace::{ValType, F64};
 use crate::{irgen::Replay, write};
 
 pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Result<()> {
-    let mut module_set: HashSet<&String> = code.module.imports.iter().map(|import| &import.module).collect();
+    let binding = code.imported_modules();
+    let mut module_set: HashSet<&String> = binding.iter().collect();
     let binding = "main".to_string();
     module_set.insert(&binding);
     for current_module in module_set.clone() {

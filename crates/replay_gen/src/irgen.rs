@@ -17,13 +17,12 @@ pub struct IRGenerator {
     state: State,
     flag: bool,
 }
-
+#[derive(Clone, Debug)]
 pub struct Replay {
     pub funcs: BTreeMap<usize, Function>,
     pub tables: BTreeMap<usize, Table>,
     pub mems: BTreeMap<usize, Memory>,
     pub globals: BTreeMap<usize, Global>,
-    pub module: Module,
 }
 
 impl Replay {
@@ -85,8 +84,28 @@ impl Replay {
             .collect()
     }
     pub fn imported_modules(&self) -> Vec<String> {
-        let mut vec: Vec<String> = self.module.imports.iter().map(|i| i.module.clone()).collect();
+        let mut vec = Vec::new();
 
+        vec.extend(
+            self.funcs
+                .iter()
+                .filter_map(|(_, function)| function.import.as_ref().map(|import| import.module.clone())),
+        );
+        vec.extend(
+            self.tables
+                .iter()
+                .filter_map(|(_, table)| table.import.as_ref().map(|import| import.module.clone())),
+        );
+        vec.extend(
+            self.mems
+                .iter()
+                .filter_map(|(_, mem)| mem.import.as_ref().map(|import| import.module.clone())),
+        );
+        vec.extend(
+            self.globals
+                .iter()
+                .filter_map(|(_, global)| global.import.as_ref().map(|import| import.module.clone())),
+        );
         // delete duplicate
         let set: HashSet<String> = vec.drain(..).collect();
         vec.extend(set.into_iter());
@@ -325,7 +344,7 @@ impl IRGenerator {
             );
         }
         Self {
-            replay: Replay { funcs, tables, mems, globals, module },
+            replay: Replay { funcs, tables, mems, globals },
             // INIT_INDEX is the _start function
             state: State {
                 host_call_stack: vec![INIT_INDEX], //
