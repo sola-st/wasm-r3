@@ -10,7 +10,7 @@ use crate::irgen::{FunctionTy, HostEvent, INIT_INDEX};
 use crate::trace::{ValType, F64};
 use crate::{irgen::Replay, write};
 
-pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Result<()> {
+pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool) -> std::io::Result<()> {
     let binding = code.imported_modules();
     let mut module_set: HashSet<&String> = binding.iter().collect();
     let binding = "main".to_string();
@@ -166,14 +166,22 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay) -> std::io::Resul
                     for event in body {
                         match event {
                             HostEvent::MutateMemory { addr, data, import: _, name: _ } => {
-                                memory_writes.insert(addr, data);
+                                if merge_store {
+                                    memory_writes.insert(addr, data);
+                                } else {
+                                    bodystr += &hostevent_to_wat(event, code);
+                                }
                             }
                             HostEvent::ExportCall { .. } | HostEvent::ExportCallTable { .. } => {
-                                if memory_writes.len() > 0 {
-                                    merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
-                                    memory_writes = BTreeMap::new();
+                                if merge_store {
+                                    if memory_writes.len() > 0 {
+                                        merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
+                                        memory_writes = BTreeMap::new();
+                                    }
+                                    bodystr += &hostevent_to_wat(event, code);
+                                } else {
+                                    bodystr += &hostevent_to_wat(event, code);
                                 }
-                                bodystr += &hostevent_to_wat(event, code);
                             }
                             _ => bodystr += &hostevent_to_wat(event, code),
                         }
