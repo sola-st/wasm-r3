@@ -3,7 +3,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
     const url = 'https://cloudpilot-emu.github.io/uarm-preview/'
-    const page = await analyser.start(url, { headless: false })
+    const page = await analyser.start(url, { headless: true })
 
     let __dirname = path.join(process.cwd(), 'tests', 'online', 'uarm', 'resource')
     const fileChooserPromise_1 = page.waitForEvent('filechooser');

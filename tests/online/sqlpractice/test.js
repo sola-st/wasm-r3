@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://www.sql-practice.com'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   const runButton = page.getByText('Run', {exact: true})
   await runButton.waitFor({state: 'visible'})

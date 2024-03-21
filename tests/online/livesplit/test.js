@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://one.livesplit.org/'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   await delay(10000)
 

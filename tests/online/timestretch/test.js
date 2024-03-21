@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://superpowered.com/js-wasm-sdk/example_timestretching/'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   const startButton = page.locator('#startButton')
   await startButton.waitFor({state: 'visible'})

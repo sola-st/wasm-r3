@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://rustpython.github.io/demo/'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
   const runButton = page.locator('#run-btn')
   console.log('button found')

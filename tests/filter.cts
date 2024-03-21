@@ -35,7 +35,9 @@ export const offline_filter = [
   // 'multiple-wasm-files-mainframe', recover from custom-instr-3
 ];
 
-export const online_filter = [
+export const online_filter = []; // disabe for temporarily
+
+[
   // "ogv", // TODO: additional ER at end of original trace
   "heatmap", // works fine, but too long so we skip it
   // "uarm", // doesn't work for js because string is too long

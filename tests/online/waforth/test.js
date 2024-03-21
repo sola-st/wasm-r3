@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://el-tramo.be/waforth'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
   
   const textInput = page.getByRole('pre')
   await textInput.waitFor({state: 'visible'})

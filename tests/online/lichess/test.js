@@ -2,7 +2,7 @@ import { delay } from '../../../dist/tests/test-utils.cjs'
 
 export default async function test(analyser) {
   const url = 'https://lichess.org/analysis'
-  const page = await analyser.start(url, { headless: false })
+  const page = await analyser.start(url, { headless: true })
 
 
   const switchButton = page.locator('#analyse-toggle-ceval')
