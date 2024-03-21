@@ -41,9 +41,6 @@ export default class Benchmark {
                     execSync(`./target/release/replay_gen generate ${diskSave} ${path.join(binPath, 'index.wasm')} false ${path.join(binPath, 'replay.js')}`);
                 } else {
                     execSync(`./target/release/replay_gen generate ${diskSave} ${path.join(binPath, 'index.wasm')} false ${path.join(binPath, 'replay.wasm')}`);
-                    execSync(`node ${path.join(binPath, "replay.js")}`, { cwd: binPath })
-                    execSync(`wasm-tools validate -f all ${path.join(binPath, "replay.wasm")}`)
-                    execSync(`wasmtime  ${path.join(binPath, "replay.wasm")}`)
                 }
                 p_measureCodeGen()
             }

@@ -43,6 +43,10 @@ async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, "replay-call-graph.txt"));
   await rmSafe(path.join(testPath, "long.cjs"));
   await rmSafe(path.join(testPath, frontend));
+  // delete ablation study directories
+  await rmSafe(path.join(testPath, 'noopt'));
+  await rmSafe(path.join(testPath, 'split'));
+  await rmSafe(path.join(testPath, 'merge'));
   await rmSafe(path.join(testPath, "test-benchmark"));
   await rmSafe(path.join(testPath, "test-runtime.js"));
 }
@@ -395,6 +399,9 @@ async function runOnlineTests(names: string[], options) {
     }
   }
   writeSummary("online", names.length, successfull, roundTripTimes);
+  if (successfull !== names.length) {
+    process.exit(1);
+  }
 }
 
 async function runOfflineTests(names: string[], options) {
