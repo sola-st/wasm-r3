@@ -198,12 +198,14 @@ export class CustomAnalyser implements AnalyserI {
     private benchmarkPath: string
     private javascript: boolean;
     private wss: WebSocketServer;
+    private port: number;
 
-    constructor(benchmarkPath: string, options: { javascript: boolean }) {
+    constructor(benchmarkPath: string, options: any) {
         this.benchmarkPath = benchmarkPath;
         this.javascript = options.javascript;
+        this.port = options.port ?? 8080;
 
-        this.wss = new WebSocketServer({ port: 8080, maxPayload: 1_000_000_000 });
+        this.wss = new WebSocketServer({ port: this.port, maxPayload: 1_000_000_000 });
         let traceContexts: { [context: string]: fss.WriteStream } = {}
         let lookupContexts: { [context: string]: fss.WriteStream } = {}
         let nextSubbenchmarkIndex = 0
@@ -439,7 +441,8 @@ export class CustomAnalyser implements AnalyserI {
 
     private async constructInitScript() {
         const tracerScript = await fs.readFile('./dist/tracer.js') + '\n'
-        const setupScript = await fs.readFile('./src/tracer-runtime.js') + '\n'
+        let setupScript = await fs.readFile('./src/tracer-runtime.js', 'utf-8')
+        setupScript = setupScript.replace('8080', `${this.port}`) + '\n'
         return tracerScript + ';' + setupScript + ';'
     }
 }

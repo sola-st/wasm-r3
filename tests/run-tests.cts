@@ -475,9 +475,7 @@ async function testWebPageCustomInstrumentation(
 
   let analysisResult: AnalysisResult;
   try {
-    const analyser = new CustomAnalyser(benchmarkPath, {
-      javascript: options.jsBackend,
-    });
+    const analyser = new CustomAnalyser(benchmarkPath, options);
     const test = await import(testJsPath);
     analysisResult = await test.default(analyser);
     const subBenchmarkNames = await fs.readdir(benchmarkPath);
@@ -628,6 +626,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
   const optionDefinitions = [
     { name: "category", type: String, multiple: true, defaultOption: true },
     { name: "testcases", alias: "t", type: String, multiple: true },
+    { name: "port", alias: "p", type: Number },
     { name: "customFrontend", alias: "c", type: Boolean },
     { name: "firefoxFrontend", alias: "f", type: Boolean },
     { name: "webkitFrontend", alias: "w", type: Boolean },
