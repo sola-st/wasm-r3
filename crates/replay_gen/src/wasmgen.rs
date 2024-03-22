@@ -434,17 +434,23 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
         "--enable-reference-types",
         "--enable-multimemory",
         "--enable-bulk-memory",
+        "--enable-threads",
         "--debuginfo",
     ]
     .iter()
     .cloned()
     .chain(module_args.iter().map(|s| s.as_str()))
     .chain(["-o", "merged_1.wasm"]);
-    let _output = Command::new("wasm-merge")
+    let output = Command::new("wasm-merge")
         .current_dir(replay_path.parent().unwrap())
-        .args(args)
+        .args(args.clone())
         .output()
         .expect("Failed to execute wasm-merge");
+    assert!(
+        output.status.success(),
+        "Failed to execute wasm-merge first time: {:?}",
+        output
+    );
 
     let module_list = code.imported_modules();
     for module in &module_list {
@@ -518,6 +524,7 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
         "--enable-reference-types",
         "--enable-multimemory",
         "--enable-bulk-memory",
+        "--enable-threads",
         "--debuginfo",
         "merged_1.wasm",
         "index",
@@ -526,18 +533,24 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
     .cloned()
     .chain(module_args.iter().map(|s| s.as_str()))
     .chain(["-o", "merged_2.wasm"]);
-    let _output = Command::new("wasm-merge")
+    let output = Command::new("wasm-merge")
         .current_dir(replay_path.parent().unwrap())
         .args(args)
         .output()
         .expect("Failed to execute wasm-merge");
+    assert!(
+        output.status.success(),
+        "Failed to execute wasm-merge second time: {:?}",
+        output
+    );
 
-    let _output = Command::new("wasm-opt")
+    let output = Command::new("wasm-opt")
         .current_dir(replay_path.parent().unwrap())
         .args([
             "--enable-reference-types",
             "--enable-gc",
             "--enable-bulk-memory",
+            "--enable-threads",
             "--debuginfo",
             // for handling inlining of imported globals. Without this glob-merge node test will fail.
             "--simplify-globals",
@@ -547,6 +560,7 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
         ])
         .output()
         .expect("Failed to execute wasm-opt");
+    assert!(output.status.success(), "Failed to execute wasm-opt: {:?}", output);
     Ok(())
 }
 
