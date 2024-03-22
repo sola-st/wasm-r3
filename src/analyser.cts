@@ -1,4 +1,4 @@
-import { Browser, chromium, Frame, Page, Worker } from 'playwright'
+import { Browser, chromium, firefox, Frame, Page, webkit, Worker } from 'playwright'
 import { createMeasure, StopMeasure } from './performance.cjs'
 import fs from 'fs/promises'
 import fss from 'fs'
@@ -24,7 +24,7 @@ export type AnalysisResult = {
     wasm: number[]
 }[]
 
-type Options = { extended?: boolean, noRecord?: boolean }
+type Options = { extended?: boolean, noRecord?: boolean, firefox?: boolean, webkit?: boolean }
 export class Analyser implements AnalyserI {
 
     private analysisPath: string
@@ -47,8 +47,14 @@ export class Analyser implements AnalyserI {
         }
         const p_measureStart = createMeasure('start', { phase: 'record', description: `The time it takes start the chromium browser and open the webpage until the 'load' event is fired.` })
         this.isRunning = true
-        this.browser = await chromium.launch({ // chromium version: 119.0.6045.9 (Developer Build) (x86_64); V8 version: V8 11.9.169.3; currently in node I run version 11.8.172.13-node.12
-            headless, args: ['--experimental-wasm-multi-memory']
+        let browser = this.options.firefox ? firefox : this.options.webkit ? webkit : chromium;
+        this.browser = await browser.launch({ // chromium version: 119.0.6045.9 (Developer Build) (x86_64); V8 version: V8 11.9.169.3; currently in node I run version 11.8.172.13-node.12
+            headless, args: [
+                // '--disable-web-security',
+                '--js-flags="--max_old_space_size=8192"',
+                '--enable-experimental-web-platform-features',
+                '--experimental-wasm-multi-memory'
+            ], downloadsPath: 'Downloads'
         });
         this.page = await this.browser.newPage();
         this.page.setDefaultTimeout(120000);

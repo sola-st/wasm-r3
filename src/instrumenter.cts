@@ -25,7 +25,7 @@ export default async function run(url: string, options: Options) {
     const results = await analyser.stop()
     console.log('Download done. Generating Benchmark...')
   } else {
-    analyser = new Analyser('./dist/src/tracer.cjs', { extended: options.extended, noRecord: options.noRecord })
+    analyser = new Analyser('./dist/src/tracer.cjs', options)
     await analyser.start(url, { headless: options.headless })
     await askQuestion(`Record is running. Enter 'Stop' to stop recording: `)
     console.log(`Record stopped. Downloading...`)
