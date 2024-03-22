@@ -525,6 +525,7 @@ async function testWebPageCustomInstrumentation(
         `./target/release/replay_gen stringify ${replayTracePath} ${wasmPath} ${replayTextTracePath}`
       );
       let traceString = await fs.readFile(traceTextPath, "utf-8");
+      traceString = trimFromLastOccurance(traceString, 'FuncExit')
       let replayTraceString = await fs.readFile(replayTextTracePath, "utf-8");
       const comparison = compareResults(
         testPath,
@@ -556,9 +557,9 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     // we will generate the replay correctly, but it will run until the end
     // so we will end up with a longer replay trace.
     // Thats why we trim our trace to the position where the last wasm routine was finished
-    // for (let i = 0; i <= analysisResult.length - 1; i++) {
-    //   analysisResult[i].result = trimFromLastOccurance(analysisResult[i].result, 'ER')
-    // }
+    for (let i = 0; i <= analysisResult.length - 1; i++) {
+      analysisResult[i].result = trimFromLastOccurance(analysisResult[i].result, 'ER')
+    }
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult);
     await benchmark.save(benchmarkPath, options);

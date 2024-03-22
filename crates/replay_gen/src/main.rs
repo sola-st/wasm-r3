@@ -38,23 +38,27 @@ fn generate(args: Vec<String>) -> io::Result<()> {
     let buffer = &fs::read(wasm_path).unwrap();
     let mut generator = IRGenerator::new(Module::from_buffer(buffer).unwrap());
     let module = Module::from_buffer(buffer).unwrap();
-    let trace = if binary == "true" {
+    let mut trace: Vec<WasmEvent> = if binary == "true" {
         // let mut shadow_mem_optimiser = ShadowMemoryOptimiser::new(&module);
         // let mut shadow_table_optimiser = ShadowTableOptimiser::new(&module);
         // let mut func_entry_transformer = FuncEntryTransformer::new(&module);
         // let mut call_optimiser = CallOptimiser::new(&module);
-        Trace::new(trace_path, &module, true)
-            .map(|e| e.unwrap())
-            // .filter(|e| call_optimiser.discard_event(e))
-            // .filter(|e| shadow_mem_optimiser.discard_event(e))
-            // .filter(|e| shadow_table_optimiser.discard_event(e))
-            // .map(|e| func_entry_transformer.transform_event(e))
-            .for_each(|e| generator.consume_event(e));
+        Trace::new(trace_path, &module, true).map(|e| e.unwrap()).collect()
+        // .filter(|e| call_optimiser.discard_event(e))
+        // .filter(|e| shadow_mem_optimiser.discard_event(e))
+        // .filter(|e| shadow_table_optimiser.discard_event(e))
+        // .map(|e| func_entry_transformer.transform_event(e))
     } else {
-        Trace::new(trace_path, &module, false)
-            .map(|e| e.unwrap())
-            .for_each(|e| generator.consume_event(e));
+        Trace::new(trace_path, &module, false).map(|e| e.unwrap()).collect()
     };
+
+    // TODO: see if this can be improved.
+    // port of trimFromLastOccurence https://github.com/jakobgetz/wasm-r3/blob/b12a3ab5bed6927c5b973256b8415fec5666d96a/tests/test-utils.cts#L60-L67
+    if let Some(last_func_return) = trace.iter().rposition(|event| matches!(event, WasmEvent::FuncReturn)) {
+        trace.truncate(last_func_return + 1);
+    }
+
+    trace.into_iter().for_each(|e| generator.consume_event(e));
 
     // opt replay
     Optimiser::merge_fn_results(&mut generator.replay);
