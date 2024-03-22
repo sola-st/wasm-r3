@@ -1,0 +1,3120 @@
+{
+    "bullet": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "12082",
+                    "load:bytes": "758867    bytes",
+                    "load:time_per_byte": "0.015921  /bytes",
+                    "validate:time_us": "10695",
+                    "validate:bytes": "609575    bytes",
+                    "validate:time_per_byte": "0.017545  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5624697",
+                    "probes:fired": "35324216  count"
+                },
+                "split": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "12073",
+                    "load:bytes": "758867    bytes",
+                    "load:time_per_byte": "0.015909  /bytes",
+                    "validate:time_us": "10686",
+                    "validate:bytes": "609575    bytes",
+                    "validate:time_per_byte": "0.017530  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5628403",
+                    "probes:fired": "35324216  count"
+                },
+                "merge": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "11757",
+                    "load:bytes": "707892    bytes",
+                    "load:time_per_byte": "0.016608  /bytes",
+                    "validate:time_us": "10378",
+                    "validate:bytes": "552898    bytes",
+                    "validate:time_per_byte": "0.018770  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5638365",
+                    "probes:fired": "35324216  count"
+                },
+                "custom": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "11666",
+                    "load:bytes": "707892    bytes",
+                    "load:time_per_byte": "0.016479  /bytes",
+                    "validate:time_us": "10285",
+                    "validate:bytes": "552898    bytes",
+                    "validate:time_per_byte": "0.018601  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5612667",
+                    "probes:fired": "35324216  count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "11456",
+                    "load:bytes": "688134    bytes",
+                    "load:time_per_byte": "0.016647  /bytes",
+                    "validate:time_us": "10109",
+                    "validate:bytes": "533445    bytes",
+                    "validate:time_per_byte": "0.018950  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "779372",
+                    "probes:fired": "3826986   count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "factorial": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "772",
+                    "load:bytes": "40076     bytes",
+                    "load:time_per_byte": "0.019263  /bytes",
+                    "validate:time_us": "670",
+                    "validate:bytes": "33364     bytes",
+                    "validate:time_per_byte": "0.020081  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "69",
+                    "probes:fired": "282       count"
+                },
+                "split": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "767",
+                    "load:bytes": "40076     bytes",
+                    "load:time_per_byte": "0.019138  /bytes",
+                    "validate:time_us": "658",
+                    "validate:bytes": "33364     bytes",
+                    "validate:time_per_byte": "0.019721  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "69",
+                    "probes:fired": "282       count"
+                },
+                "merge": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "769",
+                    "load:bytes": "40076     bytes",
+                    "load:time_per_byte": "0.019188  /bytes",
+                    "validate:time_us": "657",
+                    "validate:bytes": "33364     bytes",
+                    "validate:time_per_byte": "0.019691  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "69",
+                    "probes:fired": "282       count"
+                },
+                "custom": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "769",
+                    "load:bytes": "40076     bytes",
+                    "load:time_per_byte": "0.019188  /bytes",
+                    "validate:time_us": "667",
+                    "validate:bytes": "33364     bytes",
+                    "validate:time_per_byte": "0.019991  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "69",
+                    "probes:fired": "282       count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "762",
+                    "load:bytes": "39558     bytes",
+                    "load:time_per_byte": "0.019262  /bytes",
+                    "validate:time_us": "656",
+                    "validate:bytes": "32847     bytes",
+                    "validate:time_per_byte": "0.019971  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "77",
+                    "probes:fired": "282       count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "ffmpeg": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "fractals": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "38",
+                    "load:bytes": "317       bytes",
+                    "load:time_per_byte": "0.119873  /bytes",
+                    "validate:time_us": "14",
+                    "validate:bytes": "156       bytes",
+                    "validate:time_per_byte": "0.089743  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "1273",
+                    "probes:fired": "14004     count"
+                },
+                "split": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "36",
+                    "load:bytes": "317       bytes",
+                    "load:time_per_byte": "0.113564  /bytes",
+                    "validate:time_us": "12",
+                    "validate:bytes": "156       bytes",
+                    "validate:time_per_byte": "0.076923  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "1275",
+                    "probes:fired": "14004     count"
+                },
+                "merge": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "38",
+                    "load:bytes": "317       bytes",
+                    "load:time_per_byte": "0.119873  /bytes",
+                    "validate:time_us": "16",
+                    "validate:bytes": "156       bytes",
+                    "validate:time_per_byte": "0.102564  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "1278",
+                    "probes:fired": "14004     count"
+                },
+                "custom": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "37",
+                    "load:bytes": "317       bytes",
+                    "load:time_per_byte": "0.116719  /bytes",
+                    "validate:time_us": "15",
+                    "validate:bytes": "156       bytes",
+                    "validate:time_per_byte": "0.096153  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "1272",
+                    "probes:fired": "14004     count"
+                },
+                "benchmark": {}
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "funky-kart": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {},
+                "split": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "131955",
+                    "load:bytes": "16648154  bytes",
+                    "load:time_per_byte": "0.007926  /bytes",
+                    "validate:time_us": "114702",
+                    "validate:bytes": "14977438  bytes",
+                    "validate:time_per_byte": "0.007658  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5188159",
+                    "probes:fired": "36665712  count"
+                },
+                "merge": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "14681",
+                    "load:bytes": "3872037   bytes",
+                    "load:time_per_byte": "0.003791  /bytes",
+                    "validate:time_us": "10121",
+                    "validate:bytes": "756014    bytes",
+                    "validate:time_per_byte": "0.013387  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5155997",
+                    "probes:fired": "36665682  count"
+                },
+                "custom": {
+                    "pregen:time_us": "9",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "13241",
+                    "load:bytes": "3873086   bytes",
+                    "load:time_per_byte": "0.003418  /bytes",
+                    "validate:time_us": "9101",
+                    "validate:bytes": "756587    bytes",
+                    "validate:time_per_byte": "0.012029  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5150557",
+                    "probes:fired": "36665712  count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "12681",
+                    "load:bytes": "3814332   bytes",
+                    "load:time_per_byte": "0.003324  /bytes",
+                    "validate:time_us": "8586",
+                    "validate:bytes": "696249    bytes",
+                    "validate:time_per_byte": "0.012331  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "3442457",
+                    "probes:fired": "24144960  count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "game-of-life": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "57",
+                    "load:bytes": "1319      bytes",
+                    "load:time_per_byte": "0.043214  /bytes",
+                    "validate:time_us": "31",
+                    "validate:bytes": "1211      bytes",
+                    "validate:time_per_byte": "0.025598  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "182",
+                    "probes:fired": "822       count"
+                },
+                "split": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "55",
+                    "load:bytes": "1319      bytes",
+                    "load:time_per_byte": "0.041698  /bytes",
+                    "validate:time_us": "31",
+                    "validate:bytes": "1211      bytes",
+                    "validate:time_per_byte": "0.025598  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "182",
+                    "probes:fired": "822       count"
+                },
+                "merge": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "52",
+                    "load:bytes": "1319      bytes",
+                    "load:time_per_byte": "0.039423  /bytes",
+                    "validate:time_us": "30",
+                    "validate:bytes": "1211      bytes",
+                    "validate:time_per_byte": "0.024772  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "186",
+                    "probes:fired": "822       count"
+                },
+                "custom": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "53",
+                    "load:bytes": "1319      bytes",
+                    "load:time_per_byte": "0.040181  /bytes",
+                    "validate:time_us": "29",
+                    "validate:bytes": "1211      bytes",
+                    "validate:time_per_byte": "0.023947  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "182",
+                    "probes:fired": "822       count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "53",
+                    "load:bytes": "1319      bytes",
+                    "load:time_per_byte": "0.040181  /bytes",
+                    "validate:time_us": "30",
+                    "validate:bytes": "1211      bytes",
+                    "validate:time_per_byte": "0.024772  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "184",
+                    "probes:fired": "822       count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "gotemplate": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "hnset-bench": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "35",
+                    "load:bytes": "321       bytes",
+                    "load:time_per_byte": "0.109034  /bytes",
+                    "validate:time_us": "14",
+                    "validate:bytes": "225       bytes",
+                    "validate:time_per_byte": "0.062222  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                },
+                "split": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "36",
+                    "load:bytes": "321       bytes",
+                    "load:time_per_byte": "0.112149  /bytes",
+                    "validate:time_us": "14",
+                    "validate:bytes": "225       bytes",
+                    "validate:time_per_byte": "0.062222  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                },
+                "merge": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "35",
+                    "load:bytes": "321       bytes",
+                    "load:time_per_byte": "0.109034  /bytes",
+                    "validate:time_us": "13",
+                    "validate:bytes": "225       bytes",
+                    "validate:time_per_byte": "0.057777  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "4",
+                    "probes:fired": "2         count"
+                },
+                "custom": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "35",
+                    "load:bytes": "321       bytes",
+                    "load:time_per_byte": "0.109034  /bytes",
+                    "validate:time_us": "13",
+                    "validate:bytes": "225       bytes",
+                    "validate:time_per_byte": "0.057777  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "6",
+                    "probes:fired": "2         count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "37",
+                    "load:bytes": "321       bytes",
+                    "load:time_per_byte": "0.115264  /bytes",
+                    "validate:time_us": "15",
+                    "validate:bytes": "225       bytes",
+                    "validate:time_per_byte": "0.066666  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "jqkungfu": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "lichess": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "mandelbrot": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "13850",
+                    "load:bytes": "1713886   bytes",
+                    "load:time_per_byte": "0.008081  /bytes",
+                    "validate:time_us": "12113",
+                    "validate:bytes": "1698971   bytes",
+                    "validate:time_per_byte": "0.007129  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "30372756",
+                    "probes:fired": "595682    count"
+                },
+                "split": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "13728",
+                    "load:bytes": "1713886   bytes",
+                    "load:time_per_byte": "0.008009  /bytes",
+                    "validate:time_us": "12031",
+                    "validate:bytes": "1698971   bytes",
+                    "validate:time_per_byte": "0.007081  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "30372283",
+                    "probes:fired": "595682    count"
+                },
+                "merge": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "1487",
+                    "load:bytes": "240619    bytes",
+                    "load:time_per_byte": "0.006179  /bytes",
+                    "validate:time_us": "1221",
+                    "validate:bytes": "64572     bytes",
+                    "validate:time_per_byte": "0.018909  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "30373012",
+                    "probes:fired": "595682    count"
+                },
+                "custom": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "1492",
+                    "load:bytes": "240619    bytes",
+                    "load:time_per_byte": "0.006200  /bytes",
+                    "validate:time_us": "1216",
+                    "validate:bytes": "64572     bytes",
+                    "validate:time_per_byte": "0.018831  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "30372618",
+                    "probes:fired": "595682    count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "1477",
+                    "load:bytes": "240403    bytes",
+                    "load:time_per_byte": "0.006143  /bytes",
+                    "validate:time_us": "1201",
+                    "validate:bytes": "64356     bytes",
+                    "validate:time_per_byte": "0.018661  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "30372846",
+                    "probes:fired": "595682    count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "ogv": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "30",
+                    "load:bytes": "104       bytes",
+                    "load:time_per_byte": "0.288461  /bytes",
+                    "validate:time_us": "9",
+                    "validate:bytes": "22        bytes",
+                    "validate:time_per_byte": "0.409090  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "7",
+                    "probes:fired": "4         count"
+                },
+                "split": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "28",
+                    "load:bytes": "104       bytes",
+                    "load:time_per_byte": "0.269230  /bytes",
+                    "validate:time_us": "8",
+                    "validate:bytes": "22        bytes",
+                    "validate:time_per_byte": "0.363636  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "7",
+                    "probes:fired": "4         count"
+                },
+                "merge": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "29",
+                    "load:bytes": "104       bytes",
+                    "load:time_per_byte": "0.278846  /bytes",
+                    "validate:time_us": "7",
+                    "validate:bytes": "22        bytes",
+                    "validate:time_per_byte": "0.318181  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "7",
+                    "probes:fired": "4         count"
+                },
+                "custom": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "27",
+                    "load:bytes": "104       bytes",
+                    "load:time_per_byte": "0.259615  /bytes",
+                    "validate:time_us": "8",
+                    "validate:bytes": "22        bytes",
+                    "validate:time_per_byte": "0.363636  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "7",
+                    "probes:fired": "4         count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "28",
+                    "load:bytes": "104       bytes",
+                    "load:time_per_byte": "0.269230  /bytes",
+                    "validate:time_us": "8",
+                    "validate:bytes": "22        bytes",
+                    "validate:time_per_byte": "0.363636  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "7",
+                    "probes:fired": "4         count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "onnxjs": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "pacalc": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "4763",
+                    "load:bytes": "314784    bytes",
+                    "load:time_per_byte": "0.015131  /bytes",
+                    "validate:time_us": "4323",
+                    "validate:bytes": "263137    bytes",
+                    "validate:time_per_byte": "0.016428  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "7124",
+                    "probes:fired": "42918     count"
+                },
+                "split": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "4752",
+                    "load:bytes": "314784    bytes",
+                    "load:time_per_byte": "0.015096  /bytes",
+                    "validate:time_us": "4372",
+                    "validate:bytes": "263137    bytes",
+                    "validate:time_per_byte": "0.016614  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "7011",
+                    "probes:fired": "42918     count"
+                },
+                "merge": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "4811",
+                    "load:bytes": "296527    bytes",
+                    "load:time_per_byte": "0.016224  /bytes",
+                    "validate:time_us": "4204",
+                    "validate:bytes": "242819    bytes",
+                    "validate:time_per_byte": "0.017313  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "6979",
+                    "probes:fired": "42918     count"
+                },
+                "custom": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "4647",
+                    "load:bytes": "296527    bytes",
+                    "load:time_per_byte": "0.015671  /bytes",
+                    "validate:time_us": "4202",
+                    "validate:bytes": "242819    bytes",
+                    "validate:time_per_byte": "0.017305  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "7099",
+                    "probes:fired": "42918     count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "4721",
+                    "load:bytes": "291250    bytes",
+                    "load:time_per_byte": "0.016209  /bytes",
+                    "validate:time_us": "4349",
+                    "validate:bytes": "238889    bytes",
+                    "validate:time_per_byte": "0.018205  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "6963",
+                    "probes:fired": "42918     count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "playnox": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "roslyn": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "rustpython": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "sandspiel": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "10",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "18002",
+                    "load:bytes": "1846766   bytes",
+                    "load:time_per_byte": "0.009747  /bytes",
+                    "validate:time_us": "16150",
+                    "validate:bytes": "1843897   bytes",
+                    "validate:time_per_byte": "0.008758  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "33944220",
+                    "probes:fired": "206055414 count"
+                },
+                "split": {
+                    "pregen:time_us": "15",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "18166",
+                    "load:bytes": "1846766   bytes",
+                    "load:time_per_byte": "0.009836  /bytes",
+                    "validate:time_us": "16357",
+                    "validate:bytes": "1843897   bytes",
+                    "validate:time_per_byte": "0.008870  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "33739892",
+                    "probes:fired": "206055414 count"
+                },
+                "merge": {
+                    "pregen:time_us": "9",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "17777",
+                    "load:bytes": "1846766   bytes",
+                    "load:time_per_byte": "0.009626  /bytes",
+                    "validate:time_us": "15924",
+                    "validate:bytes": "1843897   bytes",
+                    "validate:time_per_byte": "0.008636  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "33837697",
+                    "probes:fired": "206055414 count"
+                },
+                "custom": {
+                    "pregen:time_us": "10",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "18175",
+                    "load:bytes": "1846766   bytes",
+                    "load:time_per_byte": "0.009841  /bytes",
+                    "validate:time_us": "16379",
+                    "validate:bytes": "1843897   bytes",
+                    "validate:time_per_byte": "0.008882  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "33829163",
+                    "probes:fired": "206055414 count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "9",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "7724",
+                    "load:bytes": "922998    bytes",
+                    "load:time_per_byte": "0.008368  /bytes",
+                    "validate:time_us": "6816",
+                    "validate:bytes": "920131    bytes",
+                    "validate:time_per_byte": "0.007407  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "4279815",
+                    "probes:fired": "26633696  count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "sqlgui": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "13468",
+                    "load:bytes": "764779    bytes",
+                    "load:time_per_byte": "0.017610  /bytes",
+                    "validate:time_us": "12256",
+                    "validate:bytes": "679256    bytes",
+                    "validate:time_per_byte": "0.018043  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "9354",
+                    "probes:fired": "48178     count"
+                },
+                "split": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "13352",
+                    "load:bytes": "764779    bytes",
+                    "load:time_per_byte": "0.017458  /bytes",
+                    "validate:time_us": "12213",
+                    "validate:bytes": "679256    bytes",
+                    "validate:time_per_byte": "0.017979  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "9333",
+                    "probes:fired": "48178     count"
+                },
+                "merge": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "14585",
+                    "load:bytes": "761367    bytes",
+                    "load:time_per_byte": "0.019156  /bytes",
+                    "validate:time_us": "13053",
+                    "validate:bytes": "675358    bytes",
+                    "validate:time_per_byte": "0.019327  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "9226",
+                    "probes:fired": "48178     count"
+                },
+                "custom": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "13391",
+                    "load:bytes": "761367    bytes",
+                    "load:time_per_byte": "0.017588  /bytes",
+                    "validate:time_us": "12180",
+                    "validate:bytes": "675358    bytes",
+                    "validate:time_per_byte": "0.018034  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "9212",
+                    "probes:fired": "48178     count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "12956",
+                    "load:bytes": "712096    bytes",
+                    "load:time_per_byte": "0.018194  /bytes",
+                    "validate:time_us": "11762",
+                    "validate:bytes": "626531    bytes",
+                    "validate:time_per_byte": "0.018773  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "9308",
+                    "probes:fired": "48178     count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "sqlpractice": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "9",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "39566",
+                    "load:bytes": "4363449   bytes",
+                    "load:time_per_byte": "0.009067  /bytes",
+                    "validate:time_us": "34961",
+                    "validate:bytes": "4279646   bytes",
+                    "validate:time_per_byte": "0.008169  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "137689",
+                    "probes:fired": "1291482   count"
+                },
+                "split": {
+                    "pregen:time_us": "9",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "41296",
+                    "load:bytes": "4363792   bytes",
+                    "load:time_per_byte": "0.009463  /bytes",
+                    "validate:time_us": "36564",
+                    "validate:bytes": "4279809   bytes",
+                    "validate:time_per_byte": "0.008543  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "137421",
+                    "probes:fired": "1291490   count"
+                },
+                "merge": {
+                    "pregen:time_us": "11",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "38642",
+                    "load:bytes": "4322642   bytes",
+                    "load:time_per_byte": "0.008939  /bytes",
+                    "validate:time_us": "34079",
+                    "validate:bytes": "4234257   bytes",
+                    "validate:time_per_byte": "0.008048  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "137659",
+                    "probes:fired": "1291482   count"
+                },
+                "custom": {
+                    "pregen:time_us": "8",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "24466",
+                    "load:bytes": "2486600   bytes",
+                    "load:time_per_byte": "0.009839  /bytes",
+                    "validate:time_us": "21534",
+                    "validate:bytes": "2190386   bytes",
+                    "validate:time_per_byte": "0.009831  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "137260",
+                    "probes:fired": "1291490   count"
+                },
+                "benchmark": {}
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "takahirox": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "tic-tac-toe": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "timestretch": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "vaporboy": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "video": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "378",
+                    "load:bytes": "15597     bytes",
+                    "load:time_per_byte": "0.024235  /bytes",
+                    "validate:time_us": "317",
+                    "validate:bytes": "14107     bytes",
+                    "validate:time_per_byte": "0.022471  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                },
+                "split": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "377",
+                    "load:bytes": "15597     bytes",
+                    "load:time_per_byte": "0.024171  /bytes",
+                    "validate:time_us": "318",
+                    "validate:bytes": "14107     bytes",
+                    "validate:time_per_byte": "0.022542  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                },
+                "merge": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "378",
+                    "load:bytes": "15597     bytes",
+                    "load:time_per_byte": "0.024235  /bytes",
+                    "validate:time_us": "314",
+                    "validate:bytes": "14107     bytes",
+                    "validate:time_per_byte": "0.022258  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "6",
+                    "probes:fired": "2         count"
+                },
+                "custom": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "377",
+                    "load:bytes": "15597     bytes",
+                    "load:time_per_byte": "0.024171  /bytes",
+                    "validate:time_us": "317",
+                    "validate:bytes": "14107     bytes",
+                    "validate:time_per_byte": "0.022471  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "5",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "374",
+                    "load:bytes": "15597     bytes",
+                    "load:time_per_byte": "0.023978  /bytes",
+                    "validate:time_us": "320",
+                    "validate:bytes": "14107     bytes",
+                    "validate:time_per_byte": "0.022683  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "6",
+                    "probes:fired": "2         count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "waforth": {
+        "test_success": false,
+        "replay_metrics": {}
+    },
+    "wasmsh": {
+        "test_success": true,
+        "replay_metrics": {
+            "sm": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "sm-opt": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-liftoff": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "v8-turbofan": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-int": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-bbq": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "jsc-omg": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-int": {
+                "noopt": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "1767",
+                    "load:bytes": "121986    bytes",
+                    "load:time_per_byte": "0.014485  /bytes",
+                    "validate:time_us": "1564",
+                    "validate:bytes": "85258     bytes",
+                    "validate:time_per_byte": "0.018344  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                },
+                "split": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "1792",
+                    "load:bytes": "121986    bytes",
+                    "load:time_per_byte": "0.014690  /bytes",
+                    "validate:time_us": "1577",
+                    "validate:bytes": "85258     bytes",
+                    "validate:time_per_byte": "0.018496  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                },
+                "merge": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "1776",
+                    "load:bytes": "121986    bytes",
+                    "load:time_per_byte": "0.014559  /bytes",
+                    "validate:time_us": "1555",
+                    "validate:bytes": "85258     bytes",
+                    "validate:time_per_byte": "0.018238  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "6",
+                    "probes:fired": "2         count"
+                },
+                "custom": {
+                    "pregen:time_us": "6",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "1789",
+                    "load:bytes": "121986    bytes",
+                    "load:time_per_byte": "0.014665  /bytes",
+                    "validate:time_us": "1582",
+                    "validate:bytes": "85258     bytes",
+                    "validate:time_per_byte": "0.018555  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "5",
+                    "probes:fired": "2         count"
+                },
+                "benchmark": {
+                    "pregen:time_us": "7",
+                    "pregen:bytes": "49419     bytes",
+                    "load:time_us": "1951",
+                    "load:bytes": "121986    bytes",
+                    "load:time_per_byte": "0.015993  /bytes",
+                    "validate:time_us": "1727",
+                    "validate:bytes": "85258     bytes",
+                    "validate:time_per_byte": "0.020256  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "6",
+                    "probes:fired": "2         count"
+                }
+            },
+            "wizeng-jit": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wizeng-dyn": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmtime": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            },
+            "wasmer-base": {
+                "noopt": {},
+                "split": {},
+                "merge": {},
+                "custom": {},
+                "benchmark": {}
+            }
+        }
+    },
+    "wheel": {
+        "test_success": false,
+        "replay_metrics": {}
+    }
+}
