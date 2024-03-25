@@ -24,7 +24,7 @@ export type AnalysisResult = {
     wasm: number[]
 }[]
 
-type Options = { extended?: boolean, noRecord?: boolean, firefox?: boolean, webkit?: boolean }
+type Options = { extended?: boolean, noRecord?: boolean, noReplay?: boolean, firefox?: boolean, webkit?: boolean }
 export class Analyser implements AnalyserI {
 
     private analysisPath: string
@@ -69,6 +69,9 @@ export class Analyser implements AnalyserI {
     }
 
     async stop() {
+        if (this.options.noReplay) {
+            process.exit(1)
+        }
         if (this.isRunning === false) {
             throw new Error('Analyser is not running. Start the Analyser before stopping')
         }

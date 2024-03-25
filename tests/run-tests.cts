@@ -285,8 +285,7 @@ function writeSummary(
       roundTripTimes.reduce((p, c) => p + c) / roundTripTimes.length;
   }
   console.log(
-    `finished running ${testCount} ${type} testcases. Pass: ${successfull}, Fail: ${fail}, FailRate: ${
-      (fail / testCount) * 100
+    `finished running ${testCount} ${type} testcases. Pass: ${successfull}, Fail: ${fail}, FailRate: ${(fail / testCount) * 100
     }%, Avg time: ${avgRoundTripTime}`
   );
 }
@@ -640,6 +639,8 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     { name: "webkitFrontend", alias: "w", type: Boolean },
     { name: "jsBackend", alias: "j", type: Boolean },
     { name: "legacyBackend", alias: "l", type: Boolean },
+    { name: "noRecord", type: Boolean },
+    { name: "noReplay", type: Boolean },
   ];
   const options = commandLineArgs(optionDefinitions);
   if (options.customFrontend === true) {
