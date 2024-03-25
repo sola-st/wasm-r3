@@ -640,7 +640,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     { name: "jsBackend", alias: "j", type: Boolean },
     { name: "legacyBackend", alias: "l", type: Boolean },
     { name: "noRecord", type: Boolean },
-    { name: "noReplay", type: Boolean },
+    { name: "evalRecord", type: Boolean },
   ];
   const options = commandLineArgs(optionDefinitions);
   if (options.customFrontend === true) {

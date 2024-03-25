@@ -7,7 +7,7 @@ import acorn from 'acorn'
 import { trimFromLastOccurance } from '../tests/test-utils.cjs'
 import { WebSocketServer } from 'ws';
 import path from 'path'
-import { execSync } from 'child_process'
+import { exec, execSync } from 'child_process'
 import { askQuestion } from './util.cjs'
 
 export interface AnalysisI<T> {
@@ -24,7 +24,7 @@ export type AnalysisResult = {
     wasm: number[]
 }[]
 
-type Options = { extended?: boolean, noRecord?: boolean, noReplay?: boolean, firefox?: boolean, webkit?: boolean }
+type Options = { extended?: boolean, noRecord?: boolean, evalRecord?: boolean, firefox?: boolean, webkit?: boolean }
 export class Analyser implements AnalyserI {
 
     private analysisPath: string
@@ -47,15 +47,29 @@ export class Analyser implements AnalyserI {
         }
         const p_measureStart = createMeasure('start', { phase: 'record', description: `The time it takes start the chromium browser and open the webpage until the 'load' event is fired.` })
         this.isRunning = true
-        let browser = this.options.firefox ? firefox : this.options.webkit ? webkit : chromium;
-        this.browser = await browser.launch({ // chromium version: 119.0.6045.9 (Developer Build) (x86_64); V8 version: V8 11.9.169.3; currently in node I run version 11.8.172.13-node.12
-            headless, args: [
-                // '--disable-web-security',
-                '--js-flags="--max_old_space_size=8192"',
-                '--enable-experimental-web-platform-features',
-                '--experimental-wasm-multi-memory'
-            ], downloadsPath: 'Downloads'
-        });
+        let browserType = this.options.firefox ? firefox : this.options.webkit ? webkit : chromium;
+        if (this.options.evalRecord) {
+            let chromiumProcess = exec(`${chromium.executablePath()} --remote-debugging-port=9222 --js-flags='--slow-histograms'`, (err, stdout, stderr) => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+                console.log(stdout)
+            })
+            process.on('exit', () => {
+                chromiumProcess.kill();
+            });
+            this.browser = await chromium.connectOverCDP("http://localhost:9222/");
+        } else {
+            this.browser = await browserType.launch({
+                headless, args: [
+                    // '--disable-web-security',
+                    '--js-flags="--max_old_space_size=8192"',
+                    '--enable-experimental-web-platform-features',
+                    '--experimental-wasm-multi-memory'
+                ], downloadsPath: 'Downloads'
+            });
+        }
         this.page = await this.browser.newPage();
         this.page.setDefaultTimeout(120000);
         if (this.options.noRecord !== true) {
@@ -69,9 +83,6 @@ export class Analyser implements AnalyserI {
     }
 
     async stop() {
-        if (this.options.noReplay) {
-            process.exit(1)
-        }
         if (this.isRunning === false) {
             throw new Error('Analyser is not running. Start the Analyser before stopping')
         }
@@ -87,6 +98,10 @@ export class Analyser implements AnalyserI {
         const originalWasmBuffer = await this.getBuffers()
         p_measureBufferDownload()
         p_measureDataDownload()
+        await getHistogram(this.page)
+        if (this.options.evalRecord) {
+            process.exit(0)
+        }
         this.contexts = []
         this.browser.close()
         this.isRunning = false
@@ -454,6 +469,13 @@ export class CustomAnalyser implements AnalyserI {
         setupScript = setupScript.replace('8080', `${this.port}`) + '\n'
         return tracerScript + ';' + setupScript + ';'
     }
+}
+
+async function getHistogram(page: Page) {
+    await page.goto('chrome://histograms/')
+    let ems = await page.locator('css=span.histogram-header-text').allTextContents()
+    let histogramValue = ems.find(value => value.startsWith('Histogram: V8.ExecuteMicroSeconds'))
+    console.log(histogramValue)
 }
 
 function convertUint8ArrayToI32Array(uint8Array: Uint8Array) {
