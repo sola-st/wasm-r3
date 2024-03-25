@@ -49,17 +49,30 @@ export class Analyser implements AnalyserI {
         this.isRunning = true
         let browserType = this.options.firefox ? firefox : this.options.webkit ? webkit : chromium;
         if (this.options.evalRecord) {
-            let chromiumProcess = exec(`${chromium.executablePath()} --remote-debugging-port=9222 --js-flags='--slow-histograms'`, (err, stdout, stderr) => {
+            let cmd = `${chromium.executablePath()} --headless --remote-debugging-port=0 --js-flags='--slow-histograms'`
+            let chromiumProcess = exec(cmd, (err, stdout, stderr) => {
                 if (err) {
                     console.error(err)
                     return
                 }
                 console.log(stdout)
             })
+
+            let remoteDebuggingUrlPromise = new Promise<string>((resolve, reject) => {
+                chromiumProcess.stderr.on('data', (data) => {
+                    const match = data.toString().match(/DevTools listening on (ws:\/\/.+)/);
+                    if (match) {
+                        const remoteDebuggingUrl = match[1];
+                        resolve(remoteDebuggingUrl);
+                    }
+                });
+            });
             process.on('exit', () => {
                 chromiumProcess.kill();
             });
-            this.browser = await chromium.connectOverCDP("http://localhost:9222/");
+            // Use the remoteDebuggingUrlPromise
+            let port = await remoteDebuggingUrlPromise;
+            this.browser = await chromium.connectOverCDP(port);
         } else {
             this.browser = await browserType.launch({
                 headless, args: [
@@ -98,8 +111,8 @@ export class Analyser implements AnalyserI {
         const originalWasmBuffer = await this.getBuffers()
         p_measureBufferDownload()
         p_measureDataDownload()
-        await getHistogram(this.page)
         if (this.options.evalRecord) {
+            await getHistogram(this.page)
             process.exit(0)
         }
         this.contexts = []
@@ -474,6 +487,9 @@ export class CustomAnalyser implements AnalyserI {
 async function getHistogram(page: Page) {
     await page.goto('chrome://histograms/')
     let ems = await page.locator('css=span.histogram-header-text').allTextContents()
+    for (let s of ems) {
+        console.log(s)
+    }
     let histogramValue = ems.find(value => value.startsWith('Histogram: V8.ExecuteMicroSeconds'))
     console.log(histogramValue)
 }
