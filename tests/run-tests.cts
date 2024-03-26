@@ -375,9 +375,9 @@ async function runOnlineTests(names: string[], options) {
     await cleanUp(testPath);
     let report;
     if (options.customFrontend) {
-      report = await await testWebPageCustomInstrumentation(testPath, options);
+      report = await testWebPageCustomInstrumentation(testPath, options);
     } else {
-      report = await await testWebPage(testPath, options);
+      report = await testWebPage(testPath, options);
     }
     stopSpinner(spinner);
     cleanUpPerformance();
@@ -550,6 +550,14 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     // Thats why we trim our trace to the position where the last wasm routine was finished
     for (let i = 0; i <= analysisResult.length - 1; i++) {
       analysisResult[i].result = trimFromLastOccurance(analysisResult[i].result, 'ER')
+      if (analysisResult[i].result == "") {
+        return {
+          testPath,
+          roundTripTime: undefined,
+          success: false,
+          reason: "empty benchmark generated",
+        };
+      }
     }
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult);
