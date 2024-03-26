@@ -6,28 +6,13 @@ export const node_filter = [
   "mem-exp-copy-no-host-mod",
   "mem-exp-fill-no-host-mod",
   "mem-exp-host-mod-load-vec",
-  "mem-exp-host-grow",
-  "mem-exp-host-grow-no-return",
-  "mem-imp-host-grow",
-  "funky-kart",
   "table-exp-host-add-friend",
   "table-exp-host-grow",
   "table-exp-host-mod",
-  "table-exp-host-mod-multiple",
-  "tale-exp-internal-mod",
-  "table-imp-host-mod",
-  // table function call
-  // "call-exp-after-import-call-table-get",
-  // "table-exp-call-private-function",
+  "table-exp-call-private-function",
   "table-exp-call-private-function-mul-table",
-  // "table-exp-call-private-function-params",
-  // 'fib',
-  // ffmpeg
-  // fib
-  // jsc
-  // multiplyDouble
-  // multiplyInt
-  // virtualkc
+  "table-exp-call-private-function-params",
+  'fib', // takes too long. Works fines.
 ];
 
 export const offline_filter = [

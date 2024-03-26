@@ -141,15 +141,16 @@ async function runNodeTestCustom(name: string, options): Promise<TestReport> {
 
 async function runNodeTest(name: string, options): Promise<TestReport> {
   const testPath = path.join(process.cwd(), "tests", "node", name);
-  const benchmarkPath = path.join(testPath, frontend);
+  const benchmarkPath = path.join(testPath, 'bin_0', frontend);
   await cleanUp(testPath);
-  await fs.mkdir(benchmarkPath);
+  await fs.mkdir(benchmarkPath, { recursive: true });
   const testJsPath = path.join(testPath, "test.js");
   const watPath = path.join(testPath, "index.wat");
   const wasmPath = path.join(benchmarkPath, "index.wasm");
   const instrumentedPath = path.join(benchmarkPath, "instrumented.wasm");
   const tracePath = path.join(benchmarkPath, "trace.r3");
   const callGraphPath = path.join(benchmarkPath, "call-graph.txt");
+  const pureJsPath = path.join(benchmarkPath, "pure.js");
   const replayJsPath = path.join(benchmarkPath, "replay.js");
   const replayWasmPath = path.join(benchmarkPath, "replay.wasm");
   const mergedWasmPath = path.join(benchmarkPath, "merged.wasm");
@@ -221,23 +222,14 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
       replayCode = await new Generator().generateReplay(trace);
       await generateJavascript(fss.createWriteStream(replayJsPath), replayCode);
     } else {
-      if (options.jsBackend == true) {
-        execSync(
-          `./target/release/replay_gen generate ${tracePath} ${wasmPath} false ${replayJsPath}`
-        );
-      } else {
-        execSync(
-          `./target/release/replay_gen generate ${tracePath} ${wasmPath} false ${replayWasmPath}`
-        );
-        execSync(`node ${replayJsPath}`, { cwd: benchmarkPath });
-        execSync(`wasm-tools validate -f all  ${replayWasmPath}`);
-        execSync(`wasmtime  ${replayWasmPath}`);
-        return {
-          testPath: benchmarkPath,
-          roundTripTime: p_roundTrip().duration,
-          success: true,
-        };
-      }
+      execSync(
+        `./target/release/replay_gen generate ${tracePath} ${wasmPath} false ${replayWasmPath}`
+      );
+      execSync(`node ${replayJsPath}`, { cwd: benchmarkPath });
+      execSync(`wasmtime  ${replayWasmPath}`);
+      execSync(
+        `./target/release/replay_gen generate ${tracePath} ${wasmPath} false ${pureJsPath}`
+      );
     }
     await delay(0);
   } catch (e: any) {
@@ -248,7 +240,7 @@ async function runNodeTest(name: string, options): Promise<TestReport> {
   // 4. Execute replay and generate trace and compare
   let replayTracer = new Tracer(eval(js + `\nWasabi`), { extended });
   try {
-    const replayBinary = await import(replayJsPath);
+    const replayBinary = await import(pureJsPath);
     const wasm = await replayBinary.instantiate(wasmBinary);
     replayTracer.init();
     replayBinary.replay(wasm);
@@ -573,10 +565,6 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
         reason: "no benchmark was generated",
       };
     }
-    if (options.jsBackend != true) {
-      return { testPath, roundTripTime, success: true };
-    }
-
     let runtimes = benchmark.instrumentBinaries();
     // await copyDir(benchmarkPath, testBenchmarkPath)
     let results: any = { testPath, success: true };
@@ -586,14 +574,14 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
       const tracePath = path.join(subBenchmarkPath, "trace.r3");
       const refTracePath = path.join(subBenchmarkPath, "trace-ref.r3");
       await fs.rename(tracePath, refTracePath);
-      const replayPath = path.join(subBenchmarkPath, "replay.js");
+      const pureJsPath = path.join(subBenchmarkPath, "pure.js");
       const replayTracePath = path.join(subBenchmarkPath, "trace-replay.r3");
       let tracer = new Tracer(eval(runtimes[i] + `\nWasabi`), {
         extended: blockExtended,
       });
       let replayBinary;
       try {
-        replayBinary = await import(replayPath);
+        replayBinary = await import(pureJsPath);
       } catch {
         throw new Error(
           "Apparently this is too stupid to parse the replay file. Even tho it should be written by now"
