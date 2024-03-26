@@ -174,6 +174,16 @@ export class Trace {
                     value: parseNumber(components[3]),
                     valtype: components[4] as ValType,
                 }
+            case 'IG':
+                return {
+                    type: 'ImportGlobal',
+                    idx: parseInt(components[1]),
+                    module: components[2],
+                    name: components[3],
+                    initial: parseNumber(components[6]),
+                    value: components[4] as ValType,
+                    mutable: parseInt(components[5]) === 1
+                }
             case 'FE':
                 return {
                     type: 'FuncEntry',
@@ -550,6 +560,11 @@ export default class Analysis implements AnalysisI<Trace> {
         })
         // Init Globals
         this.shadowGlobals = this.Wasabi.module.globals.map(g => g.value)
+        this.Wasabi.module.info.globals.forEach((g, idx) => {
+            if (g.import !== null) {
+                this.trace.push(`IG;${idx};${g.import[0]};${g.import[1]};${g.valType};${g.mutability === 'Mut' ? 1 : 0};${this.Wasabi.module.globals[idx].value}`)
+            }
+        })
     }
 
     private debugLoad(op: LoadOp, addr: number, byteLength: number) {

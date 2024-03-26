@@ -213,6 +213,14 @@ pub enum WasmEvent {
         params: Vec<F64>,
     },
     FuncReturn,
+    ImportGlobal {
+        idx: usize,
+        module: String,
+        name: String,
+        mutable: bool,
+        initial: F64,
+        value: ValType,
+    },
 }
 
 type ModuleTypes = Vec<Type>;
@@ -770,7 +778,15 @@ impl FromStr for WasmEvent {
                 value: parse_number(components[3]).unwrap(),
                 valtype: components[4].parse().unwrap(),
             }),
-            "IT" | "IM" | "IF" | "IG" => Err(ErrorKind::LegacyTrace),
+            "IG" => Ok(WasmEvent::ImportGlobal {
+                idx: components[1].parse().unwrap(),
+                module: components[2].to_string(),
+                name: components[3].to_string(),
+                value: components[4].parse().unwrap(),
+                mutable: if components[5] == "1" { true } else { false },
+                initial: components[6].parse().unwrap(),
+            }),
+            "IT" | "IM" | "IF" => Err(ErrorKind::LegacyTrace),
             _ => {
                 panic!("Unknown trace: {:?}", s);
                 Err(ErrorKind::UnknownTrace)

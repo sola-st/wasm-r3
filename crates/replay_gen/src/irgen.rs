@@ -516,6 +516,10 @@ impl IRGenerator {
                     self.state.last_func = idx;
                 }
             }
+            WasmEvent::ImportGlobal { idx, module, name, mutable, initial, value } => match self.replay.globals.get_mut(&idx) {
+                Some(g) => g.initial = initial,
+                None => todo!(),
+            },
         }
     }
     fn splice_event(&mut self, event: HostEvent) {
