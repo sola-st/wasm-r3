@@ -1,19 +1,33 @@
 {
-    "vaporboy": {
+    "handy-tools": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "visual6502remix": {
         "trace_match": {
             "wasabi": false
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "livesplit": {
+    "noisereduction": {
         "trace_match": {
             "wasabi": false
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "hydro": {
+    "fractals": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "commanderkeen": {
         "trace_match": {
             "wasabi": true
         },
@@ -27,35 +41,35 @@
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "wasmsh": {
+    "kittygame": {
         "trace_match": {
             "wasabi": true
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "wheel": {
+    "hnset-bench": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "riconpacker": {
         "trace_match": {
             "wasabi": true
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "boa": {
+    "onnxjs": {
         "trace_match": {
-            "wasabi": true
+            "wasabi": false
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "factorial": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "bullet": {
+    "funky-kart": {
         "trace_match": {
             "wasabi": true
         },
@@ -69,23 +83,128 @@
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "commanderkeen": {
+    "parquet": {
         "trace_match": {
             "wasabi": true
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "rtexpacker": {
+    "bullet": {
         "trace_match": {
             "wasabi": true
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "rustpython": {
+    "ffmpeg": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "waforth": {
         "trace_match": {
             "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "hydro": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "guiicons": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "game-of-life": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "ogv": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "playnox": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "mandelbrot": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "livesplit": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "multiplyDouble": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "uarm": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "image-convolute": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "timestretch": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "pathfinding": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "jqkungfu": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "rfxgen": {
+        "trace_match": {
+            "wasabi": true
         },
         "record_metrics": {},
         "replay_metrics": {}
@@ -97,21 +216,70 @@
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "kittygame": {
+    "lichess": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "sqlpractice": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "jsc": {
         "trace_match": {
             "wasabi": true
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "funky-kart": {
+    "heatmap": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "rustpython": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "virtualkc": {
         "trace_match": {
             "wasabi": true
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "hnset-bench": {
+    "gotemplate": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "wasmsh": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "rtexpacker": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "multiplyInt": {
         "trace_match": {
             "wasabi": true
         },
@@ -125,9 +293,65 @@
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "multiplyDouble": {
+    "takahirox": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "rguistyler": {
         "trace_match": {
             "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "wheel": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "tic-tac-toe": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "vim-wasm": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "boa": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "roslyn": {
+        "trace_match": {
+            "wasabi": false
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "video": {
+        "trace_match": {
+            "wasabi": true
+        },
+        "record_metrics": {},
+        "replay_metrics": {}
+    },
+    "figma-startpage": {
+        "trace_match": {
+            "wasabi": false
         },
         "record_metrics": {},
         "replay_metrics": {}
@@ -146,238 +370,14 @@
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "waforth": {
+    "vaporboy": {
         "trace_match": {
             "wasabi": false
         },
         "record_metrics": {},
         "replay_metrics": {}
     },
-    "rguistyler": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "jsc": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "riconpacker": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "guiicons": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "jqkungfu": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "lichess": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "virtualkc": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "figma-startpage": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "gotemplate": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "vim-wasm": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "rfxgen": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "sqlpractice": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "timestretch": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "ffmpeg": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "pathfinding": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "heatmap": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "parquet": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "game-of-life": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "multiplyInt": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "playnox": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "image-convolute": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "roslyn": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "takahirox": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "handy-tools": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "uarm": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "tic-tac-toe": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "noisereduction": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "ogv": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "onnxjs": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "fractals": {
-        "trace_match": {
-            "wasabi": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "mandelbrot": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "visual6502remix": {
-        "trace_match": {
-            "wasabi": true
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
-    "video": {
+    "factorial": {
         "trace_match": {
             "wasabi": true
         },
