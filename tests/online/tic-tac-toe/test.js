@@ -17,7 +17,7 @@ export default async function test(analyser) {
   await upperright.click()
   */
 
-  await delay(1000)
+  await delay(100_000)
 
   return await analyser.stop()
 }
