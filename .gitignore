@@ -12,3 +12,4 @@ temp-trace*
 canned*
 instrumented*
 Downloads/
+tests/*output.txt
