@@ -10,6 +10,8 @@ import path from 'path'
 import { exec, execSync } from 'child_process'
 import { askQuestion } from './util.cjs'
 
+// read port from env
+const CDP_PORT = process.env.CDP_PORT || 8080
 export interface AnalysisI<T> {
     getResult(): T,
 }
@@ -49,30 +51,7 @@ export class Analyser implements AnalyserI {
         this.isRunning = true
         let browserType = this.options.firefox ? firefox : this.options.webkit ? webkit : chromium;
         if (this.options.evalRecord) {
-            let cmd = `${chromium.executablePath()} --headless --remote-debugging-port=0 --js-flags='--slow-histograms'`
-            let chromiumProcess = exec(cmd, (err, stdout, stderr) => {
-                if (err) {
-                    console.error(err)
-                    return
-                }
-                console.log(stdout)
-            })
-
-            let remoteDebuggingUrlPromise = new Promise<string>((resolve, reject) => {
-                chromiumProcess.stderr.on('data', (data) => {
-                    const match = data.toString().match(/DevTools listening on (ws:\/\/.+)/);
-                    if (match) {
-                        const remoteDebuggingUrl = match[1];
-                        resolve(remoteDebuggingUrl);
-                    }
-                });
-            });
-            process.on('exit', () => {
-                chromiumProcess.kill();
-            });
-            // Use the remoteDebuggingUrlPromise
-            let port = await remoteDebuggingUrlPromise;
-            this.browser = await chromium.connectOverCDP(port);
+            this.browser = await chromium.connectOverCDP(`http://localhost:${CDP_PORT}`);
         } else {
             this.browser = await browserType.launch({
                 headless, args: [
@@ -489,9 +468,6 @@ export class CustomAnalyser implements AnalyserI {
 async function getHistogram(page: Page) {
     await page.goto('chrome://histograms/')
     let ems = await page.locator('css=span.histogram-header-text').allTextContents()
-    for (let s of ems) {
-        console.log(s)
-    }
     let histogramValue = ems.find(value => value.startsWith('Histogram: V8.ExecuteMicroSeconds'))
     console.log(histogramValue)
 }
