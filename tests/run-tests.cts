@@ -584,6 +584,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
       await fs.rename(tracePath, refTracePath);
       const pureJsPath = path.join(subBenchmarkPath, "pure.js");
       const replayTracePath = path.join(subBenchmarkPath, "trace-replay.r3");
+      const statsJsonPath = path.join(subBenchmarkPath, "stats.json");
       let tracer = new Tracer(eval(runtimes[i] + `\nWasabi`), {
         extended: blockExtended,
       });
@@ -602,7 +603,9 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
       await replayBinary.replay(wasm);
       let traceString = record[i].trace.toString();
       let replayTraceString = tracer.getResult().toString();
+      let stats = tracer.getStats();
       await fs.writeFile(replayTracePath, replayTraceString);
+      await fs.writeFile(statsJsonPath, JSON.stringify(stats));
 
       // 5. Check if original trace and replay trace match
       const newResult = compareResults(

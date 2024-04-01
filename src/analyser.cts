@@ -166,6 +166,27 @@ export class Analyser implements AnalyserI {
         return results.flat(1)
     }
 
+    private async getStats() {
+        const stats = await Promise.all(
+          this.contexts.map(async (c) => {
+            const stats = await c.evaluate(() => {
+              try {
+                //@ts-ignore
+                const stats = analysis /*as AnalysisI<Trace>[]*/
+                  .map((s, j) => {
+                    const stat = s.getStats();
+                    return stat;
+                  });
+                return stats;
+              } catch {
+                return {};
+              }
+            });
+            return stats;
+          })
+        );
+        return stats.flat(1);
+      }
 
     private async getBuffers() {
         const originalWasmBuffer = await Promise.all(this.contexts.map(async (c) => {
