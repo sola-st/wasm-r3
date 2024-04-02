@@ -304,36 +304,51 @@ export default class Analysis implements AnalysisI<Trace> {
             table_fill(location, index, value, length) { },
 
             begin_function: (location, args) => {
-                this.stats.functionEntries++;
                 if (options.extended) {
-                    this.trace.push(`FE;${location.func};${args.join(',')}`)
+                  this.trace.push(`FE;${location.func};${args.join(",")}`);
                 }
-                if (this.callStack[this.callStack.length - 1] !== 'int') {
-                    const exportName = this.Wasabi.module.info.functions[location.func].export[0]
-                    const CALLED_WITH_TABLE_GET = exportName === undefined
-                    if (CALLED_WITH_TABLE_GET) {
-                        if (!this.Wasabi.module.tables.some((table, i) => {
-                            for (let tableIndex = 0; tableIndex < table.length; tableIndex++) {
-                                const funcidx = this.resolveFuncIdx(table, tableIndex)
-                                    if (funcidx === location.func) {
-                                        this.stats.relevantFunctionEntries++;
-                                        this.trace.push(`TC;${location.func};${this.getName(this.Wasabi.module.info.tables[i])};${tableIndex};${args.join(',')}`)
-                                        return true
-                                }
+                if (this.callStack[this.callStack.length - 1] !== "int") {
+                  const exportName =
+                    this.Wasabi.module.info.functions[location.func].export[0];
+                  const CALLED_WITH_TABLE_GET = exportName === undefined;
+                  if (CALLED_WITH_TABLE_GET) {
+                    if (
+                      !this.Wasabi.module.tables.some((table, i) => {
+                        for (
+                          let tableIndex = 0;
+                          tableIndex < table.length;
+                          tableIndex++
+                        ) {
+                          if (table.get(tableIndex) !== null) {
+                            const funcidx = this.resolveFuncIdx(table, tableIndex);
+                            if (funcidx === location.func) {
+                              this.trace.push(
+                                `TC;${location.func};${this.getName(
+                                  this.Wasabi.module.info.tables[i]
+                                )};${tableIndex};${args.join(",")}`
+                              );
+                              return true;
                             }
-                            return false
-                        })) {
-                            throw new Error('The function you where calling from outside the wasm module is neither exported nor in a table...')
+                          }
                         }
-                    } else {
-                        this.stats.relevantFunctionEntries++;
-                        this.trace.push(`EC;${location.func};${exportName};${args.join(',')}`)
-                        this.checkMemGrow()
-                        this.checkTableGrow()
+                        return false;
+                      })
+                    ) {
+                      console.log(location);
+                      throw new Error(
+                        "The function you where calling from outside the wasm module is neither exported nor in a table..."
+                      );
                     }
+                  } else {
+                    this.trace.push(
+                      `EC;${location.func};${exportName};${args.join(",")}`
+                    );
+                    this.checkMemGrow();
+                    this.checkTableGrow();
+                  }
                 }
-                this.callStack.push('int')
-            },
+                this.callStack.push("int");
+              },
 
             store: (location, op, target, memarg, value) => {
                 const addr = target.addr + memarg.offset
