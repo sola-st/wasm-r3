@@ -8,7 +8,7 @@ export default async function test(analyser) {
     await terminalWrapper.waitFor({ state: 'visible' })
     await prompt.waitFor({ state: 'visible' })
     await terminalWrapper.focus()
-    await delay(1000)
+    await delay(5000)
     await terminalWrapper.type('1 + 1');
     await page.keyboard.press('Enter');
     await delay(1000)
