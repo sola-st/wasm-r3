@@ -23,71 +23,59 @@ When executing the generated replay, the execution does not seem to terminate.
 This web site seems to not use wasm.
 We should remove it from the evaluation set.
 
+Dependencies
+- Wasabi
+    Wasabi doesn't support latest Proposals
+    1. fractals
+        - Threads
+    2. lichess
+        - Threads
+    3. livesplit
+        - Simd
+- Binaryen
+    4. waforth
+        - When trying to generate the replay there is a wasm-merge issue
+- Wasm
+    6. roslyn
+        - Poor performance
+        - With modified test script: Maximum call stack size exceeded, 2: wasm trap: call stack exhausted
 
-1. fractals
-    - Threads
+Flaky
+  - tic-tac-toe. Produces benchmark 2/5. Not sure why.
 
-2. gotemplate
-    - Proxying
+Improvable 
+7. image-convolute
+    - Will be solved with an improved version of function split optimization.
+8. timestretch
+    - Proxying edge case. Should improve proxying logic.
 
-    After the instantation of the WebAssembly module, the websites code performs a check: result.instance instanceof WebAssembly.Instance.
-    If not it throws. For some reason after the monkey patch this condition is true. I could not figure out exactly why.
-
-3. lichess
-    - Threads
-
-4. onnxjs
-    - Out of memory
-    - Poor performance
-
-    This website probably does work with a certain delay choosen for the test script.
-    The delay needs to be long enough that the page.evaluate can run and download traces and buffers.
-    The delay needs to be short enough that the process does not run out of memory.
-    I could not find the sweetspot
-
-5. roslyn
-    - Poor performance
-    - With modified test script: Maximum call stack size exceeded, 2: wasm trap: call stack exhausted
+Don't know.
 
 6. rustpython
     - Poor performance
-
     The test might work for a very long delay.
-
-7. image-convolute
-    - Poor performance
-
-    The test does not only have a poor performance during record, but also during replay generation and recording trace during replay.
-    The test might work on my (Jakob) machine.
-    I (Jakob) have a Intel Core I9 and 32GB of ram.
-    It takes however very long to finish
-
-8. tic-tac-toe
-    - Poor performance
-    - Replay runs forever
-
-    The test might work for a very long delay.
-    I (Jakob) was able to generate a replay with npm start, but executing the replay does not stop.
-
-9. timestretch
-    - Proxying
-
-    The record browser just crashes shortly after record start.
-    A error gets printed to the terminal that I do not understand.
-
 10. vaporboy
     - No wasm
+2. gotemplate
+    - Proxying
+    After the instantation of the WebAssembly module, the websites code performs a check: result.instance instanceof WebAssembly.Instance.
+    If not it throws. For some reason after the monkey patch this condition is true. I could not figure out exactly why.
 
-11. waforth
-    When trying to generate the replay there is a wasm-merge issue
+. ~/.bashrc && timeout 120s npm test -- -t takahirox
+. ~/.bashrc && timeout 120s npm test -- -t playnox
+. ~/.bashrc && timeout 120s npm test -- -t hnset-bench
+. ~/.bashrc && timeout 120s npm test -- -t wasmsh
+. ~/.bashrc && timeout 120s npm test -- -t wheel
 
-12. figma-startpage
-    When trying to generate the replay there seems to be an issue with the generated module a.wasm.
-    It is not valid.
 
-13. livesplit
-    - Simd
 
-14. vim-wasm
-    This website is just broken, with or without wasm attached.
-    It uses a feature called SharedArrayBuffer which is not supported by google chrome at that time.
+4. onnxjs
+- Out of memory
+- Poor performance
+
+This website probably does work with a certain delay choosen for the test script.
+The delay needs to be long enough that the page.evaluate can run and download traces and buffers.
+The delay needs to be short enough that the process does not run out of memory.
+I could not find the sweetspot
+
+. ~/.bashrc && timeout 120s npm test -- -t rustpython
