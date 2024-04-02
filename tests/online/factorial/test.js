@@ -25,6 +25,6 @@ export default async function test(analyser) {
   await textInput.press('4')
   await textInput.press('2')
   await expect(numberOut).toContainText('fact(42)', {timeout: 10000})
-
+  await delay(3000)
   return await analyser.stop()
 }

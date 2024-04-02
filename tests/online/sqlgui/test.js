@@ -16,6 +16,6 @@ export default async function test(analyser) {
   // the output table should be differently found
   const tableLocator = resultLocator.getByText('designation')
   await tableLocator.waitFor({state: 'visible'})
-
+  await delay(3000)
   return await analyser.stop()
 }
