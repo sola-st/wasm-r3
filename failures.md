@@ -47,9 +47,7 @@ We should remove it from the evaluation set.
 
 5. roslyn
     - Poor performance
-
-    The test might work for a very long delay. I did it with 200_000 ms. This was not enough.
-    From the browser console I can see that tere is a task: 'Initializing mono runtime' which does quite some heavy computation until the application loads.
+    - With modified test script: Maximum call stack size exceeded, 2: wasm trap: call stack exhausted
 
 6. rustpython
     - Poor performance
