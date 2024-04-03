@@ -40,9 +40,6 @@ Dependencies
         - Poor performance
         - With modified test script: Maximum call stack size exceeded, 2: wasm trap: call stack exhausted
 
-Flaky
-  - tic-tac-toe. Produces benchmark 2/5. Not sure why.
-
 Improvable 
 7. image-convolute
     - Will be solved with an improved version of function split optimization.
