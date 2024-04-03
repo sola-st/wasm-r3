@@ -381,7 +381,6 @@ const {module_escaped} = new WebAssembly.Instance(new WebAssembly.Module(await r
             ),
         )?;
     }
-    write(stream, &format!("return main}}\n"))?;
 
     write(
         stream,
