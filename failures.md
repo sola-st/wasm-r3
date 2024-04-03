@@ -48,14 +48,14 @@ Improvable
     - Will be solved with an improved version of function split optimization.
 8. timestretch
     - Proxying edge case. Should improve proxying logic.
+10. vaporboy
+    - No wasm --> use profiler to detect
 
 Don't know.
 
 6. rustpython
     - Poor performance
     The test might work for a very long delay.
-10. vaporboy
-    - No wasm
 2. gotemplate
     - Proxying
     After the instantation of the WebAssembly module, the websites code performs a check: result.instance instanceof WebAssembly.Instance.
