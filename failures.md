@@ -35,18 +35,12 @@ Dependencies
 - Binaryen
     4. waforth
         - When trying to generate the replay there is a wasm-merge issue
-- Wasm
-    6. roslyn
-        - Poor performance
-        - With modified test script: Maximum call stack size exceeded, 2: wasm trap: call stack exhausted
 
 Improvable 
-7. image-convolute
-    - Will be solved with an improved version of function split optimization.
-8. timestretch
-    - Proxying edge case. Should improve proxying logic.
-10. vaporboy
-    - No wasm --> use profiler to detect
+    5. image-convolute
+        - Will be solved with an improved version of function split optimization.
+    6. timestretch
+        - Proxying edge case. Should improve proxying logic.
 
 Don't know.
 
@@ -57,14 +51,15 @@ Don't know.
     - Proxying
     After the instantation of the WebAssembly module, the websites code performs a check: result.instance instanceof WebAssembly.Instance.
     If not it throws. For some reason after the monkey patch this condition is true. I could not figure out exactly why.
+6. roslyn
+- Poor performance
+- With modified test script: Maximum call stack size exceeded, 2: wasm trap: call stack exhausted
 
 . ~/.bashrc && timeout 120s npm test -- -t takahirox
 . ~/.bashrc && timeout 120s npm test -- -t playnox
 . ~/.bashrc && timeout 120s npm test -- -t hnset-bench
 . ~/.bashrc && timeout 120s npm test -- -t wasmsh
 . ~/.bashrc && timeout 120s npm test -- -t wheel
-
-
 
 4. onnxjs
 - Out of memory
