@@ -550,14 +550,15 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     // Thats why we trim our trace to the position where the last wasm routine was finished
     for (let i = 0; i <= analysisResult.length - 1; i++) {
       analysisResult[i].result = trimFromLastOccurance(analysisResult[i].result, 'ER')
-      if (analysisResult[i].result == "") {
-        return {
-          testPath,
-          roundTripTime: undefined,
-          success: false,
-          reason: "empty benchmark generated",
-        };
-      }
+    }
+    
+    if (analysisResult.every(item => item.result == "")) {
+      return {
+        testPath,
+        roundTripTime: undefined,
+        success: false,
+        reason: "empty benchmark generated",
+      };
     }
     // process.stdout.write(` -e not available`)
     const benchmark = Benchmark.fromAnalysisResult(analysisResult);
