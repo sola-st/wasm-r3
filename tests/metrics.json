@@ -9513,13 +9513,6 @@
             }
         }
     },
-    "wasmsh": {
-        "summary": {
-            "trace_match": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
     "livesplit": {
         "summary": {
             "trace_match": false
