@@ -2640,13 +2640,6 @@
             }
         }
     },
-    "vim-wasm": {
-        "summary": {
-            "trace_match": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
-    },
     "playnox": {
         "summary": {
             "trace_match": false
@@ -8639,13 +8632,6 @@
                 }
             }
         }
-    },
-    "vaporboy": {
-        "summary": {
-            "trace_match": false
-        },
-        "record_metrics": {},
-        "replay_metrics": {}
     },
     "image-convolute": {
         "summary": {
