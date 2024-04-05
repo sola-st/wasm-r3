@@ -274,13 +274,61 @@ const replayopt_time_writer = createObjectCsvWriter({
   ]
 })
 
+const replayopt_loadtime_writer = createObjectCsvWriter({
+  path: 'replayopt_loadtime_ablation.csv',
+  header: [
+    { id: 'name', title: 'Name'},
+    { id: 'noopt', title: 'No-opt'},
+    { id: 'split', title: 'Split'},
+    { id: 'split-perc', title: 'Split-perc'},
+    { id: 'merge', title: 'Merge'},
+    { id: 'merge-perc', title: 'Merge-perc'},
+    { id: 'opt', title: 'opt'},
+    { id: 'opt-perc', title: 'opt-perc'},
+  ]
+})
+
+
+const replayopt_comptime_writer = createObjectCsvWriter({
+  path: 'replayopt_comptime_ablation.csv',
+  header: [
+    { id: 'name', title: 'Name'},
+    { id: 'noopt', title: 'No-opt'},
+    { id: 'split', title: 'Split'},
+    { id: 'split-perc', title: 'Split-perc'},
+    { id: 'merge', title: 'Merge'},
+    { id: 'merge-perc', title: 'Merge-perc'},
+    { id: 'opt', title: 'opt'},
+    { id: 'opt-perc', title: 'opt-perc'},
+  ]
+})
+
+const replayopt_maintime_writer = createObjectCsvWriter({
+  path: 'replayopt_maintime_ablation.csv',
+  header: [
+    { id: 'name', title: 'Name'},
+    { id: 'noopt', title: 'No-opt'},
+    { id: 'split', title: 'Split'},
+    { id: 'split-perc', title: 'Split-perc'},
+    { id: 'merge', title: 'Merge'},
+    { id: 'merge-perc', title: 'Merge-perc'},
+    { id: 'opt', title: 'opt'},
+    { id: 'opt-perc', title: 'opt-perc'},
+  ]
+})
+
+
 
 const replayopt_byte_data = []
-const replayopt_time_data = []
+const replayopt_loadtime_data = []
+const replayopt_comptime_data = []
+const replayopt_maintime_data = []
 
 for (const name of names) {
   let byte_data = {name: name}
-  let time_data = {name: name}
+  let loadtime_data = {name: name}
+  let comptime_data = {name: name}
+  let maintime_data = {name: name}
   //console.log(name)
   const obj = metric[name]
   const summ = obj['summary']
@@ -306,37 +354,55 @@ for (const name of names) {
     byte_data['merge-perc'] = opt_percent(noopt_bytes, merge_bytes)
     byte_data['opt-perc'] = opt_percent(noopt_bytes, opt_bytes)
 
-    const noopt_pre_time = Number(noopt['load:time_us']) + Number(noopt['validate:time_us']) 
-    const split_pre_time = Number(split['load:time_us']) + Number(split['validate:time_us']) 
-    const merge_pre_time = Number(merge['load:time_us']) + Number(merge['validate:time_us']) 
-    const opt_pre_time = Number(opt['load:time_us']) + Number(opt['validate:time_us']) 
-    //console.log(noopt_pre_time, split_pre_time, merge_pre_time, opt_pre_time)
+    const noopt_load_time = Number(noopt['load:time_us'])  
+    const split_load_time = Number(split['load:time_us'])  
+    const merge_load_time = Number(merge['load:time_us'])   
+    const opt_load_time = Number(opt['load:time_us']) 
+
+    const noopt_comp_time = Number(noopt['validate:time_us'])  
+    const split_comp_time = Number(split['validate:time_us'])  
+    const merge_comp_time = Number(merge['validate:time_us'])   
+    const opt_comp_time = Number(opt['validate:time_us'])  
 
     const noopt_main_time = Number(noopt['main:time_us']) 
     const split_main_time = Number(split['main:time_us']) 
     const merge_main_time = Number(merge['main:time_us']) 
     const opt_main_time = Number(opt['main:time_us']) 
 
-    time_data['noopt-pre'] = noopt_pre_time
-    time_data['split-pre'] = split_pre_time
-    time_data['merge-pre'] = merge_pre_time
-    time_data['opt-pre'] = opt_pre_time
+    loadtime_data['noopt'] = noopt_load_time
+    loadtime_data['split'] = split_load_time
+    loadtime_data['merge'] = merge_load_time
+    loadtime_data['opt'] = opt_load_time
 
-    time_data['noopt-main'] = noopt_main_time
-    time_data['split-main'] = split_main_time
-    time_data['merge-main'] = merge_main_time
-    time_data['opt-main'] = opt_main_time
+    comptime_data['noopt'] = noopt_comp_time
+    comptime_data['split'] = split_comp_time
+    comptime_data['merge'] = merge_comp_time
+    comptime_data['opt'] = opt_comp_time
+    
+    maintime_data['noopt'] = noopt_main_time
+    maintime_data['split'] = split_main_time
+    maintime_data['merge'] = merge_main_time
+    maintime_data['opt'] = opt_main_time
 
-    time_data['split-pre-perc'] = opt_delta_percent(noopt_pre_time, split_pre_time)
-    time_data['merge-pre-perc'] = opt_delta_percent(noopt_pre_time, merge_pre_time)
-    time_data['opt-pre-perc'] = opt_delta_percent(noopt_pre_time, opt_pre_time)
 
-    time_data['split-main-perc'] = opt_delta_percent(noopt_main_time, split_main_time)
-    time_data['merge-main-perc'] = opt_delta_percent(noopt_main_time, merge_main_time)
-    time_data['opt-main-perc'] = opt_delta_percent(noopt_main_time, opt_main_time)
+
+    loadtime_data['split-perc'] = opt_percent(noopt_load_time, split_load_time)
+    loadtime_data['merge-perc'] = opt_percent(noopt_load_time, merge_load_time)
+    loadtime_data['opt-perc'] = opt_percent(noopt_load_time, opt_load_time)
+
+    comptime_data['split-perc'] = opt_percent(noopt_comp_time, split_comp_time)
+    comptime_data['merge-perc'] = opt_percent(noopt_comp_time, merge_comp_time)
+    comptime_data['opt-perc'] = opt_percent(noopt_comp_time, opt_comp_time)
+
+    maintime_data['split-perc'] = opt_percent(noopt_main_time, split_main_time)
+    maintime_data['merge-perc'] = opt_percent(noopt_main_time, merge_main_time)
+    maintime_data['opt-perc'] = opt_percent(noopt_main_time, opt_main_time)
+
 
     replayopt_byte_data.push(byte_data)
-    replayopt_time_data.push(time_data)
+    replayopt_loadtime_data.push(loadtime_data)
+    replayopt_comptime_data.push(comptime_data)
+    replayopt_maintime_data.push(maintime_data)
   }
   catch (e) { continue }
 }
@@ -347,7 +413,15 @@ replayopt_byte_writer.writeRecords(replayopt_byte_data).
     console.log('replay opt byte write done')
   });
 
-replayopt_time_writer.writeRecords(replayopt_time_data).
+replayopt_loadtime_writer.writeRecords(replayopt_loadtime_data).
   then(() => {
-    console.log('replay opt time write done')
+    console.log('replay opt loadtime write done')
+  });
+replayopt_comptime_writer.writeRecords(replayopt_comptime_data).
+  then(() => {
+    console.log('replay opt comptime write done')
+  });
+replayopt_maintime_writer.writeRecords(replayopt_maintime_data).
+  then(() => {
+    console.log('replay opt maintime write done')
   });
