@@ -39,9 +39,12 @@ testname_gmean_pairs = [(row[0], row[-1]) for row in table]
 testname_gmean_pairs.sort(key=lambda pair: pair[1], reverse=True)
 gmean_values = [pair[1] for pair in testname_gmean_pairs]
 test_names = [pair[0] for pair in testname_gmean_pairs]
-plt.figure()
-plt.bar(test_names, gmean_values, label='Geometric Mean')
+plt.figure(figsize=(10,4))
+plt.tight_layout()
+plt.xlim(-0.5, 26.5)
+plt.bar(test_names, gmean_values, label='Geometric Mean', color='gray')
 plt.xticks(rotation=90)
-plt.yticks(range(int(min(gmean_values)), int(max(gmean_values)) + 1))
+plt.yticks(list(range(int(min(gmean_values)), int(max(gmean_values)) + 1, 4)) + [1])
 plt.ylabel('CPU Cycles Slowdown')
+plt.plot([-1, 29], [1, 1], linestyle='dashed', color='black')
 plt.savefig(args.output_file, bbox_inches='tight')
