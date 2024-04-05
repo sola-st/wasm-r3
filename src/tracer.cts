@@ -304,6 +304,7 @@ export default class Analysis implements AnalysisI<Trace> {
             table_fill(location, index, value, length) { },
 
             begin_function: (location, args) => {
+                this.stats.functionEntries++;
                 if (options.extended) {
                   this.trace.push(`FE;${location.func};${args.join(",")}`);
                 }
@@ -322,6 +323,7 @@ export default class Analysis implements AnalysisI<Trace> {
                           if (table.get(tableIndex) !== null) {
                             const funcidx = this.resolveFuncIdx(table, tableIndex);
                             if (funcidx === location.func) {
+                            this.stats.relevantFunctionEntries++;
                               this.trace.push(
                                 `TC;${location.func};${this.getName(
                                   this.Wasabi.module.info.tables[i]
@@ -340,6 +342,7 @@ export default class Analysis implements AnalysisI<Trace> {
                       );
                     }
                   } else {
+                    this.stats.relevantFunctionEntries++;
                     this.trace.push(
                       `EC;${location.func};${exportName};${args.join(",")}`
                     );

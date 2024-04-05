@@ -9651,8 +9651,8 @@
             "instr_static_replay": 165,
             "instrs_dynamic_total": 39006400000,
             "instr_dynamic_replay": 37,
-            "ticks_total": 82055885250,
-            "ticks_replay": 7370
+            "ticks_total": 81976315806,
+            "ticks_replay": 12638
         },
         "record_metrics": {
             "original": [
@@ -9847,17 +9847,98 @@
         },
         "replay_metrics": {
             "wizeng-int": {
-                "noopt": {},
-                "split": {},
-                "merge": {},
-                "benchmark": {}
+                "noopt": {
+                    "file_size": 106539,
+                    "pregen:time_us": "4",
+                    "pregen:bytes": "46136     bytes",
+                    "load:time_us": "2176",
+                    "load:bytes": "106539    bytes",
+                    "load:time_per_byte": "0.020424  /bytes",
+                    "validate:time_us": "1978",
+                    "validate:bytes": "97796     bytes",
+                    "validate:time_per_byte": "0.020225  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "221663673",
+                    "main:time_cycles": "663905458122 cycles",
+                    "probes:fired": "2456019722 count"
+                },
+                "split": {
+                    "file_size": 106539,
+                    "pregen:time_us": "4",
+                    "pregen:bytes": "46136     bytes",
+                    "load:time_us": "2202",
+                    "load:bytes": "106539    bytes",
+                    "load:time_per_byte": "0.020668  /bytes",
+                    "validate:time_us": "1999",
+                    "validate:bytes": "97796     bytes",
+                    "validate:time_per_byte": "0.020440  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "221728248",
+                    "main:time_cycles": "664098533192 cycles",
+                    "probes:fired": "2456019722 count"
+                },
+                "merge": {
+                    "file_size": 106539,
+                    "pregen:time_us": "4",
+                    "pregen:bytes": "46136     bytes",
+                    "load:time_us": "2190",
+                    "load:bytes": "106539    bytes",
+                    "load:time_per_byte": "0.020555  /bytes",
+                    "validate:time_us": "1992",
+                    "validate:bytes": "97796     bytes",
+                    "validate:time_per_byte": "0.020368  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "221688951",
+                    "main:time_cycles": "663980622108 cycles",
+                    "probes:fired": "2456019722 count"
+                },
+                "benchmark": {
+                    "runtime": 27.37784,
+                    "file_size": 106539,
+                    "pregen:time_us": "4",
+                    "pregen:bytes": "46136     bytes",
+                    "load:time_us": "2182",
+                    "load:bytes": "106539    bytes",
+                    "load:time_per_byte": "0.020480  /bytes",
+                    "validate:time_us": "1988",
+                    "validate:bytes": "97796     bytes",
+                    "validate:time_per_byte": "0.020328  /bytes",
+                    "spc:in_bytes": "0         bytes",
+                    "spc:code_bytes": "0         bytes",
+                    "spc:data_bytes": "0         bytes",
+                    "spc:time_us": "0",
+                    "spc:functions": "0         functions",
+                    "spc:time_per_byte": "0.000000  /bytes",
+                    "start:time_us": "0",
+                    "main:time_us": "222104054",
+                    "main:time_cycles": "665223754692 cycles",
+                    "probes:fired": "2456019722 count"
+                }
             },
             "sm": {
                 "noopt": {},
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 2.306704
+                    "runtime": 2.292842
                 }
             },
             "sm-base": {
@@ -9865,7 +9946,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 2.882632
+                    "runtime": 2.970955
                 }
             },
             "sm-opt": {
@@ -9873,7 +9954,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 2.307668
+                    "runtime": 2.340851
                 }
             },
             "v8": {
@@ -9881,7 +9962,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 1.774679
+                    "runtime": 1.781985
                 }
             },
             "v8-liftoff": {
@@ -9889,7 +9970,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 2.118
+                    "runtime": 2.089795
                 }
             },
             "v8-turbofan": {
@@ -9897,7 +9978,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 1.76702
+                    "runtime": 1.770088
                 }
             },
             "jsc": {
@@ -9905,7 +9986,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 1.378923
+                    "runtime": 1.372831
                 }
             },
             "jsc-int": {
@@ -9913,7 +9994,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 33.397831
+                    "runtime": 33.600789
                 }
             },
             "jsc-bbq": {
@@ -9921,7 +10002,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 3.973368
+                    "runtime": 4.026666
                 }
             },
             "jsc-omg": {
@@ -9929,7 +10010,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 1.375093
+                    "runtime": 1.386478
                 }
             },
             "wizeng": {
@@ -9937,7 +10018,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 27.377633
+                    "runtime": 27.462958
                 }
             },
             "wizeng-jit": {
@@ -9945,7 +10026,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 3.362485
+                    "runtime": 3.365152
                 }
             },
             "wizeng-dyn": {
@@ -9953,7 +10034,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 3.382695
+                    "runtime": 3.380494
                 }
             },
             "wasmtime": {
@@ -9961,7 +10042,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 1.847892
+                    "runtime": 1.846911
                 }
             },
             "wasmer": {
@@ -9969,7 +10050,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 1.628365
+                    "runtime": 1.625233
                 }
             },
             "wasmer-base": {
@@ -9977,7 +10058,7 @@
                 "split": {},
                 "merge": {},
                 "benchmark": {
-                    "runtime": 2.044547
+                    "runtime": 2.0405
                 }
             }
         }
