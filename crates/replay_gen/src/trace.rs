@@ -152,66 +152,20 @@ impl Display for StoreValue {
 #[derive(Clone, Debug)]
 pub enum WasmEvent {
     // Each corresponds to a single wasm instruction.
-    Load {
-        idx: usize,
-        offset: i32,
-        data: LoadValue,
-    },
-    Store {
-        idx: usize,
-        offset: i32,
-        data: StoreValue,
-    },
-    MemGrow {
-        idx: usize,
-        amount: i32,
-    },
-    TableGet {
-        tableidx: usize,
-        idx: usize,
-        funcidx: i32,
-    },
-    TableSet {
-        tableidx: usize,
-        idx: usize,
-        funcidx: i32,
-    },
-    TableGrow {
-        idx: usize,
-        amount: i32,
-    },
-    GlobalGet {
-        idx: usize,
-        value: F64,
-        valtype: ValType,
-    },
-    GlobalSet {
-        idx: usize,
-        value: F64,
-        valtype: ValType,
-    },
-    Call {
-        idx: usize,
-    },
-    CallIndirect {
-        tableidx: usize,
-        idx: usize,
-        funcidx: i32,
-    },
-    CallReturn {
-        idx: usize,
-        results: Vec<F64>,
-    },
+    Load { idx: usize, offset: i32, data: LoadValue },
+    Store { idx: usize, offset: i32, data: StoreValue },
+    MemGrow { idx: usize, amount: i32 },
+    TableGet { tableidx: usize, idx: usize, funcidx: i32 },
+    TableSet { tableidx: usize, idx: usize, funcidx: i32 },
+    TableGrow { idx: usize, amount: i32 },
+    GlobalGet { idx: usize, value: F64, valtype: ValType },
+    GlobalSet { idx: usize, value: F64, valtype: ValType },
+    Call { idx: usize },
+    CallIndirect { tableidx: usize, idx: usize, funcidx: i32 },
+    CallReturn { idx: usize, results: Vec<F64> },
     // These do not correspond to a wasm instruction, but used to track control flow
-    FuncEntry {
-        idx: usize,
-        params: Vec<F64>,
-    },
-    FuncEntryTable {
-        funcidx: usize,
-        offset: usize,
-        params: Vec<F64>,
-    },
+    FuncEntry { idx: usize, params: Vec<F64> },
+    FuncEntryTable { idx: usize, tableidx: usize, params: Vec<F64> },
     FuncReturn,
     ImportGlobal {
         idx: usize,
@@ -400,8 +354,7 @@ impl WasmEvent {
     }
 
     fn decode_table_entry(reader: &mut BufReader<File>, module_types: ModuleTypes) -> Result<Vec<Self>, ErrorKind> {
-        let offset = read_i32(reader)
-            .map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode func idx for func entry")))?
+        let idx = read_i32(reader).map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode func idx for func entry")))?
             as usize;
         let type_id = read_i32(reader)
             .map_err(|_| ErrorKind::TraceEntryIncomplete(String::from("decode type idx for func entry")))?
@@ -422,7 +375,7 @@ impl WasmEvent {
                 walrus::ValType::Funcref => todo!(),
             })
             .collect();
-        let ret = vec![WasmEvent::FuncEntryTable { funcidx: 0, offset, params }];
+        let ret = vec![WasmEvent::FuncEntryTable { idx, tableidx: 0, params }];
         Ok(ret)
     }
 
@@ -745,8 +698,8 @@ impl FromStr for WasmEvent {
                 params: split_list(components.get(3).unwrap()),
             }),
             "TC" => Ok(WasmEvent::FuncEntryTable {
-                funcidx: components[1].parse().unwrap(),
-                offset: components[3].parse().unwrap(),
+                idx: components[1].parse().unwrap(),
+                tableidx: components[3].parse().unwrap(),
                 params: split_list(components.get(4).unwrap()),
             }),
             "ER" => Ok(WasmEvent::FuncReturn),
@@ -817,12 +770,12 @@ impl Display for WasmEvent {
             WasmEvent::FuncEntry { params, idx } => {
                 write!(f, "FuncEntry idx={} params={}\n", idx, join_vec(params))
             }
-            WasmEvent::FuncEntryTable { funcidx, offset: offest, params } => {
+            WasmEvent::FuncEntryTable { idx, tableidx: funcidx, params } => {
                 write!(
                     f,
-                    "FuncEntryThroughTable funcidx={} offset={} parmams={}\n",
+                    "FuncEntryThroughTable idx={} funcidx={} parmams={}\n",
+                    idx,
                     funcidx,
-                    offest,
                     join_vec(params),
                 )
             }

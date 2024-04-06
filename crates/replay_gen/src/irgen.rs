@@ -127,10 +127,9 @@ pub enum HostEvent {
         params: Vec<F64>,
     },
     ExportCallTable {
-        tableidx: usize,
+        idx: usize,
         table_name: String,
-        offset: i32,
-        funcidx: usize,
+        funcidx: i32,
         params: Vec<F64>,
     },
     GrowMemory {
@@ -397,22 +396,16 @@ impl IRGenerator {
                     }
                 };
             }
-            WasmEvent::FuncEntryTable { offset, params, funcidx } => {
-                let table = match self.replay.tables.get(&0) {
-                    Some(t) => t,
-                    None => {
-                        panic!()
-                    }
-                };
+            WasmEvent::FuncEntryTable { idx, tableidx: funcidx, params } => {
+                let table = self.replay.tables.get(&funcidx).unwrap();
                 let table_name = match table.import.clone() {
                     Some(i) => i.name,
                     None => table.export.as_ref().unwrap().name.clone(),
                 };
                 self.push_call(HostEvent::ExportCallTable {
-                    tableidx: 0,
+                    idx,
                     table_name,
-                    funcidx,
-                    offset: offset as i32,
+                    funcidx: funcidx as i32,
                     params: params.clone(),
                 });
             }

@@ -2,9 +2,6 @@ use replay_gen::irgen::IRGenerator;
 use replay_gen::jsgen::generate_replay_javascript;
 use replay_gen::opt::Optimiser;
 use replay_gen::trace::{ErrorKind, WasmEvent};
-use replay_gen::trace_optimisation::{
-    CallOptimiser, FuncEntryTransformer, ShadowMemoryOptimiser, ShadowTableOptimiser, TraceOptimiser,
-};
 use replay_gen::wasmgen::generate_replay_wasm;
 use std::fs::File;
 use std::io::{self, BufReader, BufWriter, Write};

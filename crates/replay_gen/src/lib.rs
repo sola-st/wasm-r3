@@ -8,7 +8,6 @@ pub mod irgen;
 pub mod jsgen;
 pub mod opt;
 pub mod trace;
-pub mod trace_optimisation;
 pub mod wasmgen;
 
 pub fn write(stream: &mut File, s: &str) -> std::io::Result<()> {
