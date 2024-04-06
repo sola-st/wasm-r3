@@ -1,0 +1,42 @@
+To generate the instruction count metrics for a replay binary, run the following script:
+
+% run-iprofile.bash <benchmark-replay.wasm> <wizeng command>
+
+This command only needs to be run once, as instruction counts are deterministic.
+It will put its data in a subdirectory: data/benchmark-iprofile.csv
+By default, it uses Wizard's JIT mode, but this should not matter for deterministic instruction counts.
+
+To generate function profiles that measure time spent in replay functions, run the following script:
+
+% run-fprofile.bash <benchmark-replay.wasm> <wizeng command>
+
+This command does one run of the benchmark; it doesn't compute averages.
+Similarly, it puts its data in: data/benchmark-fprofile.csv
+By default, this runs in Wizard's INT mode, so this data could be distorted (and runs slow).
+You should pass -mode=jit as an extra parameter to the wizeng command.
+The metric collected is CPU cycles (reported as ticks, but ticks=cycles in this case).
+
+When data for both icounts and fprofiles is generated, you can run:
+
+% summarize.bash <benchmark-replay.wasm>*
+
+It will generate CSV including all the metrics,
+
+ instr:static_total    - total static count of instructions in the module in all functions
+ instr:static_replay   - instructions in replay functions (names start with "r3")
+ instr:dynamic_total   - total dynamic count of Wasm instructions executed
+ instr:dynamic_replay  - dynamic count of instructions in replay functions executed
+ ticks:total           - Total CPU cycles spent in main function (excludes compile, VM startup)
+ ticks:replay          - CPU cycles spent in R3 functions
+
+The underlying methodology uses Wizard's "icount" and "fprofile" monitors (independently).
+Replay functions are determined by name (starting with "r3").
+The "icount" monitor simply counts each instruction once.
+The "fprofile" monitor profiles a function by reading the cycle counter at the entry of the
+function and again at the exit of the function.
+Nested functions' execution time is subtracted from the entry/exit time by instrumenting all
+outgoing calls of a function.
+This methodology instruments the r3 functions (but not other functions, thus imposing less overhead).
+The total time in cycles is reported by Wizard's built-in metrics.
+
+
