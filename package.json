@@ -26,7 +26,7 @@
     "build": "tsc && node ./build.js",
     "build-rust": "cargo build --release && cd crates/tracer && wasm-pack build --debug -t web",
     "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && wasm-pack build --target nodejs --out-dir ../../../dist/wasabi && cd ../../..",
-    "build-binaryen": "cd binaryen && git submodule update --init && cmake . && make",
+    "build-binaryen": "cd binaryen && git submodule update --init && cmake . && make -j",
     "build-full": "npm run build-rust && npm run build-wasabi && npm run build-binaryen && npm run build",
     "test": "npm run build && node --experimental-wasm-multi-memory --experimental-wasm-typed_funcref --experimental-wasm-gc ./dist/tests/run-tests.cjs",
     "clean-tests": "node ./dist/tests/clean-tests.cjs",
