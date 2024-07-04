@@ -8,9 +8,11 @@ This repository contains supplementary material for the paper "Wasm-R3: Record-R
 
 Wasm-R3 itself is usable on both arm machines and x86-64 machines.
 
-However, due to our use of x86-64 specific build of certain software in the evaluation and use of some x86-64 specific hardware counters, the machine with x86-64 cpu is required for this evaluation artifact.
+However, due to our use of x86-64 specific software build and hardware counters, the machine with x86-64 cpu is required for the evaluation.
 
-While the artifact should work with x86-64 mac machines, in my 2016 MacBook Pro 13-inch model, one of the authors was unable to build the image in the command where we build binaryen from source. Thus, we strongly advise to use Linux based x86-64 machine, which is the only setup confirmed by the authors.
+While the artifact should work with x86-64 mac machines, in my 2016 MacBook Pro 13-inch model, I was unable to build the image in the command where we build binaryen from source.
+
+Thus, we strongly advise to use Linux based x86-64 machine, which is the only setup confirmed by the authors.
 
 ## Getting Started Guide
 
@@ -23,14 +25,11 @@ docker build -t wasm-r3 .
 The image itself is about 11GB on disk and takes around 15 minutes to build, depending on hardware and network connection.
 
 ```
-docker run -it --cap-add SYS_ADMIN -p 8000:8000 wasm-r3
+docker run --name wasm-r3 -dit --cap-add SYS_ADMIN wasm-r3
 ```
 
 Addition of Linux capability('--cap-add SYS_ADMIN') is required for running Linux perf tool to measure hardware counters.
 If you intend to skip this measurement, you can omit this command-line argument.
-
-Publishing of ports('-p 8000:8000') is required for sharing the results of the experiment to the host. 
-If you intend to inspect the results with a shell only, you can skip this command-line argument.
 
 ## Step by Step Instructions
 
@@ -105,9 +104,15 @@ This took about 10 minutes in our setup.
 
 This took about 4 hours in our setup.
 
+NOTE: In the original evaluation, we have repeated the experiment 10 times, but for the sake of time, we have set the REP_COUNT to 1 for this evaluation script.
+If you want to reproduce the original evaluation, please set REP_COUNT environment variable to 1.
+
 `eval-RQ2-2.py`
 
 This took about 30 minutes in our setup.
+
+NOTE: In the original evaluation, we have repeated the experiment 10 times, but for the sake of time, we have set the REP_COUNT to 1 for this evaluation script.
+If you want to reproduce the original evaluation, please set REP_COUNT environment variable to 1.
 
 `eval-RQ4.py`
 

@@ -3,8 +3,8 @@ import subprocess, csv, json, os
 print("RQ2-2: Replay Characteristics Experiment")
 print("running wizard with icount and fprofile monitor")
 
+REP_COUNT = int(os.getenv('REP_COUNT', 1))
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
-REP_COUNT = int(os.getenv('REP_COUNT', 10))
  
 
 def get_replay_wasm(testname, opt):

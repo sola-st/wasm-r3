@@ -1,6 +1,6 @@
 import subprocess, time, json, os, re
 
-REP_COUNT = int(os.getenv('REP_COUNT', 10))
+REP_COUNT = int(os.getenv('REP_COUNT', 1))
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f: metrics = json.load(f)
 def trace_match(metrics, testname): return metrics[testname]['summary']['trace_match']
