@@ -1,7 +1,6 @@
 import subprocess, json, concurrent.futures, os
 
 print("RQ4: Effectiveness of Replay Optimization")
-print("running wizard on four variants of replay.wasm: noopt, split, merge, benchmark")
 
 REP_COUNT = int(os.getenv('REP_COUNT', 10))
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')

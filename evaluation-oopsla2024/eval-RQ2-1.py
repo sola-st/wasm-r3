@@ -5,7 +5,9 @@ r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f: metrics = json.load(f)
 def trace_match(metrics, testname): return metrics[testname]['summary']['trace_match']
 
-# Record overhead experiment
+# Record Overhead experiment
+print('RQ2-1: Record Overhead experiment')
+
 timeout = 120 # seconds
 chromium_path = os.getenv('CHROME_PATH', '/root/.cache/ms-playwright/chromium-1105/chrome-linux/chrome')
 perf_sh_path = f'{r3_path}/tests/perf.sh'

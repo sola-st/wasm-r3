@@ -1,7 +1,6 @@
 import subprocess, csv, json, os
 
 print("RQ2-2: Replay Characteristics Experiment")
-print("running wizard with icount and fprofile monitor")
 
 REP_COUNT = int(os.getenv('REP_COUNT', 1))
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
@@ -123,8 +122,11 @@ for testname in testset:
                 os.makedirs(f'{r3_path}/evaluation-oopsla2024/data', exist_ok=True)
                 if not metrics[testname].get('ticks'): metrics[testname]['ticks'] = []
                 for i in range(REP_COUNT):
+                    print(f"{testname:<{30}}", end='')
                     run_icount(testname, engine, opt) 
                     run_fprofile(testname, engine, opt) 
                     metrics[testname]['ticks'].append({**run_summarize(testname, engine, opt)})
+                    percent = metrics[testname]['ticks'][-1]['ticks_replay'] / metrics[testname]['ticks'][-1]['ticks_total'] * 100
+                    print(f"{percent}")
 
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'w') as f: json.dump(metrics, f, indent=4)
