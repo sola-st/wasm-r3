@@ -45,7 +45,7 @@ metrics = {testname: { 'summary': {}, 'record_metrics': {}, 'replay_metrics': {}
 print('RQ1-1: Accuracy Experiment')
 
 # Trace difference experiment
-timeout = 120
+timeout = 180
 
 def run_wasmr3(testname):
     if testname in skip_set: return [testname, False]

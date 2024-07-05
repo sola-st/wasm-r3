@@ -8,7 +8,7 @@ def trace_match(metrics, testname): return metrics[testname]['summary']['trace_m
 # Record Overhead experiment
 print('RQ2-1: Record Overhead experiment')
 
-timeout = 120 # seconds
+timeout = 180 # seconds
 chromium_path = os.getenv('CHROME_PATH', '/root/.cache/ms-playwright/chromium-1105/chrome-linux/chrome')
 perf_sh_path = f'{r3_path}/tests/perf.sh'
 CDP_PORT = os.getenv('CDP_PORT', 8080)

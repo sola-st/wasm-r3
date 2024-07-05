@@ -9,4 +9,3 @@ subprocess.run(["python3", os.path.join(r3_path, "evaluation-oopsla2024", "eval-
 subprocess.run(["python3", os.path.join(r3_path, "evaluation-oopsla2024", "eval-RQ2-2.py")])
 subprocess.run(["python3", os.path.join(r3_path, "evaluation-oopsla2024", "eval-RQ3.py")])
 subprocess.run(["python3", os.path.join(r3_path, "evaluation-oopsla2024", "eval-RQ4.py")])
-subprocess.run(["python3", os.path.join(r3_path, "evaluation-oopsla2024", "latexify.py")])

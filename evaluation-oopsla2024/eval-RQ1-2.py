@@ -29,7 +29,7 @@ path1 = get_replay_wasm('game-of-life', 'benchmark')
 path2 = f"{r3_path}/tests/online/game-of-life/benchmark/bin_0/replay.wasm"
 assert path1 == path2
 
-timeout = 1 # seconds
+timeout = 180 # seconds
 engine_kind = ['sm', 'sm-base', 'sm-opt', 'v8', 'v8-liftoff', 'v8-turbofan', 'jsc', 'jsc-int','jsc-bbq','jsc-omg', 'wizeng','wizeng-int','wizeng-jit','wizeng-dyn','wasmtime','wasmer','wasmer-base']
 opt_kind = ['noopt', 'split', 'merge', 'benchmark']
 

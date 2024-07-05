@@ -2,7 +2,7 @@ import subprocess, json, concurrent.futures, os
 
 print("RQ4: Effectiveness of Replay Optimization")
 
-REP_COUNT = int(os.getenv('REP_COUNT', 10))
+REP_COUNT = int(os.getenv('REP_COUNT', 1))
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
 
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f:  metrics = json.load(f)
@@ -51,9 +51,13 @@ def run_wizard(testname, engine, opt, i):
         print(e)
 
 testset = metrics
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    futures = [executor.submit(run_wizard, testname, 'wizeng-int', opt, i) for testname in testset if trace_match(metrics, testname) for opt in opt_kind for i in range(REP_COUNT)]
-    results = [future.result() for future in concurrent.futures.as_completed(futures)]
+results = []
+for testname in testset:
+    if trace_match(metrics, testname):
+        for opt in opt_kind:
+            for i in range(REP_COUNT):
+                result = run_wizard(testname, 'wizeng-int', opt, i)
+                results.append(result)
 
 for result in results:
     if result is None: continue
