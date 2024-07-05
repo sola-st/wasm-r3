@@ -127,6 +127,6 @@ for testname in testset:
                     run_fprofile(testname, engine, opt) 
                     metrics[testname]['ticks'].append({**run_summarize(testname, engine, opt)})
                     percent = metrics[testname]['ticks'][-1]['ticks_replay'] / metrics[testname]['ticks'][-1]['ticks_total'] * 100
-                    print(f"{percent}")
+                    print(f"{percent}%")
 
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'w') as f: json.dump(metrics, f, indent=4)

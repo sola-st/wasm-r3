@@ -133,7 +133,10 @@ This script measures cpu cycles spent in the uninstrumented and instrumented var
 You can see the cpu cycles at the commandline as below.
 
 ```
-
+boa            original       16175757607 cycles
+boa            instrumented   432494441284 cycles
+bullet         original       3903096092 cycles
+bullet         instrumented   14417731264 cycles
 ```
 
 You can check the stdout and stderr of chromium process manually at `evaluation-oopsla2024/output`
@@ -148,6 +151,14 @@ If you want to reproduce the original evaluation, please set REP_COUNT environme
 `eval-RQ2-2.py`
 
 This script measures cycles spent in the original wasm functions and replay functions of replay benchmarks.
+
+
+You can see the percentage of cpu cycles of replay functions at the commandline as below.
+```
+bullet                        5.220406249659279%
+commanderkeen                 1.8601849870563851%
+factorial                     1.601868353703344%
+```
 
 You can check the output of wizard engine, which is used for this measurement, at `evaluation-oopsla2024/data`.
 
