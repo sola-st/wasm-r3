@@ -10,7 +10,7 @@ Wasm-R3 itself is usable on both arm machines and x86-64 machines.
 
 However, due to our use of x86-64 specific software build and hardware counters, the machine with x86-64 cpu is required for the evaluation.
 
-While the artifact should work with x86-64 mac machines, in my 2016 MacBook Pro 13-inch model, I was unable to build the image in the command where we build binaryen from source.
+While the artifact should work with x86-64 mac machines, I was unable to build the image in the command where we build binaryen from source with my 2016 MacBook Pro 13-inch model.
 
 Thus, we strongly advise to use Linux based x86-64 machine, which is the only setup confirmed by the authors.
 
@@ -20,7 +20,7 @@ To build the artifact, simply run:
 ```
 git clone --recursive <this repo>
 cd wasm-r3
-docker build -t doehyunbaek1/wasm-r3 .
+docker build -t wasm-r3 .
 ```
 The image itself is about 11GB on disk and takes around 15 minutes to build, depending on hardware and network connection.
 
@@ -28,10 +28,11 @@ If you want to use pre-built image by us, you can run
 
 ```
 docker pull doehyunbaek1/wasm-r3
+docker tag doehyunbaek1/wasm-r3 wasm-r3
 ```
 
 ```
-docker run --name wasm-r3 -dit --cap-add SYS_ADMIN doehyunbaek1/wasm-r3
+docker run --name wasm-r3 -dit --cap-add SYS_ADMIN wasm-r3
 ```
 
 Addition of Linux capability('--cap-add SYS_ADMIN') is required for running Linux perf tool to measure hardware counters.
@@ -77,12 +78,12 @@ Note that when running these scripts separately, you need to run `eval-RQ1-1.py`
 To run everything in one go, simply run
 
 ```
-python3 evaluation-oopsla2024/eval-latexify-all.py
+python3 evaluation-oopsla2024/eval-all.py
 ```
 
 ### Things to note
 
-We have attached `tests/metrics.json`, which is a raw data we got at the time of submission.
+We have attached `tests/metrics.json`, which is a raw data we got at the time of submission for the convenience.
 
 We have noticed that [figma-startpage](https://www.figma.com), [sandspiel](https://sandspiel.club) which worked at the time of submission, now does not work.
 We are currently investigating the reason why. This makes currently working website count 25.
@@ -91,7 +92,20 @@ We are currently investigating the reason why. This makes currently working webs
 
 `eval-RQ1-1.py`
 
-This script runs Wasm-R3 against 
+This script runs Wasm-R3 against real world web applications on the website, generates a replay benchmark as a result, and check if it is accurate by comparing the trace.
+
+You can see whether Wasm-R3 successfully generated accurate benchmarks at the commandline as below.
+
+```
+fractals                      ERROR
+funky-kart                    SUCCESS
+game-of-life                  SUCCESS
+gotemplate                    ERROR
+```
+
+You can manually check the generated benchmark by checking `tests/online/{name}/benchmark/bin_0/replay.wasm`.
+
+You can check the trace by the original exectuion at `tests/online/{name}/benchmark/bin_0/trace-ref.r3` and by the replay execution at `tests/online/{name}/benchmark/bin_0/trace-replay.r3`
 
 This took about 30 minutes in our setup.
 
@@ -99,7 +113,7 @@ This took about 30 minutes in our setup.
 
 This script runs generated replay benchmarks on 17 different options of 6 Wasm engines.
 
-You can see the execution time of generated replay benchmark per engine on the commandline as below, and it is also saved under ["replay_metrics"]["engine"]["runtime"] at at `evaluation-oopsla2024/metrics.json`
+You can see the execution time of generated replay benchmark per engine at the commandline as below.
 
 ```
 multiplyDouble sm             4.10573
@@ -114,33 +128,51 @@ This took about 10 minutes in our setup.
 
 `eval-RQ2-1.py`
 
-This took about 4 hours in our setup.
+This script measures cpu cycles spent in the uninstrumented and instrumented variation of Wasm-R3.
+
+You can see the cpu cycles at the commandline as below.
+
+```
+
+```
+
+You can check the stdout and stderr of chromium process manually at `evaluation-oopsla2024/output`
+
+This took about 30 minutes in our setup.
+
+NOTE: As perf is highly coupled with Linux kernel version, we highly recommend you use Linux machine with kernel 5.15.0-113-generic.
 
 NOTE: In the original evaluation, we have repeated the experiment 10 times, but for the sake of time, we have set the REP_COUNT to 1 for this evaluation script.
 If you want to reproduce the original evaluation, please set REP_COUNT environment variable to 1.
 
 `eval-RQ2-2.py`
 
-This took about 30 minutes in our setup.
+This script measures cycles spent in the original wasm functions and replay functions of replay benchmarks.
+
+You can check the output of wizard engine, which is used for this measurement, at `evaluation-oopsla2024/data`.
+
+This took about 3 minutes in our setup.
 
 NOTE: In the original evaluation, we have repeated the experiment 10 times, but for the sake of time, we have set the REP_COUNT to 1 for this evaluation script.
 If you want to reproduce the original evaluation, please set REP_COUNT environment variable to 1.
 
 `eval-RQ4.py`
 
-This took about 5 minutes in our setup. 
+This script measures various dynamic stats of four variants of replay benchmarks, with and without optimizations.
+
+This took about 30 seconds in our setup. 
 
 NOTE: In the original evaluation, we have repeated the experiment 10 times, but for the sake of time, we have set the REP_COUNT to 1 for this evaluation script.
 If you want to reproduce the original evaluation, please set REP_COUNT environment variable to 1.
 
+`eval-all.sh`
 
-`latexify.py`
-
-`eval-latexify-all.sh`
-
+This script runs all the above scripts in order.
 
 # Reusability Guide
 
 Among the directories in the container, `src` and `crates` should be considered a core part of the Wasm-R3, which should be reusable for various real-world web applications.
 
-Browser automation scripts inside `tests/online` are meant to be a test code that exercises web applciations that are hosted in the web. If the content of the web application changes, there might be some modifications required to the test script to adjust to the new application. In the extreme circumstance that the web application is no longer hosted, the test scripts might not be reusable.
+Browser automation scripts inside `tests/online` are meant to be a test code that exercises web applciations that are hosted in the web.
+If the content of the web application changes, there might be some modifications required to the test script to adjust to the new application.
+In the extreme circumstance that the web application is no longer hosted, the test scripts might not be reusable.
