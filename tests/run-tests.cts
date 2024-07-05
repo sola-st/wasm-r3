@@ -37,16 +37,16 @@ async function cleanUp(testPath: string) {
   await rmSafe(path.join(testPath, "trace.r3"));
   await rmSafe(path.join(testPath, "replay-trace.r3"));
   // await rmSafe(path.join(testPath, "replay.js"))
-  await rmSafe(path.join(testPath, "report.txt"));
+  // await rmSafe(path.join(testPath, "report.txt"));
   await rmSafe(path.join(testPath, "long.js"));
   await rmSafe(path.join(testPath, "call-graph.txt"));
   await rmSafe(path.join(testPath, "replay-call-graph.txt"));
   await rmSafe(path.join(testPath, "long.cjs"));
-  await rmSafe(path.join(testPath, frontend));
+  // await rmSafe(path.join(testPath, frontend));
   // delete ablation study directories
-  await rmSafe(path.join(testPath, 'noopt'));
-  await rmSafe(path.join(testPath, 'split'));
-  await rmSafe(path.join(testPath, 'merge'));
+  // await rmSafe(path.join(testPath, 'noopt'));
+  // await rmSafe(path.join(testPath, 'split'));
+  // await rmSafe(path.join(testPath, 'merge'));
   await rmSafe(path.join(testPath, "test-benchmark"));
   await rmSafe(path.join(testPath, "test-runtime.js"));
 }

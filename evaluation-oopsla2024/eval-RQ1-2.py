@@ -1,7 +1,7 @@
 import subprocess, json, os
 
-# Replay characteristic experiment
-
+# Portability experiment
+print('RQ1-2: Portability Experiment')
 
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f:  metrics = json.load(f)
@@ -27,7 +27,7 @@ def get_replay_wasm(testname, opt):
 
 path1 = get_replay_wasm('game-of-life', 'benchmark')
 path2 = f"{r3_path}/tests/online/game-of-life/benchmark/bin_0/replay.wasm"
-
+assert path1 == path2
 
 timeout = 1 # seconds
 engine_kind = ['sm', 'sm-base', 'sm-opt', 'v8', 'v8-liftoff', 'v8-turbofan', 'jsc', 'jsc-int','jsc-bbq','jsc-omg', 'wizeng','wizeng-int','wizeng-jit','wizeng-dyn','wasmtime','wasmer','wasmer-base']

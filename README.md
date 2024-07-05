@@ -31,6 +31,12 @@ docker run --name wasm-r3 -dit --cap-add SYS_ADMIN wasm-r3
 Addition of Linux capability('--cap-add SYS_ADMIN') is required for running Linux perf tool to measure hardware counters.
 If you intend to skip this measurement, you can omit this command-line argument.
 
+Then, attach to the container.
+
+```
+docker exec -it wasm-r3 bash
+```
+
 ## Step by Step Instructions
 
 ### Container structure 
@@ -116,7 +122,8 @@ If you want to reproduce the original evaluation, please set REP_COUNT environme
 
 `eval-RQ4.py`
 
-This took about 5 minutes in our setup. Note that this might significantly vary depending the number of cpu cores you have.
+This took about 5 minutes in our setup. 
+NOTE: This might significantly vary depending the number of cpu cores you have.
 
 `latexify.py`
 
