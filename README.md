@@ -92,9 +92,20 @@ To run everything in one go, simply run
 python3 evaluation-oopsla2024/eval-all.py
 ```
 
+### Kick the tires
+
+For quick evaluation of all the scripts, but targeting only single website, you can simply run
+
+```
+TEST_NAME=game-of-life python3 evaluation-oopsla2024/eval-all.py
+```
+
+In our setup, this took about 30 seconds, so we believe this is sufficiently short for the kick-the-tire phase.
+
 ### Things to note
 
 We provide `tests/metrics.json`, which is a raw data we got at the time of submission for the convenience.
+You can compare this with `evaluation-oopsla2024/metrics.json`, to see if the data you get matches ours.
 
 ### Detailed description of each evaluation scripts
 
@@ -160,7 +171,6 @@ If you want to reproduce the original evaluation, please set REP_COUNT environme
 
 This script measures cycles spent in the original wasm functions and replay functions of replay benchmarks.
 
-
 You can see the percentage of cpu cycles of replay functions at the commandline as below.
 ```
 bullet                        5.220406249659279%
@@ -178,6 +188,14 @@ If you want to reproduce the original evaluation, please set REP_COUNT environme
 `eval-RQ4.py`
 
 This script measures various dynamic stats of four variants of replay benchmarks, with and without optimizations.
+
+You can see whether wizard was able to run on four variants as below.
+```
+game-of-life   noopt          SUCCESS
+game-of-life   split          SUCCESS
+game-of-life   merge          SUCCESS
+game-of-life   benchmark      SUCCESS
+```
 
 This took about 30 seconds in our setup. 
 

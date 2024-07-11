@@ -4,6 +4,8 @@ import subprocess, json, os
 print('RQ1-2: Portability Experiment')
 
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
+test_name = os.getenv('TEST_NAME')
+
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f:  metrics = json.load(f)
 def trace_match(metrics, testname): return metrics[testname]['summary']['trace_match']
 
@@ -24,10 +26,6 @@ def get_replay_wasm(testname, opt):
     find_result = subprocess.run(find_command, shell=True, capture_output=True, text=True)
     replay_path = find_result.stdout.strip()
     return replay_path
-
-path1 = get_replay_wasm('game-of-life', 'benchmark')
-path2 = f"{r3_path}/tests/online/game-of-life/benchmark/bin_0/replay.wasm"
-assert path1 == path2
 
 timeout = 180 # seconds
 engine_kind = ['sm', 'sm-base', 'sm-opt', 'v8', 'v8-liftoff', 'v8-turbofan', 'jsc', 'jsc-int','jsc-bbq','jsc-omg', 'wizeng','wizeng-int','wizeng-jit','wizeng-dyn','wasmtime','wasmer','wasmer-base']
@@ -52,7 +50,8 @@ def run_wish_you_were_fast(testname, engine, opt):
         print(f"Failed to run {testname} with {opt}, error:\n{e}")
         metrics[testname]['replay_metrics'][engine][opt] = {}
 
-for testname in metrics:
+testset = [test_name] if test_name else metrics.keys()
+for testname in testset:
     if trace_match(metrics, testname):
         for engine in engine_kind:
             metrics[testname]['replay_metrics'][engine] = {}

@@ -1,6 +1,7 @@
 import os, json, re, subprocess
 
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
+test_name = os.getenv('TEST_NAME')
 
 def assert_cover_all(expected_dirs):
     online_tests_path = os.path.join(r3_path, 'tests/online')
@@ -39,7 +40,7 @@ print('Evaluation set: ', len(eval_set))
 # print('exclude: ', len(excluded_set))
 assert_cover_all(eval_set + excluded_set)
 
-testset = sorted(eval_set)
+testset = [test_name] if test_name else sorted(eval_set)
 metrics = {testname: { 'summary': {}, 'record_metrics': {}, 'replay_metrics': {}} for testname in testset }
 
 print('RQ1-1: Accuracy Experiment')

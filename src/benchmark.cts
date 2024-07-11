@@ -20,10 +20,10 @@ export default class Benchmark {
 
     async save(benchmarkPath: string, options) {
         const p_measureSave = createMeasure('save', { phase: 'replay-generation', description: 'The time it takes to save the benchmark to the disk. This means generating the intermediate representation code from the trace and streaming it to the file, as well as saving the wasm binaries.' })
-        await fs.mkdir(benchmarkPath)
+        if (!fss.existsSync(benchmarkPath)) await fs.mkdir(benchmarkPath)
         await Promise.all(this.record.map(async ({ binary, trace }, i) => {
             const binPath = path.join(benchmarkPath, `bin_${i}`)
-            await fs.mkdir(binPath)
+            if (!fss.existsSync(binPath)) await fs.mkdir(binPath)
             await fs.writeFile(path.join(binPath, 'trace.r3'), trace.toString())
             const diskSave = path.join(binPath, `temp-trace-${i}.r3`)
             await fs.writeFile(diskSave, trace.toString())

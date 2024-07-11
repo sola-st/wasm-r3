@@ -2,6 +2,8 @@ import subprocess, time, json, os, re
 
 REP_COUNT = int(os.getenv('REP_COUNT', 1))
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
+test_name = os.getenv('TEST_NAME')
+
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f: metrics = json.load(f)
 def trace_match(metrics, testname): return metrics[testname]['summary']['trace_match']
 
@@ -69,7 +71,8 @@ def run_command(testname, option, i):
 
 os.makedirs(f'{r3_path}/evaluation-oopsla2024/output', exist_ok=True)
 results = []
-for testname in metrics:
+testset = [test_name] if test_name else metrics.keys()
+for testname in testset:
     if trace_match(metrics, testname):
         for option in ['original', 'instrumented']:
             metrics[testname]['record_metrics'][option] = []

@@ -4,6 +4,7 @@ print("RQ2-2: Replay Characteristics Experiment")
 
 REP_COUNT = int(os.getenv('REP_COUNT', 1))
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
+test_name = os.getenv('TEST_NAME')
  
 
 def get_replay_wasm(testname, opt):
@@ -111,7 +112,7 @@ def run_summarize(testname, engine, opt):
         print(cmd)
         return {}
 
-testset = metrics
+testset = [test_name] if test_name else metrics.keys()
 results = []
 for testname in testset:
     if trace_match(metrics, testname): 

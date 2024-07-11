@@ -4,6 +4,7 @@ print("RQ4: Effectiveness of Replay Optimization")
 
 REP_COUNT = int(os.getenv('REP_COUNT', 1))
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
+test_name = os.getenv('TEST_NAME')
 
 with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f:  metrics = json.load(f)
 def trace_match(metrics, testname): return metrics[testname]['summary']['trace_match']
@@ -29,11 +30,6 @@ def get_replay_wasm(testname, opt):
     replay_path = find_result.stdout.strip()
     return replay_path
 
-path1 = get_replay_wasm('game-of-life', 'benchmark')
-path2 = f"{r3_path}/tests/online/game-of-life/benchmark/bin_0/replay.wasm"
-
-assert path1 == path2
-
 def run_wizard(testname, engine, opt, i):
     try: 
         replay_path = get_replay_wasm(testname, opt)
@@ -50,13 +46,16 @@ def run_wizard(testname, engine, opt, i):
         print(f"Failed to run {testname} with {opt}, engine: {engine}")
         print(e)
 
-testset = metrics
+testset = [test_name] if test_name else metrics.keys()
 results = []
 for testname in testset:
     if trace_match(metrics, testname):
         for opt in opt_kind:
             for i in range(REP_COUNT):
+                print(f"{testname:<{15}}{opt:<{15}}", end='')
                 result = run_wizard(testname, 'wizeng-int', opt, i)
+                testname, engine, opt, i, metric = result
+                print('SUCCESS')
                 results.append(result)
 
 for result in results:
