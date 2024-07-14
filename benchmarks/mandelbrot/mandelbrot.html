@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mandelbrot WebAssembly Example</title>
+    <script type="module">
+        async function test() {
+            let part;
+            let imports = {
+                part: {
+                    66: () => {
+                        part.exports["66"]();
+                    },
+                }
+            };
+
+            // Fetch and instantiate the whole module
+            const wholeResponse = await fetch('./mandelbrot_whole.wasm');
+            const wholeBinary = await wholeResponse.arrayBuffer();
+            const whole = await WebAssembly.instantiate(wholeBinary, imports);
+
+            // Fetch and instantiate the part module with imports from the whole module
+            const partResponse = await fetch('./mandelbrot_part.wasm');
+            const partBinary = await partResponse.arrayBuffer();
+            let partImports = {
+                whole: whole.instance.exports
+            };
+            part = await WebAssembly.instantiate(partBinary, partImports);
+
+            // Call the main function to start the program
+            const startTime = performance.now();
+            whole.instance.exports.main();
+            const endTime = performance.now();
+            const executionTime = endTime - startTime;
+            console.log(`Execution time: ${executionTime} milliseconds`);
+            // Display the execution time at the DOM
+            const executionTimeElement = document.createElement('p');
+            executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+            document.body.appendChild(executionTimeElement);
+        }
+        test();
+    </script>
+</head>
+<body>
+    <h1>Mandelbrot Set with WebAssembly</h1>
+</body>
+</html>
