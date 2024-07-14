@@ -8,8 +8,8 @@ export default async function test() {
     let part
     let imports = {
         part: {
-            66: () => {
-                part.exports["66"]();
+            44: () => {
+                part.instance.exports["44"]();
             },
         }
     }
