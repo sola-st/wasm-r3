@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>game-of-life.wasm slice and dice </title>
+    <script type="module">
+        async function test() {
+            let part;
+            let imports = {
+                part: {
+                    $0: () => {
+                        part.instance.exports["$0"]();
+                    },
+                }
+            };
+
+            // Fetch and instantiate the host module
+            const hostResponse = await fetch('./game-of-life_host.wasm');
+            const hostBinary = await hostResponse.arrayBuffer();
+            const host = await WebAssembly.instantiate(hostBinary, imports);
+
+            // Fetch and instantiate the part module with imports from the host module
+            const partResponse = await fetch('./game-of-life_part.wasm');
+            const partBinary = await partResponse.arrayBuffer();
+            let partImports = {
+                host: host.instance.exports
+            };
+            part = await WebAssembly.instantiate(partBinary, partImports);
+
+            // Call the main function to start the program
+            const startTime = performance.now();
+            host.instance.exports.main();
+            const endTime = performance.now();
+            const executionTime = endTime - startTime;
+            console.log(`Execution time: ${executionTime} milliseconds`);
+            // Display the execution time at the DOM
+            const executionTimeElement = document.createElement('p');
+            executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+            document.body.appendChild(executionTimeElement);
+        }
+        test();
+    </script>
+</head>
+<body>
+    <h1>game-of-life_host.wasm and game-of-life_part.wasm</h1>
+</body>
+</html>
