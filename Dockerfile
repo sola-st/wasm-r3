@@ -43,6 +43,9 @@ COPY . /home/wasm-r3
 # Install the dependencies
 RUN cd /home/wasm-r3 && mkdir -p dist/tracer && npm install -g wasm-pack && npm ci && npx playwright install-deps && npx playwright install && npm run build-full
 
+# fix perf	
+RUN cp /usr/lib/linux-tools/5.15.0-113-generic/perf /usr/bin/perf
+
 WORKDIR /home/wasm-r3
 
 CMD ["bash"]
