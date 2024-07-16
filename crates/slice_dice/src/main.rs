@@ -1,103 +1,62 @@
+use anyhow::{Error, Result};
+use slice_dice::htmlgen;
+use slice_dice::wasmgen;
+use std::collections::HashSet;
 use std::env;
 use std::fs;
-use anyhow::Result;
-use anyhow::Error;
-use wasmparser::Chunk;
-use wasmparser::Parser;
+use std::path::PathBuf;
+use std::process::Command;
+
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
-    let path = args.get(1);
-    if path == None  {
-        return Err(Error::msg("No arguments provided"));
+
+    let path = args
+        .get(1)
+        .ok_or_else(|| Error::msg("No WASM file path provided"))?;
+
+    let int_list: HashSet<i32> = args
+        .get(2)
+        .ok_or_else(|| Error::msg("No list of integers provided"))?
+        .split(',')
+        .map(|s| s.trim().parse::<i32>())
+        .collect::<std::result::Result<HashSet<i32>, _>>()
+        .map_err(|e| Error::msg(format!("Failed to parse integers: {}", e)))?;
+
+    println!("Parsed unique integers: {:?}", int_list);
+    let smallest = int_list
+        .iter()
+        .min()
+        .ok_or_else(|| Error::msg("Empty list of integers"))?;
+    let int_list = vec![*smallest];
+    let first_int = int_list[0];
+    println!("Smallest element: {:?}", first_int);
+
+    let pathbuf = PathBuf::from(path);
+    let parent_dir = pathbuf.parent().ok_or_else(|| Error::msg("Invalid path"))?;
+    let out_dir = parent_dir.join("out");
+    fs::create_dir_all(&out_dir)?;
+
+    let orig_wat_path = out_dir.join("orig.wat");
+    let args = [
+        "-o",
+        orig_wat_path
+            .to_str()
+            .ok_or_else(|| Error::msg("Invalid output path"))?,
+        path,
+    ];
+    let output = Command::new("wasm-dis")
+        .args(&args)
+        .current_dir(parent_dir)
+        .output()?;
+
+    if !output.status.success() {
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        return Err(Error::msg(format!("wasm-dis failed: {}", error_message)));
     }
-    let path = path.unwrap();
-    let wasm_file_content = fs::read(path)?;
-    let buf: &[u8] = &wasm_file_content;
-    let parser = Parser::new(0);
-    for payload in parser.parse_all(&buf) {
-        match payload? {
-            wasmparser::Payload::Version { num: num_, encoding: _encoding, range: _range } => {
-                // println!("Version: {}", _num);
-                // println!("Encoding: {:?}", _encoding);
-                // println!("Range: {:?}", _range);
-            }
-            wasmparser::Payload::TypeSection(_) => {
-                println!("Type section");
-            }
-            wasmparser::Payload::ImportSection(_) => {
-                println!("Import section");
-            }
-            wasmparser::Payload::FunctionSection(_) => {
-                println!("Function section");
-            }
-            wasmparser::Payload::TableSection(_) => {
-                println!("Table section");
-            }
-            wasmparser::Payload::MemorySection(_) => {
-                println!("Memory section");
-            }
-            wasmparser::Payload::TagSection(_) => {
-                println!("Tag section");
-            }
-            wasmparser::Payload::GlobalSection(_) => {
-                println!("Global section");
-            }
-            wasmparser::Payload::ExportSection(_) => {
-                println!("Export section");
-            }
-            wasmparser::Payload::StartSection { func, range } => {
-                println!("Start section");
-            }
-            wasmparser::Payload::ElementSection(_) => {
-                println!("Element section");
-            }
-            wasmparser::Payload::DataCountSection { count, range } => {
-                println!("Data count section");
-            }
-            wasmparser::Payload::DataSection(_) => {
-                println!("Data section");
-            }
-            wasmparser::Payload::CodeSectionStart { count, range, size } => {
-                println!("Code section start");
-            }
-            wasmparser::Payload::CodeSectionEntry(_) => {
-                println!("Code section entry");
-            }
-            wasmparser::Payload::ModuleSection { parser, unchecked_range } => {
-                println!("Module section");
-            }
-            wasmparser::Payload::InstanceSection(_) => {
-                println!("Instance section");
-            }
-            wasmparser::Payload::CoreTypeSection(_) => {
-                println!("Core type section");
-            }
-            wasmparser::Payload::ComponentSection { parser, unchecked_range } => {
-                return Err(Error::msg("Component model not supported"));
-            }
-            wasmparser::Payload::CustomSection(_) => {
-                println!("Custom section");
-            
-            }
-            wasmparser::Payload::UnknownSection { id, contents, range } => {
-                println!("Unknown section");
-            }
-            wasmparser::Payload::End(_) => {
-                println!("End");
-            }
-            wasmparser::Payload::ComponentInstanceSection(_) | wasmparser::Payload::ComponentAliasSection(_) | wasmparser::Payload::ComponentTypeSection(_) | wasmparser::Payload::ComponentCanonicalSection(_) => {
-                return Err(Error::msg("Component model not supported"));
-            },
-            wasmparser::Payload::ComponentStartSection { start: _, range: _ } => {
-                return Err(Error::msg("Component model not supported"));
-            }
-            wasmparser::Payload::ComponentImportSection(_) => {
-                return Err(Error::msg("Component model not supported"));
-            }
-            wasmparser::Payload::ComponentExportSection(_) => {
-                return Err(Error::msg("Component model not supported"));
-            }
-        }
-    }
+
+    let func_name = wasmgen::generate(&out_dir, orig_wat_path, int_list, parent_dir)?;
+
+    htmlgen::generate(out_dir, func_name)?;
+
     Ok(())
 }
