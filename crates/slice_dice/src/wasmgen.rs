@@ -4,6 +4,10 @@ use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
 use std::process::Command;
 
+// TODO: we require wasm-as allowing import after non-import to make our implementation easier.
+// This worked in 9784f012848a7eb321c2037bdb363dfe0eab8bc9, and not in 6b93a84032cd00840c797d52ac01a7ca3bcb913e
+// This is just for a convenience and workaround seems possible.
+
 pub fn generate(out_dir: &PathBuf, orig_wat_path: PathBuf, int_list: Vec<i32>, parent_dir: &std::path::Path) -> Result<String, Error> {
     let orig_part_path = out_dir.join("orig_part.wat");
     let orig_rest_path = out_dir.join("orig_rest.wat");

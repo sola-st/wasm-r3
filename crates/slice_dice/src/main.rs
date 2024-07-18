@@ -1,5 +1,6 @@
 use anyhow::{Error, Result};
 use slice_dice::htmlgen;
+use slice_dice::preprocess;
 use slice_dice::wasmgen;
 use std::collections::HashSet;
 use std::env;
@@ -13,6 +14,8 @@ fn main() -> Result<()> {
     let path = args
         .get(1)
         .ok_or_else(|| Error::msg("No WASM file path provided"))?;
+
+    preprocess::run_wizard(path)?;
 
     let int_list: HashSet<i32> = args
         .get(2)
