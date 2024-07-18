@@ -36,7 +36,8 @@ fn main() -> Result<()> {
 
     let pathbuf = PathBuf::from(path);
     let parent_dir = pathbuf.parent().ok_or_else(|| Error::msg("Invalid path"))?;
-    let out_dir = parent_dir.join("out");
+    let out_dir = parent_dir.join(format!("out/{first_int}"));
+    println! {"Output directory: {:?}", out_dir};
     fs::create_dir_all(&out_dir)?;
 
     let orig_wat_path = out_dir.join("orig.wat");

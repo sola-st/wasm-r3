@@ -8,7 +8,12 @@ use std::process::Command;
 // This worked in 9784f012848a7eb321c2037bdb363dfe0eab8bc9, and not in 6b93a84032cd00840c797d52ac01a7ca3bcb913e
 // This is just for a convenience and workaround seems possible.
 
-pub fn generate(out_dir: &PathBuf, orig_wat_path: PathBuf, int_list: Vec<i32>, parent_dir: &std::path::Path) -> Result<String, Error> {
+pub fn generate(
+    out_dir: &PathBuf,
+    orig_wat_path: PathBuf,
+    int_list: Vec<i32>,
+    parent_dir: &std::path::Path,
+) -> Result<String, Error> {
     let orig_part_path = out_dir.join("orig_part.wat");
     let orig_rest_path = out_dir.join("orig_rest.wat");
     let mut part_file = fs::File::create(&orig_part_path)?;
@@ -36,8 +41,14 @@ pub fn generate(out_dir: &PathBuf, orig_wat_path: PathBuf, int_list: Vec<i32>, p
                 let (rest_line, _extracted_name) = rest_transform_func(&line);
                 let (part_line, extracted_name) = part_transform_func(&line);
                 func_name = extracted_name;
-                writeln!(rest_file, "{rest_line}", )?;
-                writeln!(part_file, "{part_line}", )?;
+                writeln!(rest_file, "{rest_line}",)?;
+                writeln!(part_file, "{part_line}",)?;
+                continue;
+            } else {
+                let (rest_line, _extracted_name) = rest_export_func(&line);
+                let (part_line, extracted_name) = part_import_func(&line);
+                writeln!(rest_file, "{rest_line}",)?;
+                writeln!(part_file, "{part_line}",)?;
                 continue;
             }
         } else if line.starts_with(" )") {
@@ -75,7 +86,10 @@ pub fn generate(out_dir: &PathBuf, orig_wat_path: PathBuf, int_list: Vec<i32>, p
         .output()?;
     if !output.status.success() {
         let error_message = String::from_utf8_lossy(&output.stderr);
-        return Err(Error::msg(format!("wasm-as for rest failed: {}", error_message)));
+        return Err(Error::msg(format!(
+            "wasm-as for rest failed: {}",
+            error_message
+        )));
     }
     let binding = out_dir.join("orig_part.wasm");
     let args = [
@@ -91,7 +105,10 @@ pub fn generate(out_dir: &PathBuf, orig_wat_path: PathBuf, int_list: Vec<i32>, p
         .output()?;
     if !output.status.success() {
         let error_message = String::from_utf8_lossy(&output.stderr);
-        return Err(Error::msg(format!("wasm-as for part failed: {}", error_message)));
+        return Err(Error::msg(format!(
+            "wasm-as for part failed: {}",
+            error_message
+        )));
     }
     Ok(func_name)
 }
@@ -99,27 +116,67 @@ pub fn generate(out_dir: &PathBuf, orig_wat_path: PathBuf, int_list: Vec<i32>, p
 fn rest_transform_func(line: &str) -> (String, String) {
     if line.trim().starts_with("(func ") {
         let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
-        if parts.len() >= 3 {
+        if parts.len() >= 2 {
             let func_keyword = parts[0];
             let func_name = parts[1];
             let rest = parts[2..].join(" ");
-            return (format!(" {func_keyword} {func_name} (import \"part\" \"{func_name}\") {rest}",), func_name.to_string());
+            return (
+                format!(" {func_keyword} {func_name} (import \"part\" \"{func_name}\") {rest}",),
+                func_name.to_string(),
+            );
         }
     }
-    unreachable!()
+    unreachable!("{line}")
+}
+
+fn rest_export_func(line: &str) -> (String, String) {
+    if line.trim().starts_with("(func ") {
+        let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
+        if parts.len() >= 2 {
+            let func_keyword = parts[0];
+            let func_name = parts[1];
+            let rest = parts[2..].join(" ");
+            let var_name = (
+                format!(" {func_keyword} {func_name} (export \"{func_name}\") {rest}",),
+                func_name.to_string(),
+            );
+            return var_name;
+        }
+    }
+    unreachable!("{line}")
+}
+
+fn part_import_func(line: &str) -> (String, String) {
+    if line.trim().starts_with("(func ") {
+        let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
+        if parts.len() >= 2 {
+            let func_keyword = parts[0];
+            let func_name = parts[1];
+            let rest = parts[2..].join(" ");
+            let var_name = (
+                format!(" {func_keyword} {func_name} (import \"rest\" \"{func_name}\") {rest})",),
+                func_name.to_string(),
+            );
+            return var_name;
+        }
+    }
+    unreachable!("{line}")
 }
 
 fn part_transform_func(line: &str) -> (String, String) {
     if line.trim().starts_with("(func ") {
         let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
-        if parts.len() >= 3 {
+        if parts.len() >= 2 {
             let func_keyword = parts[0];
             let func_name = parts[1];
             let rest = parts[2..].join(" ");
-            return (format!(
-                " {} {} (export \"{}\") {}",
-                func_keyword, func_name, func_name, rest
-            ), func_name.to_owned());
+            return (
+                format!(
+                    " {} {} (export \"{}\") {}",
+                    func_keyword, func_name, func_name, rest
+                ),
+                func_name.to_owned(),
+            );
         }
     }
     unreachable!()
@@ -128,7 +185,7 @@ fn part_transform_func(line: &str) -> (String, String) {
 fn part_transform_memory(line: &str) -> String {
     if line.trim().starts_with("(memory ") {
         let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
-        if parts.len() >= 3 {
+        if parts.len() >= 2 {
             let memory_keyword = parts[0];
             let memory_name = parts[1];
             let rest = parts[2..].join(" ");
