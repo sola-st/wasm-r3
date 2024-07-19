@@ -55,7 +55,7 @@ pub fn generate(out_dir: PathBuf, func_name: String) -> Result<(), Error> {
 </html>
 """#
     );
-    let orig_html_path = out_dir.join("orig.html");
+    let orig_html_path = out_dir.join("index.html");
     let mut orig_html_file = File::create(&orig_html_path)?;
     orig_html_file.write_all(wrapper_html.as_bytes())?;
     Ok(())

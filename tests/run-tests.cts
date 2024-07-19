@@ -25,6 +25,7 @@ import { initPerformance } from "../src/performance.cjs";
 import { generateJavascript } from "../src/js-generator.cjs";
 import { createMeasure } from "../src/performance.cjs";
 import { node_filter, offline_filter, online_filter } from "./filter.cjs";
+import runSliceDiceTests from "./test-slice-dice.cjs";
 
 let extended = false;
 let frontend; // will be set later by options
@@ -551,7 +552,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     for (let i = 0; i <= analysisResult.length - 1; i++) {
       analysisResult[i].result = trimFromLastOccurance(analysisResult[i].result, 'ER')
     }
-    
+
     if (analysisResult.every(item => item.result == "")) {
       return {
         testPath,
@@ -679,5 +680,13 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     }
     await runOnlineTests(testNames, options);
   }
-  // process.stdout.write(`done running ${nodeTestNames.length + webTestNames.length} tests\n`);
+  if (options.category === undefined || options.category.includes("slicedice")) {
+    let testNames = await getDirectoryNames(
+      path.join(process.cwd(), "benchmarks")
+    );
+    if (options.testcases !== undefined) {
+      testNames = testNames.filter((n) => options.testcases.includes(n));
+    }
+    await runSliceDiceTests(testNames, options);
+  }
 })();

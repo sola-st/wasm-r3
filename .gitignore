@@ -13,3 +13,4 @@ instrumented*
 Downloads/
 data/
 tests/*output.txt
+out/
