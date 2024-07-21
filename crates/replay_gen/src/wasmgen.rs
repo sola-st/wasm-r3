@@ -157,7 +157,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
             let tystr = get_functy_strs(&func.ty);
             write(
                 stream,
-                &format!("(func ${name} (@name \"r3 {name}\") (export \"{name}\") {tystr}\n",),
+                &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr}\n",),
             )?;
             for (i, body) in func.bodys.iter().enumerate() {
                 if let Some(body) = body {
@@ -258,7 +258,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
 
         if current_module == "main" {
             let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
-            write(stream, "(func (@name \"r3 main\")(export \"_start\") (export \"main\")\n")?;
+            write(stream, "(func (@name \"r3_main\")(export \"_start\") (export \"main\")\n")?;
             if let Some(initialization) = initialization {
                 for event in initialization {
                     write(stream, &format!("{}", hostevent_to_wat(&event, code)))?
