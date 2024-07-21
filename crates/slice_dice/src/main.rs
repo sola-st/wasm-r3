@@ -42,6 +42,7 @@ fn main() -> Result<()> {
 
     let orig_wat_path = out_dir.join("orig.wat");
     let args = [
+        "--all-features",
         "-o",
         orig_wat_path
             .to_str()

@@ -26,7 +26,7 @@ pub fn generate(
     for (_index, line) in reader.lines().enumerate() {
         let line = line?;
         if line.starts_with(" (memory") {
-            writeln!(rest_file, "{}", &line)?;
+            writeln!(rest_file, "{}", rest_transform_memory(&line))?;
             writeln!(part_file, "{}", part_transform_memory(&line))?;
             continue;
         }
@@ -46,7 +46,7 @@ pub fn generate(
                 continue;
             } else {
                 let (rest_line, _extracted_name) = rest_export_func(&line);
-                let (part_line, extracted_name) = part_import_func(&line);
+                let (part_line, _extracted_name) = part_import_func(&line);
                 writeln!(rest_file, "{rest_line}",)?;
                 writeln!(part_file, "{part_line}",)?;
                 continue;
@@ -74,6 +74,7 @@ pub fn generate(
     }
     let binding = out_dir.join("orig_rest.wasm");
     let args = [
+        "--all-features",
         "-o",
         binding
             .to_str()
@@ -93,6 +94,7 @@ pub fn generate(
     }
     let binding = out_dir.join("orig_part.wasm");
     let args = [
+        "--all-features",
         "-o",
         binding
             .to_str()
@@ -182,6 +184,23 @@ fn part_transform_func(line: &str) -> (String, String) {
     unreachable!()
 }
 
+fn rest_transform_memory(line: &str) -> String {
+    if line.trim().starts_with("(memory ") {
+        let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
+        if parts.len() >= 2 {
+            let memory_keyword = parts[0];
+            let memory_name = parts[1];
+            let rest = parts[2..].join(" ");
+            return format!(
+                " {} {} (export \"r3_memory\") {}",
+                memory_keyword, memory_name, rest
+            );
+        }
+    }
+    line.to_string()
+}
+
+
 fn part_transform_memory(line: &str) -> String {
     if line.trim().starts_with("(memory ") {
         let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
@@ -190,7 +209,7 @@ fn part_transform_memory(line: &str) -> String {
             let memory_name = parts[1];
             let rest = parts[2..].join(" ");
             return format!(
-                " {} {} (import \"rest\" \"memory\") {}",
+                " {} {} (import \"rest\" \"r3_memory\") {}",
                 memory_keyword, memory_name, rest
             );
         }

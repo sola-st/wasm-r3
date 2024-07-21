@@ -3,6 +3,7 @@ use std::{fs::File, io::Write, path::PathBuf};
 use anyhow::Error;
 
 pub fn generate(out_dir: PathBuf, func_name: String) -> Result<(), Error> {
+    let out_dir_fname = out_dir.to_str().unwrap();
     let wrapper_html = format!(
         r#"
 <!DOCTYPE html>
@@ -10,14 +11,14 @@ pub fn generate(out_dir: PathBuf, func_name: String) -> Result<(), Error> {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>game-of-life.wasm slice and dice </title>
+    <title>${out_dir_fname}</title>
     <script type="module">
         async function test() {{
             let part;
             let imports = {{
                 part: {{
-                    {func_name}: () => {{
-                        part.instance.exports["{func_name}"]();
+                    '{func_name}': (...args) => {{
+                        part.instance.exports['{func_name}'](...args);
                     }},
                 }}
             }};
@@ -50,7 +51,7 @@ pub fn generate(out_dir: PathBuf, func_name: String) -> Result<(), Error> {
     </script>
 </head>
 <body>
-    <h1>game-of-life_host.wasm and game-of-life_part.wasm</h1>
+    <h1>${out_dir_fname}</h1>
 </body>
 </html>
 """#
