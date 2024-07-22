@@ -30,6 +30,11 @@ pub fn generate(
             writeln!(part_file, "{}", part_transform_memory(&line))?;
             continue;
         }
+        if line.starts_with(" (table") {
+            writeln!(rest_file, "{}", rest_transform_table(&line))?;
+            writeln!(part_file, "{}", part_transform_table(&line))?;
+            continue;
+        }
         if line.starts_with(" (export") {
             writeln!(rest_file, "{}", line)?;
             continue;
@@ -200,7 +205,6 @@ fn rest_transform_memory(line: &str) -> String {
     line.to_string()
 }
 
-
 fn part_transform_memory(line: &str) -> String {
     if line.trim().starts_with("(memory ") {
         let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
@@ -211,6 +215,38 @@ fn part_transform_memory(line: &str) -> String {
             return format!(
                 " {} {} (import \"rest\" \"r3_memory\") {}",
                 memory_keyword, memory_name, rest
+            );
+        }
+    }
+    line.to_string()
+}
+
+fn rest_transform_table(line: &str) -> String {
+    if line.trim().starts_with("(table ") {
+        let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
+        if parts.len() >= 2 {
+            let table_keyword = parts[0];
+            let table_name = parts[1];
+            let rest = parts[2..].join(" ");
+            return format!(
+                " {} {} (export \"r3_table\") {}",
+                table_keyword, table_name, rest
+            );
+        }
+    }
+    line.to_string()
+}
+
+fn part_transform_table(line: &str) -> String {
+    if line.trim().starts_with("(table ") {
+        let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
+        if parts.len() >= 2 {
+            let table_keyword = parts[0];
+            let table_name = parts[1];
+            let rest = parts[2..].join(" ");
+            return format!(
+                " {} {} (import \"rest\" \"r3_table\") {}",
+                table_keyword, table_name, rest
             );
         }
     }

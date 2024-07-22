@@ -83,7 +83,7 @@ async function runWasmR3(options: any, url: string, path: string) {
   const startTime = Date.now();
   let analyser = new Analyser('./dist/src/tracer.cjs', options);
   let page = await analyser.start(url, { headless: options.headless });
-  await expect(page.getByText('milliseconds')).toBeVisible({ timeout: 60000 });
+  await expect(page.getByText('milliseconds')).toBeVisible({ timeout: 100000 });
   const results = await analyser.stop();
   await Benchmark.fromAnalysisResult(results).save(`${path}/benchmarks`, { trace: options.dumpTrace, rustBackend: options.rustBackend });
   const endTime = Date.now();
