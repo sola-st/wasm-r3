@@ -605,9 +605,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
       await replayBinary.replay(wasm);
       let traceString = record[i].trace.toString();
       let replayTraceString = tracer.getResult().toString();
-      let stats = tracer.getStats();
       await fs.writeFile(replayTracePath, replayTraceString);
-      await fs.writeFile(statsJsonPath, JSON.stringify(stats));
 
       // 5. Check if original trace and replay trace match
       const newResult = compareResults(

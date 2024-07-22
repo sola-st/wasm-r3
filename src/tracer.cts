@@ -1,8 +1,6 @@
 import { StoreOp, LoadOp, ImpExp, Wasabi } from '../wasabi.cjs'
 import { Trace as TraceType, ValType, WasmEvent } from '../trace.d.cjs'
 import { AnalysisI } from './analyser.cjs'
-import { timeStamp } from 'console';
-// import fs from 'fs'
 
 function parseNumber(str): number {
     str = str.trim(); // Remove leading/trailing whitespace
@@ -49,20 +47,7 @@ export class Trace {
     }
 
     push(event: string) {
-        // if (event.startsWith('IC') || event.startsWith('IR')) {
-        //     const cashIndex = this.cache.findIndex(v => v === event)
-        //     if (cashIndex !== -1) {
-        //         this.trace.push(cashIndex.toString())
-        //         return
-        //     } else {
-        //         this.cache.push(event)
-        //     }
-        // }
         this.trace.push(event)
-        // if (this.trace.length > 15000 && this.flag === true) {
-        //     fs.writeFileSync('/Users/jakob/Desktop/wasm-r3/ffmpeg/bin_0/replay-trace.r3', this.toString())
-        //     this.flag = false
-        // }
     }
 
     forEach(callbackFn: (value: WasmEvent, index: number) => void) {
@@ -232,29 +217,10 @@ export class Trace {
     }
 }
 
-type Options = { extended: boolean }
 export default class Analysis implements AnalysisI<Trace> {
 
     private trace: Trace = new Trace()
     private Wasabi: Wasabi
-    private options: Options
-    private stats = {
-        loads: 0,
-        relevantLoads: 0,
-        tableGets: 0,
-        relevantTableGets: 0,
-        globalGets: 0,
-        relevantGlobalGets: 0,
-        functionEntries: 0,
-        relevantFunctionEntries: 0,
-        functionExits: 0,
-        relevantFunctionExits: 0,
-        calls: 0,
-        relevantCalls: 0,
-        callReturns: 0,
-        relevantCallReturns: 0,
-    };
-
     // shadow stuff
     private shadowMemories: ArrayBuffer[] = []
     private shadowGlobals: number[] = []
@@ -262,7 +228,6 @@ export default class Analysis implements AnalysisI<Trace> {
 
     // helpers
     private callStack: ('int' | { name: string, idx: number })[] = [{ name: 'main', 'idx': -1 }]
-
     private MEM_PAGE_SIZE = 65536
 
 
@@ -270,13 +235,8 @@ export default class Analysis implements AnalysisI<Trace> {
         return this.trace
     }
 
-    getStats() {
-        return this.stats;
-    }
-
     constructor(Wasabi: Wasabi, options = { extended: false }) {
         this.Wasabi = Wasabi
-        this.options = options
 
         Wasabi.analysis = {
             start(location) { },
@@ -304,47 +264,42 @@ export default class Analysis implements AnalysisI<Trace> {
             table_fill(location, index, value, length) { },
 
             begin_function: (location, args) => {
-                this.stats.functionEntries++;
-                if (options.extended) {
-                  this.trace.push(`FE;${location.func};${args.join(",")}`);
-                }
                 if (this.callStack[this.callStack.length - 1] !== "int") {
-                  const exportName =
-                    this.Wasabi.module.info.functions[location.func].export[0];
-                  const CALLED_WITH_TABLE_GET = exportName === undefined;
-                  if (CALLED_WITH_TABLE_GET) {
-                    if (
-                      !this.Wasabi.module.tables.some((table, i) => {
-                        for (
-                          let tableIndex = 0;
-                          tableIndex < table.length;
-                          tableIndex++
+                    const exportName =
+                        this.Wasabi.module.info.functions[location.func].export[0];
+                    const CALLED_WITH_TABLE_GET = exportName === undefined;
+                    if (CALLED_WITH_TABLE_GET) {
+                        if (
+                            !this.Wasabi.module.tables.some((table, i) => {
+                                for (
+                                    let tableIndex = 0;
+                                    tableIndex < table.length;
+                                    tableIndex++
+                                ) {
+                                    const funcidx = this.resolveFuncIdx(table, tableIndex)
+                                    if (funcidx === location.func) {
+                                        this.trace.push(`TC;${location.func};${this.getName(this.Wasabi.module.info.tables[i])};${tableIndex};${args.join(',')}`)
+                                        return true
+                                    }
+                                }
+                                return false;
+                            })
                         ) {
-                            const funcidx = this.resolveFuncIdx(table, tableIndex)
-                            if (funcidx === location.func) {
-                                this.trace.push(`TC;${location.func};${this.getName(this.Wasabi.module.info.tables[i])};${tableIndex};${args.join(',')}`)
-                                return true
-                            }
+                            console.log(location);
+                            throw new Error(
+                                "The function you where calling from outside the wasm module is neither exported nor in a table..."
+                            );
                         }
-                        return false;
-                      })
-                    ) {
-                      console.log(location);
-                      throw new Error(
-                        "The function you where calling from outside the wasm module is neither exported nor in a table..."
-                      );
+                    } else {
+                        this.trace.push(
+                            `EC;${location.func};${exportName};${args.join(",")}`
+                        );
+                        this.checkMemGrow();
+                        this.checkTableGrow();
                     }
-                  } else {
-                    this.stats.relevantFunctionEntries++;
-                    this.trace.push(
-                      `EC;${location.func};${exportName};${args.join(",")}`
-                    );
-                    this.checkMemGrow();
-                    this.checkTableGrow();
-                  }
                 }
                 this.callStack.push("int");
-              },
+            },
 
             store: (location, op, target, memarg, value) => {
                 const addr = target.addr + memarg.offset
@@ -366,33 +321,23 @@ export default class Analysis implements AnalysisI<Trace> {
             },
 
             load: (location, op, target, memarg, value) => {
-                this.stats.loads++;
                 if (this.shadowMemories.length === 0) {
                     return
                 }
                 const addr = target.addr + memarg.offset
                 const memName = this.getName(Wasabi.module.info.memories[target.memIdx])
                 let byteLength = this.getByteLength(op)
-                if (this.options.extended === true) {
-                    let data = []
-                    for (let i = 0; i < byteLength; i++) {
-                        data.push(new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i])
-                    }
-                    this.trace.push(`LE;${0};${memName};${addr};${data.join(',')}`)
-                }
                 if (!this.mem_content_equals(target.memIdx, addr, byteLength)) {
                     for (let i = 0; i < byteLength; i++) {
                         let r = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
                         new Uint8Array(this.shadowMemories[0])[addr + i] = new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i]
                         new Uint8Array(this.Wasabi.module.memories[0].buffer)[addr + i] = r as number
-                        this.stats.relevantLoads++;
                         this.trace.push(`L;${0};${memName};${addr + i};${[r as number]}`)
                     }
                 }
             },
 
             global: (location, op, idx, value) => {
-                this.stats.globalGets++
                 if (op === 'global.set') {
                     this.shadowGlobals[idx] = value
                     return
@@ -402,7 +347,6 @@ export default class Analysis implements AnalysisI<Trace> {
                     // can be NaN in case of the NaN being imported to the WebAssembly Module. Google it!
                     if (this.shadowGlobals[idx] !== value && !Number.isNaN(this.shadowGlobals[idx]) && !Number.isNaN(value)) {
                         let valtype = globalInfo.valType
-                        this.stats.relevantGlobalGets++
                         this.trace.push(`G;${idx};${this.getName(globalInfo)};${value};${valtype}`)
                         this.shadowGlobals[idx] = value
                     }
@@ -410,7 +354,6 @@ export default class Analysis implements AnalysisI<Trace> {
             },
 
             call_pre: (location, op, funcidx, args, tableTarget) => {
-                this.stats.calls++;
                 if (op === 'call_indirect') {
                     this.tableGetEvent(tableTarget.tableIdx, tableTarget.elemIdx)
                 }
@@ -418,32 +361,24 @@ export default class Analysis implements AnalysisI<Trace> {
                 if (funcImport !== null) {
                     let name = funcImport[1]
                     this.callStack.push({ name, idx: funcidx })
-                    this.stats.relevantCalls++;
                     this.trace.push(`IC;${funcidx};${name}`)
                 }
             },
 
             call_post: (location, results) => {
-                this.stats.callReturns++;
                 const func = this.callStack[this.callStack.length - 1]
                 if (func === 'int') {
                     return
                 }
                 this.callStack.pop()
-                this.stats.relevantCallReturns++;
                 this.trace.push(`IR;${func.idx};${func.name};${results.join(',')}`)
                 this.checkMemGrow()
                 this.checkTableGrow()
             },
 
             return_: (location, values) => {
-                this.stats.functionExits++;
                 this.callStack.pop()
-                if (this.options.extended === true) {
-                    this.trace.push(`FR;${location.func};${values.join(',')}`)
-                }
                 if (this.callStack.length === 1) {
-                    this.stats.relevantFunctionExits++;
                     this.trace.push(`ER`)
                 }
             },
@@ -458,13 +393,6 @@ export default class Analysis implements AnalysisI<Trace> {
         }
     }
 
-    private set_shadow_memory(memIdx: number, addr: number, data: number[]) {
-        for (let i = 0; i < data.length; i++) {
-            let shadowArray = new Uint8Array(this.shadowMemories[memIdx])
-            shadowArray[addr + i] = data[i]
-        }
-    }
-
     private mem_content_equals(memIdx: number, addr: number, numBytes: number): boolean {
         let result = []
         for (let i = 0; i < numBytes; i++) {
@@ -476,7 +404,6 @@ export default class Analysis implements AnalysisI<Trace> {
     }
 
     private tableGetEvent(tableidx: number, idx: number) {
-        this.stats.tableGets++;
         let table = this.Wasabi.module.tables[tableidx]
         let shadowTable = this.shadowTables[tableidx]
         let resolvedFuncIdx = this.resolveFuncIdx(table, idx)
@@ -484,15 +411,8 @@ export default class Analysis implements AnalysisI<Trace> {
             let name = this.getName(this.Wasabi.module.info.tables[tableidx])
             let funcidx = this.resolveFuncIdx(table, idx)
             let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
-            this.stats.relevantTableGets++;
             this.trace.push(`T;${tableidx};${name};${idx};${funcidx};${funcName}`)
             this.shadowTables[0].set(0, table.get(idx))
-        }
-        if (this.options.extended === true) {
-            let name = this.getName(this.Wasabi.module.info.tables[tableidx])
-            let funcidx = this.resolveFuncIdx(table, idx)
-            let funcName = this.getName(this.Wasabi.module.info.functions[resolvedFuncIdx])
-            this.trace.push(`TE;${tableidx};${name};${idx};${funcidx};${funcName}`)
         }
     }
 
@@ -612,25 +532,5 @@ export default class Analysis implements AnalysisI<Trace> {
                 this.trace.push(`IG;${idx};${g.import[0]};${g.import[1]};${g.valType};${g.mutability === 'Mut' ? 1 : 0};${this.Wasabi.module.globals[idx].value}`)
             }
         })
-    }
-
-    private debugLoad(op: LoadOp, addr: number, byteLength: number) {
-        console.log('*********** LOAD ***********')
-        console.log('Trace length', this.trace.getLength(), 'last event', this.trace.getTop(), op)
-        console.log('addr', addr, 'byteLength', byteLength, 'data')
-        console.log('shadowMem', new Uint8Array(this.shadowMemories[0]).slice(addr, addr + byteLength).join(','))
-        this.debugMemory(addr, addr + byteLength)
-    }
-
-    private debugStore(op: StoreOp, addr: number, byteLength: number) {
-        console.log('*********** STORE ***********')
-        console.log('Trace length', this.trace.getLength(), 'last event', this.trace.getTop(), op)
-        console.log('addr', addr, 'byteLength', byteLength, 'data')
-        this.debugMemory(addr, addr + byteLength)
-    }
-
-    private debugMemory(startAddr: number, endAddr: number) {
-        console.log(`actualMem from ${startAddr}: `, new Uint8Array(this.Wasabi.module.memories[0].buffer).slice(startAddr, endAddr).join(','))
-        console.log(`shadowMem from ${startAddr}: `, new Uint8Array(this.shadowMemories[0]).slice(startAddr, endAddr).join(','))
     }
 }
