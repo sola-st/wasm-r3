@@ -35,6 +35,11 @@ pub fn generate(
             writeln!(part_file, "{}", part_transform_table(&line))?;
             continue;
         }
+        if line.starts_with(" (global") {
+            writeln!(rest_file, "{}", rest_transform_global(&line))?;
+            writeln!(part_file, "{}", part_transform_global(&line))?;
+            continue;
+        }
         if line.starts_with(" (export") {
             writeln!(rest_file, "{}", line)?;
             continue;
@@ -247,6 +252,38 @@ fn part_transform_table(line: &str) -> String {
             return format!(
                 " {} {} (import \"rest\" \"r3_table\") {}",
                 table_keyword, table_name, rest
+            );
+        }
+    }
+    line.to_string()
+}
+
+fn rest_transform_global(line: &str) -> String {
+    if line.trim().starts_with("(global ") {
+        let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
+        if parts.len() >= 2 {
+            let global_keyword = parts[0];
+            let global_name = parts[1];
+            let rest = parts[2..].join(" ");
+            return format!(
+                " {} {} (export \"{global_name}\") {}",
+                global_keyword, global_name, rest
+            );
+        }
+    }
+    line.to_string()
+}
+
+fn part_transform_global(line: &str) -> String {
+    if line.trim().starts_with("(global ") {
+        let parts: Vec<&str> = line.trim_start().splitn(3, ' ').collect();
+        if parts.len() >= 2 {
+            let global_keyword = parts[0];
+            let global_name = parts[1];
+            let rest = parts[2..].join(" ");
+            return format!(
+                " {} {} (import \"rest\" \"{global_name}\") {}",
+                global_keyword, global_name, rest
             );
         }
     }
