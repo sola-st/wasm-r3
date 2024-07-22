@@ -63,6 +63,9 @@ export class Analyser implements AnalyserI {
             });
         }
         this.page = await this.browser.newPage();
+        this.page.on('pageerror', msg => {
+            console.log(`Browser console error: ${msg}`);
+        });
         this.page.setDefaultTimeout(120000);
         if (this.options.noRecord !== true) {
             await this.attachRecorder()
@@ -168,25 +171,25 @@ export class Analyser implements AnalyserI {
 
     private async getStats() {
         const stats = await Promise.all(
-          this.contexts.map(async (c) => {
-            const stats = await c.evaluate(() => {
-              try {
-                //@ts-ignore
-                const stats = analysis /*as AnalysisI<Trace>[]*/
-                  .map((s, j) => {
-                    const stat = s.getStats();
-                    return stat;
-                  });
+            this.contexts.map(async (c) => {
+                const stats = await c.evaluate(() => {
+                    try {
+                        //@ts-ignore
+                        const stats = analysis /*as AnalysisI<Trace>[]*/
+                            .map((s, j) => {
+                                const stat = s.getStats();
+                                return stat;
+                            });
+                        return stats;
+                    } catch {
+                        return {};
+                    }
+                });
                 return stats;
-              } catch {
-                return {};
-              }
-            });
-            return stats;
-          })
+            })
         );
         return stats.flat(1);
-      }
+    }
 
     private async getBuffers() {
         const originalWasmBuffer = await Promise.all(this.contexts.map(async (c) => {

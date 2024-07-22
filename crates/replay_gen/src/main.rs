@@ -64,24 +64,7 @@ fn generate(args: Vec<String>) -> io::Result<()> {
     let is_standalone = replay_path.is_none();
     let is_replay_wasm = !is_standalone && replay_path.unwrap().extension().unwrap() == "wasm";
     if is_replay_wasm {
-        let index_path = wasm_path.parent().unwrap().join("index.wasm");
-        let base_path = wasm_path.parent().unwrap().parent().unwrap().parent().unwrap();
-        let sub_dir = wasm_path.parent().unwrap().file_name().unwrap();
-        let noopt_path = base_path.join(&format!("noopt/{}/replay.wasm", sub_dir.to_str().unwrap()));
-        let merge_path = base_path.join(&format!("merge/{}/replay.wasm", sub_dir.to_str().unwrap()));
-        let split_path = base_path.join(&format!("split/{}/replay.wasm", sub_dir.to_str().unwrap()));
-
-        std::fs::create_dir_all(noopt_path.parent().unwrap())?;
-        std::fs::copy(&index_path, &noopt_path.parent().unwrap().join("index.wasm"))?;
-        std::fs::create_dir_all(merge_path.parent().unwrap())?;
-        std::fs::copy(&index_path, &merge_path.parent().unwrap().join("index.wasm"))?;
-        std::fs::create_dir_all(split_path.parent().unwrap())?;
-        std::fs::copy(&index_path, &split_path.parent().unwrap().join("index.wasm"))?;
-        
-        generate_replay_wasm(&noopt_path, &generator.replay, false)?;
-        generate_replay_wasm(&merge_path, &generator.replay, true)?;
         Optimiser::split_big_body(&mut generator.replay); // works only for wasm
-        generate_replay_wasm(&split_path, &generator.replay, false)?;
         generate_replay_wasm(wasm_path, &generator.replay, true)?;
     } else {
         generate_replay_javascript(replay_path.unwrap(), &generator.replay)?;
