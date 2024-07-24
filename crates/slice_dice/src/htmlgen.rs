@@ -18,7 +18,7 @@ pub fn generate(out_dir: PathBuf, func_name: String) -> Result<(), Error> {
             let imports = {{
                 part: {{
                     '{func_name}': (...args) => {{
-                        part.instance.exports['{func_name}'](...args);
+                        return part.instance.exports['{func_name}'](...args);
                     }},
                 }}
             }};
