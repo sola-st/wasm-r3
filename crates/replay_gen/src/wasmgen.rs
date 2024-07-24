@@ -103,9 +103,6 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
         }
         for (_i, global) in &code.imported_globals() {
             let import = global.import.clone().unwrap();
-            if import.module != *current_module {
-                continue;
-            }
 
             let module = import.module.clone();
             let name = import.name.clone();
@@ -122,9 +119,6 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
         // tables
         for (_i, table) in &code.imported_tables() {
             let import = table.import.clone().unwrap();
-            if import.module != *current_module {
-                continue;
-            }
             let module = import.module.clone();
             let name = import.name.clone();
             let initial = table.initial;
@@ -141,10 +135,6 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
         // functions
 
         for (funcidx, func) in &code.imported_funcs() {
-            let import = func.import.clone().unwrap();
-            if import.module != *current_module {
-                continue;
-            }
             // TODO: better handling of initialization
             if *funcidx == INIT_INDEX {
                 continue;
@@ -487,9 +477,13 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
                         let name = import.name;
                         let initial = global.initial;
                         let valtype = global.valtype.clone();
+                        let mutable = match global.mutable {
+                            true => format!("(mut {valtype})"),
+                            false => format!("{valtype}"),
+                        };
                         write!(
                             stream,
-                            "(global (export \"{name}\") {valtype} ({valtype}.const {initial:?}))\n"
+                            "(global (export \"{name}\") {mutable} ({valtype}.const {initial:?}))\n"
                         )?;
                     }
                 }

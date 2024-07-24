@@ -37,7 +37,8 @@ export default class Benchmark {
                 p_measureJSWrite()
             } else {
                 const p_measureCodeGen = createMeasure('rust-backend', { phase: 'replay-generation', description: `The time it takes for rust backend to generate javascript` })
-                execSync(`./target/release/replay_gen generate ${diskSave} ${path.join(binPath, 'index.wasm')} false ${path.join(binPath, 'pure.js')}`);
+                // FIXME: enable back after hacking on slicedice
+                // execSync(`./target/release/replay_gen generate ${diskSave} ${path.join(binPath, 'index.wasm')} false ${path.join(binPath, 'pure.js')}`);
                 execSync(`./target/release/replay_gen generate ${diskSave} ${path.join(binPath, 'index.wasm')} false ${path.join(binPath, 'replay.wasm')}`);
                 execSync(`wasmtime ${path.join(binPath, 'replay.wasm')}`);
                 p_measureCodeGen()
