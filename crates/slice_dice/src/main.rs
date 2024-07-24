@@ -34,6 +34,9 @@ fn main() -> Result<()> {
     let first_int = int_list[0];
     println!("Smallest element: {:?}", first_int);
 
+    // TODO: get it from commandline
+    let rep_count = 1;
+
     let pathbuf = PathBuf::from(path);
     let parent_dir = pathbuf.parent().ok_or_else(|| Error::msg("Invalid path"))?;
     let out_dir = parent_dir.join(format!("out/{first_int}"));
@@ -61,7 +64,7 @@ fn main() -> Result<()> {
 
     let func_name = wasmgen::generate(&out_dir, orig_wat_path, int_list, parent_dir)?;
 
-    htmlgen::generate(out_dir, func_name)?;
+    htmlgen::generate(out_dir, func_name, rep_count)?;
 
     Ok(())
 }

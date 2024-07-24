@@ -2,7 +2,7 @@ use std::{fs::File, io::Write, path::PathBuf};
 
 use anyhow::Error;
 
-pub fn generate(out_dir: PathBuf, func_name: String) -> Result<(), Error> {
+pub fn generate(out_dir: PathBuf, func_name: String, rep_count: usize) -> Result<(), Error> {
     let out_dir_fname = out_dir.to_str().unwrap();
     let wrapper_html = format!(
         r#"
@@ -38,7 +38,9 @@ pub fn generate(out_dir: PathBuf, func_name: String) -> Result<(), Error> {
 
             // Call the main function to start the program
             const startTime = performance.now();
-            rest.instance.exports.main();
+            for (let i = 0; i < {rep_count}; i++) {{
+                rest.instance.exports.main();
+            }}
             const endTime = performance.now();
             const executionTime = endTime - startTime;
             console.log(`Execution time: ${{executionTime}} milliseconds`);
