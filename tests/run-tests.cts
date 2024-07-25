@@ -632,6 +632,7 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
   const optionDefinitions = [
     { name: "category", type: String, multiple: true, defaultOption: true },
     { name: "testcases", alias: "t", type: String, multiple: true },
+    { name: "fidxs", alias: "i", type: Number, multiple: true },
     { name: "port", alias: "p", type: Number },
     { name: "customFrontend", alias: "c", type: Boolean },
     { name: "firefoxFrontend", alias: "f", type: Boolean },
@@ -685,6 +686,6 @@ async function testWebPage(testPath: string, options): Promise<TestReport> {
     if (options.testcases !== undefined) {
       testNames = testNames.filter((n) => options.testcases.includes(n));
     }
-    await runSliceDiceTests(testNames, options);
+    await runSliceDiceTests(testNames, options.fidxs, options);
   }
 })();
