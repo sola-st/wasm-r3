@@ -15,15 +15,17 @@ fn main() -> Result<()> {
         .get(1)
         .ok_or_else(|| Error::msg("No WASM file path provided"))?;
 
-    preprocess::run_wizard(path)?;
-
-    let int_list: HashSet<i32> = args
-        .get(2)
-        .ok_or_else(|| Error::msg("No list of integers provided"))?
-        .split(',')
-        .map(|s| s.trim().parse::<i32>())
-        .collect::<std::result::Result<HashSet<i32>, _>>()
-        .map_err(|e| Error::msg(format!("Failed to parse integers: {}", e)))?;
+    let int_list: HashSet<i32> = match args.get(2) {
+        Some(s) => s
+            .split(',')
+            .map(|s| s.trim().parse::<i32>())
+            .collect::<std::result::Result<HashSet<i32>, _>>()
+            .map_err(|e| Error::msg(format!("Failed to parse integers: {}", e)))?,
+        None => {
+            preprocess::run_wizard(path)?;
+            return Ok(());
+        }
+    };
 
     println!("Parsed unique integers: {:?}", int_list);
     let smallest = int_list

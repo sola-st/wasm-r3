@@ -47,4 +47,4 @@ metrics = {
 with open("metrics.json", "w") as f:
     json.dump(metrics, f, indent=4)
 
-print("Enumeration of benchmarks and possible fidx done.")
+print("Enumeration of benchmarks and fidxs done.")
