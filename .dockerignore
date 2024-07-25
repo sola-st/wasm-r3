@@ -6,7 +6,6 @@ node_modules/**
 performance.db.ndjson
 performance.ndjson
 target/
-benchmark*/
 custom*/
 temp-trace*
 canned*
