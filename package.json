@@ -20,7 +20,7 @@
     "acorn": "^8.11.2",
     "command-line-args": "^5.2.1",
     "playwright": "^1.42.1",
-    "ws": "^8.14.2"
+    "ws": "^8.17.1"
   },
   "scripts": {
     "build": "tsc && node ./build.js",
