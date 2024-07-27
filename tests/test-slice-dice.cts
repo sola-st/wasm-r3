@@ -13,26 +13,27 @@ export default async function runSliceDiceTests(names: string[], fidxs: number[]
     const benchmarkPath = path.join(process.cwd(), "benchmarks", name);
     const replayWasmPath = path.join(benchmarkPath, `${name}.wasm`)
     if (fidxs == undefined) fidxs = getSubsetFidx(replayWasmPath, name);
-    for (let fidx of fidxs) {
-      console.log(`${name}-${fidx}:`);
-      const subsetPath = path.join(benchmarkPath, 'out', `${fidx}`)
-      runSliceDice(replayWasmPath, fidx);
-      await runWasmR3(options, subsetPath, benchmarkPath, fidx);
-    }
+    const fidx = fidxs.join(',')
+    console.log(`${name}-${fidx}:`);
+    const subsetPath = path.join(benchmarkPath, 'out', `${fidx}`)
+    runSliceDice(replayWasmPath, fidx);
+    await runWasmR3(options, subsetPath, benchmarkPath, fidx);
   }
   exit(0)
 }
 
-function runSliceDice(replayWasmPath: string, fidx: number) {
+function runSliceDice(replayWasmPath: string, fidx: string) {
   const startTime = Date.now();
   process.stdout.write('    Running slice-dice: ');
   const command = `./target/release/slice_dice ${replayWasmPath} ${fidx} 1`;
   execSync(command);
   const endTime = Date.now();
+  // We do not actually check what's generated runs to completion. This is misleading.
+  // TODO: check for completion
   console.log(`${endTime - startTime}ms`);
 }
 
-async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string, fidx: number) {
+async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string, fidx: string) {
   const startTime = Date.now();
   process.stdout.write('    Running wasm-r3: ');
   // Starting server to host the benchmark

@@ -1,4 +1,5 @@
 use anyhow::{Error, Result};
+use std::collections::HashMap;
 use std::fs;
 use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
@@ -13,7 +14,7 @@ pub fn generate(
     orig_wat_path: PathBuf,
     int_list: Vec<i32>,
     parent_dir: &std::path::Path,
-) -> Result<String, Error> {
+) -> Result<HashMap<i32, String>, Error> {
     let orig_part_path = out_dir.join("orig_part.wat");
     let orig_rest_path = out_dir.join("orig_rest.wat");
     let mut part_file = fs::File::create(&orig_part_path)?;
@@ -22,7 +23,7 @@ pub fn generate(
     let reader = BufReader::new(orig_file);
     let mut in_func = false;
     let mut curr_func = -1;
-    let mut func_name = "".to_string();
+    let mut fidx_to_name: HashMap<i32, String> = HashMap::new();
     for (_index, line) in reader.lines().enumerate() {
         let line = line?;
         if line.starts_with(" (memory") {
@@ -50,7 +51,7 @@ pub fn generate(
             if int_list.contains(&curr_func) {
                 let (rest_line, _extracted_name) = rest_transform_func(&line);
                 let (part_line, extracted_name) = part_transform_func(&line);
-                func_name = extracted_name;
+                fidx_to_name.insert(curr_func, extracted_name);
                 writeln!(rest_file, "{rest_line}",)?;
                 writeln!(part_file, "{part_line}",)?;
                 continue;
@@ -122,7 +123,7 @@ pub fn generate(
             error_message
         )));
     }
-    Ok(func_name)
+    Ok(fidx_to_name)
 }
 
 fn rest_transform_func(line: &str) -> (String, String) {

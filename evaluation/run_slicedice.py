@@ -1,5 +1,6 @@
-import subprocess, json, concurrent.futures, re, os
+import subprocess, json, concurrent.futures, re, os, itertools
 
+test_subset = os.getenv("TEST_SUBSET")
 test_name = os.getenv("TEST_NAME")
 TIMEOUT = 120
 
@@ -35,7 +36,8 @@ result = extract_times(input_string)
 
 def run_slicedice(testname, fidx):
     try:
-        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx}"
+        fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
+        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} {fidxargs}"
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
         return [testname, fidx, extract_times(result.stdout)]
     except Exception as e:
@@ -45,11 +47,25 @@ def run_slicedice(testname, fidx):
 
 
 testset = [test_name] if test_name else sorted(metrics)
+
+
+def get_fidx(testname):
+    if test_subset:
+        keys = metrics[testname]
+        subsets = []
+        for r in range(2, len(keys)):
+            subsets.extend(itertools.combinations(keys, r))
+        subsets = ["-".join(subset) for subset in subsets]
+        return subsets
+    else:
+        return metrics[testname]
+
+
 with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
     futures = [
         executor.submit(run_slicedice, testname, fidx)
         for testname in testset
-        for fidx in metrics[testname]
+        for fidx in get_fidx(testname)
     ]
     results = [future.result() for future in concurrent.futures.as_completed(futures)]
 for result in results:

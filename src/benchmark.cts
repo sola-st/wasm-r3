@@ -40,7 +40,7 @@ export default class Benchmark {
                 // FIXME: enable back after hacking on slicedice
                 // execSync(`./target/release/replay_gen generate ${diskSave} ${path.join(binPath, 'index.wasm')} false ${path.join(binPath, 'pure.js')}`);
                 execSync(`./target/release/replay_gen generate ${diskSave} ${path.join(binPath, 'index.wasm')} false ${path.join(binPath, 'replay.wasm')}`);
-                execSync(`wasmtime ${path.join(binPath, 'replay.wasm')}`);
+                // execSync(`wasmtime ${path.join(binPath, 'replay.wasm')}`);
                 p_measureCodeGen()
             }
             await fs.rm(diskSave)

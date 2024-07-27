@@ -15,33 +15,36 @@ fn main() -> Result<()> {
         .get(1)
         .ok_or_else(|| Error::msg("No WASM file path provided"))?;
 
-    let int_list: HashSet<i32> = match args.get(2) {
+    let mut int_list: Vec<i32> = match args.get(2) {
         Some(s) => s
             .split(',')
             .map(|s| s.trim().parse::<i32>())
-            .collect::<std::result::Result<HashSet<i32>, _>>()
+            .collect::<std::result::Result<Vec<i32>, _>>()
             .map_err(|e| Error::msg(format!("Failed to parse integers: {}", e)))?,
         None => {
             preprocess::run_wizard(path)?;
             return Ok(());
         }
     };
+    int_list.sort();
 
     println!("Parsed unique integers: {:?}", int_list);
-    let smallest = int_list
-        .iter()
-        .min()
-        .ok_or_else(|| Error::msg("Empty list of integers"))?;
-    let int_list = vec![*smallest];
-    let first_int = int_list[0];
-    println!("Smallest element: {:?}", first_int);
 
-    // TODO: get it from commandline
-    let rep_count = 1;
+    let rep_count: usize = match args.get(3) {
+        Some(s) => s.parse::<usize>()?,
+        None => 1,
+    };
 
     let pathbuf = PathBuf::from(path);
     let parent_dir = pathbuf.parent().ok_or_else(|| Error::msg("Invalid path"))?;
-    let out_dir = parent_dir.join(format!("out/{first_int}"));
+    let out_dir = parent_dir.join(format!(
+        "out/{}",
+        int_list
+            .iter()
+            .map(|i| i.to_string())
+            .collect::<Vec<String>>()
+            .join(",")
+    ));
     println! {"Output directory: {:?}", out_dir};
     fs::create_dir_all(&out_dir)?;
 
@@ -64,7 +67,12 @@ fn main() -> Result<()> {
         return Err(Error::msg(format!("wasm-dis failed: {}", error_message)));
     }
 
-    let func_name = wasmgen::generate(&out_dir, orig_wat_path, int_list, parent_dir)?;
+    let func_name = wasmgen::generate(
+        &out_dir,
+        orig_wat_path,
+        int_list.iter().cloned().collect(),
+        parent_dir,
+    )?;
 
     htmlgen::generate(out_dir, func_name, rep_count)?;
 

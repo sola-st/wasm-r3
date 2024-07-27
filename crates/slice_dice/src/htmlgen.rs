@@ -1,9 +1,24 @@
-use std::{fs::File, io::Write, path::PathBuf};
+use std::{collections::HashMap, fs::File, io::Write, path::PathBuf};
 
 use anyhow::Error;
 
-pub fn generate(out_dir: PathBuf, func_name: String, rep_count: usize) -> Result<(), Error> {
+pub fn generate(
+    out_dir: PathBuf,
+    fidx_to_name: HashMap<i32, String>,
+    rep_count: usize,
+) -> Result<(), Error> {
     let out_dir_fname = out_dir.to_str().unwrap();
+    let funcdecls = fidx_to_name
+        .iter()
+        .map(|(_i, name)| {
+            format!(
+                "'{name}': (...args) => {{
+                        return part.instance.exports['{name}'](...args);
+                    }},",
+            )
+        })
+        .collect::<Vec<String>>()
+        .join("\n");
     let wrapper_html = format!(
         r#"
 <!DOCTYPE html>
@@ -17,9 +32,7 @@ pub fn generate(out_dir: PathBuf, func_name: String, rep_count: usize) -> Result
             let part;
             let imports = {{
                 part: {{
-                    '{func_name}': (...args) => {{
-                        return part.instance.exports['{func_name}'](...args);
-                    }},
+                    {funcdecls}
                 }}
             }};
 
@@ -53,10 +66,10 @@ pub fn generate(out_dir: PathBuf, func_name: String, rep_count: usize) -> Result
     </script>
 </head>
 <body>
-    <h1>${out_dir_fname}</h1>
+    <h1>{out_dir_fname}</h1>
 </body>
 </html>
-"""#
+"#
     );
     let orig_html_path = out_dir.join("index.html");
     let mut orig_html_file = File::create(&orig_html_path)?;
