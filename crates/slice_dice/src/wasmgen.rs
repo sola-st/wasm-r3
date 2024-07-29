@@ -167,7 +167,7 @@ fn part_import_func(line: &str) -> (String, String) {
             let func_name = parts[1];
             let rest = parts[2..].join(" ");
             let var_name = (
-                format!(" {func_keyword} {func_name} (import \"rest\" \"{func_name}\") {rest})",),
+                format!(" {func_keyword} {func_name} (export \"r3_{func_name}\") (import \"rest\" \"{func_name}\") {rest})",),
                 func_name.to_string(),
             );
             return var_name;

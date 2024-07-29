@@ -22,6 +22,8 @@ export default class Benchmark {
         const p_measureSave = createMeasure('save', { phase: 'replay-generation', description: 'The time it takes to save the benchmark to the disk. This means generating the intermediate representation code from the trace and streaming it to the file, as well as saving the wasm binaries.' })
         if (!fss.existsSync(benchmarkPath)) await fs.mkdir(benchmarkPath)
         await Promise.all(this.record.map(async ({ binary, trace }, i) => {
+            // FIXME: enable back after hacking on slicedice
+            if (i != 1) return;
             const binPath = path.join(benchmarkPath, `bin_${i}`)
             if (!fss.existsSync(binPath)) await fs.mkdir(binPath)
             await fs.writeFile(path.join(binPath, 'trace.r3'), trace.toString())
