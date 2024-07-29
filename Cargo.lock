@@ -279,7 +279,7 @@ dependencies = [
  "num-derive",
  "num-traits",
  "tempfile",
- "walrus",
+ "walrus 0.21.1",
  "wasmprinter 0.2.76",
  "wat",
 ]
@@ -402,7 +402,7 @@ dependencies = [
  "regex",
  "serde",
  "serde-wasm-bindgen",
- "walrus",
+ "walrus 0.20.3",
  "wasm-bindgen",
  "wasmparser 0.119.0",
  "wasmprinter 0.2.76",
@@ -447,6 +447,22 @@ dependencies = [
  "walrus-macro",
  "wasm-encoder 0.29.0",
  "wasmparser 0.80.2",
+]
+
+[[package]]
+name = "walrus"
+version = "0.21.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "467611cafbc8a84834b77d2b4bb191fd2f5769752def8340407e924390c6883b"
+dependencies = [
+ "anyhow",
+ "gimli",
+ "id-arena",
+ "leb128",
+ "log",
+ "walrus-macro",
+ "wasm-encoder 0.212.0",
+ "wasmparser 0.212.0",
 ]
 
 [[package]]
@@ -534,6 +550,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "wasm-encoder"
+version = "0.212.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "501940df4418b8929eb6d52f1aade1fdd15a5b86c92453cb696e3c906bd3fc33"
+dependencies = [
+ "leb128",
+]
+
+[[package]]
 name = "wasmparser"
 version = "0.80.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -548,6 +573,20 @@ dependencies = [
  "bitflags 2.4.2",
  "indexmap 2.1.0",
  "semver",
+]
+
+[[package]]
+name = "wasmparser"
+version = "0.212.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8d28bc49ba1e5c5b61ffa7a2eace10820443c4b7d1c0b144109261d14570fdf8"
+dependencies = [
+ "ahash",
+ "bitflags 2.4.2",
+ "hashbrown 0.14.3",
+ "indexmap 2.1.0",
+ "semver",
+ "serde",
 ]
 
 [[package]]

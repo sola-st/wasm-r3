@@ -1,5 +1,7 @@
 import subprocess, json, concurrent.futures, re, os, itertools
 
+# this takes upto 150GB of memory.
+# TODO: why?
 test_subset = os.getenv("TEST_SUBSET")
 test_name = os.getenv("TEST_NAME")
 TIMEOUT = 120

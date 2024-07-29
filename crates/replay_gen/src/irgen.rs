@@ -205,8 +205,8 @@ pub struct FunctionTy {
 pub struct Memory {
     pub import: Option<Import>,
     pub export: Option<Export>,
-    pub initial: u32,
-    pub maximum: Option<u32>,
+    pub initial: u64,
+    pub maximum: Option<u64>,
     pub shared: bool,
 }
 
@@ -215,8 +215,8 @@ pub struct Table {
     pub import: Option<Import>,
     pub export: Option<Export>,
     pub reftype: ValType,
-    pub initial: u32,
-    pub maximum: Option<u32>,
+    pub initial: u64,
+    pub maximum: Option<u64>,
 }
 
 #[derive(Clone, Debug)]

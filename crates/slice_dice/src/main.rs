@@ -2,7 +2,6 @@ use anyhow::{Error, Result};
 use slice_dice::htmlgen;
 use slice_dice::preprocess;
 use slice_dice::wasmgen;
-use std::collections::HashSet;
 use std::env;
 use std::fs;
 use std::path::PathBuf;

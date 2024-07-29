@@ -152,20 +152,66 @@ impl Display for StoreValue {
 #[derive(Clone, Debug)]
 pub enum WasmEvent {
     // Each corresponds to a single wasm instruction.
-    Load { idx: usize, offset: i32, data: LoadValue },
-    Store { idx: usize, offset: i32, data: StoreValue },
-    MemGrow { idx: usize, amount: i32 },
-    TableGet { tableidx: usize, idx: usize, funcidx: i32 },
-    TableSet { tableidx: usize, idx: usize, funcidx: i32 },
-    TableGrow { idx: usize, amount: i32 },
-    GlobalGet { idx: usize, value: F64, valtype: ValType },
-    GlobalSet { idx: usize, value: F64, valtype: ValType },
-    Call { idx: usize },
-    CallIndirect { tableidx: usize, idx: usize, funcidx: i32 },
-    CallReturn { idx: usize, results: Vec<F64> },
+    Load {
+        idx: usize,
+        offset: i32,
+        data: LoadValue,
+    },
+    Store {
+        idx: usize,
+        offset: i32,
+        data: StoreValue,
+    },
+    MemGrow {
+        idx: usize,
+        amount: i32,
+    },
+    TableGet {
+        tableidx: usize,
+        idx: usize,
+        funcidx: i32,
+    },
+    TableSet {
+        tableidx: usize,
+        idx: usize,
+        funcidx: i32,
+    },
+    TableGrow {
+        idx: usize,
+        amount: i32,
+    },
+    GlobalGet {
+        idx: usize,
+        value: F64,
+        valtype: ValType,
+    },
+    GlobalSet {
+        idx: usize,
+        value: F64,
+        valtype: ValType,
+    },
+    Call {
+        idx: usize,
+    },
+    CallIndirect {
+        tableidx: usize,
+        idx: usize,
+        funcidx: i32,
+    },
+    CallReturn {
+        idx: usize,
+        results: Vec<F64>,
+    },
     // These do not correspond to a wasm instruction, but used to track control flow
-    FuncEntry { idx: usize, params: Vec<F64> },
-    FuncEntryTable { idx: usize, tableidx: usize, params: Vec<F64> },
+    FuncEntry {
+        idx: usize,
+        params: Vec<F64>,
+    },
+    FuncEntryTable {
+        idx: usize,
+        tableidx: usize,
+        params: Vec<F64>,
+    },
     FuncReturn,
     ImportGlobal {
         idx: usize,
@@ -320,8 +366,7 @@ impl WasmEvent {
                 walrus::ValType::F32 => F64(read_f32(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
                 walrus::ValType::F64 => F64(read_f64(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
                 walrus::ValType::V128 => todo!(),
-                walrus::ValType::Externref => todo!(),
-                walrus::ValType::Funcref => todo!(),
+                walrus::ValType::Ref(_) => todo!(),
             })
             .collect();
         Ok(vec![WasmEvent::CallReturn { idx, results }])
@@ -345,8 +390,7 @@ impl WasmEvent {
                 walrus::ValType::F32 => F64(read_f32(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
                 walrus::ValType::F64 => F64(read_f64(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
                 walrus::ValType::V128 => todo!(),
-                walrus::ValType::Externref => todo!(),
-                walrus::ValType::Funcref => todo!(),
+                walrus::ValType::Ref(_) => todo!(),
             })
             .collect();
         let ret = vec![WasmEvent::FuncEntry { idx, params }];
@@ -371,8 +415,7 @@ impl WasmEvent {
                 walrus::ValType::F32 => F64(read_f32(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
                 walrus::ValType::F64 => F64(read_f64(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
                 walrus::ValType::V128 => todo!(),
-                walrus::ValType::Externref => todo!(),
-                walrus::ValType::Funcref => todo!(),
+                walrus::ValType::Ref(_) => todo!(),
             })
             .collect();
         let ret = vec![WasmEvent::FuncEntryTable { idx, tableidx: 0, params }];
@@ -397,8 +440,7 @@ impl WasmEvent {
                 walrus::ValType::F32 => F64(read_f32(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
                 walrus::ValType::F64 => F64(read_f64(reader).map_err(|_| ErrorKind::UnknownTrace).unwrap() as f64),
                 walrus::ValType::V128 => todo!(),
-                walrus::ValType::Externref => todo!(),
-                walrus::ValType::Funcref => todo!(),
+                walrus::ValType::Ref(_) => todo!(),
             })
             .collect();
         Ok(vec![WasmEvent::CallReturn { idx, results }])
@@ -644,8 +686,11 @@ impl From<walrus::ValType> for ValType {
             walrus::ValType::F32 => Self::F32,
             walrus::ValType::F64 => Self::F64,
             walrus::ValType::V128 => Self::V128,
-            walrus::ValType::Externref => Self::Externref,
-            walrus::ValType::Funcref => Self::Anyref,
+            walrus::ValType::Ref(refty) => match refty {
+                walrus::RefType::Funcref => Self::Anyref,
+                walrus::RefType::Externref => Self::Externref,
+                _ => todo!(),
+            },
         }
     }
 }
