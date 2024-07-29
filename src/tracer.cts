@@ -225,9 +225,10 @@ export default class Analysis implements AnalysisI<Trace> {
     private shadowMemories: ArrayBuffer[] = []
     private shadowGlobals: number[] = []
     private shadowTables: WebAssembly.Table[] = []
+    private funcrefToIdx: Map<Function, number>
 
     // helpers
-    private callStack: ('int' | { name: string, idx: number })[] = [{ name: 'main', 'idx': -1 }]
+    private callStack: ('int' | { idx: number })[] = [{ 'idx': -1 }]
     private MEM_PAGE_SIZE = 65536
 
 
@@ -355,13 +356,17 @@ export default class Analysis implements AnalysisI<Trace> {
 
             call_pre: (location, op, funcidx, args, tableTarget) => {
                 if (op === 'call_indirect') {
-                    this.tableGetEvent(tableTarget.tableIdx, tableTarget.elemIdx)
-                }
-                let funcImport = Wasabi.module.info.functions[funcidx].import
-                if (funcImport !== null) {
-                    let name = funcImport[1]
-                    this.callStack.push({ name, idx: funcidx })
-                    this.trace.push(`IC;${funcidx};${name}`)
+                    const resolvedFuncIdx = this.funcrefToIdx.get(this.shadowTables[tableTarget.tableIdx].get(tableTarget.elemIdx));
+                    console.trace(resolvedFuncIdx)
+                    this.callStack.push({ idx: funcidx })
+                    this.trace.push(`IC;${resolvedFuncIdx}`)
+                } else {
+                    let funcImport = Wasabi.module.info.functions[funcidx].import
+                    if (funcImport !== null) {
+                        let name = funcImport[1]
+                        this.callStack.push({ idx: funcidx })
+                        this.trace.push(`IC;${funcidx}`)
+                    }
                 }
             },
 
@@ -371,7 +376,7 @@ export default class Analysis implements AnalysisI<Trace> {
                     return
                 }
                 this.callStack.pop()
-                this.trace.push(`IR;${func.idx};${func.name};${results.join(',')}`)
+                this.trace.push(`IR;${func.idx};;${results.join(',')}`)
                 this.checkMemGrow()
                 this.checkTableGrow()
             },
@@ -506,7 +511,21 @@ export default class Analysis implements AnalysisI<Trace> {
     }
 
     init() {
-        // Init Memories
+        const funcrefToIdx = new Map();
+        for (let exp in this.Wasabi.module.exports) {
+            let funcref = this.Wasabi.module.exports[exp]
+            if (typeof funcref == 'function') {
+                let fidx;
+                this.Wasabi.module.info.functions.forEach((f, i) => {
+                    if (f.export !== null && f.export[0] === exp) {
+                        fidx = i
+                    }
+                })
+                funcrefToIdx.set(funcref, fidx);
+            }
+        }
+        this.funcrefToIdx = funcrefToIdx
+
         this.Wasabi.module.memories.forEach((mem, i) => {
             let isImported = this.Wasabi.module.info.memories[i].import !== null
             if (isImported) {
