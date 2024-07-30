@@ -33,6 +33,7 @@ export class Analyser implements AnalyserI {
     private options: Options
     private browser: Browser
     private page: Page
+    private downloadPaths: string[]
     private contexts: (Frame | Worker)[] = []
     private isRunning = false
     private p_measureUserInteraction: StopMeasure
@@ -65,6 +66,12 @@ export class Analyser implements AnalyserI {
         this.page = await this.browser.newPage();
         this.page.on('pageerror', msg => {
             console.log(`Browser console error: ${msg}`);
+        });
+        this.downloadPaths = [];
+        this.page.on('download', async (download) => {
+            const suggestedFilename = download.suggestedFilename();
+            await download.saveAs(suggestedFilename);
+            this.downloadPaths.push(suggestedFilename);
         });
         this.page.setDefaultTimeout(120000);
         if (this.options.noRecord !== true) {
@@ -192,19 +199,11 @@ export class Analyser implements AnalyserI {
     }
 
     private async getBuffers() {
-        const originalWasmBuffer = await Promise.all(this.contexts.map(async (c) => {
-            const p_measureBufferDownload = createMeasure(`buffer download from context: ${c.url()}`, { phase: 'record', description: `The time it takes to download the wasm binary from the browser context: ${c.url}.` })
-            const buffer = await c.evaluate(() => {
-                try {
-                    return Array.from(originalWasmBuffer)
-                } catch {
-                    return []
-                }
-            })
-            p_measureBufferDownload()
-            return buffer
-        }))
-        return originalWasmBuffer.flat(1) as number[][]
+        const downloadContents = await Promise.all(this.downloadPaths.map(async (filename) => {
+            const content = await fs.readFile(filename);
+            return Array.from(content);
+        }));
+        return downloadContents;
     }
 
     private async constructInitScript() {

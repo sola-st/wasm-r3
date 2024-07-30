@@ -55,6 +55,8 @@ function setup() {
     let original_instantiate = WebAssembly.instantiate
     WebAssembly.instantiate = function (buffer, importObject) {
         buffer = (buffer.byte) ? buffer.byte : buffer
+        // Download the wasm binary
+        downloadBinary(buffer)
         // self.performanceList.push(p_timeToFirstInstantiate.stop())
         const this_i = i
         i += 1
@@ -78,6 +80,19 @@ function setup() {
         })
         // self.performanceList.push(p_instantiationTime.stop())
         return result
+
+        function downloadBinary(buffer) {
+            let blob = new Blob([buffer], { type: 'application/octet-stream' });
+            let url = window.URL.createObjectURL(blob)
+            let a = document.createElement("a")
+            a.href = url
+            a.download = `filename-${i}.txt`
+            a.style.display = "none"
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+        }
     };
     // replace instantiateStreaming
     WebAssembly.instantiateStreaming = async function (source, obj) {
