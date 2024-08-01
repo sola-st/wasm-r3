@@ -1,7 +1,7 @@
 use anyhow::{Error, Result};
 use slice_dice::htmlgen;
 use slice_dice::preprocess;
-use slice_dice::wasmgen;
+use slice_dice::slice;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -66,7 +66,7 @@ fn main() -> Result<()> {
         return Err(Error::msg(format!("wasm-dis failed: {}", error_message)));
     }
 
-    let func_name = wasmgen::generate(
+    let func_name = slice::generate(
         &out_dir,
         orig_wat_path,
         int_list.iter().cloned().collect(),

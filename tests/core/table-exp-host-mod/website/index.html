@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebAssembly Test</title>
+  </head>
+  <body>
+    <script>
+      (async function () {
+        let instance;
+        let imports = {
+          env: {
+            changeTable: () =>
+              instance.exports.table.set(0, instance.exports.foo),
+            changeTable2: () =>
+              instance.exports.table.set(0, instance.exports.bar),
+            a: () => 1,
+            b: () => 2,
+          },
+        };
+        const indexResponse = await fetch("index.wasm");
+        const indexBinary = await indexResponse.arrayBuffer();
+        let wasm = await WebAssembly.instantiate(indexBinary, imports);
+        instance = wasm.instance;
+        instance.exports.entry();
+      })();
+    </script>
+  </body>
+</html>

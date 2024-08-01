@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebAssembly Test</title>
+  </head>
+  <body>
+    <script>
+      import fs from "fs";
+
+      (async function () {
+        let instance;
+        let imports = {
+          env: {
+            foo: () => {},
+            foo1: () => {},
+            foo2: () => {},
+            foo3: () => {},
+            foo4: () => {},
+            foo5: () => {},
+            foo6: () => {},
+            foo7: () => {},
+            foo8: () => {},
+            foo9: () => {},
+            foo10: () => {},
+          },
+        };
+        let friendImports = {
+          env: {
+            tony: () => {},
+            jannik: () => {},
+          },
+        };
+        const indexResponse = await fetch("index.wasm");
+        const indexBinary = await indexResponse.arrayBuffer();
+        let wasm = await WebAssembly.instantiate(indexBinary, imports);
+        const friendBinary = fs.readFileSync(
+          "/Users/jakob/Desktop/wasm-r3/tests/node/table-exp-host-add-jsref/friend.wasm",
+        );
+        let friend = await WebAssembly.instantiate(friendBinary, friendImports);
+        instance = wasm.instance;
+        instance.exports.table.set(0, friend.instance.exports.greet);
+        instance.exports.entry();
+      })();
+    </script>
+  </body>
+</html>

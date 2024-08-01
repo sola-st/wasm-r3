@@ -10,13 +10,20 @@ use crate::irgen::{FunctionTy, HostEvent, INIT_INDEX};
 use crate::trace::{ValType, F64};
 use crate::{irgen::Replay, write};
 
-pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool) -> std::io::Result<()> {
+pub fn generate_replay_wasm(
+    replay_path: &Path,
+    code: &Replay,
+    merge_store: bool,
+) -> std::io::Result<()> {
     let binding = code.imported_modules();
     let mut module_set: HashSet<&String> = binding.iter().collect();
     let binding = "main".to_string();
     module_set.insert(&binding);
     for current_module in module_set.clone() {
-        let module_wat_path = replay_path.parent().unwrap().join(&format!("{current_module}.wat"));
+        let module_wat_path = replay_path
+            .parent()
+            .unwrap()
+            .join(&format!("{current_module}.wat"));
         let mut module_wat_file = File::create(&module_wat_path)?;
         let stream = &mut module_wat_file;
         write(stream, "(module\n")?;
@@ -59,7 +66,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
 
             write(
                 stream,
-                &format!("(import \"index\" \"{name}\" (table ${name} {initial} {reftype:?}))\n",),
+                &format!("(import \"index\" \"{name}\" (table ${name} {initial} {reftype}))\n",),
             )?;
         }
 
@@ -98,7 +105,9 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
 
             write(
                 stream,
-                &format!("(import \"{module}\" \"{name}\" (memory {initial} {maximum} {shared}))\n",),
+                &format!(
+                    "(import \"{module}\" \"{name}\" (memory {initial} {maximum} {shared}))\n",
+                ),
             )?;
         }
         for (_i, global) in &code.imported_globals() {
@@ -129,7 +138,9 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
             let reftype = table.reftype.clone();
             write(
                 stream,
-                &format!("(import \"{module}\" \"{name}\" (table {initial} {maximum} {reftype:?}))\n",),
+                &format!(
+                    "(import \"{module}\" \"{name}\" (table {initial} {maximum} {reftype}))\n",
+                ),
             )?;
         }
         // functions
@@ -143,7 +154,10 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
             let name = func.import.clone().unwrap().name.clone();
             let global_idx = format!("$global_{}", funcidx.to_string());
             let func = code.funcs.get(&funcidx).unwrap();
-            write(stream, &format!("(global {global_idx} (mut i64) (i64.const 0))\n"))?;
+            write(
+                stream,
+                &format!("(global {global_idx} (mut i64) (i64.const 0))\n"),
+            )?;
             let tystr = get_functy_strs(&func.ty);
             write(
                 stream,
@@ -155,7 +169,12 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
                     let mut memory_writes = BTreeMap::new();
                     for event in body {
                         match event {
-                            HostEvent::MutateMemory { addr, data, import: _, name: _ } => {
+                            HostEvent::MutateMemory {
+                                addr,
+                                data,
+                                import: _,
+                                name: _,
+                            } => {
                                 if merge_store {
                                     memory_writes.insert(addr, data);
                                 } else {
@@ -165,7 +184,11 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
                             HostEvent::ExportCall { .. } | HostEvent::ExportCallTable { .. } => {
                                 if merge_store {
                                     if memory_writes.len() > 0 {
-                                        merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
+                                        merge_memory_writes(
+                                            &mut bodystr,
+                                            memory_writes,
+                                            &mut data_segments,
+                                        );
                                         memory_writes = BTreeMap::new();
                                     }
                                     bodystr += &hostevent_to_wat(event, code);
@@ -191,7 +214,9 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
             }
             write(
                 stream,
-                &format!("(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n"),
+                &format!(
+                    "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n"
+                ),
             )?;
             let mut current = 0;
             for r in func.results.iter() {
@@ -201,7 +226,10 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
                 let c1 = current + 1;
                 let c2 = new_c + 1;
                 let res = match r.results.get(0) {
-                    Some(v) => format!("(return ({} {v}))", valty_to_const(ty.results.get(0).unwrap())),
+                    Some(v) => format!(
+                        "(return ({} {v}))",
+                        valty_to_const(ty.results.get(0).unwrap())
+                    ),
                     None => "(return)".to_owned(),
                 };
                 write(
@@ -229,7 +257,7 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
                     ValType::F32 => "(f32.const 0)",
                     ValType::F64 => "(f64.const 0)",
                     ValType::V128 => todo!(),
-                    ValType::Anyref => todo!(),
+                    ValType::Funcref => todo!(),
                     ValType::Externref => todo!(),
                 },
                 None => "",
@@ -248,7 +276,10 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
 
         if current_module == "main" {
             let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
-            write(stream, "(func (@name \"r3_main\")(export \"_start\") (export \"main\")\n")?;
+            write(
+                stream,
+                "(func (@name \"r3_main\")(export \"_start\") (export \"main\")\n",
+            )?;
             if let Some(initialization) = initialization {
                 for event in initialization {
                     write(stream, &format!("{}", hostevent_to_wat(&event, code)))?
@@ -260,21 +291,35 @@ pub fn generate_replay_wasm(replay_path: &Path, code: &Replay, merge_store: bool
         write(stream, ")\n")?;
 
         let binary = wat::parse_file(module_wat_path.clone()).unwrap();
-        let module_wasm_path = replay_path.parent().unwrap().join(&format!("{current_module}.wasm"));
+        let module_wasm_path = replay_path
+            .parent()
+            .unwrap()
+            .join(&format!("{current_module}.wasm"));
         let mut modle_wasm_file = File::create(&module_wasm_path).unwrap();
         modle_wasm_file.write_all(&binary).unwrap();
     }
 
-    generate_replay_js(replay_path, &module_set, code)?;
+    generate_replay_html(replay_path, &module_set, code)?;
     generate_single_wasm(replay_path, &module_set, code)?;
 
     Ok(())
 }
 
-// TODO: make trace comparison work by consulting 98a38f415e27b9978d19f3c562853a4876b8ccc1
-fn generate_replay_js(replay_path: &Path, module_set: &HashSet<&String>, code: &Replay) -> Result<(), std::io::Error> {
-    let replay_js_path = replay_path.parent().unwrap().join(&format!("replay.js"));
-    let stream = &mut File::create(replay_js_path).unwrap();
+fn generate_replay_html(
+    replay_path: &Path,
+    module_set: &HashSet<&String>,
+    code: &Replay,
+) -> Result<(), std::io::Error> {
+    let replay_html_path = replay_path.parent().unwrap().join("index.html");
+    let stream = &mut File::create(replay_html_path).unwrap();
+
+    write(
+        stream,
+        "<!DOCTYPE html>\n<html>\n<head>\n<title>Replay</title>\n</head>\n<body>\n<script>\n",
+    )?;
+
+    // Start of async IIFE
+    write(stream, "(async function() {\n")?;
 
     for (_i, memory) in &code.imported_mems() {
         let import = memory.import.clone().unwrap();
@@ -329,7 +374,10 @@ fn generate_replay_js(replay_path: &Path, module_set: &HashSet<&String>, code: &
     let var_name = "index".to_string();
     let iterable = std::iter::once(&var_name).chain(module_set.clone().into_iter());
     for current_module in iterable {
-        let wasm_path = replay_path.parent().unwrap().join(&format!("{current_module}.wasm"));
+        let wasm_path = replay_path
+            .parent()
+            .unwrap()
+            .join(&format!("{current_module}.wasm"));
         let buffer = &fs::read(wasm_path).unwrap();
         let walrus_module = Module::from_buffer(buffer).unwrap();
         let module_set = walrus_module
@@ -339,9 +387,9 @@ fn generate_replay_js(replay_path: &Path, module_set: &HashSet<&String>, code: &
             .collect::<HashSet<_>>();
         let module_escaped = current_module.replace(|c: char| !c.is_alphanumeric(), "_");
         let object = format!("{module_escaped}Import");
-        let mut import_object_str = format!("const {object}  = {{}}\n");
+        let mut import_object_str = format!("const {object} = {{}};\n");
         for module in module_set {
-            import_object_str += &format!("{object}['{module}'] = {{}}\n");
+            import_object_str += &format!("{object}['{module}'] = {{}};\n");
         }
         for import in walrus_module.imports.iter() {
             let module = &import.module;
@@ -350,11 +398,11 @@ fn generate_replay_js(replay_path: &Path, module_set: &HashSet<&String>, code: &
             let module_name = &format!("{module_escaped}_{name}");
             let value = match import.kind {
                 walrus::ImportKind::Function(_) => {
-                    format!("(...args) => {{ return {module_escaped}.exports['{name}'](...args) }}")
+                    format!("(...args) => {{ return {module_escaped}.instance.exports['{name}'](...args) }}")
                 }
                 _ => {
                     if module == "index" {
-                        format!("index.exports.{name}")
+                        format!("index.instance.exports.{name}")
                     } else {
                         format!("{module_name}")
                     }
@@ -363,37 +411,39 @@ fn generate_replay_js(replay_path: &Path, module_set: &HashSet<&String>, code: &
             import_object_str += &format!("{object}['{module}']['{name}'] = {value}\n",);
         }
 
-        write(
+        write!(
             stream,
-            &format!(
-                "{import_object_str}
-const {module_escaped} = new WebAssembly.Instance(new WebAssembly.Module(await readFile(\"{current_module}.wasm\")), {module_escaped}Import)\n\n",
-            ),
+            "{import_object_str}
+        const {module_escaped}Response = await fetch(\"{current_module}.wasm\");
+        const {module_escaped}Binary = await {module_escaped}Response.arrayBuffer();
+        const {module_escaped} = await WebAssembly.instantiate({module_escaped}Binary, {module_escaped}Import);
+        
+        "
         )?;
     }
 
     write(
         stream,
-        "main.exports.main();
-async function readFile(filename) {
-let data;
-if (typeof Deno !== 'undefined') {
-    data = await Deno.readFile(filename);
-} else if (typeof process !== 'undefined') {
-    const fs = await import('fs').then(module => module.promises);
-    data = await fs.readFile(filename);
-} else if (typeof Bun !== 'undefined') {
-    data = await Bun.fs.readFile(filename, 'utf8');
-} else {
-    throw new Error('Not suppported');
-}
-return data;
-} ",
+        r#"const startTime = performance.now();
+    main.instance.exports.main();
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    const executionTimeElement = document.createElement('p');
+    executionTimeElement.textContent = `Execution time: ${executionTime.toFixed(2)} milliseconds`;
+    document.body.appendChild(executionTimeElement);
+    })(); // End of async IIFE
+    </script>
+    </body>
+    </html>"#,
     )?;
     Ok(())
 }
 
-fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code: &Replay) -> Result<(), std::io::Error> {
+fn generate_single_wasm(
+    replay_path: &Path,
+    module_set: &HashSet<&String>,
+    code: &Replay,
+) -> Result<(), std::io::Error> {
     let mut module_args = module_set
         .iter()
         .map(|module| vec![format!("{}.wasm", module), module.to_string()])
@@ -433,7 +483,10 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
 
     let module_list = code.imported_modules();
     for module in &module_list {
-        let module_wat_path = replay_path.parent().unwrap().join(&format!("{module}_merge.wat"));
+        let module_wat_path = replay_path
+            .parent()
+            .unwrap()
+            .join(&format!("{module}_merge.wat"));
         let stream = &mut File::create(&module_wat_path).unwrap();
 
         write!(stream, "(module\n")?;
@@ -464,7 +517,10 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
                             None => "".to_string(),
                         };
                         let reftype = &table.reftype;
-                        write!(stream, "(table (export \"{name}\") {initial} {maximum} {reftype:?})\n")?;
+                        write!(
+                            stream,
+                            "(table (export \"{name}\") {initial} {maximum} {reftype})\n"
+                        )?;
                     }
                 }
                 None => {}
@@ -492,7 +548,10 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
         }
         write!(stream, ")\n")?;
         let binary = wat::parse_file(module_wat_path.clone()).unwrap();
-        let module_wasm_path = replay_path.parent().unwrap().join(&format!("{module}_merge.wasm"));
+        let module_wasm_path = replay_path
+            .parent()
+            .unwrap()
+            .join(&format!("{module}_merge.wasm"));
         let mut modle_wasm_file = File::create(&module_wasm_path).unwrap();
         modle_wasm_file.write_all(&binary).unwrap();
     }
@@ -543,11 +602,19 @@ fn generate_single_wasm(replay_path: &Path, module_set: &HashSet<&String>, code:
         ])
         .output()
         .expect("Failed to execute wasm-opt");
-    assert!(output.status.success(), "Failed to execute wasm-opt: {:?}", output);
+    assert!(
+        output.status.success(),
+        "Failed to execute wasm-opt: {:?}",
+        output
+    );
     Ok(())
 }
 
-fn merge_memory_writes(bodystr: &mut String, memory_writes: BTreeMap<&i32, &Vec<F64>>, data_segments: &mut Vec<Vec<F64>>) {
+fn merge_memory_writes(
+    bodystr: &mut String,
+    memory_writes: BTreeMap<&i32, &Vec<F64>>,
+    data_segments: &mut Vec<Vec<F64>>,
+) {
     let mut partitions: Vec<(i32, Vec<F64>)> = Vec::new();
     let mut current_partition: Vec<F64> = Vec::new();
     let mut exp_key: Option<i32> = None;
@@ -586,7 +653,9 @@ fn merge_memory_writes(bodystr: &mut String, memory_writes: BTreeMap<&i32, &Vec<
             // merging 4 bytes and 8 bytes is also possible
             for (j, byte) in data.iter().enumerate() {
                 let addr = start_addr + j as i32;
-                bodystr.push_str(&format!("(i32.store8 (i32.const {addr}) (i32.const {byte}))\n",));
+                bodystr.push_str(&format!(
+                    "(i32.store8 (i32.const {addr}) (i32.const {byte}))\n",
+                ));
             }
         }
     }
@@ -599,7 +668,7 @@ fn valty_to_const(valty: &ValType) -> String {
         ValType::F32 => "f32.const",
         ValType::F64 => "f64.const",
         ValType::V128 => todo!(),
-        ValType::Anyref => todo!(),
+        ValType::Funcref => todo!(),
         ValType::Externref => todo!(),
     }
     .to_string()
@@ -620,7 +689,12 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .join("\n");
             params + &format!("(call ${name})") + &("(drop)".repeat(result_count))
         }
-        HostEvent::ExportCallTable { idx, table_name: _, funcidx, params } => {
+        HostEvent::ExportCallTable {
+            idx,
+            table_name: _,
+            funcidx,
+            params,
+        } => {
             let func = code.funcs.get(idx).unwrap();
 
             let param_tys = func.ty.params.clone();
@@ -632,9 +706,16 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .map(|(p, p_ty)| format!("({} {p})", valty_to_const(&p_ty)))
                 .collect::<Vec<String>>()
                 .join("\n");
-            params + &format!("(call_indirect {tystr} (i32.const {funcidx}))",) + &("(drop)".repeat(result_tys.len()))
+            params
+                + &format!("(call_indirect {tystr} (i32.const {funcidx}))",)
+                + &("(drop)".repeat(result_tys.len()))
         }
-        HostEvent::MutateMemory { addr, data, import: _, name: _ } => {
+        HostEvent::MutateMemory {
+            addr,
+            data,
+            import: _,
+            name: _,
+        } => {
             let mut js_string = String::new();
             for (j, byte) in data.iter().enumerate() {
                 js_string += &format!("i32.const {}\n", addr + j as i32);
@@ -643,7 +724,11 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             }
             js_string
         }
-        HostEvent::GrowMemory { amount, import: _, name: _ } => {
+        HostEvent::GrowMemory {
+            amount,
+            import: _,
+            name: _,
+        } => {
             format!("(memory.grow (i32.const {})) (drop)\n", amount)
         }
         HostEvent::MutateTable {
@@ -657,18 +742,29 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         } => {
             format!("(table.set {tableidx} (i32.const {idx}) (ref.func ${func_name}))",)
         }
-        HostEvent::GrowTable { idx, amount, import: _, name: _ } => {
+        HostEvent::GrowTable {
+            idx,
+            amount,
+            import: _,
+            name: _,
+        } => {
             // TODO: check if (ref.null func) is correct
             format!("(table.grow {idx} (ref.null func) (i32.const {amount})) (drop)\n")
         }
-        HostEvent::MutateGlobal { idx, value, valtype, import: _, name } => {
+        HostEvent::MutateGlobal {
+            idx,
+            value,
+            valtype,
+            import: _,
+            name,
+        } => {
             let valtype = match valtype {
                 ValType::I32 => "i32.const",
                 ValType::I64 => "i64.const",
                 ValType::F32 => "f32.const",
                 ValType::F64 => "f64.const",
                 ValType::V128 => todo!(),
-                ValType::Anyref => todo!(),
+                ValType::Funcref => todo!(),
                 ValType::Externref => todo!(),
             };
             let value = value;
@@ -680,7 +776,17 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
 }
 
 fn get_functy_strs(ty: &FunctionTy) -> String {
-    let paramstr = ty.params.iter().map(|p| format!("{}", p)).collect::<Vec<String>>().join(" ");
-    let resultstr = ty.results.iter().map(|r| format!("{}", r)).collect::<Vec<String>>().join(" ");
+    let paramstr = ty
+        .params
+        .iter()
+        .map(|p| format!("{}", p))
+        .collect::<Vec<String>>()
+        .join(" ");
+    let resultstr = ty
+        .results
+        .iter()
+        .map(|r| format!("{}", r))
+        .collect::<Vec<String>>()
+        .join(" ");
     format!("(param {paramstr}) (result {resultstr})")
 }

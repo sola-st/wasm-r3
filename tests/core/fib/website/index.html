@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebAssembly Test</title>
+  </head>
+  <body>
+    <script>
+      (async function () {
+        let instance;
+        let imports = {
+          env: {
+            abort: () => {},
+            enlargeMemory: () => {},
+            getTotalMemory: () => {},
+            abortOnCannotGrowMemory: () => {},
+            _pthread_getspecific: () => {},
+            ___syscall54: () => {},
+            _pthread_setspecific: () => {},
+            ___lock: () => {},
+            _abort: () => {},
+            ___setErrNo: () => {},
+            ___syscall6: () => {},
+            ___syscall140: () => {},
+            _pthread_once: () => {},
+            _emscripten_memcpy_big: () => {},
+            _pthread_key_create: () => {},
+            ___unlock: () => {},
+            ___assert_fail: () => {},
+            ___syscall146: () => {},
+            memory: new WebAssembly.Memory({ initial: 256, maximum: 256 }),
+            table: new WebAssembly.Table({
+              element: "anyfunc",
+              initial: 34,
+              maximum: 34,
+            }),
+            memoryBase: new WebAssembly.Global({ value: "i32" }),
+            tableBase: new WebAssembly.Global({ value: "i32" }),
+            DYNAMICTOP_PTR: new WebAssembly.Global({ value: "i32" }),
+            STACKTOP: new WebAssembly.Global({ value: "i32" }),
+            STACK_MAX: new WebAssembly.Global({ value: "i32" }),
+          },
+          asm2wasm: {
+            "f64-to-int": () => {},
+          },
+        };
+        const indexResponse = await fetch("index.wasm");
+        const indexBinary = await indexResponse.arrayBuffer();
+        let wasm = await WebAssembly.instantiate(indexBinary, imports);
+        instance = wasm.instance;
+        instance.exports._fib(40);
+        instance.exports._fib(40);
+      })();
+    </script>
+  </body>
+</html>

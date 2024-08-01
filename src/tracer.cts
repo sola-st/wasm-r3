@@ -1,41 +1,6 @@
-import { StoreOp, LoadOp, ImpExp, Wasabi } from '../wasabi.cjs'
-import { Trace as TraceType, ValType, WasmEvent } from '../trace.d.cjs'
+import { StoreOp, LoadOp, ImpExp, Wasabi } from './wasabi.cjs'
+import { Trace as TraceType, ValType, WasmEvent } from './trace.d.cjs'
 import { AnalysisI } from './analyser.cjs'
-
-function parseNumber(str): number {
-    str = str.trim(); // Remove leading/trailing whitespace
-
-    if (str === '' || str === '+' || str === '-') {
-        // Handle empty or only sign character
-        return NaN;
-    }
-
-    if (str === 'Infinity' || str === '+Infinity') {
-        return Infinity;
-    }
-
-    if (str === '-Infinity') {
-        return -Infinity;
-    }
-
-    if (!isNaN(str)) {
-        if (str.includes('.') || str.toLowerCase().includes('e')) {
-            // Handle floats and scientific notation
-            return parseFloat(str);
-        }
-
-        let num = BigInt(str);
-        if (num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER) {
-            // Convert to Number if within safe range
-            return Number(num);
-        }
-
-        //@ts-ignore
-        return num; // Return as BigInt
-    }
-
-    return NaN; // Not a number
-}
 
 export class Trace {
     private trace: string[]
@@ -357,7 +322,6 @@ export default class Analysis implements AnalysisI<Trace> {
             call_pre: (location, op, funcidx, args, tableTarget) => {
                 if (op === 'call_indirect') {
                     const resolvedFuncIdx = this.funcrefToIdx.get(this.shadowTables[tableTarget.tableIdx].get(tableTarget.elemIdx));
-                    console.trace(resolvedFuncIdx)
                     this.callStack.push({ idx: funcidx })
                     this.trace.push(`IC;${resolvedFuncIdx}`)
                 } else {
@@ -552,4 +516,39 @@ export default class Analysis implements AnalysisI<Trace> {
             }
         })
     }
+}
+
+function parseNumber(str): number {
+    str = str.trim(); // Remove leading/trailing whitespace
+
+    if (str === '' || str === '+' || str === '-') {
+        // Handle empty or only sign character
+        return NaN;
+    }
+
+    if (str === 'Infinity' || str === '+Infinity') {
+        return Infinity;
+    }
+
+    if (str === '-Infinity') {
+        return -Infinity;
+    }
+
+    if (!isNaN(str)) {
+        if (str.includes('.') || str.toLowerCase().includes('e')) {
+            // Handle floats and scientific notation
+            return parseFloat(str);
+        }
+
+        let num = BigInt(str);
+        if (num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER) {
+            // Convert to Number if within safe range
+            return Number(num);
+        }
+
+        //@ts-ignore
+        return num; // Return as BigInt
+    }
+
+    return NaN; // Not a number
 }

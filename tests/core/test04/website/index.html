@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebAssembly Test</title>
+  </head>
+  <body>
+    <script>
+      (async function () {
+        let imports = {
+          env: {
+            add: (a, b) => a + b,
+            sub: (a, b) => a - b,
+          },
+          lib: {
+            add: (a, b) => b + a,
+          },
+        };
+        const indexResponse = await fetch("index.wasm");
+        const indexBinary = await indexResponse.arrayBuffer();
+        let wasm = await WebAssembly.instantiate(indexBinary, imports);
+        wasm.instance.exports.entry();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,3 +1,3 @@
 pub mod htmlgen;
 pub mod preprocess;
-pub mod wasmgen;
+pub mod slice;

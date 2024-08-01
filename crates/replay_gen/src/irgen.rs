@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, HashSet};
 
 use walrus::Module;
 
-use crate::trace::{ValType, WasmEvent, F64};
+use crate::trace::{Trace, ValType, WasmEvent, F64};
 
 const MAX_WASM_FUNCTIONS: usize = 1000000;
 pub const INIT_INDEX: usize = MAX_WASM_FUNCTIONS + 1;
@@ -86,11 +86,9 @@ impl Replay {
     pub fn imported_modules(&self) -> Vec<String> {
         let mut vec = Vec::new();
 
-        vec.extend(
-            self.funcs
-                .iter()
-                .filter_map(|(_, function)| function.import.as_ref().map(|import| import.module.clone())),
-        );
+        vec.extend(self.funcs.iter().filter_map(|(_, function)| {
+            function.import.as_ref().map(|import| import.module.clone())
+        }));
         vec.extend(
             self.tables
                 .iter()
@@ -102,9 +100,9 @@ impl Replay {
                 .filter_map(|(_, mem)| mem.import.as_ref().map(|import| import.module.clone())),
         );
         vec.extend(
-            self.globals
-                .iter()
-                .filter_map(|(_, global)| global.import.as_ref().map(|import| import.module.clone())),
+            self.globals.iter().filter_map(|(_, global)| {
+                global.import.as_ref().map(|import| import.module.clone())
+            }),
         );
         // delete duplicate
         let set: HashSet<String> = vec.drain(..).collect();
@@ -242,7 +240,10 @@ impl IRGenerator {
                     name: "initialization".to_string(),
                 }),
                 export: None,
-                ty: FunctionTy { params: vec![], results: vec![] },
+                ty: FunctionTy {
+                    params: vec![],
+                    results: vec![],
+                },
                 bodys: vec![Some(vec![])],
                 results: vec![],
             },
@@ -255,17 +256,34 @@ impl IRGenerator {
                 }),
                 _ => None,
             };
-            let export = module
-                .exports
-                .get_exported_func(f.id())
-                .map(|e| Export { name: e.name.to_string() });
+            let export = module.exports.get_exported_func(f.id()).map(|e| Export {
+                name: e.name.to_string(),
+            });
             let ty = FunctionTy {
-                params: module.types.get(f.ty()).params().iter().map(|p| (*p).into()).collect(),
-                results: module.types.get(f.ty()).results().iter().map(|p| (*p).into()).collect(),
+                params: module
+                    .types
+                    .get(f.ty())
+                    .params()
+                    .iter()
+                    .map(|p| (*p).into())
+                    .collect(),
+                results: module
+                    .types
+                    .get(f.ty())
+                    .results()
+                    .iter()
+                    .map(|p| (*p).into())
+                    .collect(),
             };
             funcs.insert(
                 f.id().index(),
-                Function { import, export, ty, bodys: vec![], results: vec![] },
+                Function {
+                    import,
+                    export,
+                    ty,
+                    bodys: vec![],
+                    results: vec![],
+                },
             );
         }
 
@@ -277,10 +295,9 @@ impl IRGenerator {
                 }),
                 walrus::GlobalKind::Local(_) => None,
             };
-            let export = module
-                .exports
-                .get_exported_global(g.id())
-                .map(|e| Export { name: e.name.to_string() });
+            let export = module.exports.get_exported_global(g.id()).map(|e| Export {
+                name: e.name.to_string(),
+            });
             globals.insert(
                 g.id().index(),
                 Global {
@@ -303,16 +320,15 @@ impl IRGenerator {
                 }),
                 None => None,
             };
-            let export = module
-                .exports
-                .get_exported_table(t.id())
-                .map(|e| Export { name: e.name.to_string() });
+            let export = module.exports.get_exported_table(t.id()).map(|e| Export {
+                name: e.name.to_string(),
+            });
             tables.insert(
                 t.id().index(),
                 Table {
                     import,
                     export,
-                    reftype: ValType::Anyref,
+                    reftype: ValType::Funcref,
                     initial: t.initial,
                     maximum: t.maximum,
                 },
@@ -327,10 +343,9 @@ impl IRGenerator {
                 }),
                 None => None,
             };
-            let export = module
-                .exports
-                .get_exported_memory(m.id())
-                .map(|e| Export { name: e.name.to_string() });
+            let export = module.exports.get_exported_memory(m.id()).map(|e| Export {
+                name: e.name.to_string(),
+            });
             mems.insert(
                 m.id().index(),
                 Memory {
@@ -343,7 +358,12 @@ impl IRGenerator {
             );
         }
         Self {
-            replay: Replay { funcs, tables, mems, globals },
+            replay: Replay {
+                funcs,
+                tables,
+                mems,
+                globals,
+            },
             // INIT_INDEX is the _start function
             state: State {
                 host_call_stack: vec![INIT_INDEX], //
@@ -352,6 +372,13 @@ impl IRGenerator {
             },
             flag: true,
         }
+    }
+
+    pub fn generate_replay(&mut self, trace: Trace) -> &Replay {
+        for event in trace.into_iter() {
+            self.consume_event(event);
+        }
+        &self.replay
     }
 
     fn push_call(&mut self, event: HostEvent) {
@@ -366,7 +393,7 @@ impl IRGenerator {
 
     pub fn consume_event(&mut self, event: WasmEvent) {
         match event {
-            WasmEvent::FuncEntry { idx, params } => {
+            WasmEvent::FuncEntry { name, idx, params } => {
                 match self.replay.funcs.get(&idx) {
                     Some(func) => {
                         let name = match func.import.clone() {
@@ -396,8 +423,13 @@ impl IRGenerator {
                     }
                 };
             }
-            WasmEvent::FuncEntryTable { idx, tableidx: funcidx, params } => {
-                let table = self.replay.tables.get(&funcidx).unwrap();
+            WasmEvent::FuncEntryTable {
+                idx,
+                tableidx: funcidx,
+                tablename,
+                params,
+            } => {
+                let table = self.replay.tables.get(&(funcidx as usize)).unwrap();
                 let table_name = match table.import.clone() {
                     Some(i) => i.name,
                     None => table.export.as_ref().unwrap().name.clone(),
@@ -410,7 +442,12 @@ impl IRGenerator {
                 });
             }
             WasmEvent::FuncReturn => {}
-            WasmEvent::Load { idx, offset, data } => {
+            WasmEvent::Load {
+                idx,
+                name,
+                offset,
+                data,
+            } => {
                 let mem = self.replay.mems.get(&idx).unwrap();
                 let name = match mem.import.clone() {
                     Some(i) => i.name,
@@ -423,7 +460,7 @@ impl IRGenerator {
                     data: data.into(),
                 });
             }
-            WasmEvent::MemGrow { idx, amount } => {
+            WasmEvent::MemGrow { idx, name, amount } => {
                 let mem = self.replay.mems.get(&idx).unwrap();
                 let name = match mem.import.clone() {
                     Some(i) => i.name,
@@ -435,7 +472,13 @@ impl IRGenerator {
                     amount: amount,
                 });
             }
-            WasmEvent::TableGet { tableidx, idx, funcidx } => {
+            WasmEvent::TableGet {
+                tableidx,
+                idx,
+                funcidx,
+                name,
+                funcname,
+            } => {
                 if let Some(function) = self.replay.funcs.get(&(funcidx as usize)) {
                     // dbg!(&self.replay.tables);
                     let funcidx = funcidx as usize;
@@ -460,7 +503,7 @@ impl IRGenerator {
                     });
                 }
             }
-            WasmEvent::TableGrow { idx, amount } => {
+            WasmEvent::TableGrow { idx, amount, name } => {
                 let table = self.replay.tables.get(&idx).unwrap();
                 let table_name = match table.import.clone() {
                     Some(i) => i.name,
@@ -473,7 +516,12 @@ impl IRGenerator {
                     amount: amount,
                 });
             }
-            WasmEvent::GlobalGet { idx, value, valtype } => {
+            WasmEvent::GlobalGet {
+                idx,
+                value,
+                valtype,
+                name,
+            } => {
                 let global = self.replay.globals.get(&idx).unwrap();
                 let name = match global.import.clone() {
                     Some(i) => i.name,
@@ -487,29 +535,38 @@ impl IRGenerator {
                     valtype: valtype.clone(),
                 });
             }
-            WasmEvent::Call { idx } => {
-                self.replay.funcs.get_mut(&idx).unwrap().bodys.push(Some(vec![]));
+            WasmEvent::ImportCall { idx } => {
+                self.replay
+                    .funcs
+                    .get_mut(&idx)
+                    .unwrap()
+                    .bodys
+                    .push(Some(vec![]));
                 self.state.host_call_stack.push(idx);
                 self.state.last_func = idx;
             }
-            WasmEvent::CallReturn { idx: _idx, results } => {
+            WasmEvent::ImportReturn {
+                idx: _idx,
+                name,
+                results,
+            } => {
                 self.flag = false;
                 let current_fn_idx = self.state.host_call_stack.last().unwrap();
                 let r = &mut self.replay.funcs.get_mut(&current_fn_idx).unwrap().results;
-                r.push(WriteResult { results: results.clone(), reps: 1 });
+                r.push(WriteResult {
+                    results: results.clone(),
+                    reps: 1,
+                });
                 self.state.last_func = self.state.host_call_stack.pop().unwrap();
             }
-            WasmEvent::Store { idx: _, offset: _, data: _ } => {}
-            WasmEvent::TableSet { tableidx: _, idx: _, funcidx: _ } => {}
-            WasmEvent::GlobalSet { idx: _, value: _, valtype: _ } => {}
-            WasmEvent::CallIndirect { tableidx: _, idx, funcidx: _ } => {
-                if let Some(f) = self.replay.funcs.get_mut(&idx) {
-                    f.bodys.push(Some(vec![]));
-                    self.state.host_call_stack.push(idx);
-                    self.state.last_func = idx;
-                }
-            }
-            WasmEvent::ImportGlobal { idx, module, name, mutable, initial, value } => match self.replay.globals.get_mut(&idx) {
+            WasmEvent::ImportGlobal {
+                idx,
+                module,
+                name,
+                mutable,
+                initial,
+                value,
+            } => match self.replay.globals.get_mut(&idx) {
                 Some(g) => g.initial = initial,
                 None => todo!(),
             },
@@ -534,7 +591,14 @@ impl IRGenerator {
     }
 
     fn idx_to_cxt(&mut self, idx: usize) -> &mut Option<Vec<HostEvent>> {
-        let current_context = self.replay.funcs.get_mut(&idx).unwrap().bodys.last_mut().unwrap();
+        let current_context = self
+            .replay
+            .funcs
+            .get_mut(&idx)
+            .unwrap()
+            .bodys
+            .last_mut()
+            .unwrap();
         current_context
     }
 }
