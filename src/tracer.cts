@@ -419,7 +419,7 @@ export default class Analysis implements AnalysisI<Trace> {
                     let name = funcImport[1]
                     this.callStack.push({ name, idx: funcidx })
                     this.stats.relevantCalls++;
-                    this.trace.push(`IC;${funcidx};${name}`)
+                    this.trace.push(`IC;${funcidx}`)
                 }
             },
 
@@ -431,7 +431,7 @@ export default class Analysis implements AnalysisI<Trace> {
                 }
                 this.callStack.pop()
                 this.stats.relevantCallReturns++;
-                this.trace.push(`IR;${func.idx};${func.name};${results.join(',')}`)
+                this.trace.push(`IR;${func.idx};${results.join(',')}`)
                 this.checkMemGrow()
                 this.checkTableGrow()
             },

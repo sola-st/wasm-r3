@@ -706,7 +706,7 @@ impl FromStr for WasmEvent {
             "IC" => Ok(WasmEvent::Call { idx: components[1].parse().unwrap() }),
             "IR" => Ok(WasmEvent::CallReturn {
                 idx: components[1].parse().unwrap(),
-                results: split_list(components.get(3).unwrap()),
+                results: split_list(components.get(2).unwrap()),
             }),
             "L" => Ok(WasmEvent::Load {
                 idx: components[1].parse().unwrap(),
