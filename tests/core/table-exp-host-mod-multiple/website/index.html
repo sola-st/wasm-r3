@@ -8,6 +8,7 @@
   <body>
     <script>
       (async function () {
+        const startTime = performance.now();
         let instance;
         let imports = {
           env1: {
@@ -25,7 +26,12 @@
         instance = wasm.instance;
         instance.exports.main1();
         instance.exports.main2();
-      })();
+        const endTime = performance.now();
+        const executionTime = endTime - startTime;
+        const executionTimeElement = document.createElement('p');
+        executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+        document.body.appendChild(executionTimeElement);
+    })();
     </script>
   </body>
 </html>

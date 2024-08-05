@@ -152,7 +152,6 @@ pub enum HostEvent {
         value: F64,
         valtype: ValType,
         import: bool,
-        name: String,
     },
     MutateTable {
         tableidx: usize,
@@ -516,23 +515,13 @@ impl IRGenerator {
                     amount: amount,
                 });
             }
-            WasmEvent::GlobalGet {
-                idx,
-                value,
-                valtype,
-                name,
-            } => {
+            WasmEvent::GlobalGet { idx, value } => {
                 let global = self.replay.globals.get(&idx).unwrap();
-                let name = match global.import.clone() {
-                    Some(i) => i.name,
-                    None => global.export.as_ref().unwrap().name.clone(),
-                };
                 self.splice_event(HostEvent::MutateGlobal {
                     idx: idx,
                     import: self.replay.imported_globals().contains_key(&idx),
-                    name,
                     value: value,
-                    valtype: valtype.clone(),
+                    valtype: global.valtype.clone(),
                 });
             }
             WasmEvent::ImportCall { idx } => {
@@ -545,11 +534,7 @@ impl IRGenerator {
                 self.state.host_call_stack.push(idx);
                 self.state.last_func = idx;
             }
-            WasmEvent::ImportReturn {
-                idx: _idx,
-                name,
-                results,
-            } => {
+            WasmEvent::ImportReturn { idx: _idx, results } => {
                 self.flag = false;
                 let current_fn_idx = self.state.host_call_stack.last().unwrap();
                 let r = &mut self.replay.funcs.get_mut(&current_fn_idx).unwrap().results;
@@ -559,14 +544,7 @@ impl IRGenerator {
                 });
                 self.state.last_func = self.state.host_call_stack.pop().unwrap();
             }
-            WasmEvent::ImportGlobal {
-                idx,
-                module,
-                name,
-                mutable,
-                initial,
-                value,
-            } => match self.replay.globals.get_mut(&idx) {
+            WasmEvent::ImportGlobal { idx, initial } => match self.replay.globals.get_mut(&idx) {
                 Some(g) => g.initial = initial,
                 None => todo!(),
             },

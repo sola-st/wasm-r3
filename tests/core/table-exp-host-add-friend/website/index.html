@@ -10,6 +10,7 @@
       import fs from "fs";
 
       (async function () {
+        const startTime = performance.now();
         let instance;
         let imports = {
           env: {
@@ -42,7 +43,12 @@
         instance = wasm.instance;
         instance.exports.table.set(0, friend.instance.exports.greet);
         instance.exports.entry();
-      })();
+        const endTime = performance.now();
+        const executionTime = endTime - startTime;
+        const executionTimeElement = document.createElement('p');
+        executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+        document.body.appendChild(executionTimeElement);
+    })();
     </script>
   </body>
 </html>

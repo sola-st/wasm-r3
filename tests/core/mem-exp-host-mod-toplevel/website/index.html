@@ -8,6 +8,7 @@
   <body>
     <script>
       (async function () {
+        const startTime = performance.now();
         let instance;
         let imports = {};
         const indexResponse = await fetch("index.wasm");
@@ -17,7 +18,12 @@
         instance.exports.entry();
         new Uint8Array(instance.exports.memory.buffer)[1] = 1;
         instance.exports.entry();
-      })();
+        const endTime = performance.now();
+        const executionTime = endTime - startTime;
+        const executionTimeElement = document.createElement('p');
+        executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+        document.body.appendChild(executionTimeElement);
+    })();
     </script>
   </body>
 </html>

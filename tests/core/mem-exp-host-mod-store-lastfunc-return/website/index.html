@@ -8,6 +8,7 @@
   <body>
     <script>
       (async function () {
+        const startTime = performance.now();
         let instance;
         let imports = {
           env: {
@@ -30,7 +31,12 @@
         let wasm = await WebAssembly.instantiate(indexBinary, imports);
         instance = wasm.instance;
         instance.exports.entry();
-      })();
+        const endTime = performance.now();
+        const executionTime = endTime - startTime;
+        const executionTimeElement = document.createElement('p');
+        executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+        document.body.appendChild(executionTimeElement);
+    })();
     </script>
   </body>
 </html>

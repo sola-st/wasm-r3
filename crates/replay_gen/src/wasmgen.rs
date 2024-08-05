@@ -378,8 +378,8 @@ fn generate_replay_html(
             .parent()
             .unwrap()
             .join(&format!("{current_module}.wasm"));
-        let buffer = &fs::read(wasm_path).unwrap();
-        let walrus_module = Module::from_buffer(buffer).unwrap();
+        let buffer = &fs::read(&wasm_path).unwrap();
+        let walrus_module = Module::from_buffer(buffer).expect(wasm_path.to_str().unwrap());
         let module_set = walrus_module
             .imports
             .iter()
@@ -539,7 +539,7 @@ fn generate_single_wasm(
                         };
                         write!(
                             stream,
-                            "(global (export \"{name}\") {mutable} ({valtype}.const {initial:?}))\n"
+                            "(global (export \"{name}\") {mutable} ({valtype}.const {initial}))\n"
                         )?;
                     }
                 }
@@ -684,7 +684,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             let params = params
                 .iter()
                 .zip(param_tys.clone())
-                .map(|(p, p_ty)| format!("({} {p:?})", valty_to_const(&p_ty)))
+                .map(|(p, p_ty)| format!("({} {p})", valty_to_const(&p_ty)))
                 .collect::<Vec<String>>()
                 .join("\n");
             params + &format!("(call ${name})") + &("(drop)".repeat(result_count))
@@ -756,7 +756,6 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             value,
             valtype,
             import: _,
-            name,
         } => {
             let valtype = match valtype {
                 ValType::I32 => "i32.const",
@@ -769,7 +768,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             };
             let value = value;
             let _globalidx = idx;
-            format!("({valtype} {value})\n") + &format!("(global.set ${name})")
+            format!("({valtype} {value})\n") + &format!("(global.set {idx})")
         }
     };
     str

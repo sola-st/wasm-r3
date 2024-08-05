@@ -8,6 +8,7 @@
   <body>
     <script>
       (async function () {
+        const startTime = performance.now();
         let instance;
         let memory = new WebAssembly.Memory({ initial: 1, maximum: 1 });
         let imports = {
@@ -21,7 +22,12 @@
         instance = wasm.instance;
         new Uint8Array(memory.buffer)[4] = 1;
         instance.exports.entry();
-      })();
+        const endTime = performance.now();
+        const executionTime = endTime - startTime;
+        const executionTimeElement = document.createElement('p');
+        executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+        document.body.appendChild(executionTimeElement);
+    })();
     </script>
   </body>
 </html>
