@@ -158,7 +158,7 @@ pub enum WasmEvent {
     TableGet { tableidx: usize, idx: usize, funcidx: i32 },
     TableSet { tableidx: usize, idx: usize, funcidx: i32 },
     TableGrow { idx: usize, amount: i32 },
-    GlobalGet { idx: usize, value: F64, valtype: ValType },
+    GlobalGet { idx: usize, value: F64 },
     GlobalSet { idx: usize, value: F64, valtype: ValType },
     Call { idx: usize },
     CallIndirect { tableidx: usize, idx: usize, funcidx: i32 },
@@ -169,11 +169,7 @@ pub enum WasmEvent {
     FuncReturn,
     ImportGlobal {
         idx: usize,
-        module: String,
-        name: String,
-        mutable: bool,
         initial: F64,
-        value: ValType,
     },
 }
 
@@ -252,7 +248,7 @@ impl WasmEvent {
         let valtype = WasmEvent::decode_val_type(reader)?;
         let idx = WasmEvent::decode_value(reader, &ValType::I32)?;
         let value = WasmEvent::decode_value(reader, &valtype)?;
-        Ok(vec![WasmEvent::GlobalGet { idx: idx.0 as usize, value, valtype }])
+        Ok(vec![WasmEvent::GlobalGet { idx: idx.0 as usize, value }])
     }
 
     fn decode_global_set(reader: &mut BufReader<File>) -> Result<Vec<Self>, ErrorKind> {
@@ -728,16 +724,11 @@ impl FromStr for WasmEvent {
             }),
             "G" => Ok(WasmEvent::GlobalGet {
                 idx: components[1].parse().unwrap(),
-                value: parse_number(components[3]).unwrap(),
-                valtype: components[4].parse().unwrap(),
+                value: parse_number(components[2]).unwrap(),
             }),
             "IG" => Ok(WasmEvent::ImportGlobal {
                 idx: components[1].parse().unwrap(),
-                module: components[2].to_string(),
-                name: components[3].to_string(),
-                value: components[4].parse().unwrap(),
-                mutable: if components[5] == "1" { true } else { false },
-                initial: components[6].parse().unwrap(),
+                initial: components[2].parse().unwrap(),
             }),
             "IT" | "IM" | "IF" => Err(ErrorKind::LegacyTrace),
             _ => {
@@ -764,8 +755,8 @@ impl Display for WasmEvent {
             WasmEvent::TableGrow { idx, amount } => {
                 write!(f, "MG;{};{}\n", idx, amount)
             }
-            WasmEvent::GlobalGet { idx, value, valtype } => {
-                write!(f, "global.get idx={} value={} valtype={:?}\n", idx, value, valtype)
+            WasmEvent::GlobalGet { idx, value } => {
+                write!(f, "global.get idx={} value={}\n", idx, value)
             }
             WasmEvent::FuncEntry { params, idx } => {
                 write!(f, "FuncEntry idx={} params={}\n", idx, join_vec(params))

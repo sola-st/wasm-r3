@@ -473,7 +473,7 @@ impl IRGenerator {
                     amount: amount,
                 });
             }
-            WasmEvent::GlobalGet { idx, value, valtype } => {
+            WasmEvent::GlobalGet { idx, value } => {
                 let global = self.replay.globals.get(&idx).unwrap();
                 let name = match global.import.clone() {
                     Some(i) => i.name,
@@ -484,7 +484,7 @@ impl IRGenerator {
                     import: self.replay.imported_globals().contains_key(&idx),
                     name,
                     value: value,
-                    valtype: valtype.clone(),
+                    valtype: global.valtype.clone(),
                 });
             }
             WasmEvent::Call { idx } => {
@@ -509,7 +509,7 @@ impl IRGenerator {
                     self.state.last_func = idx;
                 }
             }
-            WasmEvent::ImportGlobal { idx, module, name, mutable, initial, value } => match self.replay.globals.get_mut(&idx) {
+            WasmEvent::ImportGlobal { idx, initial } => match self.replay.globals.get_mut(&idx) {
                 Some(g) => g.initial = initial,
                 None => todo!(),
             },

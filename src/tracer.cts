@@ -403,7 +403,7 @@ export default class Analysis implements AnalysisI<Trace> {
                     if (this.shadowGlobals[idx] !== value && !Number.isNaN(this.shadowGlobals[idx]) && !Number.isNaN(value)) {
                         let valtype = globalInfo.valType
                         this.stats.relevantGlobalGets++
-                        this.trace.push(`G;${idx};${this.getName(globalInfo)};${value};${valtype}`)
+                        this.trace.push(`G;${idx};${value}`)
                         this.shadowGlobals[idx] = value
                     }
                 }
@@ -609,7 +609,7 @@ export default class Analysis implements AnalysisI<Trace> {
         this.shadowGlobals = this.Wasabi.module.globals.map(g => g.value)
         this.Wasabi.module.info.globals.forEach((g, idx) => {
             if (g.import !== null) {
-                this.trace.push(`IG;${idx};${g.import[0]};${g.import[1]};${g.valType};${g.mutability === 'Mut' ? 1 : 0};${this.Wasabi.module.globals[idx].value}`)
+                this.trace.push(`IG;${idx};${this.Wasabi.module.globals[idx].value}`)
             }
         })
     }
