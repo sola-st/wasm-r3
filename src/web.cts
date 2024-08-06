@@ -5,9 +5,6 @@ import { trimFromLastOccurance } from '../tests/test-utils.cjs'
 
 // read port from env
 const CDP_PORT = process.env.CDP_PORT || 8080
-export interface AnalysisI<T> {
-    getResult(): T,
-}
 
 export interface AnalyserI {
     start: (url: string, options: { headless: boolean }) => Promise<Page>
@@ -146,7 +143,7 @@ export class Analyser implements AnalyserI {
                 try {
                     //@ts-ignore
                     const traces = (analysis as AnalysisI<Trace>[]).map((r, j) => {
-                        const trace = r.getResult().toString()
+                        const trace = r.trace.toString()
                         return trace
                     })
                     return traces
