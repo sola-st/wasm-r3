@@ -21,7 +21,7 @@ async function runWasmR3Tests(names: string[], options) {
   console.log(`Run ${options.category} tests`);
   let successful = 0;
   for (let name of names) {
-    const report = await testWebPage(options, name);
+    const report = await runSingleTest(options, name);
     const padded = name.padEnd(40, ' ')
     console.log(`${padded}: ${report.success ? "PASS" : "FAIL"}`);
     if (report.success === true) {
@@ -35,19 +35,19 @@ async function runWasmR3Tests(names: string[], options) {
   );
 }
 
-async function testWebPage(options, name: string): Promise<TestReport> {
+async function runSingleTest(options, name: string): Promise<TestReport> {
   const { originalWebsitePath, replayWebsitePath, testJsPath, testPath, originalBenchmarkPath, replayBenchmarkPath, referencePath } = getPaths(name, options);
   let originalTracePath;
   try {
     originalTracePath = await analyzeAndSaveBenchmark(options, testJsPath, originalWebsitePath, originalBenchmarkPath);
     // TODO: generalize to multiple wasm modules
-    // const replayTracePath = await analyzeAndSaveBenchmark(options, testJsPath, replayWebsitePath, replayBenchmarkPath);
+    const replayTracePath = await analyzeAndSaveBenchmark(options, testJsPath, replayWebsitePath, replayBenchmarkPath);
     const diffCommand = `diff ${referencePath} ${originalTracePath}`;
     const diffOutput = execSync(diffCommand, { encoding: "utf-8" });
   } catch (e) {
     console.log(`Test failed for ${name}`);
     if (originalTracePath) {
-      console.log('diff erroed:\n', `diff ${referencePath} ${originalTracePath}`)
+      console.log('diff errored:\n', `code -d ${referencePath} ${originalTracePath}`)
     }
     return {
       success: false,

@@ -13,13 +13,11 @@ pub enum WasmEvent {
     // Each corresponds to a single wasm instruction.
     Load {
         idx: usize,
-        name: String,
         offset: i32,
         data: Vec<F64>,
     },
     MemGrow {
         idx: usize,
-        name: String,
         amount: i32,
     },
     TableGet {
@@ -233,14 +231,12 @@ impl FromStr for WasmEvent {
             }),
             "L" => Ok(WasmEvent::Load {
                 idx: components[1].parse().unwrap(),
-                name: components[2].to_string(),
-                offset: components[3].parse().unwrap(),
-                data: split_list(components.get(4).unwrap()),
+                offset: components[2].parse().unwrap(),
+                data: split_list(components.get(3).unwrap()),
             }),
             "MG" => Ok(WasmEvent::MemGrow {
                 idx: components[1].parse().unwrap(),
-                name: components[2].to_string(),
-                amount: components[3].parse().unwrap(),
+                amount: components[2].parse().unwrap(),
             }),
             "T" => Ok(WasmEvent::TableGet {
                 tableidx: components[1].parse().unwrap(),
@@ -271,14 +267,12 @@ impl FromStr for WasmEvent {
 impl Debug for WasmEvent {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            WasmEvent::Load {
-                idx,
-                name,
-                offset,
-                data,
-            } => write!(f, "L;{};{};{};{}", idx, name, offset, join_vec(data)),
-            WasmEvent::MemGrow { idx, name, amount } => {
-                write!(f, "MG;{};{};{}", idx, name, amount)
+            WasmEvent::Load { idx, offset, data } => {
+                let joined = join_vec(data);
+                write!(f, "L;{idx};{offset};{joined}")
+            }
+            WasmEvent::MemGrow { idx, amount } => {
+                write!(f, "MG;{idx};{amount}")
             }
             WasmEvent::TableGet {
                 tableidx,

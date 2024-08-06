@@ -114,7 +114,6 @@ impl Replay {
 struct State {
     host_call_stack: Vec<usize>,
     last_func: usize,
-    last_table_get: usize,
 }
 
 #[derive(Clone, Debug)]
@@ -133,7 +132,6 @@ pub enum HostEvent {
     GrowMemory {
         amount: i32,
         import: bool,
-        name: String,
     },
     GrowTable {
         idx: usize,
@@ -145,7 +143,6 @@ pub enum HostEvent {
         addr: i32,
         data: Vec<F64>,
         import: bool,
-        name: String,
     },
     MutateGlobal {
         idx: usize,
@@ -367,7 +364,6 @@ impl IRGenerator {
             state: State {
                 host_call_stack: vec![INIT_INDEX], //
                 last_func: INIT_INDEX,
-                last_table_get: 0,
             },
             flag: true,
         }
@@ -375,7 +371,7 @@ impl IRGenerator {
 
     pub fn generate_replay(&mut self, trace: Trace) -> &Replay {
         for event in trace.into_iter() {
-            self.consume_event(event);
+            self.consume_event(&event);
         }
         &self.replay
     }
@@ -390,151 +386,99 @@ impl IRGenerator {
         }
     }
 
-    pub fn consume_event(&mut self, event: WasmEvent) {
+    fn consume_event(&mut self, event: &WasmEvent) {
         match event {
-            WasmEvent::FuncEntry { name, idx, params } => {
-                match self.replay.funcs.get(&idx) {
-                    Some(func) => {
-                        let name = match func.import.clone() {
-                            Some(i) => i.name,
-                            None => func.export.as_ref().unwrap().name.clone(),
-                        };
-                        self.push_call(HostEvent::ExportCall { idx, name, params })
-                    }
-                    None => {
-                        // FIXME: last_table_get is not correct.
-                        // see node/table-exp-call-private-function-mul-table
-                        // self.push_call(HostEvent::ExportCallTable {
-                        //     tableidx: self.state.last_table_get,
-                        //     table_name: self
-                        //         .replay
-                        //         .tables
-                        //         .get(&self.state.last_table_get)
-                        //         .unwrap()
-                        //         .import
-                        //         .clone()
-                        //         .unwrap()
-                        //         .name,
-                        //     offset: idx as i32,
-                        //     params,
-                        // });
-                        panic!()
-                    }
-                };
+            WasmEvent::FuncEntry { idx, name, params } => {
+                self.push_call(HostEvent::ExportCall {
+                    idx: idx.clone(),
+                    name: name.clone(),
+                    params: params.clone(),
+                });
             }
             WasmEvent::FuncEntryTable {
                 idx,
-                tableidx: funcidx,
                 tablename,
+                tableidx: funcidx,
                 params,
             } => {
-                let table = self.replay.tables.get(&(funcidx as usize)).unwrap();
-                let table_name = match table.import.clone() {
-                    Some(i) => i.name,
-                    None => table.export.as_ref().unwrap().name.clone(),
-                };
                 self.push_call(HostEvent::ExportCallTable {
-                    idx,
-                    table_name,
-                    funcidx: funcidx as i32,
+                    idx: *idx,
+                    table_name: tablename.clone(),
+                    funcidx: *funcidx,
                     params: params.clone(),
                 });
             }
             WasmEvent::FuncReturn => {}
             WasmEvent::Load {
                 idx,
-                name,
                 offset,
                 data,
             } => {
-                let mem = self.replay.mems.get(&idx).unwrap();
-                let name = match mem.import.clone() {
-                    Some(i) => i.name,
-                    None => mem.export.as_ref().unwrap().name.clone(),
-                };
                 self.splice_event(HostEvent::MutateMemory {
                     import: self.replay.imported_mems().contains_key(&idx),
-                    name,
-                    addr: offset,
-                    data: data.into(),
+                    addr: *offset,
+                    data: data.clone(),
                 });
             }
-            WasmEvent::MemGrow { idx, name, amount } => {
-                let mem = self.replay.mems.get(&idx).unwrap();
-                let name = match mem.import.clone() {
-                    Some(i) => i.name,
-                    None => mem.export.as_ref().unwrap().name.clone(),
-                };
+            WasmEvent::MemGrow { idx, amount } => {
                 self.splice_event(HostEvent::GrowMemory {
-                    import: self.replay.imported_mems().contains_key(&idx),
-                    name,
-                    amount: amount,
+                    import: self.replay.imported_mems().contains_key(idx),
+                    amount: *amount,
                 });
             }
             WasmEvent::TableGet {
                 tableidx,
+                name,
                 idx,
                 funcidx,
-                name,
                 funcname,
             } => {
-                if let Some(function) = self.replay.funcs.get(&(funcidx as usize)) {
-                    // dbg!(&self.replay.tables);
-                    let funcidx = funcidx as usize;
-                    let idx = idx as usize;
-                    let table = self.replay.tables.get(&tableidx).unwrap();
-                    let table_name = match table.import.clone() {
-                        Some(i) => i.name,
-                        None => table.export.as_ref().unwrap().name.clone(),
-                    };
-                    let func_name = match function.import.clone() {
-                        Some(i) => i.name,
-                        None => function.export.as_ref().unwrap().name.clone(),
-                    };
                     self.splice_event(HostEvent::MutateTable {
-                        tableidx,
-                        funcidx,
+                    tableidx: *tableidx,
+                    funcidx: *funcidx,
                         import: self.replay.imported_tables().contains_key(&tableidx),
-                        name: table_name,
-                        idx: idx,
-                        func_import: self.replay.imported_funcs().contains_key(&funcidx),
-                        func_name,
+                    name: name.clone(),
+                    idx: *idx as usize,
+                    func_import: self.replay.imported_funcs().contains_key(funcidx),
+                    func_name: funcname.clone(),
                     });
-                }
             }
-            WasmEvent::TableGrow { idx, amount, name } => {
-                let table = self.replay.tables.get(&idx).unwrap();
-                let table_name = match table.import.clone() {
-                    Some(i) => i.name,
-                    None => table.export.as_ref().unwrap().name.clone(),
-                };
+            WasmEvent::TableGrow { idx, name, amount } => {
                 self.splice_event(HostEvent::GrowTable {
-                    import: self.replay.imported_tables().contains_key(&idx),
-                    name: table_name,
-                    idx: idx,
-                    amount: amount,
+                    import: self.replay.imported_tables().contains_key(idx),
+                    name: name.clone(),
+                    idx: *idx,
+                    amount: *amount,
                 });
             }
-            WasmEvent::GlobalGet { idx, value } => {
+            WasmEvent::GlobalGet {
+                idx,
+                value,
+            } => {
                 let global = self.replay.globals.get(&idx).unwrap();
+
                 self.splice_event(HostEvent::MutateGlobal {
-                    idx: idx,
+                    idx: *idx,
                     import: self.replay.imported_globals().contains_key(&idx),
-                    value: value,
+                    value: *value,
                     valtype: global.valtype.clone(),
                 });
             }
+
             WasmEvent::ImportCall { idx } => {
                 self.replay
                     .funcs
-                    .get_mut(&idx)
+                    .get_mut(idx)
                     .unwrap()
                     .bodys
                     .push(Some(vec![]));
-                self.state.host_call_stack.push(idx);
-                self.state.last_func = idx;
+                self.state.host_call_stack.push(*idx);
+                self.state.last_func = *idx;
             }
-            WasmEvent::ImportReturn { idx: _idx, results } => {
+            WasmEvent::ImportReturn {
+                idx: _idx,
+                results,
+            } => {
                 self.flag = false;
                 let current_fn_idx = self.state.host_call_stack.last().unwrap();
                 let r = &mut self.replay.funcs.get_mut(&current_fn_idx).unwrap().results;
@@ -544,8 +488,11 @@ impl IRGenerator {
                 });
                 self.state.last_func = self.state.host_call_stack.pop().unwrap();
             }
-            WasmEvent::ImportGlobal { idx, initial } => match self.replay.globals.get_mut(&idx) {
-                Some(g) => g.initial = initial,
+            WasmEvent::ImportGlobal {
+                idx,
+                initial,
+            } => match self.replay.globals.get_mut(idx) {
+                Some(g) => g.initial = *initial,
                 None => todo!(),
             },
         }

@@ -1,26 +1,25 @@
 export const filter = {
   core: [
-    'table-exp-call-private-function',
-    'call-exp-after-import-call-table-get',
-    'table-exp-call-private-function-params',
-    'table-exp-call-private-function-mul-table',
-    'table-exp-host-mod-multiple',
-    'table-exp-host-add-friend',
-    'table-exp-host-grow',
-    'table-exp-host-mod',
     'table-get',
     'table-get-big',
-    'table-imp-host-mod',
-    'test04',
-    "mem-imp-different-size"
+    'table-exp-call-private-function', // unknown function wasabi
+    'table-exp-call-private-function-params', // unknown function wasabi
+    'table-exp-call-private-function-mul-table', // unreachable
+    'table-exp-host-mod-multiple', // unreachable
+    'table-exp-host-add-friend', // unreachable
+    'table-exp-internal-mod',
+    'table-exp-host-grow', // no ref trace
+    'table-exp-host-mod', // no ref trace
+    'table-imp-host-mod', // trace diff
+    'table-imp-init-max',
+    'call-exp-after-import-call-table-get', // unknown function wasabi
+    'test04', // duplicate func export
   ],
   proxy: [
     // Regressions: revisit after unit
     "external-call",
   ],
   online: [
-    // "ogv", // TODO: additional ER at end of original trace
-    // "image-convolute", // asm2wasm - f64-to-int is too large
     "heatmap", // works fine, but too long so we skip it
     "lichess", // failing test
     "livesplit", // uses simd, filter for now

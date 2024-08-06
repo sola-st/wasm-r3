@@ -173,7 +173,6 @@ pub fn generate_replay_wasm(
                                 addr,
                                 data,
                                 import: _,
-                                name: _,
                             } => {
                                 if merge_store {
                                     memory_writes.insert(addr, data);
@@ -714,7 +713,6 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             addr,
             data,
             import: _,
-            name: _,
         } => {
             let mut js_string = String::new();
             for (j, byte) in data.iter().enumerate() {
@@ -727,7 +725,6 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         HostEvent::GrowMemory {
             amount,
             import: _,
-            name: _,
         } => {
             format!("(memory.grow (i32.const {})) (drop)\n", amount)
         }
