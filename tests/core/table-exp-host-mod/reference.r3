@@ -1,0 +1,9 @@
+EC;4;entry;
+IC;2
+IR;2;1
+IC;0
+IR;0;
+T;0;table;0;5;foo
+IC;1
+IR;1;
+ER

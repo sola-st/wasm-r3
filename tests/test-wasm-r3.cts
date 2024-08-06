@@ -36,19 +36,24 @@ async function runWasmR3Tests(names: string[], options) {
 }
 
 async function runSingleTest(options, name: string): Promise<TestReport> {
-  const { originalWebsitePath, replayWebsitePath, testJsPath, testPath, originalBenchmarkPath, replayBenchmarkPath, referencePath } = getPaths(name, options);
-  let originalTracePath;
+  const { originalWebsitePath, replayWebsitePath, testJsPath, testPath, originalBenchmarkPath, replayBenchmarkPath, referenceTracePath } = getPaths(name, options);
+  // TODO: generalize to multiple wasm modules
+  const originalTracePath = await analyzeAndSaveBenchmark(options, testJsPath, originalWebsitePath, originalBenchmarkPath);
   try {
-    originalTracePath = await analyzeAndSaveBenchmark(options, testJsPath, originalWebsitePath, originalBenchmarkPath);
-    // TODO: generalize to multiple wasm modules
-    const replayTracePath = await analyzeAndSaveBenchmark(options, testJsPath, replayWebsitePath, replayBenchmarkPath);
-    const diffCommand = `diff ${referencePath} ${originalTracePath}`;
-    const diffOutput = execSync(diffCommand, { encoding: "utf-8" });
+    execSync(`diff ${referenceTracePath} ${originalTracePath}`);
   } catch (e) {
-    console.log(`Test failed for ${name}`);
-    if (originalTracePath) {
-      console.log('diff errored:\n', `code -d ${referencePath} ${originalTracePath}`)
+    console.log(`Ref-to-Record diff failed for ${name}`);
+    console.log(e);
+    return {
+      success: false,
     }
+  }
+  const replayTracePath = await analyzeAndSaveBenchmark(options, testJsPath, replayWebsitePath, replayBenchmarkPath);
+  try {
+    execSync(`diff ${originalTracePath} ${replayTracePath}`);
+  } catch (e) {
+    console.log(`Record-to-Replay diff failed for ${name}`);
+    console.log(e);
     return {
       success: false,
     }
@@ -59,15 +64,19 @@ async function runSingleTest(options, name: string): Promise<TestReport> {
 }
 
 async function analyzeAndSaveBenchmark(options: any, testJsPath: string, websitePath: string, benchmarkPath: string): Promise<string> {
-  const [server, url] = await startServer(websitePath);
-  const analyser = new Analyser(path.join(process.cwd(), 'dist', 'src', 'tracer.cjs'), options);
-  let analysisResult = await (await import(testJsPath)).default(analyser, url);
-  const benchmark = Benchmark.fromAnalysisResult(analysisResult);
-  await benchmark.save(benchmarkPath, options);
-  const tracePath = path.join(benchmarkPath, 'bin_0', "trace.r3");
-  const traceString = await fs.readFile(tracePath, "utf-8");
-  server.close();
-  return tracePath;
+  try {
+    const [server, url] = await startServer(websitePath);
+    const analyser = new Analyser(path.join(process.cwd(), 'dist', 'src', 'tracer.cjs'), options);
+    let analysisResult = await (await import(testJsPath)).default(analyser, url);
+    const benchmark = Benchmark.fromAnalysisResult(analysisResult);
+    await benchmark.save(benchmarkPath, options);
+    const tracePath = path.join(benchmarkPath, 'bin_0', "trace.r3");
+    const traceString = await fs.readFile(tracePath, "utf-8");
+    return tracePath;
+  } catch (e) {
+    console.log(`${websitePath} failed:`);
+    console.log(e);
+  }
 }
 
 (async function run() {
@@ -104,15 +113,14 @@ async function analyzeAndSaveBenchmark(options: any, testJsPath: string, website
 })();
 
 function getPaths(name: string, options: any) {
-  const testPath = path.join(process.cwd(), "tests", options.category, name);
-  const originalWebsitePath = path.join(testPath, "website");
   const testJsPath = path.join(process.cwd(), "tests", options.category, "test.js");
+  const testPath = path.join(process.cwd(), "tests", options.category, name);
+  const referenceTracePath = path.join(testPath, "reference.r3");
+  const originalWebsitePath = path.join(testPath, "website");
   const originalBenchmarkPath = path.join(testPath, 'out', getFrontendPath(options));
   const replayWebsitePath = path.join(originalBenchmarkPath, 'bin_0')
   const replayBenchmarkPath = path.join(replayWebsitePath, 'out')
-  // TODO: remove hardcoded path
-  const referencePath = path.join('/Users/don/research/wasm-r3-tests', name, 'trace.r3');
-  return { originalWebsitePath, replayWebsitePath, testJsPath, testPath, originalBenchmarkPath, replayBenchmarkPath, referencePath };
+  return { originalWebsitePath, replayWebsitePath, testJsPath, testPath, originalBenchmarkPath, replayBenchmarkPath, referenceTracePath };
 }
 
 function getFrontendPath(options) {

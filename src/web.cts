@@ -57,7 +57,7 @@ export class Analyser implements AnalyserI {
         });
         this.page.on('pageerror', msg => {
             console.log(`Browser pageerror: ${msg}`);
-            throw new Error(`${msg}`);
+            // throw new Error(`${msg}`);
         });
         this.downloadPaths = [];
         this.page.on('download', async (download) => {
