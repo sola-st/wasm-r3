@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: '19.x'
     - run: npm install && npx playwright install
-    - run: npm run build-full
+    - run: npm run build-binaryen && npm run build
     - run: npm test core
     - run: npm test proxy
 
