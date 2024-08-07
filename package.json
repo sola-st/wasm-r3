@@ -1,6 +1,4 @@
 {
-  "name": "tool",
-  "module": "index.ts",
   "type": "module",
   "devDependencies": {
     "@types/diff": "^5.0.8",
@@ -19,15 +17,14 @@
   "dependencies": {
     "acorn": "^8.11.2",
     "command-line-args": "^5.2.1",
-    "playwright": "^1.42.1",
+    "playwright": "^1.46.0",
     "ws": "^8.17.1"
   },
   "scripts": {
-    "start": "npm run build && node ./dist/src/cli/main.cjs",
-    "test": "npm run build && node --experimental-wasm-multi-memory --experimental-wasm-typed_funcref --experimental-wasm-gc ./dist/tests/test-wasm-r3.cjs",
-    "build": "npm run build-rust && npm run build-wasabi && tsc",
+    "start": "node --experimental-strip-types ./src/start.ts",
+    "test": "node --experimental-strip-types ./src/test.ts",
+    "build": "npm run build-rust && npm run build-wasabi",
     "build-rust": "cd crates && cargo build --release && cd -",
-    "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && wasm-pack build --target nodejs --out-dir ../../../dist/wasabi && cd ../../..",
-    "build-binaryen": "cd binaryen && git submodule update --init && cmake . && make"
+    "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && cd ../../.." 
   }
 }

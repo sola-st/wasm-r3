@@ -1,14 +1,12 @@
 import fs from "fs/promises";
 import path from "path";
 import express from "express";
-//@ts-ignore
 import { Server } from "http";
 import commandLineArgs from "command-line-args";
-import { getDirectoryNames, trimFromLastOccurance, writeWithSpaces } from "./test-utils.cjs";
-import { filter } from "../src/filter.cjs";
-import runSliceDiceTests from "./test-slice-dice.cjs";
-import Benchmark, { Analyser } from "../src/web.cjs";
 import { execSync } from "child_process";
+import { filter } from "./filter.ts";
+import Benchmark, { Analyser } from "./web.ts";
+import runSliceDiceTests from "./test-slice-dice.ts";
 
 type Success = { success: true };
 type Failure = { success: false };
@@ -149,4 +147,29 @@ async function startServer(websitePath: string): Promise<[Server, string]> {
   const url = `http://localhost:${address.port}`;
 
   return [server, url]
+}
+
+export async function getDirectoryNames(folderPath: string) {
+  const entries = await fs.readdir(folderPath, { withFileTypes: true });
+
+  const directories: string[] = entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
+
+  return directories;
+}
+
+export async function delay(ms: number) {
+  return new Promise(resolve => {
+      setTimeout(resolve, ms);
+  });
+}
+
+export function trimFromLastOccurance(str: string, substring: string) {
+  const lastIndex = str.lastIndexOf(substring);
+  if (lastIndex === -1) {
+      // Substring not found, return original string or handle as needed
+      return str;
+  }
+  return str.substring(0, lastIndex + substring.length);
 }

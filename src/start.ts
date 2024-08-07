@@ -6,8 +6,7 @@ async function main() {
 }
 
 export default async function run(url: string, options: Options) {
-    let analyser: AnalyserI
-    analyser = new Analyser('./dist/src/tracer.cjs', options)
+    let analyser = new Analyser('./dist/src/tracer.cjs', options)
     await analyser.start(url, { headless: options.headless })
     await askQuestion(`Record is running. Enter 'Stop' to stop recording: `)
     console.log(`Record stopped. Downloading...`)
@@ -18,7 +17,7 @@ export default async function run(url: string, options: Options) {
 
 import commandLineArgs from 'command-line-args'
 import fs from 'fs'
-import Benchmark, { AnalyserI, Analyser } from './web.cjs'
+import Benchmark, { Analyser } from './web.ts'
 
 export type Options = {
     headless: boolean,

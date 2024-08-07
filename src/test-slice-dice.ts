@@ -5,7 +5,7 @@ import { exit } from "process";
 import { Server } from "http";
 import path from "path";
 import { execSync } from "child_process";
-import Benchmark, { Analyser } from "../src/web.cjs";
+import Benchmark, { Analyser } from "./web.ts";
 
 export default async function runSliceDiceTests(names: string[], options) {
   for (let name of names) {

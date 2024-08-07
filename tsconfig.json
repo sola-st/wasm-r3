@@ -5,6 +5,8 @@
     "target": "ES2022",
     "sourceMap": true,
     "outDir": "./dist",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     // "composite": true,
   },
   "include": [

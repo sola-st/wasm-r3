@@ -1,15 +1,7 @@
-import { Browser, chromium, firefox, Frame, Page, webkit, Worker } from 'playwright'
 import fs from 'fs/promises'
-import acorn from 'acorn'
-import { trimFromLastOccurance } from '../tests/test-utils.cjs'
 
 // read port from env
 const CDP_PORT = process.env.CDP_PORT || 8080
-
-export interface AnalyserI {
-    start: (url: string, options: { headless: boolean }) => Promise<Page>
-    stop: () => Promise<AnalysisResult>
-}
 
 export type AnalysisResult = {
     result: string,
@@ -17,7 +9,7 @@ export type AnalysisResult = {
 }[]
 
 type Options = { extended?: boolean, noRecord?: boolean, evalRecord?: boolean, firefox?: boolean, webkit?: boolean }
-export class Analyser implements AnalyserI {
+export class Analyser {
 
     private analysisPath: string
     private options: Options
@@ -125,7 +117,6 @@ export class Analyser implements AnalyserI {
             }
             const script = await response.text()
             try {
-                acorn.parse(script, { ecmaVersion: 'latest' })
                 const body = `${initScript}${script}`
                 await route.fulfill({ response, body: body })
             } catch {
@@ -196,8 +187,9 @@ export class Analyser implements AnalyserI {
 import fss from 'fs'
 import path from 'path'
 import { execSync } from 'child_process';
-//@ts-ignore
-import { instrument_wasm } from '../wasabi/wasabi_js.js'
+import { trimFromLastOccurance } from './test.ts'
+import { firefox, webkit, chromium } from 'playwright'
+import type { Browser, Frame, Worker, Page} from 'playwright'
 
 export type Record = { binary: number[], trace: string }[]
 
@@ -208,8 +200,6 @@ type WasabiRuntime = string[]
 export default class Benchmark {
 
     private record: Record
-    private constructor() { }
-
     async save(benchmarkPath: string, options) {
         // await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
         if (!fss.existsSync(benchmarkPath)) await fs.mkdir(benchmarkPath, { recursive: true })
@@ -235,14 +225,6 @@ export default class Benchmark {
 
     getBinaries() {
         return this.record.map(r => r.binary)
-    }
-
-    instrumentBinaries(): WasabiRuntime[] {
-        return this.record.map((r, i) => {
-            const { instrumented, js } = instrument_wasm(r.binary)
-            this.record[i].binary = instrumented
-            return js
-        })
     }
 
     getRecord() {
