@@ -24,7 +24,7 @@ export default async function runSliceDiceTests(names: string[], options) {
 function runSliceDice(replayWasmPath: string, fidx: string) {
   const startTime = Date.now();
   process.stdout.write('    Running slice-dice: ');
-  const command = `./target/release/slice_dice ${replayWasmPath} ${fidx} 1`;
+  const command = `./crates/target/release/slice_dice ${replayWasmPath} ${fidx} 1`;
   execSync(command);
   const endTime = Date.now();
   // We do not actually check what's generated runs to completion. This is misleading.
@@ -32,6 +32,7 @@ function runSliceDice(replayWasmPath: string, fidx: string) {
   console.log(`${endTime - startTime}ms`);
 }
 
+// TODO: this got slower by 2x from 01b34a3952ea29706d29d29d07b6f5148e119065. Investigate why.
 async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string, fidx: string) {
   const startTime = Date.now();
   process.stdout.write('    Running wasm-r3: ');
@@ -78,7 +79,7 @@ function getSubsetFidx(replayWasmPath: string, name: string) {
   try {
   } catch (e) {
   }
-  const command = `./target/release/slice_dice ${replayWasmPath}`;
+  const command = `./crates/target/release/slice_dice ${replayWasmPath}`;
   const stdout = execSync(command, { stdio: ['pipe', 'pipe', 'ignore'] });
   const matches = stdout.toString().match(/\d+/g);
   if (matches) {

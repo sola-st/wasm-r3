@@ -26,7 +26,7 @@ def get_subset_fidx(testname: str) -> list:
     subset_of_fidx = []
     try:
         subprocess.run(
-            [f"{WASMR3_PATH}/target/release/slice_dice", replay_wasm_path],
+            [f"{WASMR3_PATH}/crates/target/release/slice_dice", replay_wasm_path],
             check=True,
             capture_output=True,
             text=True,

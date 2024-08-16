@@ -104,7 +104,8 @@ async function analyzeAndSaveBenchmark(options: any, testJsPath: string, website
       path.join(process.cwd(), "benchmarks")
     );
     if (options.testcases !== undefined) {
-      testNames = testNames.filter((n) => options.testcases === (n));
+      testNames = testNames.filter((n) => options.testcases.includes(n));
+      testNames = Array.from(new Set([...testNames, ...options.testcases]));
     }
     await runSliceDiceTests(testNames, options);
   }
