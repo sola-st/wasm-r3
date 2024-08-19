@@ -25,6 +25,6 @@
     "test": "node --experimental-strip-types ./src/test.ts",
     "build": "npm run build-rust && npm run build-wasabi",
     "build-rust": "cd crates && cargo build --release && cd -",
-    "build-wasabi": "cd wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && cd ../../.." 
+    "build-wasabi": "cd third_party/wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && cd ../../.." 
   }
 }

@@ -1,10 +1,10 @@
-[submodule "wasabi"]
-	path = wasabi
+[submodule "third_party/wasabi"]
+	path = third_party/wasabi
 	url = https://github.com/jakobgetz/wasabi.git
 	branch = jakob
-[submodule "binaryen"]
-	path = binaryen
-	url = https://github.com/WebAssembly/binaryen.git
 [submodule "third_party/wizard-engine"]
 	path = third_party/wizard-engine
 	url = https://github.com/doehyunbaek/wizard-engine
+[submodule "binaryen"]
+	path = binaryen
+	url = https://github.com/WebAssembly/binaryen.git

@@ -170,8 +170,8 @@ export class Analyser {
     }
 
     private async constructInitScript() {
-        const wasabiScript = await fs.readFile('./wasabi/crates/wasabi_js/pkg/wasabi_js_merged.js') + '\n'
-        const setupScript = await fs.readFile('./wasabi/crates/wasabi/js/r3.js') + '\n'
+        const wasabiScript = await fs.readFile('./third_party/wasabi/crates/wasabi_js/pkg/wasabi_js_merged.js') + '\n'
+        const setupScript = await fs.readFile('./third_party/wasabi/crates/wasabi/js/r3.js') + '\n'
         return wasabiScript + ';' + setupScript + ';'
     }
 
