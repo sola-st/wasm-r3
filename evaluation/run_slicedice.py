@@ -2,6 +2,7 @@ import subprocess, json, concurrent.futures, re, os, itertools
 
 # this takes upto 150GB of memory.
 # TODO: why?
+WASMR3_PATH = os.getenv("WASMR3_PATH", "/home/wasm-r3")
 test_subset = os.getenv("TEST_SUBSET")
 test_name = os.getenv("TEST_NAME")
 TIMEOUT = 120
@@ -9,6 +10,33 @@ TIMEOUT = 120
 with open("metrics.json", "r") as f:
     metrics = json.load(f)
 
+
+def get_benchmarks():
+    online_tests_path = os.path.join(WASMR3_PATH, "benchmarks")
+    return [
+        name
+        for name in os.listdir(online_tests_path)
+        if os.path.isdir(os.path.join(online_tests_path, name))
+    ]
+
+
+def get_subset_fidx(testname: str) -> list:
+    print(f"Getting fid candidates for {testname}: ", end="", flush=True)
+    replay_wasm_path = os.path.join(
+        WASMR3_PATH, "benchmarks", testname, f"{testname}.wasm"
+    )
+    subset_of_fidx = []
+    process = subprocess.run(
+        [f"{WASMR3_PATH}/crates/target/release/slice_dice", replay_wasm_path],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    matches = re.findall(r"\d+", process.stdout)
+    if matches:
+        subset_of_fidx = list(map(int, matches))
+    print(f"{subset_of_fidx}")
+    return subset_of_fidx
 
 def extract_times(input_string):
     # Define the pattern to match
@@ -38,17 +66,14 @@ result = extract_times(input_string)
 
 def run_slicedice(testname, fidx):
     try:
-        fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
-        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} {fidxargs}"
+        # fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
+        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx}"
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
         return [testname, fidx, extract_times(result.stdout)]
     except Exception as e:
         print(f"Failed to run {testname} - {fidx}")
         print(e)
         return [testname, fidx, "fail"]
-
-
-testset = [test_name] if test_name else sorted(metrics)
 
 
 def get_fidx(testname):
@@ -62,6 +87,10 @@ def get_fidx(testname):
     else:
         return metrics[testname]
 
+
+testset = [test_name] if test_name else get_benchmarks()
+for testname in testset:
+    metrics[testname] = {fidx: {} for fidx in get_subset_fidx(testname)}
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
     futures = [
