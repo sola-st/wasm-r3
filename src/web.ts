@@ -1,4 +1,15 @@
 import fs from 'fs/promises'
+import fss from 'fs'
+import path from 'path'
+import { execSync } from 'child_process';
+import { firefox, webkit, chromium } from 'playwright'
+import type { Browser, Frame, Worker, Page } from 'playwright'
+
+export const commonOptions = [
+    { name: "firefoxFrontend", alias: "f", type: Boolean },
+    { name: "webkitFrontend", alias: "w", type: Boolean },
+    { name: "alternativeDownload", type: Boolean, defaultValue: false },
+]
 
 // read port from env
 const CDP_PORT = process.env.CDP_PORT || 8080
@@ -8,11 +19,10 @@ export type AnalysisResult = {
     wasm: number[]
 }[]
 
-type Options = { extended?: boolean, noRecord?: boolean, evalRecord?: boolean, firefox?: boolean, webkit?: boolean }
 export class Analyser {
 
     private analysisPath: string
-    private options: Options
+    private options
     private browser: Browser
     private page: Page
     private downloadPaths: string[]
@@ -20,12 +30,12 @@ export class Analyser {
     private isRunning = false
 
 
-    constructor(analysisPath: string, options: Options = { extended: false, noRecord: false }) {
+    constructor(analysisPath: string, options) {
         this.analysisPath = analysisPath
         this.options = options
     }
 
-    async start(url, { headless } = { headless: false }) {
+    async start(url, options) {
         if (this.isRunning === true) {
             throw new Error('Analyser is already running. Stop the Analyser before starting again')
         }
@@ -35,7 +45,7 @@ export class Analyser {
             this.browser = await chromium.connectOverCDP(`http://localhost:${CDP_PORT}`);
         } else {
             this.browser = await browserType.launch({
-                headless, args: [
+                headless: options.headless, args: [
                     // '--disable-web-security',
                     '--js-flags="--max_old_space_size=8192"',
                     '--enable-experimental-web-platform-features',
@@ -53,7 +63,7 @@ export class Analyser {
         });
         this.downloadPaths = [];
         this.page.on('download', async (download) => {
-            const suggestedFilename = './out' + download.suggestedFilename();
+            const suggestedFilename = './out/' + download.suggestedFilename();
             await download.saveAs(suggestedFilename);
             this.downloadPaths.push(suggestedFilename);
         });
@@ -73,11 +83,10 @@ export class Analyser {
         this.contexts = this.contexts.concat(this.page.frames())
         const traces = (await this.getResults()).map(t => trimFromLastOccurance(t, 'ER'))
         let originalWasmBuffer;
-        // make this configurable with options
-        if (true) {
-            originalWasmBuffer = await this.getBuffers()
-        } else {
+        if (this.options.alternativeDownload) {
             originalWasmBuffer = await this.getBuffersThroughDownloads()
+        } else {
+            originalWasmBuffer = await this.getBuffers()
         }
         this.contexts = []
         this.browser.close()
@@ -174,26 +183,21 @@ export class Analyser {
         const setupScript = await fs.readFile('./third_party/wasabi/crates/wasabi/js/r3.js') + '\n'
         return wasabiScript + ';' + setupScript + ';'
     }
-
-    setExtended(extended: boolean) {
-        this.options.extended = extended
-    }
-
-    getExtended() {
-        return this.options.extended
-    }
 }
 
-import fss from 'fs'
-import path from 'path'
-import { execSync } from 'child_process';
-import { trimFromLastOccurance } from './test.ts'
-import { firefox, webkit, chromium } from 'playwright'
-import type { Browser, Frame, Worker, Page} from 'playwright'
 
 export type Record = { binary: number[], trace: string }[]
 
 type WasabiRuntime = string[]
+
+export function trimFromLastOccurance(str: string, substring: string) {
+    const lastIndex = str.lastIndexOf(substring);
+    if (lastIndex === -1) {
+        // Substring not found, return original string or handle as needed
+        return str;
+    }
+    return str.substring(0, lastIndex + substring.length);
+}
 
 
 

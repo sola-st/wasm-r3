@@ -5,7 +5,7 @@ import { Server } from "http";
 import commandLineArgs from "command-line-args";
 import { execSync } from "child_process";
 import { filter } from "./filter.ts";
-import Benchmark, { Analyser } from "./web.ts";
+import Benchmark, { Analyser, commonOptions } from "./web.ts";
 import runSliceDiceTests from "./test-slice-dice.ts";
 import { exit } from "process";
 
@@ -79,15 +79,14 @@ async function analyzeAndSaveBenchmark(options: any, testJsPath: string, website
   }
 }
 
+const testOptions = [
+  { name: "category", type: String, defaultOption: true },
+  { name: "testcases", alias: "t", type: String, multiple: true },
+  { name: "fidxs", alias: "i", type: Number, multiple: true },
+];
+
 (async function run() {
-  const optionDefinitions = [
-    { name: "category", type: String, defaultOption: true },
-    { name: "testcases", alias: "t", type: String, multiple: true },
-    { name: "fidxs", alias: "i", type: Number, multiple: true },
-    { name: "firefoxFrontend", alias: "f", type: Boolean },
-    { name: "webkitFrontend", alias: "w", type: Boolean },
-  ];
-  const options = commandLineArgs(optionDefinitions);
+  const options = commandLineArgs([...commonOptions, ...testOptions]);
   if (options.category === undefined || options.category === "core" || options.category === "proxy" || options.category === "online") {
     let testNames = await getDirectoryNames(
       path.join(process.cwd(), "tests", options.category)
@@ -106,7 +105,7 @@ async function analyzeAndSaveBenchmark(options: any, testJsPath: string, website
       exit(0);
     }
   }
-  if (options.category === ("slicedice")) {
+  if (options.category === "slicedice") {
     let testNames = await getDirectoryNames(
       path.join(process.cwd(), "benchmarks")
     );
@@ -161,23 +160,14 @@ export async function getDirectoryNames(folderPath: string) {
   const entries = await fs.readdir(folderPath, { withFileTypes: true });
 
   const directories: string[] = entries
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => entry.name);
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
 
   return directories;
 }
 
 export async function delay(ms: number) {
   return new Promise(resolve => {
-      setTimeout(resolve, ms);
+    setTimeout(resolve, ms);
   });
-}
-
-export function trimFromLastOccurance(str: string, substring: string) {
-  const lastIndex = str.lastIndexOf(substring);
-  if (lastIndex === -1) {
-      // Substring not found, return original string or handle as needed
-      return str;
-  }
-  return str.substring(0, lastIndex + substring.length);
 }
