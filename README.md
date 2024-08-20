@@ -22,14 +22,12 @@ The command will start the recording. To stop the recording type any key into th
 
 ## Testing 
 ```
-npm test
+npm test <category>
 ```
 There are three categories of tests:
-- `node`: These tests the basic functionality of the tracer and replay generator. These tests are basically unit tests
-- `offline`: These tests run Wasm-R3 on web applications that get hosted locally to test the (almost) end to end functionality.
+- `core`: These tests the core functionality of Wasm-R3. These tests are basically unit tests.
+- `proxy`: These tests mainly exercise integration of core Wasm-R3 functionality in the web environments.
 - `online`: These tests run on real world online web applications in order to confirm which websites are currently supported by Wasm-R3.
-
-To test only certain categories just provide the specific categories you want to test as an argument to the test command.
 
 The faithfulness of Wasm-R3 is tested by comparing the trace generated during record with the trace generated during replay. The results of the testcases will be generated in the corresponding folders. Interesting files are the `report.txt` which contains information why a testcase failed. Also the trace for the record and the replay phase gets saved in `.r3` files.
 
