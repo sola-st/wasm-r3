@@ -7,6 +7,7 @@ import { execSync } from "child_process";
 import { filter } from "./filter.ts";
 import Benchmark, { Analyser } from "./web.ts";
 import runSliceDiceTests from "./test-slice-dice.ts";
+import { exit } from "process";
 
 type Success = { success: true };
 type Failure = { success: false };
@@ -109,6 +110,7 @@ async function analyzeAndSaveBenchmark(options: any, testJsPath: string, website
     }
     await runSliceDiceTests(testNames, options);
   }
+  exit(0)
 })();
 
 function getPaths(name: string, options: any) {
