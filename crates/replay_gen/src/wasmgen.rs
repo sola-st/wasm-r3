@@ -225,10 +225,12 @@ pub fn generate_replay_wasm(
                 let c1 = current + 1;
                 let c2 = new_c + 1;
                 let res = match r.results.get(0) {
-                    Some(v) => format!(
+                    Some(v) => {
+                        let v = v.to_wat();
+                        format!(
                         "(return ({} {v}))",
                         valty_to_const(ty.results.get(0).unwrap())
-                    ),
+                    )},
                     None => "(return)".to_owned(),
                 };
                 write(
@@ -347,6 +349,7 @@ fn generate_replay_html(
         let valtype = global.valtype.clone();
         let mutable = global.mutable;
         let initial = global.initial;
+        let initial = initial.to_js();
         write(
             stream,
             &format!("const {module_name} = new WebAssembly.Global({{ value: '{valtype}', mutable: {mutable}}}, {initial})\n"),
@@ -536,6 +539,7 @@ fn generate_single_wasm(
                             true => format!("(mut {valtype})"),
                             false => format!("{valtype}"),
                         };
+                        let initial = initial.to_wat();
                         write!(
                             stream,
                             "(global (export \"{name}\") {mutable} ({valtype}.const {initial}))\n"
@@ -652,6 +656,7 @@ fn merge_memory_writes(
             // merging 4 bytes and 8 bytes is also possible
             for (j, byte) in data.iter().enumerate() {
                 let addr = start_addr + j as i32;
+                let byte = byte.to_wat();
                 bodystr.push_str(&format!(
                     "(i32.store8 (i32.const {addr}) (i32.const {byte}))\n",
                 ));
@@ -683,7 +688,9 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             let params = params
                 .iter()
                 .zip(param_tys.clone())
-                .map(|(p, p_ty)| format!("({} {p})", valty_to_const(&p_ty)))
+                .map(|(p, p_ty)| {
+                    let p = p.to_wat();
+                    format!("({} {p})", valty_to_const(&p_ty))})
                 .collect::<Vec<String>>()
                 .join("\n");
             params + &format!("(call ${name})") + &("(drop)".repeat(result_count))
@@ -702,7 +709,9 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             let params = params
                 .iter()
                 .zip(param_tys.clone())
-                .map(|(p, p_ty)| format!("({} {p})", valty_to_const(&p_ty)))
+                .map(|(p, p_ty)| {
+                    let p = p.to_wat();
+                    format!("({} {p})", valty_to_const(&p_ty))})
                 .collect::<Vec<String>>()
                 .join("\n");
             params
@@ -716,6 +725,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
         } => {
             let mut js_string = String::new();
             for (j, byte) in data.iter().enumerate() {
+                let byte = byte.to_wat();
                 js_string += &format!("i32.const {}\n", addr + j as i32);
                 js_string += &format!("i32.const {}\n", byte);
                 js_string += &format!("i32.store8\n",);
@@ -765,6 +775,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             };
             let value = value;
             let _globalidx = idx;
+            let value = value.to_wat();
             format!("({valtype} {value})\n") + &format!("(global.set {idx})")
         }
     };

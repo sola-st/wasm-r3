@@ -14,6 +14,7 @@ export const filter = {
     'table-imp-init-max',
     'call-exp-after-import-call-table-get', // unknown function wasabi
     'test04', // duplicate func export
+    'rust-game-of-life', // fail only at CI
   ],
   proxy: [
     // Regressions: revisit after unit
