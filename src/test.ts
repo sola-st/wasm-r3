@@ -16,7 +16,7 @@ type TestReport = (
   | Failure
 );
 
-async function runWasmR3Tests(names: string[], options) {
+async function runWasmR3Tests(names: string[], options): Promise<number> {
   console.log(`Run ${options.category} tests`);
   let successful = 0;
   for (let name of names) {
@@ -32,6 +32,7 @@ async function runWasmR3Tests(names: string[], options) {
     `finished running ${names.length} ${options.category} testcases. Pass: ${successful}, Fail: ${fail}, FailRate: ${(fail / names.length) * 100
     }%`
   );
+  return fail
 }
 
 async function runSingleTest(options, name: string): Promise<TestReport> {
@@ -98,7 +99,12 @@ async function analyzeAndSaveBenchmark(options: any, testJsPath: string, website
       testNames = testNames.filter((n) => options.testcases.includes(n));
       testNames = Array.from(new Set([...testNames, ...options.testcases]));
     }
-    await runWasmR3Tests(testNames, options);
+    const failNumber = await runWasmR3Tests(testNames, options);
+    if (failNumber > 0) {
+      exit(1);
+    } else {
+      exit(0);
+    }
   }
   if (options.category === ("slicedice")) {
     let testNames = await getDirectoryNames(
@@ -110,7 +116,6 @@ async function analyzeAndSaveBenchmark(options: any, testJsPath: string, website
     }
     await runSliceDiceTests(testNames, options);
   }
-  exit(0)
 })();
 
 function getPaths(name: string, options: any) {
