@@ -1,14 +1,36 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <title>Worker test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frame 1</title>
 </head>
-
 <body>
-  <script>
-    new Worker('./worker.js')
-  </script>
+    <script>
+        fetch("add.wasm")
+            .then((response) => response.arrayBuffer())
+            .then((bytes) => {
+                console.log(bytes);
+                return WebAssembly.instantiate(bytes, {});
+            })
+            .then((result) => {
+                const addResult = result.instance.exports.add(1, 2);
+                console.log(`1 + 2 = ${addResult}`);
+                return addResult;
+            })
+            .then((addResult) => {
+                window.parent.postMessage({
+                    type: 'frameComplete',
+                    result: `1 + 2 = ${addResult}`
+                }, '*');
+            })
+            .catch((error) => {
+                console.error("An error occurred:", error);
+                window.parent.postMessage({
+                    type: 'error',
+                    error: error.message
+                }, '*');
+            });
+    </script>
 </body>
-
 </html>

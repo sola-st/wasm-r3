@@ -7,15 +7,41 @@
 
 <body>
   <script>
+        const startTime = performance.now();
+        let mainThreadDone = false;
+        let workerDone = false;
+
+        function checkCompletion() {
+            if (mainThreadDone && workerDone) {
+                const endTime = performance.now();
+                const executionTime = endTime - startTime;
+                console.log(`Total execution time: ${executionTime} milliseconds`);
+                const executionTimeElement = document.createElement('p');
+                executionTimeElement.textContent = `Total execution time: ${executionTime.toFixed(2)} milliseconds`;
+                document.body.appendChild(executionTimeElement);
+            }
+        }
+
     fetch("add.wasm")
       .then((response) => response.arrayBuffer())
       .then((bytes) => {
-        console.log(bytes)
-        return WebAssembly.instantiate(bytes, {})
+                console.log("Main thread bytes:", bytes);
+                return WebAssembly.instantiate(bytes, {});
       })
-      .then((result) => console.log(`2 + 2 = ${result.instance.exports.add(2, 2)}`));
-    var worker = new Worker('worker.js');
+            .then((result) => {
+                console.log(`Main thread: 2 + 2 = ${result.instance.exports.add(2, 2)}`);
+                mainThreadDone = true;
+                checkCompletion();
+            });
+
+        const worker = new Worker('worker.js');
+        worker.onmessage = function(e) {
+            if (e.data.status === 'initialized') {
+                console.log('Worker result:', e.data.result);
+                workerDone = true;
+                checkCompletion();
+            }
+        };
   </script>
 </body>
-
 </html>

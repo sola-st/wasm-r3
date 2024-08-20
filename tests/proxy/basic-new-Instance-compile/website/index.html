@@ -11,8 +11,14 @@
       .then((response) => response.arrayBuffer())
       .then((bytes) => WebAssembly.compile(bytes))
       .then((module) => {
+        const startTime = performance.now();
         const instance = new WebAssembly.Instance(module, {})
         console.log(`1 + 2 = ${instance.exports.add(1, 2)}`)
+        const endTime = performance.now();
+        const executionTime = endTime - startTime;
+        const executionTimeElement = document.createElement('p');
+        executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+        document.body.appendChild(executionTimeElement);
       })
   </script>
 </body>

@@ -7,6 +7,24 @@
 
 <body>
   <iframe src="frame1.html"></iframe>
+  <script>
+    (async function () {
+      const startTime = performance.now();
+
+      // Simulating some asynchronous operation, like loading the iframe
+      await new Promise(resolve => {
+        const iframe = document.querySelector('iframe');
+        iframe.onload = resolve;
+      });
+
+      const endTime = performance.now();
+      const executionTime = endTime - startTime;
+
+      const executionTimeElement = document.createElement('p');
+      executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+      document.body.appendChild(executionTimeElement);
+    })();
+  </script>
 </body>
 
 </html>

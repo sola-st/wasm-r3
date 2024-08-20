@@ -1,12 +1,28 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <title>Worker test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker test</title>
 </head>
-
 <body>
-  <iframe src="frame1.html"></iframe>
-</body>
+    <iframe src="frame1.html"></iframe>
+    <script>
+        const startTime = performance.now();
 
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'frameComplete') {
+                const endTime = performance.now();
+                const executionTime = endTime - startTime;
+                console.log(`Total execution time: ${executionTime} milliseconds`);
+                
+                const executionTimeElement = document.createElement('p');
+                executionTimeElement.textContent = `Total execution time: ${executionTime.toFixed(2)} milliseconds`;
+                document.body.appendChild(executionTimeElement);
+                
+                console.log('Frame result:', event.data.result);
+            }
+        });
+    </script>
+</body>
 </html>

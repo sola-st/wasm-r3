@@ -1,7 +1,7 @@
-import { delay } from '../../dist/tests/test-utils.cjs'
+import { expect } from "playwright/test";
 
 export default async function test(analyser, url) {
-    await analyser.start(url, { headless: true })
-    await delay(1000)
+    const page = await analyser.start(url, { headless: true })
+    await expect(page.getByText('milliseconds')).toBeVisible({ timeout: 1000 });
     return await analyser.stop()
 }

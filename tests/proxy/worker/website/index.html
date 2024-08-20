@@ -2,10 +2,27 @@
 <html>
   <head>
     <title>Worker test</title>
-  </head>
-  <body>
+</head>
+<body>
     <script>
-      var worker = new Worker('worker.js');
+        const startTime = performance.now();
+
+        const worker = new Worker('worker.js');
+
+        worker.onmessage = function(e) {
+            if (e.data.status === 'initialized') {
+                const endTime = performance.now();
+                const executionTime = endTime - startTime;
+
+                console.log(`Total execution time: ${executionTime} milliseconds`);
+
+                const executionTimeElement = document.createElement('p');
+                executionTimeElement.textContent = `Total execution time: ${executionTime.toFixed(2)} milliseconds`;
+                document.body.appendChild(executionTimeElement);
+
+                console.log('Worker result:', e.data.result);
+            }
+        };
     </script>
-  </body>
+</body>
 </html>
