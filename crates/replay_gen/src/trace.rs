@@ -3,8 +3,8 @@
 //! Most usually corresponds to one wasm instruction, e.g. WasmEvent::Load corresponds to one wasm load,
 //! but some of them are not. e.g. FuncEntry and FuncReturn correspond to the entry and return of a wasm function.
 //! There are also some events that are not part of the execution like Import*, which can be removed later.
+use std::fmt::Debug;
 use std::fmt::{self, Write};
-use std::fmt::{Debug, Display};
 use std::str::FromStr;
 
 pub type Trace = Vec<WasmEvent>;
@@ -116,16 +116,28 @@ pub enum ValType {
     Externref,
 }
 
-impl Display for ValType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl ValType {
+    pub fn to_wat(&self) -> &'static str {
         match self {
-            Self::I32 => write!(f, "i32"),
-            Self::I64 => write!(f, "i64"),
-            Self::F32 => write!(f, "f32"),
-            Self::F64 => write!(f, "f64"),
-            Self::V128 => write!(f, "v128"),
-            Self::Funcref => write!(f, "funcref"),
-            Self::Externref => write!(f, "externref"),
+            Self::I32 => "i32",
+            Self::I64 => "i64",
+            Self::F32 => "f32",
+            Self::F64 => "f64",
+            Self::V128 => "v128",
+            Self::Funcref => "funcref",
+            Self::Externref => "externref",
+        }
+    }
+
+    pub fn to_js(&self) -> &'static str {
+        match self {
+            Self::I32 => "i32",
+            Self::I64 => "i64",
+            Self::F32 => "f32",
+            Self::F64 => "f64",
+            Self::V128 => "v128",
+            Self::Funcref => "anyfunc",
+            Self::Externref => "externref",
         }
     }
 }

@@ -47,7 +47,7 @@ pub fn generate_replay_wasm(
 
         for (_globalidx, global) in &code.exported_globals() {
             let name = global.export.clone().unwrap().name.clone();
-            let valtype = global.valtype.clone();
+            let valtype = global.valtype.clone().to_wat();
             let typedecl = match global.mutable {
                 true => format!("(mut {valtype})"),
                 false => format!("{valtype}"),
@@ -62,7 +62,7 @@ pub fn generate_replay_wasm(
         for (_tableidx, table) in &code.exported_tables() {
             let name = table.export.clone().unwrap().name.clone();
             let initial = table.initial;
-            let reftype = &table.reftype;
+            let reftype = &table.reftype.to_wat();
 
             write(
                 stream,
@@ -73,9 +73,19 @@ pub fn generate_replay_wasm(
         for (_funcidx, func) in &code.exported_funcs() {
             let name = func.export.clone().unwrap().name.clone();
 
-            let paramtys: Vec<String> = func.ty.params.iter().map(|v| format!("{}", v)).collect();
+            let paramtys: Vec<String> = func
+                .ty
+                .params
+                .iter()
+                .map(|v| format!("{}", v.to_wat()))
+                .collect();
             let paramtys = paramtys.join(" ");
-            let resulttys: Vec<String> = func.ty.results.iter().map(|v| format!("{}", v)).collect();
+            let resulttys: Vec<String> = func
+                .ty
+                .results
+                .iter()
+                .map(|v| format!("{}", v.to_wat()))
+                .collect();
             let resulttys = resulttys.join(" ");
             write(
                 stream,
@@ -115,7 +125,7 @@ pub fn generate_replay_wasm(
 
             let module = import.module.clone();
             let name = import.name.clone();
-            let valtype = global.valtype.clone();
+            let valtype = global.valtype.clone().to_wat();
             let typedecl = match global.mutable {
                 true => format!("(mut {valtype})"),
                 false => format!("{valtype}"),
@@ -135,7 +145,7 @@ pub fn generate_replay_wasm(
                 Some(max) => max.to_string(),
                 None => "".to_string(),
             };
-            let reftype = table.reftype.clone();
+            let reftype = table.reftype.clone().to_wat();
             write(
                 stream,
                 &format!(
@@ -228,9 +238,10 @@ pub fn generate_replay_wasm(
                     Some(v) => {
                         let v = v.to_wat();
                         format!(
-                        "(return ({} {v}))",
-                        valty_to_const(ty.results.get(0).unwrap())
-                    )},
+                            "(return ({} {v}))",
+                            valty_to_const(ty.results.get(0).unwrap())
+                        )
+                    }
                     None => "(return)".to_owned(),
                 };
                 write(
@@ -347,12 +358,18 @@ fn generate_replay_html(
         let name = import.name.clone();
         let module_name = &format!("{module}_{name}");
         let valtype = global.valtype.clone();
+        let valtype_str = valtype.to_js();
         let mutable = global.mutable;
         let initial = global.initial;
-        let initial = initial.to_js();
+        // TODO: check other case is needed
+        let suffix = match valtype {
+            ValType::I64 => "n",
+            _ => "",
+        };
+        let initial = initial.to_js() + suffix;
         write(
             stream,
-            &format!("const {module_name} = new WebAssembly.Global({{ value: '{valtype}', mutable: {mutable}}}, {initial})\n"),
+            &format!("const {module_name} = new WebAssembly.Global({{ value: '{valtype_str}', mutable: {mutable}}}, {initial})\n"),
         )?;
     }
     for (_i, table) in &code.imported_tables() {
@@ -365,7 +382,7 @@ fn generate_replay_html(
             Some(max) => max.to_string(),
             None => "undefined".to_string(),
         };
-        let reftype = table.reftype.clone();
+        let reftype = table.reftype.clone().to_js();
         write(
             stream,
             &format!(
@@ -518,7 +535,7 @@ fn generate_single_wasm(
                             Some(max) => max.to_string(),
                             None => "".to_string(),
                         };
-                        let reftype = &table.reftype;
+                        let reftype = &table.reftype.to_wat();
                         write!(
                             stream,
                             "(table (export \"{name}\") {initial} {maximum} {reftype})\n"
@@ -534,7 +551,7 @@ fn generate_single_wasm(
                     if import.module == *module {
                         let name = import.name;
                         let initial = global.initial;
-                        let valtype = global.valtype.clone();
+                        let valtype = global.valtype.clone().to_wat();
                         let mutable = match global.mutable {
                             true => format!("(mut {valtype})"),
                             false => format!("{valtype}"),
@@ -690,7 +707,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .zip(param_tys.clone())
                 .map(|(p, p_ty)| {
                     let p = p.to_wat();
-                    format!("({} {p})", valty_to_const(&p_ty))})
+                    format!("({} {p})", valty_to_const(&p_ty))
+                })
                 .collect::<Vec<String>>()
                 .join("\n");
             params + &format!("(call ${name})") + &("(drop)".repeat(result_count))
@@ -711,7 +729,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
                 .zip(param_tys.clone())
                 .map(|(p, p_ty)| {
                     let p = p.to_wat();
-                    format!("({} {p})", valty_to_const(&p_ty))})
+                    format!("({} {p})", valty_to_const(&p_ty))
+                })
                 .collect::<Vec<String>>()
                 .join("\n");
             params
@@ -732,11 +751,8 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             }
             js_string
         }
-        HostEvent::GrowMemory {
-            amount,
-            import: _,
-        } => {
-            format!("(memory.grow (i32.const {})) (drop)\n", amount)
+        HostEvent::GrowMemory { amount, import: _ } => {
+            format!("(memory.grow (i32.const {amount})) (drop)\n",)
         }
         HostEvent::MutateTable {
             tableidx,
@@ -786,13 +802,13 @@ fn get_functy_strs(ty: &FunctionTy) -> String {
     let paramstr = ty
         .params
         .iter()
-        .map(|p| format!("{}", p))
+        .map(|p| format!("{}", p.to_wat()))
         .collect::<Vec<String>>()
         .join(" ");
     let resultstr = ty
         .results
         .iter()
-        .map(|r| format!("{}", r))
+        .map(|r| format!("{}", r.to_wat()))
         .collect::<Vec<String>>()
         .join(" ");
     format!("(param {paramstr}) (result {resultstr})")
