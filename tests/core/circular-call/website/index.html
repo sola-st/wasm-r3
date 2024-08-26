@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebAssembly Test</title>
+</head>
+
+<body>
+  <script>
+    (async function () {
+      const startTime = performance.now();
+      let instance;
+      let counter_200 = -1
+      function func_200() {
+        counter_200 += 1
+        if (counter_200 === 0) {
+          instance.exports.func_724();
+        } else if (counter_200 === 1) {
+          instance.exports.func_724()
+        } else {
+          return
+        }
+      }
+      let counter_725 = -1
+      function func_725() {
+        counter_725 += 1
+        if (counter_725 === 0) {
+          return
+        } else if (counter_725 === 1) {
+          func_200();
+        }
+      }
+      let imports = {
+        env: {
+          200: func_200,
+          725: func_725,
+        },
+      };
+      const indexResponse = await fetch("index.wasm");
+      const indexBinary = await indexResponse.arrayBuffer();
+      let wasm = await WebAssembly.instantiate(indexBinary, imports);
+      instance = wasm.instance;
+      func_200();
+      const endTime = performance.now();
+      const executionTime = endTime - startTime;
+      const executionTimeElement = document.createElement('p');
+      executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+      document.body.appendChild(executionTimeElement);
+    })();
+  </script>
+</body>
+
+</html>
