@@ -205,6 +205,12 @@ fn test_parse_number() {
     // problematic case reading the trace generateed by js
     let s = "0.7614822387695312";
     assert_ne!(s, parse_number(s).unwrap().to_js());
+
+    // problematic cases where the number is too big or too small to be handled by f64
+    let small_number = "-9223372036854775808";
+    let big_number = "9223372036854775807";
+    assert_ne!(small_number, parse_number(small_number).unwrap().to_js());
+    assert_ne!(big_number, parse_number(big_number).unwrap().to_js());
 }
 
 #[derive(Debug)]
