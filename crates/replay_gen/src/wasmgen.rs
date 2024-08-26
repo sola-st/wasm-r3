@@ -173,6 +173,12 @@ pub fn generate_replay_wasm(
                 stream,
                 &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr}\n",),
             )?;
+            write(
+                stream,
+                &format!(
+                    "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n"
+                ),
+            )?;
             for (i, body) in func.bodys.iter().enumerate() {
                 if let Some(body) = body {
                     let mut bodystr = String::new();
@@ -211,22 +217,18 @@ pub fn generate_replay_wasm(
                     if memory_writes.len() > 0 {
                         merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
                     }
+                    // We add 1 to i because on ith iteration, counter is i + 1
+                    let iter_count = i + 1;
                     write(
                         stream,
                         &format!(
                             "(if
-                                    (i64.eq (global.get {global_idx}) (i64.const {i}))
+                                    (i64.eq (global.get {global_idx}) (i64.const {iter_count}))
                                     (then {bodystr}))\n"
                         ),
                     )?;
                 }
             }
-            write(
-                stream,
-                &format!(
-                    "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n"
-                ),
-            )?;
             let mut current = 0;
             for r in func.results.iter() {
                 let ty = &code.funcs.get(&funcidx).unwrap().ty;
