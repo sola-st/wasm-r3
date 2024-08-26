@@ -192,6 +192,10 @@ fn parse_number(s: &str) -> Option<F64> {
         "-Infinity" => Some(F64(std::f64::NEG_INFINITY)),
         _ => {
             if let Ok(num) = s.parse::<f64>() {
+                let round_trip = num.to_string();
+                if round_trip != s {
+                    eprintln!("WARNING: roundtrip of {s}: {round_trip}");
+                }
                 Some(F64(num)) // Handle floats and scientific notation
             } else {
                 None // Not a number
