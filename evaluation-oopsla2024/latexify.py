@@ -1,9 +1,9 @@
-import json, os
+import json, os, math
 import tabulate, scipy.stats, json, numpy as np
 import matplotlib.pyplot as plt
 
-
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
+METRICS_PATH = '{r3_path}/evaluation-oopsla2024/metrics.json'
 os.makedirs(f'{r3_path}/evaluation-oopsla2024/latex', exist_ok=True)
 
 def trace_match(metrics, testname):
@@ -59,7 +59,7 @@ testname_to_url_domain = {
     'rtexpacker': ('https://raylibtech.itch.io/rtexpacker', 'Utility'),
 }
 
-with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f: metrics = json.load(f)
+with open(f'{METRICS_PATH}', 'r') as f: metrics = json.load(f)
 
 rq1_results = [['Name', 'URL', 'Domain', 'Success']] + sorted([[testname, testname_to_url_domain[testname][0], testname_to_url_domain[testname][1], 'cmark' if trace_match(metrics, testname) else ''] for testname in metrics])
 latex_table = tabulate.tabulate(rq1_results, tablefmt="latex")
@@ -71,7 +71,7 @@ with open(table_2_path, 'w') as file:
 
 # RQ 2-1, Figure 9
 
-with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f: 
+with open(f'{METRICS_PATH}', 'r') as f: 
     metrics = json.load(f)
     del metrics['parquet'] # record fails
 
@@ -81,13 +81,13 @@ def get_cycles_slowdown(testname):
     for i in range(10):
         cycles_sum = sum(metrics[testname]['record_metrics']['original'][i]['cycles']) 
         if not cycles_sum > 0:
-            print(f"flaky result for original {testname}, {i}th, skipping in geomean calculation")
+            # print(f"flaky result for original {testname}, {i}th, skipping in geomean calculation")
             continue
         original_cycles.append(cycles_sum)
     for i in range(10):
         cycles_sum = sum(metrics[testname]['record_metrics']['instrumented'][i]['cycles']) 
         if not cycles_sum > 0:
-            print(f"flaky result for record {testname}, {i}th, skipping in geomean calculation")
+            # print(f"flaky result for record {testname}, {i}th, skipping in geomean calculation")
             continue
         record_cycles.append(cycles_sum)
     return scipy.stats.gmean(record_cycles) / scipy.stats.gmean(original_cycles)
@@ -113,7 +113,7 @@ plt.savefig(figure_9_path, bbox_inches='tight')
 
 # RQ 2-2, Figure 10
 
-with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f: metrics = json.load(f)
+with open(f'{METRICS_PATH}', 'r') as f: metrics = json.load(f)
 def trace_match(metrics, testname): return metrics[testname]['summary']['trace_match']
 
 data = {}
@@ -138,7 +138,7 @@ plt.xlim(-0.5, 27.5)
 plt.ylim(0, 1)
 plt.bar([a for a, b in ticks_replay_portions], [1]*len(ticks_replay_portions),
         label='Original', color='lightgrey')
-plt.bar([a for a, b in ticks_replay_portions], [b for a, b in ticks_replay_portions], label='Replay', color='gray')
+plt.bar([a for a, b in ticks_replay_portions], [b for a, b in ticks_replay_portions], label='Replay', color='red')
 #plt.xlabel('Test Name')
 plt.xticks(rotation=90)
 plt.ylabel('Portion')
@@ -147,32 +147,214 @@ figure_10_path = f"{r3_path}/evaluation-oopsla2024/latex/fig_10.pdf"
 print(f"Figure 10 saved to {figure_10_path}")
 plt.savefig(figure_10_path, bbox_inches='tight') 
 
-with open(f'{r3_path}/evaluation-oopsla2024/metrics.json', 'r') as f: metrics = json.load(f)
+with open(f'{METRICS_PATH}', 'r') as f: metrics = json.load(f)
+
+import json
+from tabulate import tabulate
+
+def process_json_data(data):
+    try: 
+        summary = data['summary']
+        
+        total_events = (
+            summary['loads'] +
+            summary['tableGets'] +
+            summary['globalGets'] +
+            summary['functionEntries'] +
+            summary['functionExits'] +
+            summary['calls'] +
+            summary['callReturns']
+        )
+        
+        shadow_opt_events = (
+            summary['relevantLoads'] +
+            summary['relevantTableGets'] +
+            summary['relevantGlobalGets'] +
+            summary['functionEntries'] +
+            summary['functionExits'] +
+            summary['calls'] +
+            summary['callReturns']
+        )
+        
+        call_stack_opt_events = (
+            summary['loads'] +
+            summary['tableGets'] +
+            summary['globalGets'] +
+            summary['relevantFunctionEntries'] +
+            summary['relevantFunctionExits'] +
+            summary['relevantCalls'] +
+            summary['relevantCallReturns']
+        )
+        
+        all_opt_events = (
+            summary['relevantLoads'] +
+            summary['relevantTableGets'] +
+            summary['relevantGlobalGets'] +
+            summary['relevantFunctionEntries'] +
+            summary['relevantFunctionExits'] +
+            summary['relevantCalls'] +
+            summary['relevantCallReturns']
+        )
+        
+        shadow_opt = shadow_opt_events / total_events * 100
+        call_stack_opt = call_stack_opt_events / total_events * 100
+        all_opt = all_opt_events / total_events * 100
+        
+        return [
+            total_events,
+            shadow_opt,
+            call_stack_opt,
+            all_opt
+        ]
+    except Exception as e:
+        return None
+
+# Process the data
+data = []
+for name, content in metrics.items():
+    result = process_json_data(content)
+    if result is not None:
+        row = [name] + result
+        data.append(row)
+# Define headers
+headers = [
+    "Name",
+    "Trace (# Events)\nNo-opt",
+    "Shadow-opt",
+    "Call-stack-opt",
+    "All-opt"
+]
+
+# Generate the table
+table = tabulate(data, headers, tablefmt="pipe", floatfmt=".2f")
 
 table_3_path = f'{r3_path}/evaluation-oopsla2024/latex/table_3.tex'
+with open(table_3_path, 'w') as f:
+    f.write(table)
 print(f"Table 3 saved to {table_3_path}")
 
+with open(f'{METRICS_PATH}', 'r') as f: metrics = json.load(f)
+
+def process_replay_metrics(data):
+    results = {}
+    for benchmark, benchmark_data in data.items():
+        if 'replay_metrics' not in benchmark_data or 'wizeng-int' not in benchmark_data['replay_metrics']:
+            continue
+        
+        data = benchmark_data['replay_metrics']['wizeng-int']
+        load_validation_times = {
+            'noopt': [],
+            'split': [],
+            'merge': [],
+            'benchmark': []
+        }
+        execution_times = {
+            'noopt': [],
+            'split': [],
+            'merge': [],
+            'benchmark': []
+        }
+
+        for opt in ['noopt', 'split', 'merge', 'benchmark']:
+            if opt not in data:
+                continue
+            for entry in data[opt]:
+                load_validation_time = float(entry['load:time_us']) + float(entry['validate:time_us'])
+                execution_time = float(entry['main:time_us'])
+                load_validation_times[opt].append(load_validation_time)
+                execution_times[opt].append(execution_time)
+        
+        if any(not times for times in load_validation_times.values()) or any(not times for times in execution_times.values()):
+            continue
+
+        avg_load_validation = {opt: sum(times) / len(times) for opt, times in load_validation_times.items()}
+        avg_execution = {opt: sum(times) / len(times) for opt, times in execution_times.items()}
+
+        results[benchmark] = {
+            'load_validation': avg_load_validation,
+            'execution': avg_execution
+        }
+
+    return results
+
+
+def calculate_percentages(base, values):
+    return [value / base * 100 for value in values]
+
+processed_data = process_replay_metrics(metrics)
+
+# Prepare table data
+table_data = []
+for name, metrics in processed_data.items():
+    load_validation_base = metrics['load_validation']['noopt']
+    load_validation_percentages = calculate_percentages(
+        load_validation_base,
+        [metrics['load_validation'][opt] for opt in ['split', 'merge', 'benchmark']]
+    )
+
+    execution_base = metrics['execution']['noopt']
+    execution_percentages = calculate_percentages(
+        execution_base,
+        [metrics['execution'][opt] for opt in ['split', 'merge', 'benchmark']]
+    )
+
+    row = [
+        name,
+        load_validation_base,
+        *load_validation_percentages,
+        execution_base,
+        *execution_percentages
+    ]
+    table_data.append(row)
+
+# Calculate geometric mean
+geomean_load_validation = [
+    math.prod([row[i] for row in table_data]) ** (1 / len(table_data))
+    for i in range(2, 5)
+]
+geomean_execution = [
+    math.prod([row[i] for row in table_data]) ** (1 / len(table_data))
+    for i in range(6, 9)
+]
+
+table_data.append([
+    "Geomean",
+    "",
+    *geomean_load_validation,
+    "",
+    *geomean_execution
+])
+
+# Define headers
+headers = [
+    "Name",
+    "Load+Validation time (μs)\nNo",
+    "Split",
+    "Merge",
+    "All",
+    "Execution time (μs)\nNo",
+    "Split",
+    "Merge",
+    "All"
+]
+
+# Generate the table
+table = tabulate(table_data, headers, tablefmt="latex_booktabs", floatfmt=(".1f", ".1f", ".2f", ".2f", ".2f", ".1f", ".2f", ".2f", ".2f"))
+
+# Add LaTeX table environment and caption
+latex_table = f"""
+\\begin{{table}}[t]
+\\footnotesize
+  \\caption{{Replay optimization experiment results.}}
+  \\label{{t:replay}}
+{table}
+\\end{{table}}
+"""
+
 table_4_path = f'{r3_path}/evaluation-oopsla2024/latex/table_4.tex'
+
+# Save the LaTeX table to a file
+with open(table_4_path, 'w') as f:
+    f.write(latex_table)
+
 print(f"Table 4 saved to {table_4_path}")
-
-# def get_metric(testname, opt, time):
-#     metric = metrics[testname]['replay_metrics']['wizeng-int'][opt]
-#     if len(metric) == 0:
-#         return 0
-#     else:
-#         return metric[time]
-
-# print('RQ4-1: Load time')
-# time = 'load:time_us'
-# rq4_results = [['Test name', 'noopt time', 'split time', 'merge time', 'fullopt time']] + [[testname, get_metric(testname, 'noopt', time), get_metric(testname, 'split', time), get_metric(testname, 'merge', time), get_metric(testname, 'benchmark', time)] for testname in metrics if trace_match(metrics, testname)]
-# print(tabulate.tabulate(rq4_results, tablefmt="latex"))
-
-# print('RQ4-2: Validate time')
-# time = 'validate:time_us'
-# rq4_results = [['Test name', 'noopt time', 'split time', 'merge time', 'fullopt time']] + [[testname, get_metric(testname, 'noopt', time), get_metric(testname, 'split', time), get_metric(testname, 'merge', time), get_metric(testname, 'benchmark', time)] for testname in metrics if trace_match(metrics, testname)]
-# print(tabulate.tabulate(rq4_results, tablefmt="latex"))
-
-# print('RQ4-3: Main time')
-# time = 'main:time_us'
-# rq4_results = [['Test name', 'noopt time', 'split time', 'merge time', 'fullopt time']] + [[testname, get_metric(testname, 'noopt', time), get_metric(testname, 'split', time), get_metric(testname, 'merge', time), get_metric(testname, 'benchmark', time)] for testname in metrics if trace_match(metrics, testname)]
-# print(tabulate.tabulate(rq4_results, tablefmt="latex"))
