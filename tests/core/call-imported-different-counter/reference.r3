@@ -1,0 +1,12 @@
+EC;1;callImportedTwice;
+IC;0
+EC;1;callImportedTwice;
+IC;0
+IR;0;
+IC;0
+IR;0;
+EC;2;noop;
+IR;0;
+IC;0
+IR;0;
+ER

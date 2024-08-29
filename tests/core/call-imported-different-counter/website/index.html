@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebAssembly Test</title>
+</head>
+
+<body>
+  <script>
+    (async function () {
+      const startTime = performance.now();
+      let instance;
+      let counter_200 = 0
+      function imported() {
+        counter_200 += 1
+        if (counter_200 === 1) {
+        } else if (counter_200 === 2) {
+          instance.exports.callImportedTwice();
+          instance.exports.noop();
+        } else if (counter_200 == 3) {
+        }
+        {
+          return
+        }
+      }
+      let imports = {
+        env: {
+          imported: imported,
+        },
+      };
+      const indexResponse = await fetch("index.wasm");
+      const indexBinary = await indexResponse.arrayBuffer();
+      let wasm = await WebAssembly.instantiate(indexBinary, imports);
+      instance = wasm.instance;
+      imported()
+      instance.exports.callImportedTwice();
+      const endTime = performance.now();
+      const executionTime = endTime - startTime;
+      const executionTimeElement = document.createElement('p');
+      executionTimeElement.textContent = `Execution time: ${executionTime} milliseconds`;
+      document.body.appendChild(executionTimeElement);
+    })();
+  </script>
+</body>
+
+</html>
