@@ -1,6 +1,9 @@
 import json, os, math
-import tabulate, scipy.stats, json, numpy as np
+import tabulate, json, numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 
 r3_path = os.getenv('WASMR3_PATH', '/home/wasm-r3')
 METRICS_PATH = '{r3_path}/evaluation-oopsla2024/metrics.json'
@@ -90,7 +93,7 @@ def get_cycles_slowdown(testname):
             # print(f"flaky result for record {testname}, {i}th, skipping in geomean calculation")
             continue
         record_cycles.append(cycles_sum)
-    return scipy.stats.gmean(record_cycles) / scipy.stats.gmean(original_cycles)
+    return np.mean(record_cycles) / np.mean(original_cycles)
 
 table = sorted([(testname, get_cycles_slowdown(testname)) for testname in metrics if trace_match(metrics, testname)], key=lambda x: x[1], reverse=True)
 
@@ -121,8 +124,9 @@ for testname in metrics:
     if not trace_match(metrics, testname): continue
     try: 
         data[testname] = {}
-        data[testname]['instrs_replay_portion'] = metrics[testname]['summary']['instr_dynamic_replay'] / metrics[testname]['summary']['instrs_dynamic_total']
-        data[testname]['ticks_replay_portion'] = metrics[testname]['summary']['ticks_replay'] / metrics[testname]['summary']['ticks_total']
+        ticks = metrics[testname]['ticks']
+        data[testname]['instrs_replay_portion'] = sum(o['instr_dynamic_replay'] for o in ticks) / sum(o['instrs_dynamic_total'] for o in ticks)
+        data[testname]['ticks_replay_portion'] = sum(o['ticks_replay'] for o in ticks) / sum(o['ticks_total'] for o in ticks)
     except Exception as e:
         del data[testname]
         print(f"Error in {testname}: {e}")
