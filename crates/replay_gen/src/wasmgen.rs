@@ -171,12 +171,13 @@ pub fn generate_replay_wasm(
             let tystr = get_functy_strs(&func.ty);
             write(
                 stream,
-                &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr}\n",),
+                &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr}   (local $global_onentry i64)\n",),
             )?;
             write(
                 stream,
                 &format!(
-                    "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n"
+                    "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n
+                    (local.set $global_onentry (global.get {global_idx}))\n",
                 ),
             )?;
             for (i, body) in func.bodys.iter().enumerate() {
@@ -223,7 +224,7 @@ pub fn generate_replay_wasm(
                         stream,
                         &format!(
                             "(if
-                                    (i64.eq (global.get {global_idx}) (i64.const {iter_count}))
+                                    (i64.eq (local.get $global_onentry) (i64.const {iter_count}))
                                     (then {bodystr}))\n"
                         ),
                     )?;
@@ -251,8 +252,8 @@ pub fn generate_replay_wasm(
                     &format!(
                         " (if
                             (i32.and
-                              (i64.ge_s (global.get {global_idx}) (i64.const {c1}))
-                              (i64.lt_s (global.get {global_idx}) (i64.const {c2}))
+                              (i64.ge_s (local.get $global_onentry) (i64.const {c1}))
+                              (i64.lt_s (local.get $global_onentry) (i64.const {c2}))
                             )
                             (then
                                 {res}
