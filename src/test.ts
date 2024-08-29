@@ -39,20 +39,20 @@ async function runSingleTest(options, name: string): Promise<TestReport> {
   const { originalWebsitePath, replayWebsitePath, testJsPath, testPath, originalBenchmarkPath, replayBenchmarkPath, referenceTracePath } = getPaths(name, options);
   // TODO: generalize to multiple wasm modules
   const originalTracePath = await analyzeAndSaveBenchmark(options, testJsPath, originalWebsitePath, originalBenchmarkPath);
-  try {
-    execSync(`diff ${referenceTracePath} ${originalTracePath}`);
-  } catch (e) {
-    console.log(`Ref-to-Record diff failed for ${name}`);
-    console.log(e);
-    return {
-      success: false,
-    }
-  }
   const replayTracePath = await analyzeAndSaveBenchmark(options, testJsPath, replayWebsitePath, replayBenchmarkPath);
   try {
     execSync(`diff ${originalTracePath} ${replayTracePath}`);
   } catch (e) {
     console.log(`Record-to-Replay diff failed for ${name}`);
+    console.log(e);
+    return {
+      success: false,
+    }
+  }
+  try {
+    execSync(`diff ${referenceTracePath} ${originalTracePath}`);
+  } catch (e) {
+    console.log(`Ref-to-Record diff failed for ${name}`);
     console.log(e);
     return {
       success: false,
