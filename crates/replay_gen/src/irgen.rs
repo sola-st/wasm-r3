@@ -112,8 +112,9 @@ impl Replay {
 }
 
 struct State {
-    host_call_stack: Vec<usize>,
-    last_func: usize,
+    host_call_stack: Vec<(usize, usize)>,
+    fidx_to_invoccount: BTreeMap<usize, usize>,
+    last_func: (usize, usize),
 }
 
 #[derive(Clone, Debug)]
@@ -362,8 +363,9 @@ impl IRGenerator {
             },
             // INIT_INDEX is the _start function
             state: State {
-                host_call_stack: vec![INIT_INDEX], //
-                last_func: INIT_INDEX,
+                host_call_stack: vec![(INIT_INDEX, 0)], //
+                fidx_to_invoccount: BTreeMap::new(),
+                last_func: (INIT_INDEX, 0),
             },
             flag: true,
         }
@@ -378,8 +380,8 @@ impl IRGenerator {
 
     fn push_call(&mut self, event: HostEvent) {
         self.flag = true;
-        let idx = self.state.host_call_stack.last().unwrap();
-        let current_context = self.idx_to_cxt(*idx);
+        let (idx, invoc_count) = self.state.host_call_stack.last().unwrap();
+        let current_context = self.idx_to_cxt(*idx, *invoc_count);
 
         if let Some(current_context) = current_context {
             current_context.push(event.clone())
@@ -472,15 +474,21 @@ impl IRGenerator {
                     .unwrap()
                     .bodys
                     .push(Some(vec![]));
-                self.state.host_call_stack.push(*idx);
-                self.state.last_func = *idx;
+                let next_invoc_count = match self.state.fidx_to_invoccount.get(idx).cloned() {
+                    Some(count) => count + 1,
+                    None => 0,
+                };
+                self.state.fidx_to_invoccount.insert(*idx, next_invoc_count);
+
+                self.state.host_call_stack.push((*idx, next_invoc_count));
+                self.state.last_func = (*idx, next_invoc_count);
             }
             WasmEvent::ImportReturn {
                 idx: _idx,
                 results,
             } => {
                 self.flag = false;
-                let current_fn_idx = self.state.host_call_stack.last().unwrap();
+                let (current_fn_idx, _) = self.state.host_call_stack.last().unwrap();
                 let r = &mut self.replay.funcs.get_mut(&current_fn_idx).unwrap().results;
                 r.push(WriteResult {
                     results: results.clone(),
@@ -499,30 +507,30 @@ impl IRGenerator {
     }
     fn splice_event(&mut self, event: HostEvent) {
         let flag = self.flag;
-        let idx = self.state.host_call_stack.last().unwrap();
-        let current_context = self.idx_to_cxt(*idx);
+        let (idx, invoc_count) = self.state.host_call_stack.last().unwrap();
+        let current_context = self.idx_to_cxt(*idx, *invoc_count);
 
         if flag {
             if let Some(current_context) = current_context {
                 current_context.insert(current_context.len() - 1, event)
             }
         } else {
-            let last_idx = &self.state.last_func;
-            let last_context = self.idx_to_cxt(*last_idx);
+            let (last_idx, invoc_count) = &self.state.last_func;
+            let last_context = self.idx_to_cxt(*last_idx, *invoc_count);
             if let Some(last_context) = last_context {
                 last_context.push(event.clone())
             }
         }
     }
 
-    fn idx_to_cxt(&mut self, idx: usize) -> &mut Option<Vec<HostEvent>> {
+    fn idx_to_cxt(&mut self, idx: usize, invoc_count: usize) -> &mut Option<Vec<HostEvent>> {
         let current_context = self
             .replay
             .funcs
             .get_mut(&idx)
             .unwrap()
             .bodys
-            .last_mut()
+            .get_mut(invoc_count)
             .unwrap();
         current_context
     }
