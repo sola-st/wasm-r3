@@ -1847,6 +1847,15 @@
         "4558": {
             "slice-dice": 7313,
             "wasm-r3": 11075
+        },
+        "reduction_comparison": {
+            "original_size": 22264896,
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail",
+            "wasm-reduce-size": 22180313,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 22216362,
+            "wasm-shrink-time": 120.01304936408997
         }
     },
     "bullet": {
@@ -9175,6 +9184,15 @@
         "1968": {
             "slice-dice": 6984,
             "wasm-r3": 94225
+        },
+        "reduction_comparison": {
+            "original_size": 4331017,
+            "wasm-slice-size": 995605,
+            "wasm-slice-time": 90.20325756072998,
+            "wasm-reduce-size": 676743,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 4328380,
+            "wasm-shrink-time": 120.00192189216614
         }
     },
     "factorial": {
@@ -13425,6 +13443,15 @@
         "1586": {
             "slice-dice": 1228,
             "wasm-r3": 80029
+        },
+        "reduction_comparison": {
+            "original_size": 3725095,
+            "wasm-slice-size": 2053785,
+            "wasm-slice-time": 69.60664987564087,
+            "wasm-reduce-size": 2299553,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 3675826,
+            "wasm-shrink-time": 120.00278520584106
         }
     },
     "game-of-life": {
@@ -14105,6 +14132,15 @@
         "504": {
             "slice-dice": 446,
             "wasm-r3": 14199
+        },
+        "reduction_comparison": {
+            "original_size": 376838,
+            "wasm-slice-size": 452103,
+            "wasm-slice-time": 30.84325075149536,
+            "wasm-reduce-size": 375265,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 315993,
+            "wasm-shrink-time": 120.00191926956177
         }
     },
     "hydro": {
@@ -14319,6 +14355,15 @@
         "1586": {
             "slice-dice": 893,
             "wasm-r3": 2385
+        },
+        "reduction_comparison": {
+            "original_size": 824085,
+            "wasm-slice-size": 380686,
+            "wasm-slice-time": 6.540843486785889,
+            "wasm-reduce-size": 645689,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 734868,
+            "wasm-shrink-time": 120.00204253196716
         }
     },
     "jqkungfu": {
@@ -24091,6 +24136,15 @@
         "20796": {
             "slice-dice": 6564,
             "wasm-r3": 24387
+        },
+        "reduction_comparison": {
+            "original_size": 5470509,
+            "wasm-slice-size": 4900022,
+            "wasm-slice-time": 44.25752401351929,
+            "wasm-reduce-size": 5286120,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 5159781,
+            "wasm-shrink-time": 120.00331735610962
         }
     },
     "mandelbrot": {
@@ -24241,6 +24295,15 @@
         "164": {
             "slice-dice": 174,
             "wasm-r3": 31976
+        },
+        "reduction_comparison": {
+            "original_size": 240403,
+            "wasm-slice-size": 404385,
+            "wasm-slice-time": 97.6673104763031,
+            "wasm-reduce-size": 237739,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 232459,
+            "wasm-shrink-time": 120
         }
     },
     "multiplyDouble": {
@@ -26257,6 +26320,15 @@
         "572": {
             "slice-dice": 568,
             "wasm-r3": 11958
+        },
+        "reduction_comparison": {
+            "original_size": 502035,
+            "wasm-slice-size": 540367,
+            "wasm-slice-time": 53.18854331970215,
+            "wasm-reduce-size": 485322,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 492377,
+            "wasm-shrink-time": 120.00193786621094
         }
     },
     "rguilayout": {
@@ -27003,6 +27075,15 @@
         "502": {
             "slice-dice": 464,
             "wasm-r3": 15897
+        },
+        "reduction_comparison": {
+            "original_size": 516369,
+            "wasm-slice-size": 596183,
+            "wasm-slice-time": 31.644596576690674,
+            "wasm-reduce-size": 514791,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 514240,
+            "wasm-shrink-time": 120
         }
     },
     "rguistyler": {
@@ -27765,6 +27846,15 @@
         "573": {
             "slice-dice": 627,
             "wasm-r3": 11898
+        },
+        "reduction_comparison": {
+            "original_size": 558009,
+            "wasm-slice-size": 845480,
+            "wasm-slice-time": 32.91276717185974,
+            "wasm-reduce-size": 551339,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 546181,
+            "wasm-shrink-time": 120.00490522384644
         }
     },
     "riconpacker": {
@@ -28415,6 +28505,15 @@
         "575": {
             "slice-dice": 582,
             "wasm-r3": 1990
+        },
+        "reduction_comparison": {
+            "original_size": 486543,
+            "wasm-slice-size": 425501,
+            "wasm-slice-time": 6.774238348007202,
+            "wasm-reduce-size": 486626,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 457528,
+            "wasm-shrink-time": 120.00188422203064
         }
     },
     "rtexpacker": {
@@ -28435,6 +28534,15 @@
         "365": {
             "slice-dice": 381,
             "wasm-r3": 3042
+        },
+        "reduction_comparison": {
+            "original_size": 386612,
+            "wasm-slice-size": 209441,
+            "wasm-slice-time": 3.9366116523742676,
+            "wasm-reduce-size": 239415,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 217342,
+            "wasm-shrink-time": 120.00243353843689
         }
     },
     "sandspiel": {
@@ -31051,6 +31159,15 @@
         "1893": {
             "slice-dice": 1058,
             "wasm-r3": 3728
+        },
+        "reduction_comparison": {
+            "original_size": 712714,
+            "wasm-slice-size": 551302,
+            "wasm-slice-time": 7.06463360786438,
+            "wasm-reduce-size": 648272,
+            "wasm-reduce-time": 120,
+            "wasm-shrink-size": 664983,
+            "wasm-shrink-time": 120.00179672241211
         }
     }
 }

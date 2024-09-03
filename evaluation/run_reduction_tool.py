@@ -5,6 +5,8 @@ import sys
 import subprocess
 import shutil
 
+WASMR3_PATH = os.getenv("WASMR3_PATH", "/home/wasm-r3")
+
 # Exit if BINARYEN_ROOT is not set
 if "BINARYEN_ROOT" not in os.environ:
     print("Error: BINARYEN_ROOT environment variable is not set")
@@ -31,16 +33,21 @@ test_to_mode = {
     'mandelbrot': 'MODE=spc',
 }
 
-tool_to_command = {
-    "wasm-reduce": "wasm-reduce -b $BINARYEN_ROOT/bin '--command=./evaluation/interesting.py test.shrunken.wasm' -t test.shrunken.wasm -w work.shrunken.wasm",
-    "wasm-shrink": "wasm-tools shrink ./evaluation/interesting.py",
-    "wasm-slice": "wasm-slice ./evaluation/interesting.py",
-}
+def tool_to_command(tool, test_name):
+    if tool == "wasm-reduce":
+        test_path = f'./benchmarks/{test_name}/{test_name}.reduced.wasm'
+        return f"wasm-reduce -to 10 -b $BINARYEN_ROOT/bin '--command={WASMR3_PATH}/evaluation/interesting.py {test_path}' -t {test_path} -w work.reduced.wasm"
+    elif tool == "wasm-shrink":
+        return f"wasm-tools shrink {WASMR3_PATH}/evaluation/interesting.py"
+    elif tool == "wasm-slice":
+        return  f"wasm-slice {WASMR3_PATH}/evaluation/interesting.py"
+    else:
+        exit("not supported")
 
 def run_command(tool, test_input):
     test_name = os.path.splitext(os.path.basename(test_input))[0]
     mode = test_to_mode.get(test_name, '')
-    command = tool_to_command.get(tool, '')
+    command = tool_to_command(tool, test_name)
     
     if not command:
         print(f"Error: Unknown tool '{tool}'")

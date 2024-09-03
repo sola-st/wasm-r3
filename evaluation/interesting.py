@@ -50,15 +50,17 @@ result = run_command(ENGINE, WASM)
 
 def crash_on_wizard():
     result = run_command(ENGINE, WASM)
+    # print('crash_on_wizard: ', result.returncode)
     return result.returncode != 0 and result.stdout.find('no main export from module') == -1
 
 def ok_on_wasmtime():
-    command = ['timeout', '1', 'wasmtime', '--invoke', 'main', WASM]
+    command = ['timeout', '5', 'wasmtime', '--invoke', 'main', WASM]
     result = subprocess.run(
         command,
         capture_output=True,
         text=True,
     )
+    # print('ok_on_wasmtime: ', result.returncode)
     return result.returncode == 0
 
 if crash_on_wizard() and ok_on_wasmtime():
