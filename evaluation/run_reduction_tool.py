@@ -5,6 +5,11 @@ import sys
 import subprocess
 import shutil
 
+# Exit if BINARYEN_ROOT is not set
+if "BINARYEN_ROOT" not in os.environ:
+    print("Error: BINARYEN_ROOT environment variable is not set")
+    print("https://github.com/WebAssembly/binaryen/blob/871ff0d4f910b565c15f82e8f3c9aa769b01d286/src/support/path.cpp#L95")
+    sys.exit(1)
 
 test_to_mode = {
     # fixed by https://github.com/titzer/wizard-engine/commit/6d2b05742997441fd4ac01d1cd18d71046cec703
@@ -27,8 +32,8 @@ test_to_mode = {
 }
 
 tool_to_command = {
-    "wasm-reduce": "",
-    "wasm-shrink": "wasm-tools shrink evaluation/interesting.py",
+    "wasm-reduce": "wasm-reduce -b $BINARYEN_ROOT/bin '--command=./evaluation/interesting.py test.wasm' -t test.wasm -w work.wasm",
+    "wasm-shrink": "wasm-tools shrink ./evaluation/interesting.py",
     "slicedice": "",
 }
 
@@ -41,7 +46,7 @@ def run_command(tool, test_input):
         print(f"Error: Unknown tool '{tool}'")
         sys.exit(1)
     
-    full_command = f"{command} {test_input}"
+    full_command = f"{mode} {command} {test_input}"
     result = subprocess.run(
         full_command,
         shell=True,

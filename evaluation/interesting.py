@@ -25,7 +25,10 @@ def run_command(engine, test_input):
     destination = os.path.join(parent_dir, test_name)
     
     # Copy the file to the new destination
-    shutil.copyfile(test_input, destination)
+    try: 
+        shutil.copyfile(test_input, destination)
+    except:
+        pass
     
     # Use the new destination as the test input
     result = subprocess.run(
