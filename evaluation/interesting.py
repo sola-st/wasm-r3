@@ -48,13 +48,22 @@ WASM = sys.argv[1]
 
 result = run_command(ENGINE, WASM)
 
-# Check if the output contains the target bug's panic message
-def is_runnable(result):
-    return result.stdout.find('no main export from module') == -1
+def crash_on_wizard():
+    result = run_command(ENGINE, WASM)
+    return result.returncode != 0 and result.stdout.find('no main export from module') == -1
 
-if result.returncode != 0 and is_runnable(result):
-    print("Return code is not 0, interesting!")
+def ok_on_wasmtime():
+    command = ['timeout', '1', 'wasmtime', '--invoke', 'main', WASM]
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+    )
+    return result.returncode == 0
+
+if crash_on_wizard() and ok_on_wasmtime():
+    print("Interesting!")
     sys.exit(0)
 else:
-    print("Return code is 0, not interesting")
+    print("Not interesting")
     sys.exit(1)

@@ -15,3 +15,5 @@ data/
 tests/*output.txt
 out/
 .vscode
+*.shrunken.wasm
+*.shrunken.wat

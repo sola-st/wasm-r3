@@ -32,9 +32,9 @@ test_to_mode = {
 }
 
 tool_to_command = {
-    "wasm-reduce": "wasm-reduce -b $BINARYEN_ROOT/bin '--command=./evaluation/interesting.py test.wasm' -t test.wasm -w work.wasm",
+    "wasm-reduce": "wasm-reduce -b $BINARYEN_ROOT/bin '--command=./evaluation/interesting.py test.shrunken.wasm' -t test.shrunken.wasm -w work.shrunken.wasm",
     "wasm-shrink": "wasm-tools shrink ./evaluation/interesting.py",
-    "slicedice": "",
+    "wasm-slice": "wasm-slice ./evaluation/interesting.py",
 }
 
 def run_command(tool, test_input):
