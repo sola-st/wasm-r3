@@ -164,11 +164,19 @@ pub fn generate_replay_wasm(
             let name = func.import.clone().unwrap().name.clone();
             let global_idx = format!("$global_{}", funcidx.to_string());
             let func = code.funcs.get(&funcidx).unwrap();
+            let tystr = get_functy_strs(&func.ty);
+            if func.bodys.len() == 0 {
+                let return_expr = get_return_expr(&func.ty);
+                write(
+                    stream,
+                    &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr} {return_expr})\n",),
+                )?;    
+                continue;
+            }
             write(
                 stream,
                 &format!("(global {global_idx} (mut i64) (i64.const 0))\n"),
             )?;
-            let tystr = get_functy_strs(&func.ty);
             write(
                 stream,
                 &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr}   (local $global_onentry i64)\n",),
@@ -265,19 +273,8 @@ pub fn generate_replay_wasm(
             }
             let ty = &code.funcs.get(&funcidx).unwrap().ty;
             let _param_tys = ty.params.clone();
-            let default_return = match ty.results.get(0) {
-                Some(v) => match v {
-                    ValType::I32 => "(i32.const 0)",
-                    ValType::I64 => "(i64.const 0)",
-                    ValType::F32 => "(f32.const 0)",
-                    ValType::F64 => "(f64.const 0)",
-                    ValType::V128 => todo!(),
-                    ValType::Funcref => todo!(),
-                    ValType::Externref => todo!(),
-                },
-                None => "",
-            };
-            write(stream, &format!("(return {})", default_return))?;
+            let return_expr = get_return_expr(ty);
+            write(stream, &return_expr)?;
             write(stream, ")\n")?;
         }
         for data_segment in data_segments {
@@ -318,6 +315,23 @@ pub fn generate_replay_wasm(
     generate_single_wasm(replay_path, &module_set, code)?;
 
     Ok(())
+}
+
+fn get_return_expr(ty: &FunctionTy) -> String {
+    let default_return = match ty.results.get(0) {
+        Some(v) => match v {
+            ValType::I32 => "(i32.const 0)",
+            ValType::I64 => "(i64.const 0)",
+            ValType::F32 => "(f32.const 0)",
+            ValType::F64 => "(f64.const 0)",
+            ValType::V128 => todo!(),
+            ValType::Funcref => todo!(),
+            ValType::Externref => todo!(),
+        },
+        None => "",
+    };
+    let return_expr = format!("(return {})", default_return);
+    return_expr
 }
 
 fn generate_replay_html(
