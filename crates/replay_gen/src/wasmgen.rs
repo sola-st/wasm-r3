@@ -688,7 +688,30 @@ fn merge_memory_writes(
             ));
             data_segments.push(data);
         } else {
-            // merging 4 bytes and 8 bytes is also possible
+            bodystr.push_str(&get_mutatemem_str(data, start_addr));
+        }
+    }
+}
+
+fn get_mutatemem_str(data: Vec<F64>, start_addr: i32) -> String {
+    let mut bodystr = String::new();
+    match data.len() {
+        8 => {
+            let data = data.into_iter().map(|f| f.0 as u8).collect::<Vec<u8>>();
+            let value = u64::from_le_bytes(data.try_into().unwrap());
+            bodystr.push_str(&format!(
+                "(i64.store (i32.const {start_addr}) (i64.const {value}))\n",
+            ));
+        }
+        4 => {
+            let data = data.into_iter().map(|f| f.0 as u8).collect::<Vec<u8>>();
+            let value = u32::from_le_bytes(data.try_into().unwrap());
+            bodystr.push_str(&format!(
+                "(i32.store (i32.const {start_addr}) (i32.const {value}))\n",
+            ));
+        }
+        _ => {
+            // For other lengths, use byte-by-byte storage
             for (j, byte) in data.iter().enumerate() {
                 let addr = start_addr + j as i32;
                 let byte = byte.to_wat();
@@ -697,7 +720,8 @@ fn merge_memory_writes(
                 ));
             }
         }
-    }
+    };
+    bodystr
 }
 
 fn valty_to_const(valty: &ValType) -> String {
@@ -761,12 +785,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             import: _,
         } => {
             let mut js_string = String::new();
-            for (j, byte) in data.iter().enumerate() {
-                let byte = byte.to_wat();
-                js_string += &format!("i32.const {}\n", addr + j as i32);
-                js_string += &format!("i32.const {}\n", byte);
-                js_string += &format!("i32.store8\n",);
-            }
+            js_string.push_str(&get_mutatemem_str(data.clone(), *addr));
             js_string
         }
         HostEvent::GrowMemory { amount, import: _ } => {

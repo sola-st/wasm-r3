@@ -1,10 +1,7 @@
 EC;0;entry;
 ER
 EC;1;foo;
-L;0;0;1
-L;0;1;0
-L;0;2;0
-L;0;3;0
+L;0;0;1,0,0,0
 ER
 EC;0;entry;
 ER

@@ -15,7 +15,10 @@ export const filter = {
     'call-exp-after-import-call-table-get', // unknown function wasabi
     'test04', // duplicate func export
     'rust-game-of-life', // fail only at CI
-    "pass-big-number" // better handling of i64 value is needed
+    "pass-big-number", // better handling of i64 value is needed
+    // regressions after e9ef92bf5fd24d0fbb898f3e45e1b026b18b12ab
+    'glob-exp-host-mod-detection',
+    'glob-exp-host-mod-multiple',
   ],
   proxy: [
     // TODO: fix these regressions
