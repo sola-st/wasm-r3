@@ -512,7 +512,6 @@ fn generate_single_wasm(
         .args(args.clone())
         .output()
         .expect("Failed to execute wasm-merge");
-    eprintln!("args: {:?}", args);
     assert!(
         output.status.success(),
         "Failed to execute wasm-merge first time: {:?}",

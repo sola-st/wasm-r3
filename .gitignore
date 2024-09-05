@@ -16,4 +16,6 @@ tests/*output.txt
 out/
 .vscode
 *.shrunken.wasm
+*.sliced.wasm
+*.reduced.wasm
 *.shrunken.wat
