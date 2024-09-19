@@ -4,9 +4,12 @@
 [submodule "third_party/wizard-engine"]
 	path = third_party/wizard-engine
 	url = https://github.com/doehyunbaek/wizard-engine
-[submodule "third_party/binaryen"]
-	path = third_party/binaryen
-	url = https://github.com/WebAssembly/binaryen.git
 [submodule "third_party/wasm-tools"]
 	path = third_party/wasm-tools
 	url = https://github.com/bytecodealliance/wasm-tools
+[submodule "third_party/binaryen"]
+	path = third_party/binaryen
+	url = https://github.com/WebAssembly/binaryen.git
+[submodule "third_party/emscripten"]
+	path = third_party/emscripten
+	url = https://github.com/emscripten-core/emscripten
