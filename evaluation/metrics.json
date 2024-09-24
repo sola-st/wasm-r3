@@ -31169,5 +31169,96 @@
             "wasm-shrink-size": 664983,
             "wasm-shrink-time": 120.00179672241211
         }
+    },
+    "tcas_v10_u1323": {
+        "reduction_comparison": {
+            "original_size": 17213,
+            "wasm-slice-size": 6763,
+            "wasm-slice-time": 3.5672495365142822
+        }
+    },
+    "tcas_v11_u1324": {
+        "reduction_comparison": {
+            "original_size": 17170,
+            "wasm-slice-size": 6720,
+            "wasm-slice-time": 3.4142773151397705
+        }
+    },
+    "tcas_v12_u114": {
+        "reduction_comparison": {
+            "original_size": 17223,
+            "wasm-slice-size": 6782,
+            "wasm-slice-time": 3.40525484085083
+        }
+    },
+    "tcas_v13_u571": {
+        "reduction_comparison": {
+            "original_size": 17213,
+            "wasm-slice-size": 6790,
+            "wasm-slice-time": 3.3985917568206787
+        }
+    },
+    "tcas_v15_u150": {
+        "reduction_comparison": {
+            "original_size": 17164,
+            "wasm-slice-size": 6704,
+            "wasm-slice-time": 3.401428699493408
+        }
+    },
+    "tcas_v16_u1001": {
+        "reduction_comparison": {
+            "original_size": 17213,
+            "wasm-slice-size": 6781,
+            "wasm-slice-time": 3.429596424102783
+        }
+    },
+    "tcas_v1_u0": {
+        "reduction_comparison": {
+            "original_size": 17213,
+            "wasm-slice-size": 6825,
+            "wasm-slice-time": 3.553912401199341
+        }
+    },
+    "tcas_v2_u1182": {
+        "reduction_comparison": {
+            "original_size": 17211,
+            "wasm-slice-size": 6762,
+            "wasm-slice-time": 3.531874179840088
+        }
+    },
+    "tcas_v3_u112": {
+        "reduction_comparison": {
+            "original_size": 17212,
+            "wasm-slice-size": 6771,
+            "wasm-slice-time": 3.466940402984619
+        }
+    },
+    "tcas_v4_u110": {
+        "reduction_comparison": {
+            "original_size": 17207,
+            "wasm-slice-size": 6825,
+            "wasm-slice-time": 3.557903528213501
+        }
+    },
+    "tcas_v5_u1178": {
+        "reduction_comparison": {
+            "original_size": 17162,
+            "wasm-slice-size": 6703,
+            "wasm-slice-time": 3.4648962020874023
+        }
+    },
+    "tcas_v6_u1322": {
+        "reduction_comparison": {
+            "original_size": 17213,
+            "wasm-slice-size": 6763,
+            "wasm-slice-time": 3.518839120864868
+        }
+    },
+    "tcas_v7_u1021": {
+        "reduction_comparison": {
+            "original_size": 17213,
+            "wasm-slice-size": 6763,
+            "wasm-slice-time": 3.47575306892395
+        }
     }
 }
