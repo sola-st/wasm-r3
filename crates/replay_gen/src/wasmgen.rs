@@ -183,7 +183,7 @@ pub fn generate_replay_wasm(
                     write(
                         stream,
                         &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr} {return_expr})\n",),
-                    )?;    
+                    )?;
                     continue;
                 }
                 write(
@@ -454,7 +454,7 @@ fn generate_replay_html(
         const {module_escaped}Response = await fetch(\"{current_module}.wasm\");
         const {module_escaped}Binary = await {module_escaped}Response.arrayBuffer();
         const {module_escaped} = await WebAssembly.instantiate({module_escaped}Binary, {module_escaped}Import);
-        
+
         "
         )?;
     }
@@ -499,6 +499,7 @@ fn generate_single_wasm(
         "--rename-export-conflicts",
         "--enable-reference-types",
         "--enable-multimemory",
+        "--enable-multivalue",
         "--enable-bulk-memory",
         "--enable-threads",
         "--debuginfo",
@@ -604,6 +605,7 @@ fn generate_single_wasm(
         "--enable-reference-types",
         "--enable-multimemory",
         "--enable-bulk-memory",
+        "--enable-multivalue",
         "--enable-threads",
         "--debuginfo",
         "merged_1.wasm",
@@ -631,6 +633,7 @@ fn generate_single_wasm(
             "--enable-gc",
             "--enable-bulk-memory",
             "--enable-threads",
+            "--enable-multivalue",
             "--debuginfo",
             // for handling inlining of imported globals. Without this glob-merge node test will fail.
             "--simplify-globals",

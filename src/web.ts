@@ -209,7 +209,7 @@ export default class Benchmark {
         if (!fss.existsSync(benchmarkPath)) await fs.mkdir(benchmarkPath, { recursive: true })
         await Promise.all(this.record.map(async ({ binary, trace }, i) => {
             // FIXME: enable back after hacking on slicedice
-            // if (i != 1) return;
+            if (i != 1) return;
             const binPath = path.join(benchmarkPath, `bin_${i}`)
             if (!fss.existsSync(binPath)) await fs.mkdir(binPath)
             const tracePath = path.join(binPath, 'trace.r3')
