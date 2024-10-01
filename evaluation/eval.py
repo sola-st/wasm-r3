@@ -24,7 +24,7 @@ wasmaker_testset = [
     "wasmedge#3076",
     "wamr#2450", # works
     "wasmedge#3019",
-    "wamr#2789",
+    "wamr#2789", # I think we should exclude this as a bug, as the wamr developer seems to think the same https://github.com/bytecodealliance/wasm-micro-runtime/issues/2789
     "wamr#2862", # works
     "wasmedge#3018",
     "wamr#2861", # works
