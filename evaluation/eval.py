@@ -1,6 +1,7 @@
 import subprocess, re, os
 
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
+TEST_NAME = os.getenv("TEST_NAME")
 
 r3bench_testset = [
     "boa",  # this doesn't work for wasm-slice
@@ -21,15 +22,15 @@ r3bench_testset = [
 wasmaker_testset = [
     "wasmedge#3057",
     "wasmedge#3076",
-    "wamr#2450",
+    "wamr#2450", # works
     "wasmedge#3019",
     "wamr#2789",
-    "wamr#2862",
+    "wamr#2862", # works
     "wasmedge#3018",
-    "wamr#2861",
+    "wamr#2861", # works
 ]
 
-testset = r3bench_testset + wasmaker_testset
+testset = [TEST_NAME] if TEST_NAME else r3bench_testset + wasmaker_testset
 
 
 def extract_function_count(objdump_output):
