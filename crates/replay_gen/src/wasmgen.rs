@@ -319,20 +319,21 @@ pub fn generate_replay_wasm(
 }
 
 fn get_return_expr(ty: &FunctionTy) -> String {
-    let default_return = match ty.results.get(0) {
-        Some(v) => match v {
-            ValType::I32 => "(i32.const 0)",
-            ValType::I64 => "(i64.const 0)",
-            ValType::F32 => "(f32.const 0)",
-            ValType::F64 => "(f64.const 0)",
-            ValType::V128 => todo!(),
-            ValType::Funcref => todo!(),
-            ValType::Externref => todo!(),
-        },
-        None => "",
-    };
-    let return_expr = format!("(return {})", default_return);
-    return_expr
+    if ty.results.is_empty() {
+        return "(return )".to_string();
+    }
+
+    let default_returns: Vec<String> = ty.results.iter().map(|v| match v {
+        ValType::I32 => "(i32.const 0)".to_string(),
+        ValType::I64 => "(i64.const 0)".to_string(),
+        ValType::F32 => "(f32.const 0)".to_string(),
+        ValType::F64 => "(f64.const 0)".to_string(),
+        ValType::V128 => todo!(),
+        ValType::Funcref => todo!(),
+        ValType::Externref => todo!(),
+    }).collect();
+
+    format!("(return {})", default_returns.join(" "))
 }
 
 fn generate_replay_html(
