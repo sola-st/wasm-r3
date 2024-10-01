@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import sys, subprocess, concurrent.futures, re, os, re, subprocess, csv, shutil
+import sys, subprocess, os, csv, subprocess, shutil
+import eval
 
 # this takes upto 150GB of memory.
 # TODO: why?
@@ -36,15 +37,7 @@ def get_heuristic_fidx() -> list:
         "rtexviewer": [303],
         "sqlgui": [917],
     }
-    return testname_to_heuristic[test_name]
-
-def get_dynamic_fidx():
-    command = ["wizeng.x86-64-linux", "-no-names", "-csv", "--monitors=icount", test_input]
-    try:
-        return extract_dynamic_fidx(subprocess.check_output(command, text=True))
-    except subprocess.CalledProcessError as e:
-        print(f"Command failed: {' '.join(command)}\nError: {e.output}")
-        raise
+    return testname_to_heuristic.get(test_name) or []
 
 def extract_dynamic_fidx(csv_output: str):
     dynamic_fidx = []
@@ -58,45 +51,24 @@ def extract_dynamic_fidx(csv_output: str):
                 dynamic_fidx.append(function_index)
     return sorted(dynamic_fidx)
 
-def get_all_fidx():
-    command = f"wasm-tools objdump {test_input}"
-    output = subprocess.check_output(command, shell=True, text=True)
-    count = extract_function_count(output)
-    return list(range(count))
+def get_dynamic_fidx():
+    command = ["wizeng.x86-64-linux", "-no-names", "-csv", "--monitors=icount", test_input]
+    try:
+        return extract_dynamic_fidx(subprocess.check_output(command, text=True))
+    except subprocess.CalledProcessError as e:
+        print(f"Command failed: {' '.join(command)}\nError: {e.output}")
+        return []
 
-def extract_function_count(objdump_output):
-    for line in objdump_output.split('\n'):
-        if 'functions' in line:
-            match = re.search(r'(\d+) count', line)
-            if match:
-                return int(match.group(1))
-    return None
-
-
-test_get_function_count = """
-types                                  |        0xb -      0x198 |       397 bytes | 55 count
-functions                              |      0x19b -      0x396 |       507 bytes | 505 count
-tables                                 |      0x398 -      0x39f |         7 bytes | 1 count
-memories                               |      0x3a1 -      0x3a7 |         6 bytes | 1 count
-globals                                |      0x3aa -      0x930 |      1414 bytes | 282 count
-exports                                |      0x933 -     0x100c |      1753 bytes | 301 count
-elements                               |     0x100f -     0x1193 |       388 bytes | 1 count
-data count                             |     0x1195 -     0x1197 |         2 bytes | 1 count
-code                                   |     0x119b -    0x46e2b |    285840 bytes | 505 count
-data                                   |    0x46e2f -    0x5c006 |     86487 bytes | 1422 count
-"""
-
-assert extract_function_count(test_get_function_count) == 505
 
 def get_fidx():
     heuristic_fidx = get_heuristic_fidx()
     dynamic_fidx = get_dynamic_fidx()
-    all_fidx = get_all_fidx()
-    
+    all_fidx = eval.get_all_fidx(test_input)
+
     print("Heuristic function indices:", heuristic_fidx)
     dynamic_filtered = [idx for idx in dynamic_fidx if idx not in heuristic_fidx]
     print("Dynamic function indices (except heuristic):", dynamic_filtered)
-    
+
     # Filter out both heuristic and dynamic indices from all
     all_filtered = [idx for idx in all_fidx if idx not in heuristic_fidx and idx not in dynamic_fidx]
     print("All function indices (except heuristic and dynamic):", all_filtered)

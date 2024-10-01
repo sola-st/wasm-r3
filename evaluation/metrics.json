@@ -31260,5 +31260,304 @@
             "wasm-slice-size": 6763,
             "wasm-slice-time": 3.47575306892395
         }
+    },
+    "wamr#2862": {
+        "reduction_comparison": {
+            "original_size": 23077,
+            "wasm-slice-size": 5541,
+            "wasm-slice-time": 2.4320273399353027
+        },
+        "0": {
+            "slice-dice": 46,
+            "wasm-r3": 2036
+        },
+        "1": {
+            "slice-dice": 62,
+            "wasm-r3": 2030
+        },
+        "2": {
+            "slice-dice": 56,
+            "wasm-r3": 2025
+        },
+        "3": {
+            "slice-dice": 58,
+            "wasm-r3": 2037
+        },
+        "4": {
+            "slice-dice": 52,
+            "wasm-r3": 2029
+        },
+        "5": {
+            "slice-dice": 50,
+            "wasm-r3": 2037
+        },
+        "6": {
+            "slice-dice": 60,
+            "wasm-r3": 2025
+        },
+        "7": {
+            "slice-dice": 51,
+            "wasm-r3": 2015
+        },
+        "8": {
+            "slice-dice": 51,
+            "wasm-r3": 2022
+        },
+        "9": {
+            "slice-dice": 54,
+            "wasm-r3": 2023
+        },
+        "10": {
+            "slice-dice": 57,
+            "wasm-r3": 2028
+        },
+        "11": {
+            "slice-dice": 57,
+            "wasm-r3": 2037
+        },
+        "12": {
+            "slice-dice": 57,
+            "wasm-r3": 2008
+        },
+        "13": {
+            "slice-dice": 54,
+            "wasm-r3": 2017
+        },
+        "14": {
+            "slice-dice": 50,
+            "wasm-r3": 2045
+        },
+        "15": {
+            "slice-dice": 56,
+            "wasm-r3": 2023
+        },
+        "16": {
+            "slice-dice": 56,
+            "wasm-r3": 2052
+        },
+        "17": {
+            "slice-dice": 53,
+            "wasm-r3": 2031
+        },
+        "18": {
+            "slice-dice": 57,
+            "wasm-r3": 2021
+        },
+        "19": {
+            "slice-dice": 53,
+            "wasm-r3": 2023
+        },
+        "20": {
+            "slice-dice": 52,
+            "wasm-r3": 2021
+        },
+        "21": {
+            "slice-dice": 59,
+            "wasm-r3": 2023
+        },
+        "22": {
+            "slice-dice": 60,
+            "wasm-r3": 2026
+        },
+        "23": {
+            "slice-dice": 56,
+            "wasm-r3": 2048
+        },
+        "24": {
+            "slice-dice": 50,
+            "wasm-r3": 2004
+        },
+        "25": {
+            "slice-dice": 56,
+            "wasm-r3": 2030
+        },
+        "26": {
+            "slice-dice": 62,
+            "wasm-r3": 2018
+        },
+        "27": {
+            "slice-dice": 65,
+            "wasm-r3": 2036
+        },
+        "28": {
+            "slice-dice": 54,
+            "wasm-r3": 2013
+        },
+        "29": {
+            "slice-dice": 51,
+            "wasm-r3": 2028
+        },
+        "30": {
+            "slice-dice": 55,
+            "wasm-r3": 2013
+        },
+        "31": {
+            "slice-dice": 51,
+            "wasm-r3": 2033
+        },
+        "32": {
+            "slice-dice": 60,
+            "wasm-r3": 2039
+        },
+        "33": {
+            "slice-dice": 60,
+            "wasm-r3": 2008
+        },
+        "34": {
+            "slice-dice": 49,
+            "wasm-r3": 2024
+        },
+        "35": {
+            "slice-dice": 55,
+            "wasm-r3": 2007
+        },
+        "36": {
+            "slice-dice": 49,
+            "wasm-r3": 2012
+        },
+        "37": {
+            "slice-dice": 61,
+            "wasm-r3": 2027
+        },
+        "38": {
+            "slice-dice": 58,
+            "wasm-r3": 2033
+        },
+        "39": {
+            "slice-dice": 58,
+            "wasm-r3": 2019
+        },
+        "40": {
+            "slice-dice": 57,
+            "wasm-r3": 2028
+        },
+        "41": {
+            "slice-dice": 60,
+            "wasm-r3": 2029
+        },
+        "42": {
+            "slice-dice": 58,
+            "wasm-r3": 2020
+        },
+        "43": {
+            "slice-dice": 67,
+            "wasm-r3": 2020
+        },
+        "44": {
+            "slice-dice": 59,
+            "wasm-r3": 2027
+        },
+        "45": {
+            "slice-dice": 51,
+            "wasm-r3": 2008
+        },
+        "46": {
+            "slice-dice": 51,
+            "wasm-r3": 2043
+        },
+        "47": {
+            "slice-dice": 53,
+            "wasm-r3": 2018
+        },
+        "48": {
+            "slice-dice": 58,
+            "wasm-r3": 2019
+        },
+        "49": {
+            "slice-dice": 51,
+            "wasm-r3": 2025
+        },
+        "50": {
+            "slice-dice": 54,
+            "wasm-r3": 2044
+        },
+        "51": {
+            "slice-dice": 58,
+            "wasm-r3": 2039
+        },
+        "52": {
+            "slice-dice": 55,
+            "wasm-r3": 2019
+        },
+        "53": {
+            "slice-dice": 55,
+            "wasm-r3": 2039
+        },
+        "54": {
+            "slice-dice": 58,
+            "wasm-r3": 2017
+        },
+        "55": {
+            "slice-dice": 59,
+            "wasm-r3": 2013
+        },
+        "56": {
+            "slice-dice": 59,
+            "wasm-r3": 2014
+        },
+        "57": {
+            "slice-dice": 54,
+            "wasm-r3": 2008
+        },
+        "58": {
+            "slice-dice": 53,
+            "wasm-r3": 2016
+        },
+        "59": {
+            "slice-dice": 58,
+            "wasm-r3": 2007
+        },
+        "60": {
+            "slice-dice": 59,
+            "wasm-r3": 2058
+        },
+        "61": {
+            "slice-dice": 59,
+            "wasm-r3": 2009
+        },
+        "62": {
+            "slice-dice": 49,
+            "wasm-r3": 2028
+        },
+        "63": {
+            "slice-dice": 59,
+            "wasm-r3": 2029
+        },
+        "64": {
+            "slice-dice": 61,
+            "wasm-r3": 2020
+        },
+        "65": {
+            "slice-dice": 60,
+            "wasm-r3": 2006
+        },
+        "66": {
+            "slice-dice": 51,
+            "wasm-r3": 2010
+        },
+        "67": {
+            "slice-dice": 57,
+            "wasm-r3": 2018
+        },
+        "68": {
+            "slice-dice": 52,
+            "wasm-r3": 2034
+        },
+        "69": {
+            "slice-dice": 51,
+            "wasm-r3": 2034
+        },
+        "70": {
+            "slice-dice": 53,
+            "wasm-r3": 2016
+        },
+        "71": {
+            "slice-dice": 58,
+            "wasm-r3": 2032
+        },
+        "72": {
+            "slice-dice": 54,
+            "wasm-r3": 2017
+        }
     }
 }
