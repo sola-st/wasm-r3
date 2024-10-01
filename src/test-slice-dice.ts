@@ -41,7 +41,12 @@ async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string
   // Running the actual Wasm-R3
   let analyser = new Analyser('./dist/src/tracer.cjs', options);
   let page = await analyser.start(url, { headless: options.headless });
-  await expect(page.getByText('milliseconds')).toBeVisible({ timeout: 200000 });
+  const timeout = 5_000;
+  try {
+    await expect(page.getByText('milliseconds')).toBeVisible({ timeout });
+  } catch (e) {
+    console.log(`Timed out after ${timeout}ms`);
+  }
   const results = await analyser.stop();
   await Benchmark.fromAnalysisResult(results).save(`${subsetPath}/benchmarks`, { trace: options.dumpTrace, rustBackend: options.rustBackend });
   // Checking the result

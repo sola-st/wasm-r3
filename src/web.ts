@@ -27,6 +27,7 @@ export class Analyser {
     private page: Page
     private downloadPaths: string[]
     private contexts: (Frame | Worker)[] = []
+    private alternateTrace = []
     private isRunning = false
 
 
@@ -55,6 +56,9 @@ export class Analyser {
         }
         this.page = await this.browser.newPage();
         this.page.on('console', (message) => {
+            if (message.text().startsWith('r3: ')) {
+                this.alternateTrace.push(message.text().slice(4))
+            }
             // console.log(`Browser console: ${message.text()}`);
         });
         this.page.on('pageerror', msg => {
