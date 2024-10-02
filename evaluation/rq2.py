@@ -44,20 +44,6 @@ def run_reduction_tool(testname, tool):
         )
         return [testname, tool, "fail", "fail"]
 
-
-for testname in testset:
-    if testname not in metrics:
-        metrics[testname] = {}
-    if "reduction_comparison" not in metrics[testname]:
-        metrics[testname]["reduction_comparison"] = {}
-    metrics[testname]["reduction_comparison"].update(
-        {
-            "original_size": os.path.getsize(
-                f"{WASMR3_PATH}/benchmarks/{testname}/{testname}.wasm"
-            )
-        }
-    )
-
 with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
     futures = [
         executor.submit(run_reduction_tool, testname, tool)
@@ -65,16 +51,6 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
         for tool in our_tool
     ]
     results = [future.result() for future in concurrent.futures.as_completed(futures)]
-
-# with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-#     futures = [
-#         executor.submit(run_reduction_tool, testname, tool)
-#         for testname in testset
-#         for tool in toolset
-#     ]
-#     results = results + [
-#         future.result() for future in concurrent.futures.as_completed(futures)
-#     ]
 
 for result in results:
     testname, tool, elapsed, reduced_size = result

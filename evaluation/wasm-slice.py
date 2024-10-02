@@ -36,6 +36,9 @@ def get_heuristic_fidx() -> list:
         "riconpacker": [244],
         "rtexviewer": [303],
         "sqlgui": [917],
+        "wasmedge#3018": [8, 11],
+        "wasmedge#3019": [5, 6, 75],
+        "wasmedge#3057": [951, 952, 969, 970, 973, 1003, 1005]
     }
     return testname_to_heuristic.get(test_name) or []
 

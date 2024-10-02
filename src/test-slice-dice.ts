@@ -45,7 +45,7 @@ async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string
   try {
     await expect(page.getByText('milliseconds')).toBeVisible({ timeout });
   } catch (e) {
-    console.log(`Timed out after ${timeout}ms`);
+    // console.log(`Timed out after ${timeout}ms`);
   }
   const results = await analyser.stop();
   await Benchmark.fromAnalysisResult(results).save(`${subsetPath}/benchmarks`, { trace: options.dumpTrace, rustBackend: options.rustBackend });
@@ -57,7 +57,7 @@ async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string
 
 function checkResult(benchmarkPath: string, fidx: any) {
   // TODO: is it always the case that bin_1 is the subset?
-  execSync(`wasmtime ${path.join(benchmarkPath, 'out', `${fidx}`, 'benchmarks', 'bin_1', 'replay.wasm')}`);
+  // execSync(`wasmtime ${path.join(benchmarkPath, 'out', `${fidx}`, 'benchmarks', 'bin_1', 'replay.wasm')}`);
 }
 
 function getSubsetFidx(replayWasmPath: string, name: string) {

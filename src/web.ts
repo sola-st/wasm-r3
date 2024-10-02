@@ -9,6 +9,7 @@ export const commonOptions = [
     { name: "firefoxFrontend", alias: "f", type: Boolean },
     { name: "webkitFrontend", alias: "w", type: Boolean },
     { name: "alternativeDownload", type: Boolean, defaultValue: false },
+    { name: "alternativeTrace", type: Boolean, defaultValue: false },
 ]
 
 // read port from env
@@ -27,7 +28,7 @@ export class Analyser {
     private page: Page
     private downloadPaths: string[]
     private contexts: (Frame | Worker)[] = []
-    private alternateTrace = []
+    private alternateTraces = []
     private isRunning = false
 
 
@@ -56,8 +57,14 @@ export class Analyser {
         }
         this.page = await this.browser.newPage();
         this.page.on('console', (message) => {
-            if (message.text().startsWith('r3: ')) {
-                this.alternateTrace.push(message.text().slice(4))
+            const match = message.text().match(/^r3\((\d+)\) "(.*)"$/);
+            if (match) {
+                const index = parseInt(match[1], 10);
+                const trace = match[2];
+                if (!this.alternateTraces[index]) {
+                    this.alternateTraces[index] = [];
+                }
+                this.alternateTraces[index].push(trace);
             }
             // console.log(`Browser console: ${message.text()}`);
         });
@@ -85,7 +92,14 @@ export class Analyser {
             throw new Error('Analyser is not running. Start the Analyser before stopping')
         }
         this.contexts = this.contexts.concat(this.page.frames())
-        const traces = (await this.getResults()).map(t => trimFromLastOccurance(t, 'ER'))
+        let traces;
+        if (this.options.alternativeTrace) {
+            traces = this.alternateTraces.map(t => {
+                return t.join('\n')
+            })
+        } else {
+            traces = (await this.getResults()).map(t => trimFromLastOccurance(t, 'ER'))
+        }
         let originalWasmBuffer;
         if (this.options.alternativeDownload) {
             originalWasmBuffer = await this.getBuffersThroughDownloads()
