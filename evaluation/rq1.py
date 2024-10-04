@@ -30,8 +30,8 @@ metrics = dict(
 
 total_time = 0
 for testname in testset:
-    if testname in ['boa']:
-         continue
+    # if testname in ['boa']:
+    #      continue
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
             fidx_count = min(metrics[testname]["metadata"]["function_count"], int(FIDX_LIMIT)) if FIDX_LIMIT else metrics[testname]["metadata"]["function_count"]
             print(f"RUNNING: {testname} with {fidx_count} functions")

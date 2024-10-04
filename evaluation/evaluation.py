@@ -197,7 +197,7 @@ for testname in metrics:
     )
 
 # with open("metrics.json", "w") as f:
-#     sorted_metrics = dict(sorted(metrics.items()))
+#     sorted_metrics = dict(sorted(metrics.items(), key=lambda item: item[1]['metadata']['function_count']))
 #     json.dump(sorted_metrics, f, indent=4)
 
 testset = [TEST_NAME] if TEST_NAME else metrics.keys()
