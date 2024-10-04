@@ -5,13 +5,13 @@ import evaluation
 TIMEOUT = 120
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
 TEST_NAME = os.getenv("TEST_NAME")
+FIDX_LIMIT = os.getenv("FIDX_LIMIT")
 
 with open("metrics.json", "r") as f:
     metrics = json.load(f)
 
 print("RQ1")
 testset = [TEST_NAME] if TEST_NAME else metrics.keys()
-print(f"len(testset): {len(testset)}")
 
 
 def run_reduction_tool(testname, fidx):
@@ -30,12 +30,16 @@ metrics = dict(
 
 total_time = 0
 for testname in testset:
+    if testname in ['boa']:
+         continue
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-            print(f"RUNNING: {testname} with {metrics[testname]['metadata']['function_count']} functions")
+            fidx_count = min(metrics[testname]["metadata"]["function_count"], int(FIDX_LIMIT)) if FIDX_LIMIT else metrics[testname]["metadata"]["function_count"]
+            print(f"RUNNING: {testname} with {fidx_count} functions")
+            fidx_range = range(fidx_count)
             start_time = time.time()
             futures = [
                 executor.submit(run_reduction_tool, testname, fidx)
-                for fidx in range(metrics[testname]["metadata"]["function_count"])
+                for fidx in fidx_range
             ]
             results = [
                 future.result() for future in concurrent.futures.as_completed(futures)

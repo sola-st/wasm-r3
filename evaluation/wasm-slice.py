@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys, subprocess, os, csv, subprocess, shutil
-import eval
+import evaluation
 
 # this takes upto 150GB of memory.
 # TODO: why?

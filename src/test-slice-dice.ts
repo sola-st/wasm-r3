@@ -4,6 +4,7 @@ import { exit } from "process";
 import { Server } from "http";
 import path from "path";
 import { execSync } from "child_process";
+import fs from "fs";
 import Benchmark, { Analyser } from "./web.ts";
 import { startServer } from "./test.ts";
 
@@ -22,9 +23,9 @@ export default async function runSliceDiceTests(names: string[], options) {
 }
 
 function runSliceDice(replayWasmPath: string, fidx: string) {
-  const startTime = Date.now();
   process.stdout.write('    Running slice-dice: ');
   const command = `./crates/target/release/slice_dice ${replayWasmPath} ${fidx} 1`;
+  const startTime = Date.now();
   execSync(command);
   const endTime = Date.now();
   // We do not actually check what's generated runs to completion. This is misleading.
@@ -34,8 +35,8 @@ function runSliceDice(replayWasmPath: string, fidx: string) {
 
 // TODO: this got slower by 2x from 01b34a3952ea29706d29d29d07b6f5148e119065. Investigate why.
 async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string, fidx: string) {
-  const startTime = Date.now();
   process.stdout.write('    Running wasm-r3: ');
+  const startTime = Date.now();
   // Starting server to host the benchmark
   const url = await startServer(subsetPath);
   // Running the actual Wasm-R3
@@ -57,7 +58,10 @@ async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string
 
 function checkResult(benchmarkPath: string, fidx: any) {
   // TODO: is it always the case that bin_1 is the subset?
-  // execSync(`wasmtime ${path.join(benchmarkPath, 'out', `${fidx}`, 'benchmarks', 'bin_1', 'replay.wasm')}`);
+  const filePath = path.join(benchmarkPath, 'out', `${fidx}`, 'benchmarks', 'bin_1', 'replay.wasm');
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`File not found: ${filePath}`);
+  }
 }
 
 function getSubsetFidx(replayWasmPath: string, name: string) {
