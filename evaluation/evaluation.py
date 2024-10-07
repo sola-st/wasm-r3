@@ -203,27 +203,60 @@ for testname in metrics:
 testset = [TEST_NAME] if TEST_NAME else metrics.keys()
 
 
-def extract_times(input_string):
-    # Define the pattern to match
-    pattern = r"Running (slice-dice|wasm-r3|wasmtime): (\d+)(ms)"
+import re
 
-    # Find all matches
-    matches = re.findall(pattern, input_string)
+def extract_times(input_string):
+    # Define the pattern to match times, including possible timeout
+    time_pattern = r"Running (slice-dice|wasm-r3|wasmtime): (\d+)(ms)(\(timeout\))?"
+
+    # Define the pattern to match sliced file size
+    size_pattern = r"Sliced file size: (\d+)bytes"
+
+    # Find all matches for times
+    time_matches = re.findall(time_pattern, input_string)
+
+    # Find match for sliced file size
+    size_match = re.search(size_pattern, input_string)
 
     # Create a dictionary to store the results
-    times = {"slice-dice": "fail", "wasm-r3": "fail"}
+    times = {
+        "split-time": "fail",
+        "rr-time": "fail",
+        "rr-did-timeout": False,
+        "sliced_file_size": "fail"
+    }
 
-    for match in matches:
-        key, value, unit = match
+    for match in time_matches:
+        key, value, unit, timeout = match
         value = int(value)
-        times[key] = value  # Keep the value as is for milliseconds
+
+        if key == "slice-dice":
+            times["split-time"] = value
+        elif key == "wasm-r3":
+            times["rr-time"] = value
+            if timeout:
+                times["rr-did-timeout"] = True
+
+    if size_match:
+        times["sliced_file_size"] = int(size_match.group(1))
 
     return times
 
-
 # Test the function
-input_string = """game-of-life-2:
-    Running slice-dice: 16ms
-    Running wasm-r3: 411ms"""
+input_string1 = """wamr#2861-0: Running slice-dice: 25ms Running wasm-r3: 1811ms Sliced file size: 5006bytes"""
+input_string2 = """wasmedge#3057-0: Running slice-dice: 345ms Running wasm-r3: 5485ms(timeout) Sliced file size: 39462bytes"""
 
-result = extract_times(input_string)
+result1 = extract_times(input_string1)
+result2 = extract_times(input_string2)
+
+# Assertions for result1
+assert result1["split-time"] == 25, "Split time mismatch in result1"
+assert result1["rr-time"] == 1811, "RR time mismatch in result1"
+assert result1["sliced_file_size"] == 5006, "Sliced file size mismatch in result1"
+assert result1["rr-did-timeout"] == False, "Timeout flag mismatch in result1"
+
+# Assertions for result2
+assert result2["split-time"] == 345, "Split time mismatch in result2"
+assert result2["rr-time"] == 5485, "RR time mismatch in result2"
+assert result2["sliced_file_size"] == 39462, "Sliced file size mismatch in result2"
+assert result2["rr-did-timeout"] == True, "Timeout flag mismatch in result2"

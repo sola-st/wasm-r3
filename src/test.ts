@@ -82,6 +82,7 @@ const testOptions = [
   { name: "category", type: String, defaultOption: true },
   { name: "testcases", alias: "t", type: String, multiple: true },
   { name: "fidxs", alias: "i", type: Number, multiple: true },
+  { name: "cache", alias: "c", type: Boolean },
 ];
 
 (async function run() {

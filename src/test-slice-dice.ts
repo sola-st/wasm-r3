@@ -42,26 +42,44 @@ async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string
   // Running the actual Wasm-R3
   let analyser = new Analyser('./dist/src/tracer.cjs', options);
   let page = await analyser.start(url, { headless: options.headless });
-  const timeout = 5_000;
+  const timeout = 120_000; // could go high as 115 seconds
+  let did_timeout = false;
   try {
     await expect(page.getByText('milliseconds')).toBeVisible({ timeout });
   } catch (e) {
+    did_timeout = true;
     // console.log(`Timed out after ${timeout}ms`);
   }
   const results = await analyser.stop();
   await Benchmark.fromAnalysisResult(results).save(`${subsetPath}/benchmarks`, { trace: options.dumpTrace, rustBackend: options.rustBackend });
+  const endTime = Date.now();
+  console.log(`${endTime - startTime}ms${did_timeout ? '(timeout)': ''}`);
   // Checking the result
   checkResult(benchmarkPath, fidx)
-  const endTime = Date.now();
-  console.log(`${endTime - startTime}ms`);
 }
 
 function checkResult(benchmarkPath: string, fidx: any) {
   // TODO: is it always the case that bin_1 is the subset?
-  const filePath = path.join(benchmarkPath, 'out', `${fidx}`, 'benchmarks', 'bin_1', 'replay.wasm');
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`File not found: ${filePath}`);
+  const subsetReplayPath = path.join(benchmarkPath, 'out', `${fidx}`, 'benchmarks', 'bin_1', 'replay.wasm');
+  if (!fs.existsSync(subsetReplayPath)) {
+    throw new Error(`File not found: ${subsetReplayPath}`);
+  } else {
+    const deleteWatFilesRecursively = (dir: string) => {
+      const files = fs.readdirSync(dir);
+      for (const file of files) {
+      const fullPath = path.join(dir, file);
+      if (fs.statSync(fullPath).isDirectory()) {
+        deleteWatFilesRecursively(fullPath);
+      } else if (file.endsWith('.wat')) {
+        fs.unlinkSync(fullPath);
+      }
+      }
+    };
+    deleteWatFilesRecursively(path.join(benchmarkPath, 'out', `${fidx}`));
   }
+  process.stdout.write('    Sliced file size: ');
+  const stats = fs.statSync(subsetReplayPath);
+  console.log(`${stats.size}bytes`);
 }
 
 function getSubsetFidx(replayWasmPath: string, name: string) {
