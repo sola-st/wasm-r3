@@ -14,6 +14,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 5006
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "wasmedge#3018": {
@@ -97,6 +101,10 @@
                 "rr-did-timeout": true,
                 "sliced_file_size": 6483
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "wamr#2789": {
@@ -456,6 +464,10 @@
                 "rr-did-timeout": true,
                 "sliced_file_size": 8373
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "wamr#2450": {
@@ -863,6 +875,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 3070
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "wamr#2862": {
@@ -1312,6 +1328,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 6804
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "wasmedge#3019": {
@@ -1779,6 +1799,10 @@
                 "rr-did-timeout": true,
                 "sliced_file_size": 7270
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "wasmedge#3076": {
@@ -2576,6 +2600,10 @@
                 "rr-did-timeout": true,
                 "sliced_file_size": 6972
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "mandelbrot": {
@@ -3589,6 +3617,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 19785
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "guiicons": {
@@ -6630,6 +6662,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 104594
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "rguilayout": {
@@ -9701,6 +9737,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 118520
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "rguistyler": {
@@ -13162,6 +13202,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 168757
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "riconpacker": {
@@ -16629,6 +16673,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 110300
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "rfxgen": {
@@ -20162,6 +20210,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 143308
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "rtexviewer": {
@@ -24301,6 +24353,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 115382
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "wasmedge#3057": {
@@ -30312,6 +30368,10 @@
                 "rr-did-timeout": true,
                 "sliced_file_size": 38609
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "funky-kart": {
@@ -36323,6 +36383,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 1721064
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "hydro": {
@@ -42334,6 +42398,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 163600
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "sqlgui": {
@@ -48345,6 +48413,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 143917
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "commanderkeen": {
@@ -54356,6 +54428,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 350990
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "boa": {
@@ -60367,6 +60443,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 17213354
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     },
     "jsc": {
@@ -66378,6 +66458,10 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 1740060
             }
+        },
+        "rq2": {
+            "wasm-slice-size": "fail",
+            "wasm-slice-time": "fail"
         }
     }
 }
