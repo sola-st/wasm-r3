@@ -11,7 +11,7 @@ TIMEOUT = 120
 
 # The Wasm file is given as the first and only argument to the script.
 if len(sys.argv) != 3:
-    print("Usage: wasm-slice <WASM_FILE>")
+    print("Usage: wasm-slice <WASM_FILE> <ORACLE_SCRIPT>")
     sys.exit(1)
 
 interesting_script = sys.argv[1]
@@ -40,7 +40,11 @@ def get_heuristic_fidx() -> list:
         "wasmedge#3019": [5, 6, 75],
         "wasmedge#3057": [951, 952, 969, 970, 973, 1003, 1005]
     }
-    return testname_to_heuristic.get(test_name) or []
+    if testname_to_heuristic.get(test_name):
+        return testname_to_heuristic[test_name]
+    else:
+        print("WARNING: No heuristic set found for", test_name)
+        return []
 
 def extract_dynamic_fidx(csv_output: str):
     dynamic_fidx = []
@@ -59,14 +63,15 @@ def get_dynamic_fidx():
     try:
         return extract_dynamic_fidx(subprocess.check_output(command, text=True))
     except subprocess.CalledProcessError as e:
-        print(f"Command failed: {' '.join(command)}\nError: {e.output}")
+        print(f"WARNING: No dynamic set found for {test_name}")
+        exit(1)
         return []
 
 
 def get_fidx():
     heuristic_fidx = get_heuristic_fidx()
     dynamic_fidx = get_dynamic_fidx()
-    all_fidx = eval.get_all_fidx(test_input)
+    all_fidx = evaluation.get_all_fidx(test_input)
 
     print("Heuristic function indices:", heuristic_fidx)
     dynamic_filtered = [idx for idx in dynamic_fidx if idx not in heuristic_fidx]

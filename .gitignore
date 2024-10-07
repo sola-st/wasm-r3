@@ -20,3 +20,5 @@ build/
 *.sliced.wasm
 *.reduced.wasm
 *.shrunken.wat
+*.aot
+*.so

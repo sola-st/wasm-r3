@@ -159,7 +159,7 @@ pub fn generate_replay_wasm(
             let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
             write(
                 stream,
-                "(func (@name \"r3_main\")(export \"_start\") (export \"main\")\n",
+                "(func (@name \"r3_main\")(export \"_start\") (export \"r3_main\")\n",
             )?;
             if let Some(initialization) = initialization {
                 for event in initialization {
