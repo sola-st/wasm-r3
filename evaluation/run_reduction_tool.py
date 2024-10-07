@@ -33,41 +33,43 @@ test_to_mode = {
     'mandelbrot': 'MODE=spc',
 }
 
-def tool_to_command(tool, test_name):
+def tool_to_command(tool, test_input, oracle_script):
+    test_name = os.path.splitext(os.path.basename(test_input))[0]
     if tool == "wasm-reduce":
         test_path = f'./benchmarks/{test_name}/{test_name}.reduced.wasm'
-        return f"wasm-reduce -to 10 -b $BINARYEN_ROOT/bin '--command={WASMR3_PATH}/evaluation/interesting.py {test_path}' -t {test_path} -w work.reduced.wasm"
+        return f"wasm-reduce -to 10 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w work.reduced.wasm {test_input}"
     elif tool == "wasm-shrink":
-        return f"wasm-tools shrink {WASMR3_PATH}/evaluation/interesting.py"
+        return f"wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":
-        return  f"wasm-slice {WASMR3_PATH}/evaluation/interesting.py"
+        return  f"wasm-slice {oracle_script} {test_input}"
     else:
         exit("not supported")
 
-def run_command(tool, test_input):
+def run_command(tool, test_input, oracle_script):
     test_name = os.path.splitext(os.path.basename(test_input))[0]
     mode = test_to_mode.get(test_name, '')
-    command = tool_to_command(tool, test_name)
-    
+    command = tool_to_command(tool, test_input, oracle_script)
+
     if not command:
         print(f"Error: Unknown tool '{tool}'")
         sys.exit(1)
-    
-    full_command = f"{mode} {command} {test_input}"
+
+    full_command = f"{mode} {command}"
     result = subprocess.run(
         full_command,
         shell=True,
         stdout=sys.stdout,
     )
-    
+
     return result
 
 # The Wasm file is given as the first and only argument to the script.
-if len(sys.argv) != 3:
-    print("Usage: run_reduction_tool.py <TOOL> <WASM_FILE>")
+if len(sys.argv) != 4:
+    print("Usage: run_reduction_tool.py <TOOL> <WASM_FILE> <ORACLE_SCRIPT")
     sys.exit(1)
 
 TOOL = sys.argv[1]
 WASM = sys.argv[2]
+ORACLE_SCRIPT = sys.argv[3]
 
-result = run_command(TOOL, WASM)
+result = run_command(TOOL, WASM, ORACLE_SCRIPT)
