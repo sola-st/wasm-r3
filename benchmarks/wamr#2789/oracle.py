@@ -18,21 +18,22 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
+    print(result)
     if result.returncode != 0:
         return True
     else:
         return False
 
 def correct_on_other():
-    command = f'wasmtime --invoke main {WASM}'
+    command = f'timeout 5s wasmtime --invoke main {WASM}'
     result = subprocess.run(
         command,
         shell=True,
         capture_output=True,
         text=True,
     )
-    # print(result)
-    if result.returncode == 0:
+    print(result)
+    if result.returncode == 124:
         return True
     else:
         return False

@@ -18,6 +18,7 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
+    print(result)
     expected_output = 'execution failed: integer divide by zero, Code: 0x84'
     if expected_output in result.stdout:
         return True
@@ -32,6 +33,7 @@ def correct_on_other():
         capture_output=True,
         text=True,
     )
+    print(result)
     expected_output = 'wasm trap: out of bounds memory access'
     if expected_output in result.stderr:
         return True

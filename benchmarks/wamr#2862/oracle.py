@@ -18,7 +18,7 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
-    # print(result)
+    print(result)
     expected_output = '0x0:i32,0x0:i32,0x0:i32,0x0:i32'
     if expected_output in result.stdout:
         return True
@@ -33,7 +33,7 @@ def correct_on_other():
         capture_output=True,
         text=True,
     )
-    # print(result)
+    print(result)
     expected_output = '''8205
 8205
 8205

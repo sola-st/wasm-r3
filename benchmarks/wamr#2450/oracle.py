@@ -18,6 +18,7 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
+    print(result)
     if result.returncode != 0:
         return True
     else:
@@ -31,7 +32,7 @@ def correct_on_other():
         capture_output=True,
         text=True,
     )
-    # print(result)
+    print(result)
     expected_output = 'wasm trap: integer divide by zero'
     if expected_output in result.stderr:
         return True

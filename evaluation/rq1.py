@@ -18,7 +18,7 @@ timeout_set = [
     "wasmedge#3019",
     "wasmedge#3057",
     "wasmedge#3076",
-    "wamr#2789",
+    "wamr#2789", # this doesn't terminate for original program as well
 ]
 
 

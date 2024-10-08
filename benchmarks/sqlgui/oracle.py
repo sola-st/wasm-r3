@@ -11,7 +11,7 @@ WASM = sys.argv[1]
 
 
 def wrong_on_target():
-    command = f'timeout 10s wizard-0d6926f -mode=spc {WASM}'
+    command = f'timeout 10s wizard-0d6926f -no-names -mode=spc {WASM}'
     result = subprocess.run(
         command,
         shell=True,

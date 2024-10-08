@@ -1,40 +1,10 @@
-import subprocess, re, os, json
+import re, os
+import heuristics_finder
 
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
 PAPER_PATH = os.getenv("PAPER_PATH", "/home/don/rr-reduce-paper/issta_2025")
 TEST_NAME = os.getenv("TEST_NAME")
 
-
-def extract_function_count(objdump_output):
-    for line in objdump_output.split("\n"):
-        if "functions" in line:
-            match = re.search(r"(\d+) count", line)
-            if match:
-                return int(match.group(1))
-    return None
-
-
-test_get_function_count = """
-types                                  |        0xb -      0x198 |       397 bytes | 55 count
-functions                              |      0x19b -      0x396 |       507 bytes | 505 count
-tables                                 |      0x398 -      0x39f |         7 bytes | 1 count
-memories                               |      0x3a1 -      0x3a7 |         6 bytes | 1 count
-globals                                |      0x3aa -      0x930 |      1414 bytes | 282 count
-exports                                |      0x933 -     0x100c |      1753 bytes | 301 count
-elements                               |     0x100f -     0x1193 |       388 bytes | 1 count
-data count                             |     0x1195 -     0x1197 |         2 bytes | 1 count
-code                                   |     0x119b -    0x46e2b |    285840 bytes | 505 count
-data                                   |    0x46e2f -    0x5c006 |     86487 bytes | 1422 count
-"""
-
-assert extract_function_count(test_get_function_count) == 505
-
-
-def get_all_fidx(test_input):
-    command = f"wasm-tools objdump {test_input}"
-    output = subprocess.check_output(command, shell=True, text=True)
-    count = extract_function_count(output)
-    return list(range(count))
 
 
 metrics = {
@@ -193,7 +163,7 @@ for testname in metrics:
 
 for testname in metrics:
     metrics[testname]['metadata']["function_count"] = len(
-        get_all_fidx(metrics[testname]["metadata"]["path"])
+        heuristics_finder.get_all_fidx(metrics[testname]["metadata"]["path"])
     )
 
 # with open("metrics.json", "w") as f:
