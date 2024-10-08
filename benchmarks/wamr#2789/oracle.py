@@ -19,7 +19,8 @@ def wrong_on_target():
         text=True,
     )
     print(result)
-    if result.returncode != 0:
+    expected_result = 'WASM module load failed: duplicate export name'
+    if expected_result in result.stdout:
         return True
     else:
         return False
@@ -33,7 +34,8 @@ def correct_on_other():
         text=True,
     )
     print(result)
-    if result.returncode == 124:
+    expected_result = 'WASM module load failed: duplicate export name'
+    if expected_result not in result.stdout:
         return True
     else:
         return False

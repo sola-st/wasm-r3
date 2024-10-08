@@ -40,7 +40,6 @@ def run_command(tool, test_input, oracle_script):
 
     return result
 
-# The Wasm file is given as the first and only argument to the script.
 if len(sys.argv) != 4:
     print("Usage: run_reduction_tool.py <TOOL> <ORACLE_SCRIPT> <WASM_FILE>")
     sys.exit(1)

@@ -22,21 +22,17 @@ test_name = os.path.splitext(os.path.basename(test_input))[0]
 # We prioritize single function replay of heuristic > dynamic > all
 def get_fidx():
     heuristic_fidx = heuristics_finder.get_heuristic_fidx(test_input, oracle_script)
-    if heuristic_fidx == []:
-        exit(1)
     dynamic_fidx = heuristics_finder.get_dynamic_fidx(test_input)
     all_fidx = heuristics_finder.get_all_fidx(test_input)
 
     print("Heuristic function indices:", heuristic_fidx)
     dynamic_filtered = [idx for idx in dynamic_fidx if idx not in heuristic_fidx]
     print("Dynamic function indices (except heuristic):", dynamic_filtered)
-
     # Filter out both heuristic and dynamic indices from all
     all_filtered = [
         idx for idx in all_fidx if idx not in heuristic_fidx and idx not in dynamic_fidx
     ]
     print("All function indices (except heuristic and dynamic):", all_filtered)
-    exit(1)
 
     # Create a set to keep track of added indices
     added = set()
@@ -66,7 +62,8 @@ def get_fidx():
 def run_slicedice(testname, fidx):
     try:
         # fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
-        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx}"
+        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx} --alternativeTrace --alternativeDownload"
+        print(command)
         output = subprocess.check_output(command, shell=True, text=True)
         # TODO: make this configurable
         replay_wasm_path = f"{WASMR3_PATH}/benchmarks/{test_name}/out/{fidx}/benchmarks/bin_1/replay.wasm"
@@ -74,13 +71,13 @@ def run_slicedice(testname, fidx):
             replay_wasm_path,
             f"{WASMR3_PATH}/benchmarks/{test_name}/{test_name}.sliced.wasm",
         )
-        interestingness_command = [oracle_script, replay_wasm_path]
-        result = subprocess.run(interestingness_command, check=False)
-        test_input_size = os.path.getsize(test_input)
-        replay_wasm_size = os.path.getsize(replay_wasm_path)
-        print("Test input file size:", test_input_size)
-        print("Sliced wasm file size:", replay_wasm_size)
-        sys.exit(result.returncode)
+        interestingness_command = f'python {oracle_script} {replay_wasm_path}'
+        result = subprocess.run(interestingness_command, shell=True, check=False)
+        if result.returncode == 0:
+            print(f"Oracle script passed for {testname} - {fidx}")
+            replay_wasm_size = os.path.getsize(replay_wasm_path)
+            print("Sliced wasm file size:", replay_wasm_size)
+            sys.exit(0)
     except Exception as e:
         print(f"Failed to run {testname} - {fidx}")
         print(e)
@@ -88,4 +85,5 @@ def run_slicedice(testname, fidx):
 
 
 for fidx in get_fidx():
+    print(f"Running {test_name} - {fidx}")
     run_slicedice(test_name, fidx)

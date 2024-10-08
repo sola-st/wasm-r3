@@ -19,7 +19,8 @@ def wrong_on_target():
         text=True,
     )
     print(result)
-    if result.returncode != 0:
+    expected_output = 'WASM module instantiate failed: data segment does not fit'
+    if expected_output in result.stdout:
         return True
     else:
         return False
@@ -33,8 +34,8 @@ def correct_on_other():
         text=True,
     )
     print(result)
-    expected_output = 'wasm trap: integer divide by zero'
-    if expected_output in result.stderr:
+    expected_output = 'WASM module instantiate failed: data segment does not fit'
+    if expected_output not in result.stdout:
         return True
     else:
         return False

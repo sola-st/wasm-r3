@@ -3,14 +3,17 @@ import concurrent.futures
 
 TIMEOUT = 3600
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
-TEST_NAME = os.getenv("TEST_NAME")
 FIDX_LIMIT = os.getenv("FIDX_LIMIT")
 ONLY_FAIL = os.getenv("ONLY_FAIL", False)
 
 with open("metrics.json", "r") as f:
     metrics = json.load(f)
 
-testset = [TEST_NAME] if TEST_NAME else metrics.keys()
+TEST_NAMES = os.getenv("TEST_NAMES")
+if TEST_NAMES:
+    testset = TEST_NAMES.split(',')
+else:
+    testset = metrics.keys()
 print(f"len(testset): {len(testset)}")
 
 our_tool = ["wasm-slice"]
@@ -36,7 +39,7 @@ toolset = our_tool if tool_choice == "our-tool" else base_tool
 
 def run_reduction_tool(testname, tool):
     try:
-        command = f"timeout {TIMEOUT}s python {WASMR3_PATH}/evaluation/run_reduction_tool.py {tool} {WASMR3_PATH}/benchmarks/{testname}/{testname}.wasm"
+        command = f"timeout {TIMEOUT}s python {WASMR3_PATH}/evaluation/run_reduction_tool.py {tool} {WASMR3_PATH}/benchmarks/{testname}/oracle.py {WASMR3_PATH}/benchmarks/{testname}/{testname}.wasm"
         start_time = time.time()
         subprocess.run(command, shell=True, capture_output=True, text=True)
         end_time = time.time()
@@ -47,9 +50,7 @@ def run_reduction_tool(testname, tool):
         return [testname, tool, elapsed, reduced_size]
     except Exception as e:
         print(f"Failed to run {testname} - {tool}")
-        print(
-            f"timeout {TIMEOUT}s python {WASMR3_PATH}/evaluation/run_reduction_tool.py {tool} {WASMR3_PATH}/benchmarks/{testname}/{testname}.wasm"
-        )
+        print(command)
         return [testname, tool, "fail", "fail"]
 
 
