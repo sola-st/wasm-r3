@@ -64,7 +64,7 @@ def run_slicedice(testname, fidx):
         # fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
         command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx} --alternativeTrace --alternativeDownload"
         print(command)
-        output = subprocess.check_output(command, shell=True, text=True)
+        output = subprocess.run(command, shell=True, text=True)
         # TODO: make this configurable
         replay_wasm_path = f"{WASMR3_PATH}/benchmarks/{test_name}/out/{fidx}/benchmarks/bin_1/replay.wasm"
         shutil.copy(

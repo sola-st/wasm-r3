@@ -12,7 +12,7 @@ WASM = sys.argv[1]
 
 
 def wrong_on_target():
-    command = f"wamrc-7308b1e -o wamr#2861.wasm.aot {WASM} && iwasm-7308b1e --heap-size=o -f main wamr#2861.wasm.aot"
+    command = f"wamrc-7308b1e -o wamr#2861.wasm.aot {WASM} && iwasm-7308b1e --heap-size=o -f entry wamr#2861.wasm.aot"
     result = subprocess.run(
         command,
         shell=True,
@@ -28,7 +28,7 @@ def wrong_on_target():
 
 
 def correct_on_other():
-    command = f"wasmtime --invoke main {WASM}"
+    command = f"wasmtime --invoke entry {WASM}"
     result = subprocess.run(
         command,
         shell=True,
