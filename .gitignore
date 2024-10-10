@@ -17,8 +17,7 @@ out/
 build/
 .vscode
 *.shrunken.wasm
-*.sliced.wasm
-*.reduced.wasm
+*.reduced_test.wasm
 *.shrunken.wat
 *.aot
 *.so

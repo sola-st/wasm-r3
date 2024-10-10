@@ -8,6 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 WASM = sys.argv[1]
+PRINT_OUTPUT = False
 
 
 def wrong_on_target():
@@ -18,7 +19,7 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
-    print(result)
+    if PRINT_OUTPUT: print(result)
     expected_result = 'WASM module load failed: duplicate export name'
     if expected_result in result.stdout:
         return True
@@ -33,7 +34,7 @@ def correct_on_other():
         capture_output=True,
         text=True,
     )
-    print(result)
+    if PRINT_OUTPUT: print(result)
     expected_result = 'WASM module load failed: duplicate export name'
     if expected_result not in result.stdout:
         return True

@@ -16,8 +16,9 @@ if "BINARYEN_ROOT" not in os.environ:
 def tool_to_command(tool, test_input, oracle_script):
     test_name = os.path.splitext(os.path.basename(test_input))[0]
     if tool == "wasm-reduce":
-        test_path = f'./benchmarks/{test_name}/{test_name}.reduced.wasm'
-        return f"wasm-reduce -to 10 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w work.reduced.wasm {test_input}"
+        test_path = f'{WASMR3_PATH}/benchmarks/{test_name}/{test_name}.reduced_test.wasm'
+        work_path = f'{WASMR3_PATH}/benchmarks/{test_name}/{test_name}.reduced.wasm'
+        return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
     elif tool == "wasm-shrink":
         return f"wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":

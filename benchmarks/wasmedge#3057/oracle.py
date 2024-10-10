@@ -8,7 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 WASM = sys.argv[1]
-
+PRINT_OUTPUT = False
 
 def wrong_on_target():
     command = f'wasmedge-96ecb67 compile {WASM} wasmedge#3057.wasm.so && timeout 5s wasmedge-96ecb67 wasmedge#3057.wasm.so main'
@@ -18,7 +18,7 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
-    print(result)
+    if PRINT_OUTPUT: print(result)
     if result.stderr == '':
         return True
     else:
@@ -32,7 +32,7 @@ def correct_on_other():
         capture_output=True,
         text=True,
     )
-    print(result)
+    if PRINT_OUTPUT: print(result)
     expected_output = 'wasm trap: out of bounds memory access'
     if expected_output in result.stderr:
         return True

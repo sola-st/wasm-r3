@@ -8,6 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 WASM = sys.argv[1]
+PRINT_OUTPUT = False
 
 
 def wrong_on_target():
@@ -18,21 +19,21 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
-    print(result)
+    if PRINT_OUTPUT: print(result)
     if result.returncode != 0 and result.returncode != 124: # error but not timeout
         return True
     else:
         return False
 
 def correct_on_other():
-    command = f'wasmtime --invoke main {WASM}'
+    command = f'timeout 5s wasmtime --invoke main {WASM}'
     result = subprocess.run(
         command,
         shell=True,
         capture_output=True,
         text=True,
     )
-    print(result)
+    if PRINT_OUTPUT: print(result)
     if result.returncode == 0:
         return True
     else:

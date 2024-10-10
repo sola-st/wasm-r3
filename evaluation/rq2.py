@@ -5,6 +5,7 @@ TIMEOUT = 3600
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
 FIDX_LIMIT = os.getenv("FIDX_LIMIT")
 ONLY_FAIL = os.getenv("ONLY_FAIL", False)
+MAX_WORKER = int(os.getenv("MAX_WORKER", 8))
 
 with open("metrics.json", "r") as f:
     metrics = json.load(f)
@@ -16,32 +17,25 @@ else:
     testset = metrics.keys()
 print(f"len(testset): {len(testset)}")
 
-our_tool = ["wasm-slice"]
-
-base_tool = [
-    "wasm-reduce",
-    "wasm-shrink",
-]
-
 tool_to_suffix = {
     "wasm-slice": "sliced",
     "wasm-reduce": "reduced",
     "wasm-shrink": "shrunken",
 }
 
-if len(sys.argv) < 2 or sys.argv[1] not in ["our-tool", "base-tool"]:
-    print("Usage: python rq2.py [our-tool|base-tool]")
+if len(sys.argv) < 2 or sys.argv[1] not in tool_to_suffix.keys():
+    print("Usage: python rq2.py [wasm-slice|wasm-reduce|wasm-shrink]")
     sys.exit(1)
 
 tool_choice = sys.argv[1]
-toolset = our_tool if tool_choice == "our-tool" else base_tool
+toolset = [tool_choice]
 
 
 def run_reduction_tool(testname, tool):
     try:
         command = f"timeout {TIMEOUT}s python {WASMR3_PATH}/evaluation/run_reduction_tool.py {tool} {WASMR3_PATH}/benchmarks/{testname}/oracle.py {WASMR3_PATH}/benchmarks/{testname}/{testname}.wasm"
         start_time = time.time()
-        subprocess.run(command, shell=True, capture_output=True, text=True)
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
         end_time = time.time()
         elapsed = end_time - start_time
         reduced_size = os.path.getsize(
@@ -54,13 +48,7 @@ def run_reduction_tool(testname, tool):
         return [testname, tool, "fail", "fail"]
 
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-    futures = [
-        executor.submit(run_reduction_tool, testname, tool)
-        for testname in testset
-        for tool in toolset
-    ]
-    results = [future.result() for future in concurrent.futures.as_completed(futures)]
+def update_metrics(metrics, results):
     for testname, tool, elapsed, reduced_size in results:
         if metrics[testname].get("rq2") is None:
             metrics[testname]["rq2"] = {}
@@ -69,5 +57,18 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
     with open("metrics.json", "w") as f:
         json.dump(metrics, f, indent=4)
 
-with open("metrics.json", "w") as f:
-    json.dump(metrics, f, indent=4)
+if MAX_WORKER == 1:
+    print("Running in single thread mode")
+    for testname in testset:
+        for tool in toolset:
+            result = run_reduction_tool(testname, tool)
+            update_metrics(metrics, [result])
+else:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKER) as executor:
+        futures = [
+            executor.submit(run_reduction_tool, testname, tool)
+            for testname in testset
+            for tool in toolset
+        ]
+        results = [future.result() for future in concurrent.futures.as_completed(futures)]
+        update_metrics(metrics, results)

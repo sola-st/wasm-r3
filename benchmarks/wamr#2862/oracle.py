@@ -8,6 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 WASM = sys.argv[1]
+PRINT_OUTPUT = False
 
 
 def wrong_on_target():
@@ -18,7 +19,7 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
-    print(result)
+    if PRINT_OUTPUT: print(result)
     expected_output = '0x0:i32,0x0:i32,0x0:i32,0x0:i32'
     if expected_output in result.stdout:
         return True
@@ -26,14 +27,14 @@ def wrong_on_target():
         return False
 
 def correct_on_other():
-    command = f'wasmtime --invoke entry {WASM}'
+    command = f'timeout 5s wasmtime --invoke entry {WASM}'
     result = subprocess.run(
         command,
         shell=True,
         capture_output=True,
         text=True,
     )
-    print(result)
+    if PRINT_OUTPUT: print(result)
     expected_output = '''8205
 8205
 8205
