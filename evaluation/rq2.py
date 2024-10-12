@@ -38,13 +38,32 @@ def run_reduction_tool(testname, tool):
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
         end_time = time.time()
         elapsed = end_time - start_time
-        reduced_size = os.path.getsize(
-            f"{WASMR3_PATH}/benchmarks/{testname}/{testname}.{tool_to_suffix[tool]}.wasm"
-        )
+
+        oracle_path = f"{WASMR3_PATH}/benchmarks/{testname}/oracle.py"
+        reduced_path = f"{WASMR3_PATH}/benchmarks/{testname}/{testname}.{tool_to_suffix[tool]}.wasm"
+        oracle_command = f'python {oracle_path} {reduced_path}'
+
+        max_retries = 3
+        retry_count = 0
+        while retry_count < max_retries:
+            try:
+                result = subprocess.run(oracle_command, shell=True, check=True)
+                break  # If successful, exit the retry loop
+            except subprocess.CalledProcessError as e:
+                if e.returncode == 1:
+                    print(f"Oracle command failed with exit code 1. Retrying... (Attempt {retry_count + 1}/{max_retries})")
+                    retry_count += 1
+                    if retry_count == max_retries:
+                        raise  # If all retries failed, raise the exception
+                else:
+                    raise  # If exit code is not 1, raise the exception immediately
+
+        reduced_size = os.path.getsize(reduced_path)
         return [testname, tool, elapsed, reduced_size]
     except Exception as e:
         print(f"Failed to run {testname} - {tool}")
         print(command)
+        print(f"Error: {str(e)}")
         return [testname, tool, "fail", "fail"]
 
 

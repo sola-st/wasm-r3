@@ -4,7 +4,7 @@
             "origin": "WASMaker",
             "engine": "wamr-7308b1e",
             "path": "/home/don/wasm-r3/benchmarks/wamr#2861/wamr#2861.wasm",
-            "size": 4727,
+            "size": 4728,
             "function_count": 1
         },
         "rq1": {
@@ -16,10 +16,17 @@
             }
         },
         "rq2": {
-            "wasm-slice-size": 4808,
-            "wasm-slice-time": 2.7394769191741943,
+            "wasm-slice-size": 4728,
+            "wasm-slice-time": 2.271232843399048,
             "wasm-reduce-size": 88,
-            "wasm-reduce-time": 32.12939977645874
+            "wasm-reduce-time": 32.12939977645874,
+            "wasm-shrink-size": 509,
+            "wasm-shrink-time": 134.38849568367004,
+            "original-size": 4728,
+            "original-size-code": 576,
+            "wasm-slice-size-code": 576,
+            "wasm-reduce-size-code": 39,
+            "wasm-shrink-size-code": 451
         }
     },
     "wasmedge#3018": {
@@ -108,7 +115,14 @@
             "wasm-slice-size": 6436,
             "wasm-slice-time": 120.15244555473328,
             "wasm-reduce-size": 69,
-            "wasm-reduce-time": 38.23319602012634
+            "wasm-reduce-time": 38.23319602012634,
+            "wasm-shrink-size": 254,
+            "wasm-shrink-time": 105.75285744667053,
+            "original-size": 7540,
+            "original-size-code": 1913,
+            "wasm-slice-size-code": 454,
+            "wasm-reduce-size-code": 24,
+            "wasm-shrink-size-code": 162
         }
     },
     "wamr#2789": {
@@ -473,7 +487,14 @@
             "wasm-slice-size": 7867,
             "wasm-slice-time": 245.1454358100891,
             "wasm-reduce-size": 54,
-            "wasm-reduce-time": 204.44294023513794
+            "wasm-reduce-time": 204.44294023513794,
+            "wasm-shrink-size": 50,
+            "wasm-shrink-time": 104.0040831565857,
+            "original-size": 24058,
+            "original-size-code": 17604,
+            "wasm-slice-size-code": 336,
+            "wasm-reduce-size-code": 9,
+            "wasm-shrink-size-code": 9
         }
     },
     "wamr#2450": {
@@ -886,7 +907,14 @@
             "wasm-slice-size": 3070,
             "wasm-slice-time": 13.62869644165039,
             "wasm-reduce-size": 51,
-            "wasm-reduce-time": 64.57031607627869
+            "wasm-reduce-time": 64.57031607627869,
+            "wasm-shrink-size": 2866,
+            "wasm-shrink-time": 49.409502267837524,
+            "original-size": 25797,
+            "original-size-code": 24482,
+            "wasm-slice-size-code": 1061,
+            "wasm-reduce-size-code": 8,
+            "wasm-shrink-size-code": 2811
         }
     },
     "wamr#2862": {
@@ -1341,7 +1369,14 @@
             "wasm-slice-size": 6669,
             "wasm-slice-time": 181.76640391349792,
             "wasm-reduce-size": 82,
-            "wasm-reduce-time": 83.00128841400146
+            "wasm-reduce-time": 83.00128841400146,
+            "wasm-shrink-size": 672,
+            "wasm-shrink-time": 228.26962161064148,
+            "original-size": 23078,
+            "original-size-code": 19727,
+            "wasm-slice-size-code": 1829,
+            "wasm-reduce-size-code": 36,
+            "wasm-shrink-size-code": 582
         }
     },
     "wasmedge#3019": {
@@ -1814,7 +1849,14 @@
             "wasm-slice-size": 7319,
             "wasm-slice-time": 121.2945818901062,
             "wasm-reduce-size": 60,
-            "wasm-reduce-time": 374.7126748561859
+            "wasm-reduce-time": 374.7126748561859,
+            "wasm-shrink-size": 2032,
+            "wasm-shrink-time": 189.67841958999634,
+            "original-size": 24255,
+            "original-size-code": 19098,
+            "wasm-slice-size-code": 716,
+            "wasm-reduce-size-code": 12,
+            "wasm-shrink-size-code": 1473
         }
     },
     "wasmedge#3076": {
@@ -2614,10 +2656,17 @@
             }
         },
         "rq2": {
-            "wasm-slice-size": "fail",
-            "wasm-slice-time": "fail",
+            "wasm-slice-size": 34320,
+            "wasm-slice-time": 3600,
             "wasm-reduce-size": 63,
-            "wasm-reduce-time": 578.8681199550629
+            "wasm-reduce-time": 578.8681199550629,
+            "wasm-shrink-size": 2192,
+            "wasm-shrink-time": 3399.466275215149,
+            "original-size": 34320,
+            "original-size-code": 31365,
+            "wasm-slice-size-code": 31365,
+            "wasm-reduce-size-code": 18,
+            "wasm-shrink-size-code": 1505
         }
     },
     "mandelbrot": {
@@ -3636,7 +3685,14 @@
             "wasm-slice-size": 93332,
             "wasm-slice-time": 136.70975804328918,
             "wasm-reduce-size": 189096,
-            "wasm-reduce-time": 3600.00243973732
+            "wasm-reduce-time": 3600.00243973732,
+            "original-size": 240404,
+            "original-size-code": 64515,
+            "wasm-slice-size-code": 61097,
+            "wasm-reduce-size-code": 26421,
+            "wasm-shrink-size": 179829,
+            "wasm-shrink-time": 3600.002639055252,
+            "wasm-shrink-size-code": 18474
         }
     },
     "guiicons": {
@@ -6683,7 +6739,14 @@
             "wasm-slice-size": 284089,
             "wasm-slice-time": 37.72848653793335,
             "wasm-reduce-size": 128773,
-            "wasm-reduce-time": 3600.0033848285675
+            "wasm-reduce-time": 3600.0033848285675,
+            "original-size": 376838,
+            "original-size-code": 285840,
+            "wasm-slice-size-code": 172650,
+            "wasm-reduce-size-code": 101363,
+            "wasm-shrink-size": 138540,
+            "wasm-shrink-time": 3600.00350856781,
+            "wasm-shrink-size-code": 121466
         }
     },
     "rguilayout": {
@@ -9760,7 +9823,14 @@
             "wasm-slice-size": 386586,
             "wasm-slice-time": 58.28675699234009,
             "wasm-reduce-size": 324911,
-            "wasm-reduce-time": 3600.0025177001953
+            "wasm-reduce-time": 3600.0025177001953,
+            "original-size": 516369,
+            "original-size-code": 416692,
+            "wasm-slice-size-code": 262206,
+            "wasm-reduce-size-code": 249846,
+            "wasm-shrink-size": 464361,
+            "wasm-shrink-time": 3600.002114534378,
+            "wasm-shrink-size-code": 367138
         }
     },
     "rguistyler": {
@@ -13227,7 +13297,14 @@
             "wasm-slice-size": 459603,
             "wasm-slice-time": 36.254287004470825,
             "wasm-reduce-size": 230872,
-            "wasm-reduce-time": 3600.0043139457703
+            "wasm-reduce-time": 3600.0043139457703,
+            "original-size": 558009,
+            "original-size-code": 410845,
+            "wasm-slice-size-code": 279821,
+            "wasm-reduce-size-code": 150025,
+            "wasm-shrink-size": 256898,
+            "wasm-shrink-time": 3600.002942800522,
+            "wasm-shrink-size-code": 158279
         }
     },
     "riconpacker": {
@@ -16700,7 +16777,14 @@
             "wasm-slice-size": 284560,
             "wasm-slice-time": 8.05976390838623,
             "wasm-reduce-size": 114513,
-            "wasm-reduce-time": 3600.003354549408
+            "wasm-reduce-time": 3600.003354549408,
+            "original-size": 486543,
+            "original-size-code": 398627,
+            "wasm-slice-size-code": 170002,
+            "wasm-reduce-size-code": 113754,
+            "wasm-shrink-size": 173784,
+            "wasm-shrink-time": 3600.0029859542847,
+            "wasm-shrink-size-code": 152319
         }
     },
     "rfxgen": {
@@ -20239,7 +20323,14 @@
             "wasm-slice-size": 353937,
             "wasm-slice-time": 54.98775601387024,
             "wasm-reduce-size": 34790,
-            "wasm-reduce-time": 3600.0028824806213
+            "wasm-reduce-time": 3600.0028824806213,
+            "original-size": 502035,
+            "original-size-code": 378918,
+            "wasm-slice-size-code": 205267,
+            "wasm-reduce-size-code": 34497,
+            "wasm-shrink-size": 444897,
+            "wasm-shrink-time": 3600.002011537552,
+            "wasm-shrink-size-code": 324603
         }
     },
     "rtexviewer": {
@@ -24384,7 +24475,14 @@
             "wasm-slice-size": 122140,
             "wasm-slice-time": 560.7057807445526,
             "wasm-reduce-size": 61,
-            "wasm-reduce-time": 211.37795877456665
+            "wasm-reduce-time": 211.37795877456665,
+            "original-size": 386612,
+            "original-size-code": 296617,
+            "wasm-slice-size-code": 10194,
+            "wasm-reduce-size-code": 16,
+            "wasm-shrink-size": 5143,
+            "wasm-shrink-time": 1061.7089478969574,
+            "wasm-shrink-size-code": 4989
         }
     },
     "wasmedge#3057": {
@@ -30401,7 +30499,14 @@
             "wasm-slice-size": 38854,
             "wasm-slice-time": 121.415846824646,
             "wasm-reduce-size": 58,
-            "wasm-reduce-time": 1229.6020832061768
+            "wasm-reduce-time": 1229.6020832061768,
+            "wasm-shrink-size": 114027,
+            "wasm-shrink-time": 3600.00191116333,
+            "original-size": 256185,
+            "original-size-code": 243564,
+            "wasm-slice-size-code": 6134,
+            "wasm-reduce-size-code": 12,
+            "wasm-shrink-size-code": 102869
         }
     },
     "funky-kart": {
@@ -36418,7 +36523,14 @@
             "wasm-slice-size": 1847672,
             "wasm-slice-time": 239.3024525642395,
             "wasm-reduce-size": 261436,
-            "wasm-reduce-time": 3600.004583835602
+            "wasm-reduce-time": 3600.004583835602,
+            "original-size": 3725096,
+            "original-size-code": 607293,
+            "wasm-slice-size-code": 119321,
+            "wasm-reduce-size-code": 124460,
+            "wasm-shrink-size": 1586060,
+            "wasm-shrink-time": 3600.0027742385864,
+            "wasm-shrink-size-code": 133741
         }
     },
     "hydro": {
@@ -42435,7 +42547,14 @@
             "wasm-slice-size": 173931,
             "wasm-slice-time": 3261.7688353061676,
             "wasm-reduce-size": 68,
-            "wasm-reduce-time": 542.7156455516815
+            "wasm-reduce-time": 542.7156455516815,
+            "original-size": 824085,
+            "original-size-code": 719538,
+            "wasm-slice-size-code": 18651,
+            "wasm-reduce-size-code": 20,
+            "wasm-shrink-size": 280,
+            "wasm-shrink-time": 2329.881902217865,
+            "wasm-shrink-size-code": 219
         }
     },
     "sqlgui": {
@@ -48449,10 +48568,17 @@
             }
         },
         "rq2": {
-            "wasm-slice-size": "fail",
-            "wasm-slice-time": "fail",
-            "wasm-reduce-size": 62,
-            "wasm-reduce-time": 1041.1006000041962
+            "wasm-slice-size": 219504,
+            "wasm-slice-time": 37.147342681884766,
+            "wasm-reduce-size": 38630,
+            "wasm-reduce-time": 3600.0049715042114,
+            "original-size": 712714,
+            "original-size-code": 628046,
+            "wasm-slice-size-code": 83434,
+            "wasm-reduce-size-code": 20971,
+            "wasm-shrink-size": 121732,
+            "wasm-shrink-time": 3600.0026733875275,
+            "wasm-shrink-size-code": 107838
         }
     },
     "commanderkeen": {
@@ -54469,7 +54595,14 @@
             "wasm-slice-size": 482405,
             "wasm-slice-time": 3667.878022670746,
             "wasm-reduce-size": 2581743,
-            "wasm-reduce-time": 3600.0051004886627
+            "wasm-reduce-time": 3600.0051004886627,
+            "wasm-shrink-size": 4004661,
+            "wasm-shrink-time": 3600.002872467041,
+            "original-size": 4331018,
+            "original-size-code": 3914616,
+            "wasm-slice-size-code": 141210,
+            "wasm-reduce-size-code": 2228435,
+            "wasm-shrink-size-code": 3595700
         }
     },
     "boa": {
@@ -60486,8 +60619,14 @@
             "wasm-slice-size": 17262345,
             "wasm-slice-time": 53.416030406951904,
             "wasm-reduce-size": 11972624,
-            "wasm-reduce-time": 3600.008816242218
-
+            "wasm-reduce-time": 3600.008816242218,
+            "wasm-shrink-size": 20443958,
+            "wasm-shrink-time": 3600.004360437393,
+            "original-size": 22264897,
+            "original-size-code": 5198069,
+            "wasm-slice-size-code": 70776,
+            "wasm-reduce-size-code": 4268990,
+            "wasm-shrink-size-code": 4524891
         }
     },
     "jsc": {
@@ -60495,7 +60634,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "path": "/home/don/wasm-r3/benchmarks/jsc/jsc.wasm",
-            "size": 5470510,
+            "size": 5470456,
             "function_count": 20800
         },
         "rq1": {
@@ -66501,10 +66640,17 @@
             }
         },
         "rq2": {
-            "wasm-slice-size": "fail",
-            "wasm-slice-time": "fail",
+            "wasm-slice-size": 1911844,
+            "wasm-slice-time": 48.98214316368103,
             "wasm-reduce-size": 4518962,
-            "wasm-reduce-time": 3600
+            "wasm-reduce-time": 3600,
+            "wasm-shrink-size": 4947312,
+            "wasm-shrink-time": 3600.0058438777924,
+            "original-size": 5470456,
+            "original-size-code": 4342199,
+            "wasm-slice-size-code": 275255,
+            "wasm-reduce-size-code": 3628311,
+            "wasm-shrink-size-code": 4207833
         }
     }
 }

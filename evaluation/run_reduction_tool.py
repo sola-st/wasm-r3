@@ -19,7 +19,7 @@ def tool_to_command(tool, test_input, oracle_script):
         test_path = f'{WASMR3_PATH}/benchmarks/{test_name}/{test_name}.reduced_test.wasm'
         work_path = f'{WASMR3_PATH}/benchmarks/{test_name}/{test_name}.reduced.wasm'
         return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
-    elif tool == "wasm-shrink":
+    elif tool == "wasm-shrink": # https://github.com/doehyunbaek/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
         return f"wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":
         return  f"wasm-slice {oracle_script} {test_input}"

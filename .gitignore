@@ -16,7 +16,6 @@ tests/*output.txt
 out/
 build/
 .vscode
-*.shrunken.wasm
 *.reduced_test.wasm
 *.shrunken.wat
 *.aot
