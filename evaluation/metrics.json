@@ -66652,5 +66652,72 @@
             "wasm-reduce-size-code": 3628311,
             "wasm-shrink-size-code": 4207833
         }
+    },
+    "rq4": {
+        "tcas_v10_u1323.wasm": {
+            "wasm-slice-time": 1.9821858406066895,
+            "original-size-code": 13184,
+            "wasm-slice-size-code": 1169
+        },
+        "tcas_v11_u1324.wasm": {
+            "wasm-slice-time": 1.9809894561767578,
+            "original-size-code": 13141,
+            "wasm-slice-size-code": 1126
+        },
+        "tcas_v12_u114.wasm": {
+            "wasm-slice-time": 2.0465097427368164,
+            "original-size-code": 13194,
+            "wasm-slice-size-code": 1188
+        },
+        "tcas_v13_u571.wasm": {
+            "wasm-slice-time": 1.97434401512146,
+            "original-size-code": 13184,
+            "wasm-slice-size-code": 1196
+        },
+        "tcas_v15_u150.wasm": {
+            "wasm-slice-time": 1.9772965908050537,
+            "original-size-code": 13135,
+            "wasm-slice-size-code": 1110
+        },
+        "tcas_v16_u1001.wasm": {
+            "wasm-slice-time": 1.8265867233276367,
+            "original-size-code": 13135,
+            "wasm-slice-size-code": 1110
+        },
+        "tcas_v1_u0.wasm": {
+            "wasm-slice-time": 1.8493406772613525,
+            "original-size-code": 13135,
+            "wasm-slice-size-code": 1110
+        },
+        "tcas_v2_u1182.wasm": {
+            "wasm-slice-time": 2.016582489013672,
+            "original-size-code": 13135,
+            "wasm-slice-size-code": 1110
+        },
+        "tcas_v3_u112.wasm": {
+            "wasm-slice-time": 1.9975841045379639,
+            "original-size-code": 13135,
+            "wasm-slice-size-code": 1110
+        },
+        "tcas_v4_u110.wasm": {
+            "wasm-slice-time": 1.9379096031188965,
+            "original-size-code": 13135,
+            "wasm-slice-size-code": 1110
+        },
+        "tcas_v5_u1178.wasm": {
+            "wasm-slice-time": 1.9238600730895996,
+            "original-size-code": 13133,
+            "wasm-slice-size-code": 1109
+        },
+        "tcas_v6_u1322.wasm": {
+            "wasm-slice-time": 1.8855960369110107,
+            "original-size-code": 13184,
+            "wasm-slice-size-code": 1169
+        },
+        "tcas_v7_u1021.wasm": {
+            "wasm-slice-time": 1.8903419971466064,
+            "original-size-code": 13184,
+            "wasm-slice-size-code": 1169
+        }
     }
 }

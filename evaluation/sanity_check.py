@@ -1,9 +1,5 @@
 import json, os
-
-def sh(cmd):
-    import subprocess
-    result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
-    return f'{result.stdout}\n{result.stderr}\n'
+from evaluation import sh
 
 
 with open("metrics.json", "r") as f:
@@ -26,38 +22,41 @@ def extract_code_bytes(objdump_output):
             return int(line.split()[6])
 
 assert extract_code_bytes(wamr_2861_objdump_output) == 576
+def main():
+    for test_name, data in metrics.items():
+        dirname = os.path.dirname(data['metadata']['path'])
+        oracle_path = os.path.join(dirname, 'oracle.py')
+        input_path = os.path.join(dirname, f'{test_name}.wasm')
+        rr_reduce_path = os.path.join(dirname, f'{test_name}.sliced.wasm')
+        wasm_reduce_path = os.path.join(dirname, f'{test_name}.reduced.wasm')
+        wasm_shrink_path = os.path.join(dirname, f'{test_name}.shrunken.wasm')
 
-for test_name, data in metrics.items():
-    dirname = os.path.dirname(data['metadata']['path'])
-    oracle_path = os.path.join(dirname, 'oracle.py')
-    input_path = os.path.join(dirname, f'{test_name}.wasm')
-    rr_reduce_path = os.path.join(dirname, f'{test_name}.sliced.wasm')
-    wasm_reduce_path = os.path.join(dirname, f'{test_name}.reduced.wasm')
-    wasm_shrink_path = os.path.join(dirname, f'{test_name}.shrunken.wasm')
+        print(f'===={test_name}====')
+        for path in [input_path, rr_reduce_path, wasm_reduce_path, wasm_shrink_path]:
+            result = sh(f'python {oracle_path} {path}')
+            if 'Interesting!' in result:
+                size = os.path.getsize(path)
+                objdump_result = sh(f'wasm-tools objdump {path}')
+                code_bytes = extract_code_bytes(objdump_result)
+                prefix = None
+                if path == input_path:
+                    prefix = 'original'
+                elif path == rr_reduce_path:
+                    prefix = 'wasm-slice'
+                elif path == wasm_reduce_path:
+                    prefix = 'wasm-reduce'
+                elif path == wasm_shrink_path:
+                    prefix = 'wasm-shrink'
+                metrics[test_name]['rq2'][f'{prefix}-size'] = size
+                metrics[test_name]['rq2'][f'{prefix}-size-code'] = code_bytes
+            elif 'Not interesting' in result:
+                print(f'WARNING: {path} is not interesting')
+                # os.remove(path)
+            else:
+                result = result.strip()
+                print(f'{result}')
+    with open("metrics.json", "w") as f:
+        json.dump(metrics, f, indent=4)
 
-    print(f'===={test_name}====')
-    for path in [input_path, rr_reduce_path, wasm_reduce_path, wasm_shrink_path]:
-        result = sh(f'python {oracle_path} {path}')
-        if 'Interesting!' in result:
-            size = os.path.getsize(path)
-            objdump_result = sh(f'wasm-tools objdump {path}')
-            code_bytes = extract_code_bytes(objdump_result)
-            prefix = None
-            if path == input_path:
-                prefix = 'original'
-            elif path == rr_reduce_path:
-                prefix = 'wasm-slice'
-            elif path == wasm_reduce_path:
-                prefix = 'wasm-reduce'
-            elif path == wasm_shrink_path:
-                prefix = 'wasm-shrink'
-            metrics[test_name]['rq2'][f'{prefix}-size'] = size
-            metrics[test_name]['rq2'][f'{prefix}-size-code'] = code_bytes
-        elif 'Not interesting' in result:
-            print(f'WARNING: {path} is not interesting')
-            # os.remove(path)
-        else:
-            result = result.strip()
-            print(f'{result}')
-with open("metrics.json", "w") as f:
-    json.dump(metrics, f, indent=4)
+if __name__ == "__main__":
+    main()
