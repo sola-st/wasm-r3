@@ -48,7 +48,7 @@ def extract_dynamic_fidx(csv_output: str):
         if len(row) >= 3:
             function_index = int(row[0].lstrip('#'))
             dynamic_count = int(row[2])
-            if dynamic_count > 0 and function_index != 0:
+            if dynamic_count > 0:
                 dynamic_fidx.append(function_index)
     return sorted(dynamic_fidx)
 
