@@ -16,6 +16,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "6d2b057",
             "path": f"{WASMR3_PATH}/benchmarks/boa/boa.wasm",
         }
     },
@@ -23,6 +24,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "6d2b057",
             "path": f"{WASMR3_PATH}/benchmarks/guiicons/guiicons.wasm",
         }
     },
@@ -30,6 +32,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "6d2b057",
             "path": f"{WASMR3_PATH}/benchmarks/funky-kart/funky-kart.wasm",
         }
     },
@@ -37,6 +40,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "6d2b057",
             "path": f"{WASMR3_PATH}/benchmarks/jsc/jsc.wasm",
         }
     },
@@ -44,6 +48,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "6d2b057",
             "path": f"{WASMR3_PATH}/benchmarks/rfxgen/rfxgen.wasm",
         }
     },
@@ -52,12 +57,14 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "path": f"{WASMR3_PATH}/benchmarks/rguilayout/rguilayout.wasm",
+            "fixed-by": "6d2b057"
         }
     },
     "rguistyler": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "6d2b057",
             "path": f"{WASMR3_PATH}/benchmarks/rguistyler/rguistyler.wasm",
         }
     },
@@ -65,6 +72,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "6d2b057",
             "path": f"{WASMR3_PATH}/benchmarks/riconpacker/riconpacker.wasm",
         }
     },
@@ -72,6 +80,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "6d2b057",
             "path": f"{WASMR3_PATH}/benchmarks/sqlgui/sqlgui.wasm",
         }
     },
@@ -79,6 +88,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "25e04ac",
             "path": f"{WASMR3_PATH}/benchmarks/commanderkeen/commanderkeen.wasm",
         }
     },
@@ -86,6 +96,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "708ea77",
             "path": f"{WASMR3_PATH}/benchmarks/hydro/hydro.wasm",
         }
     },
@@ -93,6 +104,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "708ea77",
             "path": f"{WASMR3_PATH}/benchmarks/rtexviewer/rtexviewer.wasm",
         }
     },
@@ -100,6 +112,7 @@ metrics = {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
+            "fixed-by": "0b43b8",
             "path": f"{WASMR3_PATH}/benchmarks/mandelbrot/mandelbrot.wasm",
         }
     },
@@ -107,6 +120,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
+            "fixed-by": "0.14.0-rc.4", # TODO: bisect commit
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
         }
     },
@@ -114,6 +128,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
+            "fixed-by": "0.14.0-rc.4", # TODO: bisect commit
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
         }
     },
@@ -121,6 +136,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wamr-0b0af1b",
+            "fixed-by": "e360b7",
             "path": f"{WASMR3_PATH}/benchmarks/wamr#2450/wamr#2450.wasm",
         }
     },
@@ -128,6 +144,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
+            "fixed-by": "0.14.0-rc.5", # TODO: bisect commit
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
         }
     },
@@ -135,6 +152,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wamr-0b0af1b",
+            "fixed-by": "718f06", # They leave it open as an limitation
             "path": f"{WASMR3_PATH}/benchmarks/wamr#2789/wamr#2789.wasm",
         }
     },
@@ -142,6 +160,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wamr-7308b1e",
+            "fixed-by": "0ee5ff",
             "path": f"{WASMR3_PATH}/benchmarks/wamr#2862/wamr#2862.wasm",
         }
     },
@@ -149,6 +168,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
+            "fixed-by": "0.14.0-rc.5", # TODO: bisect commit
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
         }
     },
@@ -156,6 +176,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wamr-7308b1e",
+            "fixed-by": "0ee5ff",
             "path": f"{WASMR3_PATH}/benchmarks/wamr#2861/wamr#2861.wasm",
         }
     },
