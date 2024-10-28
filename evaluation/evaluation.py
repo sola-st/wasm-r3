@@ -171,15 +171,7 @@ metrics = {
             "fixed-by": "0.14.0-rc.5", # TODO: bisect commit
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
         }
-    },
-    "wamr#2861": {
-        "metadata": {
-            "origin": "WASMaker",
-            "engine": "wamr-7308b1e",
-            "fixed-by": "0ee5ff",
-            "path": f"{WASMR3_PATH}/benchmarks/wamr#2861/wamr#2861.wasm",
-        }
-    },
+    }
 }
 
 # get byte size

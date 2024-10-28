@@ -1,6 +1,7 @@
 import subprocess, json, os, time
 import concurrent.futures
 import evaluation
+from heuristics_finder import get_dynamic_fidx
 
 TIMEOUT = 120
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
@@ -35,10 +36,6 @@ def run_reduction_tool(testname, fidx):
     return [testname, fidx, None]
 
 
-metrics = dict(
-    sorted(metrics.items(), key=lambda x: x[1]["metadata"]["function_count"])
-)
-
 total_time = 0
 for testname in testset:
     # if metrics[testname]["metadata"]["function_count"] > 1000:
@@ -46,32 +43,19 @@ for testname in testset:
     # if testname in ['boa']:
     #      continue
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-        fidx_count = (
-            min(metrics[testname]["metadata"]["function_count"], int(FIDX_LIMIT))
-            if FIDX_LIMIT
-            else metrics[testname]["metadata"]["function_count"]
-        )
-        print(f"RUNNING: {testname} with {fidx_count} functions")
-        fidx_range = list(range(fidx_count))
-        filtered_range = []
-        for fidx in fidx_range:
-            if (
-                not metrics[testname]["rq1"].get(str(fidx))
-                or not metrics[testname]["rq1"].get(str(fidx)).get("sliced_file_size")
-                or metrics[testname]["rq1"].get(str(fidx))["sliced_file_size"] == "fail"
-            ):
-                filtered_range.append(fidx)
+        didx = get_dynamic_fidx(f'~/wasm-r3/benchmarks/{testname}/{testname}.wasm')
         start_time = time.time()
+        print(f"RUNNING: {testname} with {len(didx)} functions")
         futures = [
             executor.submit(run_reduction_tool, testname, fidx)
-            for fidx in (fidx_range if not ONLY_FAIL else filtered_range)
+            for fidx in didx
         ]
         results = [
             future.result() for future in concurrent.futures.as_completed(futures)
         ]
-        # metrics[testname]["rq1"] = {}
         for testname, fidx, output in results:
             metrics[testname]["rq1"][str(fidx)] = output
+            replay_path = f"replay/{testname}/{fidx}"
         with open("metrics.json", "w") as f:
             json.dump(metrics, f, indent=4)
         print(f"FINISHED: {testname} in {(time.time() - start_time) / 60} minutes")
