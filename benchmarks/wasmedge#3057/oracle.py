@@ -8,7 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 WASM = sys.argv[1]
-PRINT_OUTPUT = False
+PRINT_OUTPUT = os.getenv('PRINT_OUTPUT', 'False').lower() in ('true', '1', 't')
 
 def wrong_on_target():
     command = f'wasmedge-96ecb67 compile {WASM} wasmedge#3057.wasm.so && timeout 5s wasmedge-96ecb67 wasmedge#3057.wasm.so main'

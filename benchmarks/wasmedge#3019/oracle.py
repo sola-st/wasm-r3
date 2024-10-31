@@ -8,7 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 WASM = sys.argv[1]
-PRINT_OUTPUT = False
+PRINT_OUTPUT = os.getenv('PRINT_OUTPUT', 'False').lower() in ('true', '1', 't')
 
 
 def wrong_on_target():
