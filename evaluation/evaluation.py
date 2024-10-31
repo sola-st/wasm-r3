@@ -120,7 +120,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
-            "fixed-by": "0.14.0-rc.4", # TODO: bisect commit
+            "fixed-by": "0.14.0-rc.4",
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
         }
     },
@@ -128,7 +128,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
-            "fixed-by": "0.14.0-rc.4", # TODO: bisect commit
+            "fixed-by": "0.14.0-rc.4",
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
         }
     },
@@ -144,7 +144,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
-            "fixed-by": "0.14.0-rc.5", # TODO: bisect commit
+            "fixed-by": "0.14.0-rc.5",
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
         }
     },
@@ -168,7 +168,7 @@ metrics = {
         "metadata": {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
-            "fixed-by": "0.14.0-rc.5", # TODO: bisect commit
+            "fixed-by": "0.14.0-rc.5",
             "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
         }
     }

@@ -1757,7 +1757,7 @@
                 "rr-did-timeout": false,
                 "sliced_file_size": 6804,
                 "sliced_code_size": 1829,
-                "is-executed": false
+                "is-executed": true
             }
         },
         "rq2": {
