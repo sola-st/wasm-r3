@@ -12,7 +12,7 @@ def sh(cmd):
 
 
 metrics = {
-    "boa": {  # this doesn't work for wasm-slice
+    "boa": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
