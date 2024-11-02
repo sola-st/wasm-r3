@@ -1,4 +1,3 @@
-import express from "express";
 //@ts-ignore
 import { expect } from "playwright/test";
 import { exit } from "process";
@@ -6,6 +5,7 @@ import { Server } from "http";
 import path from "path";
 import { execSync } from "child_process";
 import Benchmark, { Analyser } from "./web.ts";
+import { startServer } from "./test.ts";
 
 export default async function runSliceDiceTests(names: string[], options) {
   for (let name of names) {
@@ -49,23 +49,6 @@ async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string
   const endTime = Date.now();
   console.log(`${endTime - startTime}ms`);
 }
-
-async function startServer(websitePath: string): Promise<string> {
-  const app = express();
-  const port = 0;
-  app.use(express.static(websitePath));
-  const server: Server = await new Promise((resolve) => {
-    const server = app.listen(port, () => {
-      resolve(server);
-    });
-  })
-  const address = server.address();
-  if (address === null || typeof address === 'string') {
-    throw new Error('Server address is not available');
-  }
-  const url = 'http://localhost:' + address.port
-  return url
-};
 
 function checkResult(benchmarkPath: string, fidx: any) {
   // TODO: is it always the case that bin_1 is the subset?

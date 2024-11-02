@@ -1,7 +1,6 @@
-import fs from "fs/promises";
-import path from "path";
-import express from "express";
-import { Server } from "http";
+import fs, { readFile, stat } from "fs/promises";
+import path, { extname, join } from "path";
+import { createServer, Server } from "http";
 import commandLineArgs from "command-line-args";
 import { execSync } from "child_process";
 import { filter } from "./filter.ts";
@@ -137,23 +136,58 @@ function getFrontendPath(options) {
     return "chromium";
   }
 }
-
-async function startServer(websitePath: string): Promise<[Server, string]> {
-  const app = express();
+export async function startServer(websitePath: string): Promise<[Server, string]> {
   const port = 0;
-  app.use(express.static(websitePath));
-  const server: Server = await new Promise((resolve) => {
-    const server = app.listen(port, () => {
-      resolve(server);
+
+  const server = createServer(async (req, res) => {
+    try {
+      const filePath = join(websitePath, req.url === '/' ? 'index.html' : req.url!);
+      const stats = await stat(filePath);
+
+      if (stats.isDirectory()) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('404 Not Found');
+        return;
+      }
+
+      const content = await readFile(filePath);
+      const contentType = getContentType(filePath);
+
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(content);
+    } catch (error) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('404 Not Found');
+    }
+  });
+
+  await new Promise<void>((resolve) => {
+    server.listen(port, () => {
+      resolve();
     });
-  })
+  });
+
   const address = server.address();
   if (address === null || typeof address === 'string') {
     throw new Error('Server address is not available');
   }
-  const url = `http://localhost:${address.port}`;
 
-  return [server, url]
+  const url = `http://localhost:${address.port}`;
+  return [server, url];
+}
+
+function getContentType(filePath: string): string {
+  const ext = extname(filePath).toLowerCase();
+  const contentTypes: Record<string, string> = {
+    '.html': 'text/html',
+    '.css': 'text/css',
+    '.js': 'text/javascript',
+    '.json': 'application/json',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.gif': 'image/gif',
+  };
+  return contentTypes[ext] || 'application/octet-stream';
 }
 
 export async function getDirectoryNames(folderPath: string) {

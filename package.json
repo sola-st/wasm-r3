@@ -2,11 +2,9 @@
   "type": "module",
   "devDependencies": {
     "@types/diff": "^5.0.8",
-    "@types/express": "^4.17.21",
     "@types/node": "^20.9.0",
     "@types/ws": "^8.5.10",
     "bun-types": "latest",
-    "express": "^4.19.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "wabt": "^1.0.32"
@@ -25,6 +23,6 @@
     "test": "node --experimental-strip-types ./src/test.ts",
     "build": "npm run build-rust && npm run build-wasabi",
     "build-rust": "cd crates && cargo build --release && cd -",
-    "build-wasabi": "cd third_party/wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && cd ../../.." 
+    "build-wasabi": "cd third_party/wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && cd ../../.."
   }
 }
