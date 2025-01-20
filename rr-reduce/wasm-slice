@@ -91,6 +91,9 @@ def run_slicedice(testname, fidx):
         print(e)
         return [testname, fidx, "fail"]
 
+print(f'test_input: {test_input}')
+print(f'save_path: {save_path}')
+
 shutil.copy(
     test_input,
     save_path,

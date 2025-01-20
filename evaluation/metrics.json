@@ -90779,7 +90779,7 @@
         },
         "rq2": {
             "wasm-slice-size": 17262345,
-            "wasm-slice-time": 53.416030406951904,
+            "wasm-slice-time": 0.017452478408813477,
             "wasm-reduce-size": 11972624,
             "wasm-reduce-time": 3600.008816242218,
             "wasm-shrink-size": 20443958,

@@ -1,14 +1,9 @@
 import re, os
-import heuristics_finder
-
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
 PAPER_PATH = os.getenv("PAPER_PATH", "/home/don/rr-reduce-paper/issta_2025")
 TEST_NAME = os.getenv("TEST_NAME")
 
-def sh(cmd):
-    import subprocess
-    result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
-    return f'{result.stdout}\n{result.stderr}\n'
+
 
 
 metrics = {

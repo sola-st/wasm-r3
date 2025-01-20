@@ -1,5 +1,10 @@
 import subprocess, re, csv, os
 
+def sh(cmd):
+    import subprocess
+    result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
+    return f'{result.stdout}\n{result.stderr}\n'
+
 def extract_heuristic_fidx(command_output: str):
     # Pattern for both <wasm func #X> and <wasm function X>
     pattern = r'<wasm func(?:tion)? #?(\d+)>'
@@ -94,6 +99,6 @@ assert extract_function_count(test_get_function_count) == 505
 
 def get_all_fidx(test_input):
     command = f"wasm-tools objdump {test_input}"
-    output = subprocess.check_output(command, shell=True, text=True)
+    output = sh(command)
     count = extract_function_count(output)
     return list(range(count))
