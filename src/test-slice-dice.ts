@@ -12,7 +12,7 @@ export default async function runSliceDiceTests(names: string[], options) {
   for (let name of names) {
     const benchmarkPath = process.env.BENCHMARK_PATH
       ? path.join(process.env.BENCHMARK_PATH)
-      : path.join(process.cwd(), "benchmarks", name);
+      : path.join(process.cwd(), "evaluation/benchmarks", name);
     console.log(process.env.BENCHMARK_PATH)
     const replayWasmPath = path.join(benchmarkPath, `${name}.wasm`)
     if (options.fidxs == undefined) options.fidxs = getSubsetFidx(replayWasmPath, name);

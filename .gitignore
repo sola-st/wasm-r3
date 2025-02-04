@@ -16,6 +16,10 @@ tests/*output.txt
 out/
 build/
 .vscode
+__pycache__
+nohup.out
+table
+*.hybrid_test.wasm
 *.reduced_test.wasm
 *.shrunken.wat
 *.aot

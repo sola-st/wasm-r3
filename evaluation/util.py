@@ -1,10 +1,46 @@
-import re, os
+import re, os, json
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
 PAPER_PATH = os.getenv("PAPER_PATH", "/home/don/rr-reduce-paper/issta_2025")
 TEST_NAME = os.getenv("TEST_NAME")
 
+def sh(cmd):
+    import subprocess
+    result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
+    return f'{result.stdout}\n{result.stderr}\n'
 
+tool_to_suffix = {
+    "wasm-slice": "sliced",
+    "wasm-reduce": "reduced",
+    "wasm-shrink": "shrunken",
+    "wasm-hybrid": "hybrid",
+}
 
+short_case = [
+    "rtexviewer",
+    "hydro",
+    "wamr#2450",
+    "wamr#2789",
+    "wamr#2862",
+    # Should install wasmedge VERSION=0.13.4; curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash -s -- -v $VERSION
+    "wasmedge#3018",
+    "wasmedge#3019",
+    "wasmedge#3057",
+    "wasmedge#3076"
+]
+
+long_case = [
+    # "rguistyler",
+    # "rfxgen",
+    "mandelbrot",
+    "guiicons",
+    "rguilayout",
+    "riconpacker",
+    # "sqlgui",
+    # "funky-kart",
+    "commanderkeen",
+    # "jsc",
+    # "boa",
+]
 
 metrics = {
     "boa": {
@@ -12,7 +48,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "6d2b057",
-            "path": f"{WASMR3_PATH}/benchmarks/boa/boa.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/boa/boa.wasm",
         }
     },
     "guiicons": {
@@ -20,7 +56,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "6d2b057",
-            "path": f"{WASMR3_PATH}/benchmarks/guiicons/guiicons.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/guiicons/guiicons.wasm",
         }
     },
     "funky-kart": {
@@ -28,7 +64,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "6d2b057",
-            "path": f"{WASMR3_PATH}/benchmarks/funky-kart/funky-kart.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/funky-kart/funky-kart.wasm",
         }
     },
     "jsc": {
@@ -36,7 +72,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "6d2b057",
-            "path": f"{WASMR3_PATH}/benchmarks/jsc/jsc.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jsc/jsc.wasm",
         }
     },
     "rfxgen": {
@@ -44,14 +80,14 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "6d2b057",
-            "path": f"{WASMR3_PATH}/benchmarks/rfxgen/rfxgen.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rfxgen/rfxgen.wasm",
         }
     },
     "rguilayout": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
-            "path": f"{WASMR3_PATH}/benchmarks/rguilayout/rguilayout.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm",
             "fixed-by": "6d2b057"
         }
     },
@@ -60,7 +96,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "6d2b057",
-            "path": f"{WASMR3_PATH}/benchmarks/rguistyler/rguistyler.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguistyler/rguistyler.wasm",
         }
     },
     "riconpacker": {
@@ -68,7 +104,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "6d2b057",
-            "path": f"{WASMR3_PATH}/benchmarks/riconpacker/riconpacker.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/riconpacker/riconpacker.wasm",
         }
     },
     "sqlgui": {
@@ -76,7 +112,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "6d2b057",
-            "path": f"{WASMR3_PATH}/benchmarks/sqlgui/sqlgui.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sqlgui/sqlgui.wasm",
         }
     },
     "commanderkeen": {
@@ -84,7 +120,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "25e04ac",
-            "path": f"{WASMR3_PATH}/benchmarks/commanderkeen/commanderkeen.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/commanderkeen/commanderkeen.wasm",
         }
     },
     "hydro": {
@@ -92,7 +128,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "708ea77",
-            "path": f"{WASMR3_PATH}/benchmarks/hydro/hydro.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm",
         }
     },
     "rtexviewer": {
@@ -100,7 +136,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "708ea77",
-            "path": f"{WASMR3_PATH}/benchmarks/rtexviewer/rtexviewer.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.wasm",
         }
     },
     "mandelbrot": {
@@ -108,7 +144,7 @@ metrics = {
             "origin": "Wasm-R3-Bench",
             "engine": "wizard-0d6926f",
             "fixed-by": "0b43b8",
-            "path": f"{WASMR3_PATH}/benchmarks/mandelbrot/mandelbrot.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
         }
     },
     "wasmedge#3057": {
@@ -116,7 +152,7 @@ metrics = {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
             "fixed-by": "0.14.0-rc.4",
-            "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
         }
     },
     "wasmedge#3076": {  # this doesn't work for wasm-slice
@@ -124,7 +160,7 @@ metrics = {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
             "fixed-by": "0.14.0-rc.4",
-            "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
         }
     },
     "wamr#2450": {
@@ -132,7 +168,7 @@ metrics = {
             "origin": "WASMaker",
             "engine": "wamr-0b0af1b",
             "fixed-by": "e360b7",
-            "path": f"{WASMR3_PATH}/benchmarks/wamr#2450/wamr#2450.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2450/wamr#2450.wasm",
         }
     },
     "wasmedge#3019": {
@@ -140,7 +176,7 @@ metrics = {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
             "fixed-by": "0.14.0-rc.5",
-            "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
         }
     },
     "wamr#2789": {
@@ -148,7 +184,7 @@ metrics = {
             "origin": "WASMaker",
             "engine": "wamr-0b0af1b",
             "fixed-by": "718f06", # They leave it open as an limitation
-            "path": f"{WASMR3_PATH}/benchmarks/wamr#2789/wamr#2789.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2789/wamr#2789.wasm",
         }
     },
     "wamr#2862": {
@@ -156,7 +192,7 @@ metrics = {
             "origin": "WASMaker",
             "engine": "wamr-7308b1e",
             "fixed-by": "0ee5ff",
-            "path": f"{WASMR3_PATH}/benchmarks/wamr#2862/wamr#2862.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
         }
     },
     "wasmedge#3018": {
@@ -164,28 +200,12 @@ metrics = {
             "origin": "WASMaker",
             "engine": "wasmedge-96ecb67",
             "fixed-by": "0.14.0-rc.5",
-            "path": f"{WASMR3_PATH}/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
         }
     }
 }
 
-# get byte size
-for testname in metrics:
-    metrics[testname]['metadata']["size"] = os.path.getsize(metrics[testname]["metadata"]["path"])
-
-for testname in metrics:
-    metrics[testname]['metadata']["function_count"] = len(
-        heuristics_finder.get_all_fidx(metrics[testname]["metadata"]["path"])
-    )
-
-# with open("metrics.json", "w") as f:
-#     sorted_metrics = dict(sorted(metrics.items(), key=lambda item: item[1]['metadata']['function_count']))
-#     json.dump(sorted_metrics, f, indent=4)
-
 testset = [TEST_NAME] if TEST_NAME else metrics.keys()
-
-
-import re
 
 def extract_times(input_string):
     # Define the pattern to match times, including possible timeout
@@ -242,3 +262,94 @@ assert result2["split-time"] == 345, "Split time mismatch in result2"
 assert result2["rr-time"] == 5485, "RR time mismatch in result2"
 assert result2["sliced_file_size"] == 39462, "Sliced file size mismatch in result2"
 assert result2["rr-did-timeout"] == True, "Timeout flag mismatch in result2"
+
+wamr_2861_objdump_output = '''====wamr#2861====
+  types                                  |        0xa -       0x4b |        65 bytes | 10 count
+  functions                              |       0x4d -       0x5b |        14 bytes | 13 count
+  tables                                 |       0x5d -       0x64 |         7 bytes | 1 count
+  memories                               |       0x66 -       0x6e |         8 bytes | 1 count
+  globals                                |       0x70 -       0x7f |        15 bytes | 2 count
+  exports                                |       0x82 -      0x155 |       211 bytes | 29 count
+  elements                               |      0x157 -      0x15e |         7 bytes | 1 count
+  data count                             |      0x160 -      0x161 |         1 bytes | 1 count
+  code                                   |      0x164 -      0x32a |       454 bytes | 13 count
+       Function index: 0, size: 6 bytes
+       Function index: 1, size: 327 bytes
+       Function index: 2, size: 5 bytes
+       Function index: 3, size: 5 bytes
+       Function index: 4, size: 3 bytes
+       Function index: 5, size: 5 bytes
+       Function index: 6, size: 12 bytes
+       Function index: 7, size: 5 bytes
+       Function index: 8, size: 5 bytes
+       Function index: 9, size: 35 bytes
+       Function index: 10, size: 3 bytes
+       Function index: 11, size: 12 bytes
+       Function index: 12, size: 16 bytes
+  data                                   |      0x32d -     0x1889 |      5468 bytes | 1 count
+  custom "name"                          |     0x1891 -     0x1924 |       147 bytes | 1 count
+
+'''
+def extract_code_bytes(objdump_output):
+    lines = objdump_output.split('\n')
+    for line in lines:
+        if 'code' in line:
+            return int(line.split()[6])
+assert extract_code_bytes(wamr_2861_objdump_output) == 454
+
+def extract_target_bytes(objdump_output, target_indices):
+    lines = objdump_output.split('\n')
+    target_bytes = 0
+    for line in lines:
+        if 'Function index:' in line:
+            parts = line.split(',')
+            index = int(parts[0].split(':')[1].strip())
+            size = int(parts[1].split(':')[1].strip().split()[0])
+            if index in target_indices:
+                target_bytes += size
+    return target_bytes
+
+assert extract_target_bytes(wamr_2861_objdump_output, [1]) == 327
+
+def get_sizes(path):
+    module_size = os.path.getsize(path)
+    objdump_result = sh(f'/home/doehyunbaek/wasm-r3/third_party/wasm-tools/target/release/wasm-tools objdump {path}')
+    code_size = extract_code_bytes(objdump_result)
+    # TODO: not hardcode target
+    target_indices = [1]
+    target_size = extract_target_bytes(objdump_result, target_indices)
+    return module_size, code_size, target_size
+
+
+if __name__ == "__main__":
+    if os.path.exists("metrics.json"):
+        with open("metrics.json", "r") as f:
+            metrics = json.load(f)
+    else:
+        metrics = {}
+
+    # Update existing metrics with new values
+    for key, value in metrics.items():
+        if key in metrics:
+            for sub_key, sub_value in value.items():
+                if sub_key in metrics[key]:
+                    metrics[key][sub_key].update(sub_value)
+                else:
+                    metrics[key][sub_key] = sub_value
+        else:
+            metrics[key] = value
+
+    for key in metrics:
+        input_path = metrics[key]["metadata"]["path"]
+        for tool in ['wasm-slice', 'wasm-hybrid', 'wasm-reduce', 'wasm-shrink']:
+            if not metrics[key].get(tool):
+                metrics[key][tool] = {}
+            tool_path = input_path.replace(".wasm", f".{tool_to_suffix[tool]}.wasm")
+            module_size, code_size, target_size = get_sizes(tool_path)
+            metrics[key][tool]["module-size"] = module_size
+            metrics[key][tool]["code-size"] = code_size
+            if tool == 'wasm-slice':
+                metrics[key][tool]["target-size"] = target_size
+    # Save the updated metrics back to the JSON file
+    with open("metrics.json", "w") as f:
+        json.dump(metrics, f, indent=4)

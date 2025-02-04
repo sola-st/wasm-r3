@@ -19,7 +19,7 @@ test_input = sys.argv[2]
 test_name = os.path.splitext(os.path.basename(test_input))[0]
 save_path = f"{os.getenv(
             "BENCHMARK_PATH",
-            f"{WASMR3_PATH}/benchmarks/{test_name}",
+            f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}",
         )}/{test_name}.sliced.wasm"
 
 # We prioritize single function replay of heuristic > dynamic > all

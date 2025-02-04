@@ -107,7 +107,7 @@ const testOptions = [
   }
   if (options.category === "slicedice") {
     let testNames = await getDirectoryNames(
-      path.join(process.cwd(), "benchmarks")
+      path.join(process.cwd(), "evaluation/benchmarks")
     );
     if (options.testcases !== undefined) {
       testNames = testNames.filter((n) => options.testcases.includes(n));

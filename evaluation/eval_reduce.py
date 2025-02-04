@@ -1,31 +1,28 @@
 import time, subprocess, json, os, concurrent, sys
-import run_reduction_tool
 import concurrent.futures
+import util
 
-TIMEOUT = 3600
+TIMEOUT = 3600 * 24
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
 FIDX_LIMIT = os.getenv("FIDX_LIMIT")
 ONLY_FAIL = os.getenv("ONLY_FAIL", False)
 MAX_WORKER = int(os.getenv("MAX_WORKER", 8))
+
 
 with open("metrics.json", "r") as f:
     metrics = json.load(f)
 
 TEST_NAMES = os.getenv("TEST_NAMES")
 if TEST_NAMES:
-    testset = TEST_NAMES.split(',')
+    testset = TEST_NAMES.split(",")
 else:
     testset = metrics.keys()
 print(f"len(testset): {len(testset)}")
 
-tool_to_suffix = {
-    "wasm-slice": "sliced",
-    "wasm-reduce": "reduced",
-    "wasm-shrink": "shrunken",
-}
 
-if len(sys.argv) < 2 or sys.argv[1] not in tool_to_suffix.keys():
-    print("Usage: python rq2.py [wasm-slice|wasm-reduce|wasm-shrink]")
+
+if len(sys.argv) < 2 or sys.argv[1] not in util.tool_to_suffix.keys():
+    print("Usage: python rq1.py [wasm-slice|wasm-reduce|wasm-shrink|wasm-hybrid]")
     sys.exit(1)
 
 tool_choice = sys.argv[1]
@@ -36,24 +33,39 @@ WASMR3_PATH = os.getenv("WASMR3_PATH", "/home/wasm-r3")
 # Exit if BINARYEN_ROOT is not set
 if "BINARYEN_ROOT" not in os.environ:
     print("Error: BINARYEN_ROOT environment variable is not set")
-    print("https://github.com/WebAssembly/binaryen/blob/871ff0d4f910b565c15f82e8f3c9aa769b01d286/src/support/path.cpp#L95")
+    print(
+        "https://github.com/WebAssembly/binaryen/blob/871ff0d4f910b565c15f82e8f3c9aa769b01d286/src/support/path.cpp#L95"
+    )
     sys.exit(1)
+
 
 def tool_to_command(tool, test_input, oracle_script):
     test_name = os.path.splitext(os.path.basename(test_input))[0]
     if tool == "wasm-reduce":
-        test_path = f'{WASMR3_PATH}/benchmarks/{test_name}/{test_name}.reduced_test.wasm'
-        work_path = f'{WASMR3_PATH}/benchmarks/{test_name}/{test_name}.reduced.wasm'
+        test_path = (
+            f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.reduced_test.wasm"
+        )
+        work_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.reduced.wasm"
         return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
-    elif tool == "wasm-shrink": # https://github.com/doehyunbaek/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
+    elif tool == "wasm-hybrid":
+        test_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.hybrid_test.wasm"
+        work_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.hybrid.wasm"
+        wasm_slice_output_path = (
+            f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.sliced.wasm"
+        )
+        return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
+    elif (
+        tool == "wasm-shrink"
+    ):  # https://github.com/doehyunbaek/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
         return f"wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":
-        return  f"/home/doehyunbaek/wasm-r3/rr-reduce/wasm-slice {oracle_script} {test_input}"
+        return f"/home/doehyunbaek/wasm-r3/rr-reduce/wasm-slice {oracle_script} {test_input}"
     else:
         exit("not supported")
 
+
 def run_command(tool, oracle_script, test_input):
-    command = tool_to_command(tool, test_input, oracle_script)
+    command = f'timeout {TIMEOUT}s {tool_to_command(tool, test_input, oracle_script)}'
 
     if not command:
         print(f"Error: Unknown tool '{tool}'")
@@ -70,13 +82,17 @@ def run_command(tool, oracle_script, test_input):
 def run_reduction_tool(testname, tool):
     try:
         start_time = time.time()
-        command = run_command(tool, f'{WASMR3_PATH}/benchmarks/{testname}/oracle.py',  f'{WASMR3_PATH}/benchmarks/{testname}/{testname}.wasm')
+        command = run_command(
+            tool,
+            f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/oracle.py",
+            f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/{testname}.wasm",
+        )
         end_time = time.time()
         elapsed = end_time - start_time
 
-        oracle_path = f"{WASMR3_PATH}/benchmarks/{testname}/oracle.py"
-        reduced_path = f"{WASMR3_PATH}/benchmarks/{testname}/{testname}.{tool_to_suffix[tool]}.wasm"
-        oracle_command = f'python {oracle_path} {reduced_path}'
+        oracle_path = f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/oracle.py"
+        reduced_path = f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/{testname}.{util.tool_to_suffix[tool]}.wasm"
+        oracle_command = f"python {oracle_path} {reduced_path}"
 
         max_retries = 3
         retry_count = 0
@@ -86,29 +102,36 @@ def run_reduction_tool(testname, tool):
                 break  # If successful, exit the retry loop
             except subprocess.CalledProcessError as e:
                 if e.returncode == 1:
-                    print(f"Oracle command failed with exit code 1. Retrying... (Attempt {retry_count + 1}/{max_retries})")
+                    print(
+                        f"Oracle command failed with exit code 1. Retrying... (Attempt {retry_count + 1}/{max_retries})"
+                    )
                     retry_count += 1
                     if retry_count == max_retries:
                         raise  # If all retries failed, raise the exception
                 else:
                     raise  # If exit code is not 1, raise the exception immediately
 
-        reduced_size = os.path.getsize(reduced_path)
-        return [testname, tool, elapsed, reduced_size]
+        module_size, code_size, target_size = util.get_sizes(reduced_path)
+        return [testname, tool, elapsed, module_size, code_size, target_size]
     except Exception as e:
         print(f"Failed to run {testname} - {tool}")
         print(f"Error: {str(e)}")
-        return [testname, tool, "fail", "fail"]
+        return [testname, tool, "fail", "fail", "fail", "fail"]
 
 
 def update_metrics(metrics, results):
-    for testname, tool, elapsed, reduced_size in results:
-        if metrics[testname].get("rq2") is None:
-            metrics[testname]["rq2"] = {}
-        metrics[testname]["rq2"][f"{tool}-size"] = reduced_size
-        metrics[testname]["rq2"][f"{tool}-time"] = elapsed
+    for testname, tool, elapsed, module_size, code_size, target_size in results:
+        if metrics[testname].get(tool) is None:
+            metrics[testname][tool] = {}
+        metrics[testname][tool][f"time"] = elapsed
+        metrics[testname][tool][f"module-size"] = module_size
+        metrics[testname][tool][f"code-size"] = code_size
+        if tool == 'wasm-slice':
+            metrics[testname][tool][f"target-size"] = target_size
+
     with open("metrics.json", "w") as f:
         json.dump(metrics, f, indent=4)
+
 
 if MAX_WORKER == 1:
     print("Running in single thread mode")
@@ -123,5 +146,6 @@ else:
             for testname in testset
             for tool in toolset
         ]
-        results = [future.result() for future in concurrent.futures.as_completed(futures)]
-        update_metrics(metrics, results)
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+            update_metrics(metrics, [result])
