@@ -9,10 +9,11 @@ if len(sys.argv) != 2:
 
 WASM = sys.argv[1]
 PRINT_OUTPUT = os.getenv('PRINT_OUTPUT', 'False').lower() in ('true', '1', 't')
-
+WIZARD = os.getenv('WIZARD', 'wizard-c5e626a')
 
 def wrong_on_target():
-    command = f'timeout 10s wizard-0d6926f -no-names -mode=int {WASM}'
+    # command = f'timeout 10s wizard-e27d8a4 -mode=int {WASM}'
+    command = f'timeout 10s {WIZARD} -mode=int {WASM}'
     result = subprocess.run(
         command,
         shell=True,

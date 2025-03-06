@@ -8,6 +8,26 @@ FIDX_LIMIT = os.getenv("FIDX_LIMIT")
 ONLY_FAIL = os.getenv("ONLY_FAIL", False)
 MAX_WORKER = int(os.getenv("MAX_WORKER", 8))
 
+testname_to_oracle = {
+    'guiicons': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'rfxgen': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'riconpacker': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'rguistyler': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'rguilayout': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'funky-kart': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'sqlgui': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'jsc': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'boa': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
+    'pacalc': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-81555ab.py",
+    'bullet': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-f7aca00.py",
+    'sandspiel': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-ccf0c56.py",
+    'pathfinding': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-ccf0c56.py",
+    'parquet': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-33ec201.py",
+    'figma-startpage': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-33ec201.py",
+    'ffmpeg': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-4e3e221.py",
+    'jqkungfu': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-4e3e221.py",
+}
+
 
 with open("metrics.json", "r") as f:
     metrics = json.load(f)
@@ -22,7 +42,7 @@ print(f"len(testset): {len(testset)}")
 
 
 if len(sys.argv) < 2 or sys.argv[1] not in util.tool_to_suffix.keys():
-    print("Usage: python rq1.py [wasm-slice|wasm-reduce|wasm-shrink|wasm-hybrid]")
+    print("Usage: python rq1.py [wasm-slice|wasm-reduce|wasm-shrink|wasm-hybrid-all]")
     sys.exit(1)
 
 tool_choice = sys.argv[1]
@@ -47,13 +67,30 @@ def tool_to_command(tool, test_input, oracle_script):
         )
         work_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.reduced.wasm"
         return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
-    elif tool == "wasm-hybrid":
-        test_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.hybrid_test.wasm"
-        work_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.hybrid.wasm"
+    elif tool == "wasm-hybrid-all":
+        suffix = util.tool_to_suffix[tool]
+        test_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}_test.wasm"
+        work_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}.wasm"
         wasm_slice_output_path = (
             f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.sliced.wasm"
         )
-        return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
+        return f"wasm-reduce-all -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
+    elif tool == "wasm-hybrid-target":
+        suffix = util.tool_to_suffix[tool]
+        test_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}_test.wasm"
+        work_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}.wasm"
+        wasm_slice_output_path = (
+            f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.sliced.wasm"
+        )
+        return f"wasm-reduce-target -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
+    elif tool == "wasm-hybrid-remain":
+        suffix = util.tool_to_suffix[tool]
+        test_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}_test.wasm"
+        work_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}.wasm"
+        wasm_slice_output_path = (
+            f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.sliced.wasm"
+        )
+        return f"wasm-reduce-remain -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
     elif (
         tool == "wasm-shrink"
     ):  # https://github.com/doehyunbaek/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
@@ -81,17 +118,19 @@ def run_command(tool, oracle_script, test_input):
 
 def run_reduction_tool(testname, tool):
     try:
+        oracle_path = testname_to_oracle.get(testname, f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/oracle.py")
+        input_path = f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/{testname}.wasm"
+        reduced_path = f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/{testname}.{util.tool_to_suffix[tool]}.wasm"
+
         start_time = time.time()
         command = run_command(
             tool,
-            f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/oracle.py",
-            f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/{testname}.wasm",
+            oracle_path,
+            input_path
         )
         end_time = time.time()
         elapsed = end_time - start_time
 
-        oracle_path = f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/oracle.py"
-        reduced_path = f"{WASMR3_PATH}/evaluation/benchmarks/{testname}/{testname}.{util.tool_to_suffix[tool]}.wasm"
         oracle_command = f"python {oracle_path} {reduced_path}"
 
         max_retries = 3

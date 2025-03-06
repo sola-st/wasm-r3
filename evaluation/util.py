@@ -12,7 +12,9 @@ tool_to_suffix = {
     "wasm-slice": "sliced",
     "wasm-reduce": "reduced",
     "wasm-shrink": "shrunken",
-    "wasm-hybrid": "hybrid",
+    "wasm-hybrid-all": "hybrid-all",
+    "wasm-hybrid-target": "hybrid-target",
+    "wasm-hybrid-remain": "hybrid-remain",
 }
 
 short_case = [
@@ -25,24 +27,36 @@ short_case = [
     "wasmedge#3018",
     "wasmedge#3019",
     "wasmedge#3057",
-    "wasmedge#3076"
-]
-
-long_case = [
-    # "rguistyler",
-    # "rfxgen",
-    "mandelbrot",
-    "guiicons",
-    "rguilayout",
-    "riconpacker",
-    # "sqlgui",
-    # "funky-kart",
-    "commanderkeen",
-    # "jsc",
+    "wasmedge#3076",
     # "boa",
 ]
 
-metrics = {
+long_case = [
+    "boa",
+    "rguistyler",
+    "guiicons",
+    "rguilayout",
+    "rfxgen",
+    "jsc",
+    "mandelbrot",
+    "riconpacker",
+    "sqlgui",
+    "funky-kart",
+    "commanderkeen",
+]
+
+new_case = [
+    'pacalc',
+    'bullet',
+    'sandspiel',
+    'pathfinding',
+    'parquet',
+    'figma-startpage',
+    'ffmpeg',
+    'jqkungfu',
+]
+
+start_metrics = {
     "boa": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
@@ -147,6 +161,70 @@ metrics = {
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
         }
     },
+    "pacalc": {
+        "metadata": {
+            "origin": "Wasm-R3-Bench",
+            "engine": "wizard",
+            "fixed-by": "81555ab",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm",
+        }
+    },
+    "bullet": {
+        "metadata": {
+            "origin": "Wasm-R3-Bench",
+            "engine": "wizard",
+            "fixed-by": "f7aca00",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm",
+        }
+    },
+    "sandspiel": {
+        "metadata": {
+            "origin": "Wasm-R3-Bench",
+            "engine": "wizard",
+            "fixed-by": "ccf0c56",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm",
+        }
+    },
+    "pathfinding": {
+        "metadata": {
+            "origin": "Wasm-R3-Bench",
+            "engine": "wizard",
+            "fixed-by": "ccf0c56",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm",
+        }
+    },
+    "parquet": {
+        "metadata": {
+            "origin": "Wasm-R3-Bench",
+            "engine": "wizard",
+            "fixed-by": "33ec201",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm",
+        }
+    },
+    "figma-startpage": {
+        "metadata": {
+            "origin": "Wasm-R3-Bench",
+            "engine": "wizard",
+            "fixed-by": "33ec201",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm",
+        }
+    },
+    "ffmpeg": {
+        "metadata": {
+            "origin": "Wasm-R3-Bench",
+            "engine": "wizard",
+            "fixed-by": "4e3e221",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm",
+        }
+    },
+    "jqkungfu": {
+        "metadata": {
+            "origin": "Wasm-R3-Bench",
+            "engine": "wizard",
+            "fixed-by": "4e3e221",
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm",
+        }
+    },
     "wasmedge#3057": {
         "metadata": {
             "origin": "WASMaker",
@@ -205,7 +283,7 @@ metrics = {
     }
 }
 
-testset = [TEST_NAME] if TEST_NAME else metrics.keys()
+testset = [TEST_NAME] if TEST_NAME else start_metrics.keys()
 
 def extract_times(input_string):
     # Define the pattern to match times, including possible timeout
@@ -329,7 +407,7 @@ if __name__ == "__main__":
         metrics = {}
 
     # Update existing metrics with new values
-    for key, value in metrics.items():
+    for key, value in start_metrics.items():
         if key in metrics:
             for sub_key, sub_value in value.items():
                 if sub_key in metrics[key]:
@@ -339,17 +417,17 @@ if __name__ == "__main__":
         else:
             metrics[key] = value
 
-    for key in metrics:
-        input_path = metrics[key]["metadata"]["path"]
-        for tool in ['wasm-slice', 'wasm-hybrid', 'wasm-reduce', 'wasm-shrink']:
-            if not metrics[key].get(tool):
-                metrics[key][tool] = {}
-            tool_path = input_path.replace(".wasm", f".{tool_to_suffix[tool]}.wasm")
-            module_size, code_size, target_size = get_sizes(tool_path)
-            metrics[key][tool]["module-size"] = module_size
-            metrics[key][tool]["code-size"] = code_size
-            if tool == 'wasm-slice':
-                metrics[key][tool]["target-size"] = target_size
+    # for key in metrics:
+    #     input_path = metrics[key]["metadata"]["path"]
+    #     for tool in ['wasm-slice', 'wasm-hybrid', 'wasm-reduce', 'wasm-shrink']:
+    #         if not metrics[key].get(tool):
+    #             metrics[key][tool] = {}
+    #         tool_path = input_path.replace(".wasm", f".{tool_to_suffix[tool]}.wasm")
+    #         module_size, code_size, target_size = get_sizes(tool_path)
+    #         metrics[key][tool]["module-size"] = module_size
+    #         metrics[key][tool]["code-size"] = code_size
+    #         if tool == 'wasm-slice':
+    #             metrics[key][tool]["target-size"] = target_size
     # Save the updated metrics back to the JSON file
     with open("metrics.json", "w") as f:
         json.dump(metrics, f, indent=4)
