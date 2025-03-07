@@ -844,7 +844,9 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard",
             "fixed-by": "81555ab",
-            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm"
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm",
+            "module-size": 291250,
+            "code-size": 238902
         },
         "wasm-reduce": {
             "time": 8195.857340097427,
@@ -857,7 +859,9 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard",
             "fixed-by": "f7aca00",
-            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm"
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm",
+            "module-size": 688142,
+            "code-size": 536115
         },
         "wasm-reduce": {
             "time": 86400.00287055969,
@@ -870,7 +874,9 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard",
             "fixed-by": "ccf0c56",
-            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm"
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm",
+            "module-size": 921840,
+            "code-size": 919085
         },
         "wasm-reduce": {
             "time": 86400.0032043457,
@@ -883,7 +889,9 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard",
             "fixed-by": "ccf0c56",
-            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm"
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm",
+            "module-size": 197113,
+            "code-size": 180026
         },
         "wasm-reduce": {
             "time": 12057.170331716537,
@@ -896,7 +904,9 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard",
             "fixed-by": "33ec201",
-            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm"
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm",
+            "module-size": 3158214,
+            "code-size": 1731592
         },
         "wasm-reduce": {
             "time": 22646.055894374847,
@@ -909,7 +919,9 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard",
             "fixed-by": "33ec201",
-            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm"
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm",
+            "module-size": 1109056,
+            "code-size": 882961
         },
         "wasm-reduce": {
             "time": 10088.606570243835,
@@ -922,7 +934,9 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard",
             "fixed-by": "4e3e221",
-            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm"
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm",
+            "module-size": 5922149,
+            "code-size": 5356751
         },
         "wasm-reduce": {
             "time": 86400.01130652428,
@@ -935,7 +949,9 @@
             "origin": "Wasm-R3-Bench",
             "engine": "wizard",
             "fixed-by": "4e3e221",
-            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm"
+            "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm",
+            "module-size": 824655,
+            "code-size": 487607
         },
         "wasm-reduce": {
             "time": 7084.2051429748535,
