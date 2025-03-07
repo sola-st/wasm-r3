@@ -14,6 +14,12 @@ def extract_heuristic_fidx(command_output: str):
     if not matches:
         error_pattern = r'(?:^|\n)\s*\d+:\s*0x[0-9a-fA-F]+ - .*?!<wasm function (\d+)>'
         matches = re.findall(error_pattern, command_output, re.MULTILINE)
+
+    # If still no matches found, try to find indices in the bail out message
+    if not matches:
+        bailout_pattern = r'function #(\d+):'
+        matches = re.findall(bailout_pattern, command_output)
+
     # TODO: evaluate preserving the order
     unique_indices = set(map(int, matches))
     sorted_indices = sorted(unique_indices)
@@ -31,14 +37,20 @@ wamr2450_output = '''CompletedProcess(args='iwasm-0b0af1b --heap-size=0 -f main 
 CompletedProcess(args='wasmtime --invoke main ./benchmarks/wamr#2450/wamr#2450.wasm', returncode=134, stdout='', stderr='Error: failed to run main module `./benchmarks/wamr#2450/wamr#2450.wasm`\n\nCaused by:\n    0: failed to invoke `main`\n    1: error while executing at wasm backtrace:\n           0: 0x1e80 - <unknown>!<wasm function 17>\n           1: 0x29ee - <unknown>!<wasm function 21>\n           2: 0x2b44 - <unknown>!<wasm function 22>\n           3: 0x5f9e - <unknown>!<wasm function 64>\n           4: 0x6329 - <unknown>!<wasm function 65>\n    2: wasm trap: integer divide by zero\n')
 Interesting!'''
 
+ffmpeg_output = '''CompletedProcess(args='timeout 10s wizard-253bd02 -mode=jit benchmarks/ffmpeg/out/186/benchmarks/bin_1/replay.wasm', returncode=3, stdout='benchmarks/ffmpeg/out/186/benchmarks/bin_1/replay.wasm:0x26A: bailed out compiling function #1: spill mismatch for rdx, assignment=41\n', stderr='')
+CompletedProcess(args='timeout 20s wizard-4e3e221 -mode=jit benchmarks/ffmpeg/out/186/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+Interesting!'''
+
 assert extract_heuristic_fidx(boa_output) == [0, 103, 149, 286, 1476, 2824]
 assert extract_heuristic_fidx(funky_kart) == [0, 431, 462, 1092, 1529]
 assert extract_heuristic_fidx(wamr2450_output) == [17, 21, 22, 64, 65]
+assert extract_heuristic_fidx(ffmpeg_output) == [1]
 
 def get_heuristic_fidx(test_input, oracle_script) -> list:
     command = f'python {oracle_script} {test_input}'
     try:
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        print(result)
         return extract_heuristic_fidx(result.stdout)
     except subprocess.CalledProcessError as e:
         print(f"ERROR: {e}")
