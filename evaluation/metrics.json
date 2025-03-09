@@ -857,7 +857,12 @@
             "time": 20.87259006500244,
             "module-size": 100360,
             "code-size": 34808,
-            "target-size": 0
+            "target-size": 2136
+        },
+        "wasm-hybrid-all": {
+            "time": 13160.42043852806,
+            "module-size": 2130,
+            "code-size": 2088
         }
     },
     "bullet": {
