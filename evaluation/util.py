@@ -47,9 +47,9 @@ long_case = [
 
 new_case = [
     'pacalc',
-    'bullet',
+    # 'bullet',
     'sandspiel',
-    'pathfinding',
+    # 'pathfinding',
     'parquet',
     'figma-startpage',
     'ffmpeg',

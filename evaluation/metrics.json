@@ -893,7 +893,12 @@
             "time": 789.3074715137482,
             "module-size": 6219,
             "code-size": 1202,
-            "target-size": 0
+            "target-size": 277
+        },
+        "wasm-hybrid-all": {
+            "time": 79.66955757141113,
+            "module-size": 96,
+            "code-size": 48
         }
     },
     "pathfinding": {
@@ -929,7 +934,12 @@
             "time": 5.920238494873047,
             "module-size": 1529462,
             "code-size": 16181,
-            "target-size": 0
+            "target-size": 6
+        },
+        "wasm-hybrid-all": {
+            "time": 20.095752000808716,
+            "module-size": 971,
+            "code-size": 5
         }
     },
     "figma-startpage": {
@@ -950,7 +960,12 @@
             "time": 4.348644495010376,
             "module-size": 399854,
             "code-size": 28558,
-            "target-size": 0
+            "target-size": 10
+        },
+        "wasm-hybrid-all": {
+            "time": 25.031139373779297,
+            "module-size": 355,
+            "code-size": 5
         }
     },
     "ffmpeg": {
@@ -971,7 +986,12 @@
             "time": 16.98512887954712,
             "module-size": 751544,
             "code-size": 33037,
-            "target-size": 0
+            "target-size": 6088
+        },
+        "wasm-hybrid-all": {
+            "time": 131.14664793014526,
+            "module-size": 90,
+            "code-size": 49
         }
     },
     "jqkungfu": {
@@ -992,7 +1012,12 @@
             "time": 2.807171583175659,
             "module-size": 379196,
             "code-size": 25613,
-            "target-size": 0
+            "target-size": 22234
+        },
+        "wasm-hybrid-all": {
+            "time": 1196.6334323883057,
+            "module-size": 11291,
+            "code-size": 10858
         }
     }
 }
