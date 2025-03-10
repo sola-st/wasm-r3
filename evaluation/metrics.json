@@ -813,7 +813,7 @@
             "code-size": 4207833
         },
         "wasm-reduce": {
-            "time": 188485.77683639526,
+            "time": 86400,
             "module-size": 497737,
             "code-size": 310331
         },
@@ -919,6 +919,17 @@
             "time": 12057.170331716537,
             "module-size": 3908,
             "code-size": 1023
+        },
+        "wasm-slice": {
+            "time": 1245.7624626159668,
+            "module-size": 69355,
+            "code-size": 56136,
+            "target-size": 209
+        },
+        "wasm-hybrid-all": {
+            "time": 513.7927114963531,
+            "module-size": 94,
+            "code-size": 45
         }
     },
     "parquet": {

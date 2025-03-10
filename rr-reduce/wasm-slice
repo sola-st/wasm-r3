@@ -71,7 +71,7 @@ def run_slicedice(testname, fidx):
         # TODO: make this configurable
         replay_wasm_path = f'{os.getenv(
             "BENCHMARK_PATH",
-            f"{WASMR3_PATH}/benchmarks/{test_name}",
+            f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}",
         )}/out/{fidx}/benchmarks/bin_1/replay.wasm'
         original_file_size = os.path.getsize(test_input)
         replay_file_size = os.path.getsize(replay_wasm_path)
