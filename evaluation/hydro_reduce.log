@@ -1,0 +1,1374 @@
+|applying timeout: 60
+|wasm-reduce
+|input: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm
+|test: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm
+|working: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm
+|bin dir: /home/doehyunbaek/wasm-r3/third_party/binaryen/bin/
+|extra flags: -all
+|expected result:
+[ProgramResult] code: 0 stdout: 
+Interesting!
+[====]
+in 0.224704 seconds
+[/ProgramResult]
+
+|!! Make sure the above is what you expect! !!
+
+|checking that command has different behavior on different inputs (this verifies that the test file is used by the command)
+|checking that command has expected behavior on canonicalized (read-written) binary
+|input size: 824085
+|starting reduction!
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 818349
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 818267
+|  after pass reduction: 818267
+|  pass progress: 5818, last destructive: 0
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 204566)
+|    5% of funcs complete
+|    10% of funcs complete
+|    15% of funcs complete
+|    20% of funcs complete
+|    25% of funcs complete
+|      tryToReplaceCurrent succeeded (in 414)
+|      tryToReplaceCurrent succeeded (in 414)
+|    30% of funcs complete
+|      tryToReplaceCurrent succeeded (in 510)
+|      tryToReplaceCurrent succeeded (in 510)
+|    35% of funcs complete
+|    40% of funcs complete
+|    45% of funcs complete
+|    50% of funcs complete
+|      tryToReplaceCurrent succeeded (in 817)
+|      tryToReplaceCurrent succeeded (in 817)
+|    55% of funcs complete
+|    60% of funcs complete
+|    65% of funcs complete
+|    70% of funcs complete
+|    75% of funcs complete
+|    80% of funcs complete
+|    85% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1399)
+|      tryToReplaceCurrent succeeded (in 1399)
+|    90% of funcs complete
+|    95% of funcs complete
+|    100% of funcs complete
+|      zeroed elem segment
+|      tryToReplaceCurrent succeeded (in (non-function context))
+|      shrank segment from 9324 => 9323 (skip: 1)
+|      shrank segment from 9323 => 9321 (skip: 2)
+|      shrank segment from 9321 => 9317 (skip: 4)
+|      shrank segment from 9317 => 9309 (skip: 8)
+|      shrank segment from 9309 => 9293 (skip: 16)
+|      shrank segment from 9293 => 9261 (skip: 32)
+|      shrank segment from 9261 => 9197 (skip: 64)
+|      shrank segment from 9197 => 9069 (skip: 128)
+|      shrank segment from 9069 => 8813 (skip: 256)
+|      shrank segment from 8813 => 8301 (skip: 512)
+|      shrank segment from 8301 => 7277 (skip: 1024)
+|      shrank segment from 7277 => 5229 (skip: 2048)
+|      shrank segment from 5229 => 1133 (skip: 4096)
+|    try to remove functions (base: 1039, decisionCounter: 11400714824360221227, numFuncs 1588)
+|     trying at i=1039 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=1040 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=1042 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=1046 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=1054 of size 16
+|        emptied 16 / 16 functions
+|     trying at i=1070 of size 32
+|        emptied 32 / 32 functions
+|     trying at i=1102 of size 64
+|        emptied 64 / 64 functions
+|     trying at i=1166 of size 128
+|    try to remove functions (base: 1568, decisionCounter: 9331992480589077952, numFuncs 1588)
+|     trying at i=1568 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=1569 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=1571 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=1575 of size 8
+|        removed 8 functions
+|     trying at i=1583 of size 5
+|        emptied 5 / 5 functions
+|     trying at i=11 of size 32
+|    try to remove functions (base: 1157, decisionCounter: 4984060786231496157, numFuncs 1580)
+|     trying at i=1157 of size 1
+|        removed 1 functions
+|     trying at i=1158 of size 2
+|    try to simplify elem segments
+|    try to remove exports (with factor 204566)
+|  destructive reduction led to size: 799324
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 757311
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O3 -all" succeeded, reduced size to 751993
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 751951
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O3 -all" succeeded, reduced size to 751950
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 751948
+|  after pass reduction: 751948
+|  pass progress: 47376, last destructive: 171
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 184109)
+|    0% of funcs complete
+|    5% of funcs complete
+|    10% of funcs complete
+|    15% of funcs complete
+|    20% of funcs complete
+|    25% of funcs complete
+|      tryToReplaceCurrent succeeded (in 375)
+|      tryToReplaceCurrent succeeded (in 375)
+|    30% of funcs complete
+|      tryToReplaceChild succeeded (in 452)
+|      tryToReplaceCurrent succeeded (in 452)
+|    35% of funcs complete
+|    40% of funcs complete
+|    45% of funcs complete
+|    50% of funcs complete
+|      tryToReplaceCurrent succeeded (in 683)
+|      tryToReplaceCurrent succeeded (in 683)
+|    55% of funcs complete
+|    60% of funcs complete
+|    65% of funcs complete
+|    70% of funcs complete
+|    75% of funcs complete
+|    80% of funcs complete
+|    85% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1194)
+|      tryToReplaceCurrent succeeded (in 1194)
+|    90% of funcs complete
+|    95% of funcs complete
+|    100% of funcs complete
+|      shrank segment from 21322 => 21321 (skip: 1)
+|      shrank segment from 21321 => 21319 (skip: 2)
+|      shrank segment from 21319 => 21315 (skip: 4)
+|      shrank segment from 21315 => 21307 (skip: 8)
+|      shrank segment from 21307 => 21291 (skip: 16)
+|      shrank segment from 21291 => 21259 (skip: 32)
+|      shrank segment from 21259 => 21195 (skip: 64)
+|      shrank segment from 21195 => 21067 (skip: 128)
+|      shrank segment from 21067 => 20811 (skip: 256)
+|      shrank segment from 20811 => 20299 (skip: 512)
+|      shrank segment from 20299 => 19275 (skip: 1024)
+|      shrank segment from 19275 => 17227 (skip: 2048)
+|      shrank segment from 17227 => 13131 (skip: 4096)
+|      shrank segment from 2863 => 2862 (skip: 1)
+|      shrank segment from 2862 => 2860 (skip: 2)
+|      shrank segment from 2860 => 2856 (skip: 4)
+|      shrank segment from 2856 => 2848 (skip: 8)
+|      shrank segment from 2848 => 2832 (skip: 16)
+|      shrank segment from 2832 => 2800 (skip: 32)
+|      shrank segment from 2800 => 2736 (skip: 64)
+|      shrank segment from 2736 => 2608 (skip: 128)
+|      zeroed elem segment
+|    try to remove functions (base: 422, decisionCounter: 11400714824016717257, numFuncs 1365)
+|     trying at i=422 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=423 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=425 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=429 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=437 of size 16
+|        emptied 16 / 16 functions
+|     trying at i=453 of size 32
+|        emptied 32 / 32 functions
+|     trying at i=485 of size 64
+|    try to remove functions (base: 89, decisionCounter: 9331990039369624079, numFuncs 1365)
+|     trying at i=89 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=90 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=92 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=96 of size 8
+|    try to remove functions (base: 1347, decisionCounter: 4973783287763901957, numFuncs 1365)
+|     trying at i=1347 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=1348 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=1350 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=1354 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=1362 of size 3
+|        emptied 1 / 3 functions
+|     trying at i=13 of size 32
+|    try to remove functions (base: 669, decisionCounter: 5505308240353230159, numFuncs 1365)
+|     trying at i=669 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=670 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=672 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=676 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=684 of size 16
+|        emptied 16 / 16 functions
+|     trying at i=700 of size 32
+|        emptied 32 / 32 functions
+|     trying at i=732 of size 64
+|        emptied 64 / 64 functions
+|     trying at i=796 of size 128
+|        emptied 128 / 128 functions
+|     trying at i=924 of size 256
+|    try to remove functions (base: 999, decisionCounter: 4894973771946720369, numFuncs 1365)
+|     trying at i=999 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=1000 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=1002 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=1006 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=1014 of size 16
+|        emptied 16 / 16 functions
+|     trying at i=1030 of size 32
+|        emptied 32 / 32 functions
+|     trying at i=1062 of size 64
+|    try to remove functions (base: 640, decisionCounter: 14587071323714985280, numFuncs 1365)
+|     trying at i=640 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=641 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=643 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=647 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=655 of size 16
+|        emptied 14 / 16 functions
+|     trying at i=671 of size 32
+|    try to remove functions (base: 861, decisionCounter: 8048066651930887806, numFuncs 1365)
+|     trying at i=861 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 184109)
+|  destructive reduction led to size: 511479
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 435804
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O3 -all" succeeded, reduced size to 435748
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --gufa -O1 -all" succeeded, reduced size to 384991
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --dae-optimizing -all" succeeded, reduced size to 384795
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --inlining-optimizing -all" succeeded, reduced size to 384758
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 384755
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --reorder-functions -all" succeeded, reduced size to 384564
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 383443
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O3 -all" succeeded, reduced size to 383439
+|  after pass reduction: 383439
+|  pass progress: 128040, last destructive: 467
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 95859)
+|    0% of funcs complete
+|    5% of funcs complete
+|    10% of funcs complete
+|    15% of funcs complete
+|    20% of funcs complete
+|    25% of funcs complete
+|    30% of funcs complete
+|      tryToReplaceCurrent succeeded (in 266)
+|      tryToReplaceCurrent succeeded (in 266)
+|    35% of funcs complete
+|    40% of funcs complete
+|    45% of funcs complete
+|    50% of funcs complete
+|      tryToReplaceCurrent succeeded (in 410)
+|      tryToReplaceCurrent succeeded (in 410)
+|    55% of funcs complete
+|    60% of funcs complete
+|    65% of funcs complete
+|    70% of funcs complete
+|      tryToReplaceCurrent succeeded (in 587)
+|      tryToReplaceCurrent succeeded (in 587)
+|    75% of funcs complete
+|    80% of funcs complete
+|    85% of funcs complete
+|    90% of funcs complete
+|    95% of funcs complete
+|    100% of funcs complete
+|      shrank segment from 18285 => 18284 (skip: 1)
+|      shrank segment from 18284 => 18282 (skip: 2)
+|      shrank segment from 18282 => 18278 (skip: 4)
+|      shrank segment from 18278 => 18270 (skip: 8)
+|      shrank segment from 18270 => 18254 (skip: 16)
+|      shrank segment from 18254 => 18222 (skip: 32)
+|      shrank segment from 18222 => 18158 (skip: 64)
+|      shrank segment from 18158 => 18030 (skip: 128)
+|      shrank segment from 18030 => 17774 (skip: 256)
+|      shrank segment from 17774 => 17262 (skip: 512)
+|      shrank segment from 17262 => 16238 (skip: 1024)
+|      shrank segment from 16238 => 14190 (skip: 2048)
+|      shrank segment from 14190 => 10094 (skip: 4096)
+|      zeroed elem segment
+|      zeroed elem segment
+|      zeroed elem segment
+|      tryToReplaceCurrent succeeded (in (non-function context))
+|    try to remove functions (base: 129, decisionCounter: 11400714821889624029, numFuncs 790)
+|     trying at i=129 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=130 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=132 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=136 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=144 of size 16
+|        emptied 16 / 16 functions
+|     trying at i=160 of size 32
+|        emptied 32 / 32 functions
+|     trying at i=192 of size 64
+|        emptied 63 / 64 functions
+|     trying at i=256 of size 128
+|        emptied 128 / 128 functions
+|     trying at i=384 of size 256
+|        emptied 253 / 256 functions
+|     trying at i=640 of size 150
+|    try to remove functions (base: 677, decisionCounter: 9331998714548418677, numFuncs 790)
+|     trying at i=677 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=678 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=680 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=684 of size 8
+|    try to remove functions (base: 461, decisionCounter: 4937113301947367111, numFuncs 790)
+|     trying at i=461 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 95859)
+|      removed 1 exports
+|  destructive reduction led to size: 156169
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 125573
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O3 -all" succeeded, reduced size to 124614
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-memory -all" succeeded, reduced size to 50175
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -Os -all" succeeded, reduced size to 50015
+|  after pass reduction: 50015
+|  pass progress: 106154, last destructive: 542
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 12503)
+|      tryToReplaceCurrent succeeded (in (non-function context))
+|    0% of funcs complete
+|    5% of funcs complete
+|    10% of funcs complete
+|      tryToReplaceCurrent succeeded (in 24)
+|      tryToReplaceCurrent succeeded (in 24)
+|    15% of funcs complete
+|    20% of funcs complete
+|    25% of funcs complete
+|    30% of funcs complete
+|    35% of funcs complete
+|    40% of funcs complete
+|    45% of funcs complete
+|      tryToReplaceCurrent succeeded (in 104)
+|      tryToReplaceCurrent succeeded (in 104)
+|    50% of funcs complete
+|      tryToReplaceCurrent succeeded (in 116)
+|      tryToReplaceCurrent succeeded (in 116)
+|    55% of funcs complete
+|      tryToReplaceCurrent succeeded (in 127)
+|      tryToReplaceCurrent succeeded (in 127)
+|    60% of funcs complete
+|    65% of funcs complete
+|    70% of funcs complete
+|    75% of funcs complete
+|    80% of funcs complete
+|    85% of funcs complete
+|    90% of funcs complete
+|    95% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 90, decisionCounter: 11400714819559869100, numFuncs 215)
+|     trying at i=90 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=91 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=93 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=97 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=105 of size 16
+|     trying at i=16 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=24 of size 16
+|        emptied 15 / 16 functions
+|     trying at i=40 of size 32
+|        emptied 20 / 32 functions
+|     trying at i=72 of size 64
+|    try to remove functions (base: 83, decisionCounter: 9332007715386132148, numFuncs 215)
+|     trying at i=83 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=84 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=86 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=90 of size 8
+|     trying at i=1 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=5 of size 8
+|        emptied 6 / 8 functions
+|     trying at i=13 of size 16
+|        emptied 3 / 16 functions
+|     trying at i=29 of size 32
+|    try to remove functions (base: 162, decisionCounter: 4902515286064362467, numFuncs 215)
+|     trying at i=162 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=163 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=165 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=169 of size 8
+|        emptied 8 / 8 functions
+|     trying at i=177 of size 16
+|        emptied 16 / 16 functions
+|     trying at i=193 of size 22
+|        emptied 22 / 22 functions
+|     trying at i=10 of size 64
+|     trying at i=136 of size 32
+|        emptied 25 / 32 functions
+|    try to remove functions (base: 32, decisionCounter: 8231415862442922767, numFuncs 215)
+|     trying at i=32 of size 1
+|     trying at i=158 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 12503)
+|      removed 1 exports
+|      removed 2 exports
+|      removed 2 exports
+|  destructive reduction led to size: 22828
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O1 -all" succeeded, reduced size to 21840
+|  after pass reduction: 21840
+|  pass progress: 988, last destructive: 205
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 5460)
+|      tryToReplaceCurrent succeeded (in 0)
+|    1% of funcs complete
+|    7% of funcs complete
+|    13% of funcs complete
+|    18% of funcs complete
+|    23% of funcs complete
+|    28% of funcs complete
+|    33% of funcs complete
+|    39% of funcs complete
+|    44% of funcs complete
+|    49% of funcs complete
+|    55% of funcs complete
+|    60% of funcs complete
+|    65% of funcs complete
+|      tryToReplaceCurrent succeeded (in 47)
+|      tryToReplaceCurrent succeeded (in 47)
+|      tryToReplaceCurrent succeeded (in 48)
+|      tryToReplaceCurrent succeeded (in 48)
+|      tryToReplaceCurrent succeeded (in 48)
+|      tryToReplaceCurrent succeeded (in 48)
+|    71% of funcs complete
+|      tryToReplaceCurrent succeeded (in 51)
+|      tryToReplaceCurrent succeeded (in 51)
+|    76% of funcs complete
+|    81% of funcs complete
+|    86% of funcs complete
+|    91% of funcs complete
+|    97% of funcs complete
+|    try to remove functions (base: 8, decisionCounter: 11400714819420679898, numFuncs 69)
+|     trying at i=8 of size 1
+|        removed 1 functions
+|     trying at i=9 of size 2
+|     trying at i=64 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=65 of size 2
+|        emptied 1 / 2 functions
+|     trying at i=67 of size 1
+|    try to remove functions (base: 10, decisionCounter: 9332003919870688466, numFuncs 68)
+|     trying at i=10 of size 1
+|     trying at i=65 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 5460)
+|      removed 1 exports
+|      removed 2 exports
+|      removed 4 exports
+|  destructive reduction led to size: 21298
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O1 -all" succeeded, reduced size to 19672
+|  after pass reduction: 19672
+|  pass progress: 1626, last destructive: 20
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 4914)
+|    1% of funcs complete
+|    6% of funcs complete
+|    12% of funcs complete
+|    18% of funcs complete
+|    23% of funcs complete
+|    29% of funcs complete
+|    35% of funcs complete
+|    40% of funcs complete
+|      tryToReplaceCurrent succeeded (in 26)
+|    46% of funcs complete
+|    52% of funcs complete
+|    58% of funcs complete
+|    63% of funcs complete
+|    69% of funcs complete
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|    75% of funcs complete
+|      tryToReplaceCurrent succeeded (in 49)
+|      tryToReplaceCurrent succeeded (in 49)
+|    80% of funcs complete
+|    86% of funcs complete
+|    92% of funcs complete
+|    98% of funcs complete
+|    try to remove functions (base: 36, decisionCounter: 11400714819409658636, numFuncs 65)
+|     trying at i=36 of size 1
+|     trying at i=21 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 4914)
+|      removed 1 exports
+|      removed 2 exports
+|      removed 4 exports
+|  destructive reduction led to size: 19615
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O1 -all" succeeded, reduced size to 19610
+|  after pass reduction: 19610
+|  pass progress: 5, last destructive: 16
+|  reduce destructively... (factor: 1639)
+|    1% of funcs complete
+|    6% of funcs complete
+|    12% of funcs complete
+|    18% of funcs complete
+|    23% of funcs complete
+|    29% of funcs complete
+|    35% of funcs complete
+|    40% of funcs complete
+|      tryToReplaceCurrent succeeded (in 26)
+|    46% of funcs complete
+|    52% of funcs complete
+|    58% of funcs complete
+|    63% of funcs complete
+|      tryToReplaceChild succeeded (in 44)
+|      tryToReplaceCurrent succeeded (in 44)
+|    69% of funcs complete
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 45)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|      tryToReplaceCurrent succeeded (in 46)
+|    75% of funcs complete
+|      tryToReplaceCurrent succeeded (in 49)
+|      tryToReplaceCurrent succeeded (in 49)
+|    80% of funcs complete
+|    86% of funcs complete
+|    92% of funcs complete
+|    98% of funcs complete
+|    try to remove functions (base: 32, decisionCounter: 11400714819409380172, numFuncs 65)
+|     trying at i=32 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=33 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=35 of size 4
+|        emptied 3 / 4 functions
+|     trying at i=39 of size 8
+|     trying at i=56 of size 4
+|        emptied 4 / 4 functions
+|     trying at i=60 of size 5
+|        emptied 3 / 5 functions
+|     trying at i=3 of size 16
+|     trying at i=20 of size 8
+|        emptied 2 / 8 functions
+|     trying at i=28 of size 16
+|        emptied 9 / 16 functions
+|    try to remove functions (base: 0, decisionCounter: 9332003933820027330, numFuncs 65)
+|     trying at i=0 of size 1
+|     trying at i=17 of size 1
+|     trying at i=34 of size 1
+|     trying at i=51 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=52 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=54 of size 4
+|        emptied 2 / 4 functions
+|     trying at i=58 of size 7
+|    try to remove functions (base: 21, decisionCounter: 4958516771734554426, numFuncs 65)
+|     trying at i=21 of size 1
+|     trying at i=38 of size 1
+|     trying at i=55 of size 1
+|     trying at i=7 of size 1
+|    try to simplify elem segments
+|      shrank segment from 1445 => 1444 (skip: 1)
+|      shrank segment from 1444 => 1442 (skip: 2)
+|      shrank segment from 1442 => 1438 (skip: 4)
+|      shrank segment from 1438 => 1430 (skip: 8)
+|      shrank segment from 1430 => 1414 (skip: 16)
+|      shrank segment from 1414 => 1382 (skip: 32)
+|      shrank segment from 1382 => 1318 (skip: 64)
+|      shrank segment from 1318 => 1190 (skip: 128)
+|    try to remove exports (with factor 1639)
+|      removed 1 exports
+|      removed 2 exports
+|  destructive reduction led to size: 16699
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -O1 -all" succeeded, reduced size to 16384
+|  after pass reduction: 16384
+|  pass progress: 315, last destructive: 83
+|  reduce destructively... (factor: 547)
+|    3% of funcs complete
+|    10% of funcs complete
+|    17% of funcs complete
+|    25% of funcs complete
+|    32% of funcs complete
+|    39% of funcs complete
+|    46% of funcs complete
+|    53% of funcs complete
+|    60% of funcs complete
+|    67% of funcs complete
+|      tryToReplaceCurrent succeeded (in 19)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|      tryToReplaceCurrent succeeded (in 20)
+|    75% of funcs complete
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceChild succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|      tryToReplaceCurrent succeeded (in 21)
+|    82% of funcs complete
+|    89% of funcs complete
+|      tryToReplaceCurrent succeeded (in 25)
+|      tryToReplaceCurrent succeeded (in 25)
+|    96% of funcs complete
+|    try to remove functions (base: 6, decisionCounter: 11400714819397346862, numFuncs 28)
+|     trying at i=6 of size 1
+|     trying at i=12 of size 1
+|     trying at i=18 of size 1
+|     trying at i=24 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=25 of size 2
+|        emptied 1 / 2 functions
+|     trying at i=27 of size 1
+|     trying at i=5 of size 2
+|    try to remove functions (base: 1, decisionCounter: 9332003961953570997, numFuncs 28)
+|     trying at i=1 of size 1
+|     trying at i=7 of size 1
+|     trying at i=13 of size 1
+|     trying at i=19 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=20 of size 2
+|     trying at i=26 of size 1
+|        removed 1 functions
+|     trying at i=27 of size 1
+|    try to simplify elem segments
+|      shrank segment from 1190 => 1189 (skip: 1)
+|      shrank segment from 1189 => 1187 (skip: 2)
+|      shrank segment from 1187 => 1183 (skip: 4)
+|      shrank segment from 1183 => 1175 (skip: 8)
+|      shrank segment from 1175 => 1159 (skip: 16)
+|      shrank segment from 1159 => 1127 (skip: 32)
+|      shrank segment from 1127 => 1063 (skip: 64)
+|      shrank segment from 1063 => 935 (skip: 128)
+|      shrank segment from 935 => 679 (skip: 256)
+|      shrank segment from 679 => 167 (skip: 512)
+|      shrank segment from 167 => 0 (skip: 547)
+|    try to remove exports (with factor 547)
+|      removed 1 exports
+|      removed 2 exports
+|  destructive reduction led to size: 14126
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 14037
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --dae -all" succeeded, reduced size to 13863
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --duplicate-function-elimination -all" succeeded, reduced size to 13853
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 13850
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 13832
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --precompute -all" succeeded, reduced size to 13657
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 13653
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-nonfunction-module-elements -all" succeeded, reduced size to 13645
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --reorder-locals -all" succeeded, reduced size to 13637
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 13153
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --vacuum -all" succeeded, reduced size to 13152
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 13132
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --duplicate-function-elimination -all" succeeded, reduced size to 13117
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 13109
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 13108
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 13091
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --vacuum -all" succeeded, reduced size to 13088
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 13085
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --local-cse -all" succeeded, reduced size to 13083
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 13080
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 13078
+|  after pass reduction: 13078
+|  pass progress: 1048, last destructive: 86
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 492)
+|    4% of funcs complete
+|    9% of funcs complete
+|    18% of funcs complete
+|    27% of funcs complete
+|    36% of funcs complete
+|    45% of funcs complete
+|    50% of funcs complete
+|    59% of funcs complete
+|    68% of funcs complete
+|    77% of funcs complete
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceChild succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 17)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceChild succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|      tryToReplaceCurrent succeeded (in 18)
+|    86% of funcs complete
+|    95% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 0, decisionCounter: 11400714819386991406, numFuncs 22)
+|     trying at i=0 of size 1
+|     trying at i=5 of size 1
+|        removed 1 functions
+|     trying at i=6 of size 2
+|        removed 2 functions
+|     trying at i=8 of size 4
+|        removed 4 functions
+|     trying at i=12 of size 8
+|    try to remove functions (base: 2, decisionCounter: 9332004057098960972, numFuncs 15)
+|     trying at i=2 of size 1
+|        removed 1 functions
+|     trying at i=3 of size 2
+|        removed 2 functions
+|     trying at i=5 of size 4
+|        removed 4 functions
+|     trying at i=9 of size 6
+|     trying at i=0 of size 4
+|        emptied 1 / 4 functions
+|    try to remove functions (base: 1, decisionCounter: 4959162361049163113, numFuncs 8)
+|     trying at i=1 of size 1
+|        removed 1 functions
+|     trying at i=2 of size 2
+|        removed 2 functions
+|     trying at i=4 of size 4
+|    try to remove functions (base: 1, decisionCounter: 10272871761652257561, numFuncs 5)
+|     trying at i=1 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 492)
+|      removed 1 exports
+|  destructive reduction led to size: 7298
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 7252
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 7237
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 7236
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --precompute -all" succeeded, reduced size to 7040
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 6956
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 6941
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 6933
+|  after pass reduction: 6933
+|  pass progress: 365, last destructive: 83
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 442)
+|    20% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|    40% of funcs complete
+|    60% of funcs complete
+|    80% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 0, decisionCounter: 11400714819357085260, numFuncs 5)
+|     trying at i=0 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 442)
+|  destructive reduction led to size: 6746
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 6684
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 6677
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 6659
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --precompute -all" succeeded, reduced size to 6639
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 6631
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 6630
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 6628
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 6625
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --precompute -all" succeeded, reduced size to 6622
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 6616
+|  after pass reduction: 6616
+|  pass progress: 130, last destructive: 37
+|  reduce destructively... (factor: 148)
+|    20% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|    40% of funcs complete
+|      tryToReplaceCurrent succeeded (in 2)
+|      tryToReplaceCurrent succeeded (in 2)
+|    60% of funcs complete
+|    80% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 0, decisionCounter: 11400714819354837970, numFuncs 5)
+|     trying at i=0 of size 1
+|     trying at i=2 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=3 of size 2
+|        emptied 1 / 2 functions
+|    try to remove functions (base: 0, decisionCounter: 9332004741062976715, numFuncs 5)
+|     trying at i=0 of size 1
+|     trying at i=2 of size 1
+|        removed 1 functions
+|     trying at i=3 of size 2
+|        removed 2 functions
+|    try to remove functions (base: 0, decisionCounter: 4961998132383350190, numFuncs 2)
+|     trying at i=0 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 148)
+|  destructive reduction led to size: 5452
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 5240
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --local-cse -all" succeeded, reduced size to 5239
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 5216
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 5192
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --precompute -all" succeeded, reduced size to 5185
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 5183
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 5159
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --vacuum -all" succeeded, reduced size to 5158
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 5115
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 5108
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 5106
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 5088
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --vacuum -all" succeeded, reduced size to 5086
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 5074
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --optimize-instructions -all" succeeded, reduced size to 5071
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm --coalesce-locals --vacuum -all" succeeded, reduced size to 5064
+|  after pass reduction: 5064
+|  pass progress: 388, last destructive: 107
+|  reduce destructively... (factor: 50)
+|    50% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      block-nop removed
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|    100% of funcs complete
+|    try to remove functions (base: 1, decisionCounter: 11400714819345901785, numFuncs 2)
+|     trying at i=1 of size 1
+|     trying at i=0 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 50)
+|  destructive reduction led to size: 3514
+|  reduce using passes...
+|  after pass reduction: 3514
+|  pass progress: 0, last destructive: 213
+|  reduce destructively... (factor: 17)
+
+|! WARNING: writing before destructive reduction fails, very unlikely reduction can work
+[ProgramResult] code: 256 stdout: 
+Not interesting
+[====]
+in 0.0229063 seconds
+[/ProgramResult]
+
+|    50% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 1, decisionCounter: 11400714819333522797, numFuncs 2)
+|     trying at i=1 of size 1
+|     trying at i=0 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 17)
+|  reduce destructively... (factor: 4)
+
+|! WARNING: writing before destructive reduction fails, very unlikely reduction can work
+[ProgramResult] code: 256 stdout: 
+Not interesting
+[====]
+in 0.0273628 seconds
+[/ProgramResult]
+
+|    50% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 1, decisionCounter: 9332004794505024375, numFuncs 2)
+|     trying at i=1 of size 1
+|     trying at i=0 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 4)
+|  reduce destructively... (factor: 1)
+
+|! WARNING: writing before destructive reduction fails, very unlikely reduction can work
+[ProgramResult] code: 256 stdout: 
+Not interesting
+[====]
+in 0.0235196 seconds
+[/ProgramResult]
+
+|    50% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 0, decisionCounter: 4962885533997707366, numFuncs 2)
+|     trying at i=0 of size 1
+|     trying at i=1 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 1)
+|  destructive reduction led to size: 3514
+|  reduce using passes...
+|  after pass reduction: 3514
+|finished, final size: 3514
+Interesting!
+len(testset): 1
+command:
+ timeout 86400s wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-708ea77.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm' -t /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced_test.wasm -w /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.reduced.wasm /home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm

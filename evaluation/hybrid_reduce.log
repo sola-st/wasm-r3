@@ -1,0 +1,7 @@
+timeout: failed to run command ‘wasm-reduce-all’: No such file or directory
+Error: The file /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm does not exist.
+len(testset): 1
+command:
+ timeout 86400s wasm-reduce-all -to 60 -b $BINARYEN_ROOT/bin '--command=python /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-708ea77.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm' -t /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm -w /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.sliced.wasm
+Failed to run rtexviewer - wasm-hybrid-all
+Error: Command 'python /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-708ea77.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm' returned non-zero exit status 2.

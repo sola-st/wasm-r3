@@ -1,0 +1,1064 @@
+|applying timeout: 60
+|wasm-reduce
+|input: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.sliced.wasm
+|test: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm
+|working: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm
+|bin dir: /home/doehyunbaek/wasm-r3/third_party/binaryen/bin/
+|extra flags: -all
+|expected result:
+[ProgramResult] code: 0 stdout: 
+Interesting!
+[====]
+in 0.053743 seconds
+[/ProgramResult]
+
+|!! Make sure the above is what you expect! !!
+
+|checking that command has different behavior on different inputs (this verifies that the test file is used by the command)
+|checking that command has expected behavior on canonicalized (read-written) binary
+|input size: 122140
+|starting reduction!
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm -O1 -all" succeeded, reduced size to 108262
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-memory -all" succeeded, reduced size to 27563
+|  after pass reduction: 27563
+|  pass progress: 94577, last destructive: 0
+|  progress is good, do not quickly decrease factor
+|  reduce destructively... (factor: 6890)
+|      tryToReplaceCurrent succeeded (in (non-function context))
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|    5% of funcs complete
+|    11% of funcs complete
+|    16% of funcs complete
+|    21% of funcs complete
+|    26% of funcs complete
+|    32% of funcs complete
+|    38% of funcs complete
+|    43% of funcs complete
+|    49% of funcs complete
+|    54% of funcs complete
+|    59% of funcs complete
+|    64% of funcs complete
+|    69% of funcs complete
+|    74% of funcs complete
+|    80% of funcs complete
+|    85% of funcs complete
+|    90% of funcs complete
+|    95% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 6, decisionCounter: 11400714819358511065, numFuncs 71)
+|     trying at i=6 of size 1
+|     trying at i=4 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=5 of size 2
+|    try to simplify elem segments
+|    try to remove exports (with factor 6890)
+|      removed 1 exports
+|      removed 2 exports
+|      removed 4 exports
+|      removed 8 exports
+|      removed 16 exports
+|      removed 32 exports
+|      removed 64 exports
+|      removed 128 exports
+|      removed 256 exports
+|      removed 512 exports
+|      removed 874 exports
+|  destructive reduction led to size: 10080
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --dae -all" succeeded, reduced size to 9844
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 9840
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-nonfunction-module-elements -all" succeeded, reduced size to 8162
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --reorder-locals -all" succeeded, reduced size to 8148
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 8113
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --duplicate-function-elimination -all" succeeded, reduced size to 8089
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 8076
+|  after pass reduction: 8076
+|  pass progress: 2004, last destructive: 1901
+|  reduce destructively... (factor: 2019)
+|    1% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|    7% of funcs complete
+|    13% of funcs complete
+|    19% of funcs complete
+|    25% of funcs complete
+|    31% of funcs complete
+|    37% of funcs complete
+|    43% of funcs complete
+|    49% of funcs complete
+|    55% of funcs complete
+|    61% of funcs complete
+|    67% of funcs complete
+|    73% of funcs complete
+|    79% of funcs complete
+|    85% of funcs complete
+|    91% of funcs complete
+|    97% of funcs complete
+|    try to remove functions (base: 47, decisionCounter: 11400714819356843585, numFuncs 67)
+|     trying at i=47 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=48 of size 2
+|        emptied 2 / 2 functions
+|     trying at i=50 of size 4
+|        emptied 2 / 4 functions
+|     trying at i=54 of size 8
+|        emptied 4 / 8 functions
+|     trying at i=62 of size 5
+|        removed 5 functions
+|     trying at i=11 of size 32
+|        emptied 18 / 32 functions
+|     trying at i=43 of size 19
+|        emptied 3 / 19 functions
+|    try to remove functions (base: 2, decisionCounter: 9332004680442090614, numFuncs 62)
+|     trying at i=2 of size 1
+|        emptied 1 / 1 functions
+|     trying at i=3 of size 2
+|        emptied 1 / 2 functions
+|     trying at i=5 of size 4
+|        removed 4 functions
+|     trying at i=9 of size 8
+|        emptied 1 / 8 functions
+|     trying at i=17 of size 16
+|        removed 16 functions
+|     trying at i=33 of size 29
+|        removed 29 functions
+|    try to remove functions (base: 9, decisionCounter: 4962244235636699423, numFuncs 13)
+|     trying at i=9 of size 1
+|        removed 1 functions
+|     trying at i=10 of size 2
+|        removed 2 functions
+|     trying at i=12 of size 1
+|        removed 1 functions
+|     trying at i=3 of size 6
+|    try to remove functions (base: 5, decisionCounter: 4444956710748088880, numFuncs 9)
+|     trying at i=5 of size 1
+|        removed 1 functions
+|     trying at i=6 of size 2
+|        removed 2 functions
+|     trying at i=8 of size 1
+|        removed 1 functions
+|     trying at i=3 of size 2
+|    try to remove functions (base: 1, decisionCounter: 11615939537744650381, numFuncs 5)
+|     trying at i=1 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 2019)
+|      removed 1 exports
+|      removed 2 exports
+|      removed 4 exports
+|      removed 8 exports
+|      removed 4 exports
+|  destructive reduction led to size: 6175
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 6122
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --optimize-instructions -all" succeeded, reduced size to 6119
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --precompute -all" succeeded, reduced size to 6116
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 6111
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 6046
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 6042
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --optimize-instructions -all" succeeded, reduced size to 6040
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 6025
+|  after pass reduction: 6025
+|  pass progress: 150, last destructive: 166
+|  reduce destructively... (factor: 674)
+|    20% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|    40% of funcs complete
+|    60% of funcs complete
+|    80% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 3, decisionCounter: 11400714819353940158, numFuncs 5)
+|     trying at i=3 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 674)
+|      removed 1 exports
+|      removed 2 exports
+|      removed 2 exports
+|  destructive reduction led to size: 5930
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --dae -all" succeeded, reduced size to 5879
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 5862
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --precompute -all" succeeded, reduced size to 5859
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 5856
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 5853
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 5837
+|  after pass reduction: 5837
+|  pass progress: 93, last destructive: 28
+|  reduce destructively... (factor: 225)
+|    20% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|    40% of funcs complete
+|    60% of funcs complete
+|    80% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 3, decisionCounter: 11400714819352691198, numFuncs 5)
+|     trying at i=3 of size 1
+|     trying at i=1 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 225)
+|      removed 1 exports
+|  destructive reduction led to size: 5249
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --dae -all" succeeded, reduced size to 5171
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 5140
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --optimize-instructions -all" succeeded, reduced size to 5119
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --precompute -all" succeeded, reduced size to 5066
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 5054
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 5043
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --optimize-instructions -all" succeeded, reduced size to 5026
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 5011
+|  after pass reduction: 5011
+|  pass progress: 238, last destructive: 63
+|  reduce destructively... (factor: 76)
+|    20% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|    40% of funcs complete
+|    60% of funcs complete
+|    80% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 3, decisionCounter: 11400714819347610313, numFuncs 5)
+|     trying at i=3 of size 1
+|     trying at i=4 of size 1
+|        removed 1 functions
+|     trying at i=0 of size 2
+|     trying at i=1 of size 1
+|     trying at i=2 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 76)
+|      removed 1 exports
+|  destructive reduction led to size: 3392
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --dae -all" succeeded, reduced size to 3336
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --merge-blocks --vacuum -all" succeeded, reduced size to 3258
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --optimize-instructions -all" succeeded, reduced size to 3241
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --precompute -all" succeeded, reduced size to 3088
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 3073
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --simplify-locals --vacuum -all" succeeded, reduced size to 3051
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --local-cse -all" succeeded, reduced size to 3047
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --optimize-instructions -all" succeeded, reduced size to 3044
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --remove-unused-names --remove-unused-brs -all" succeeded, reduced size to 3037
+|  after pass reduction: 3037
+|  pass progress: 355, last destructive: 155
+|  reduce destructively... (factor: 26)
+|    25% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|    50% of funcs complete
+|    75% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 2, decisionCounter: 11400714819336314978, numFuncs 4)
+|     trying at i=2 of size 1
+|     trying at i=3 of size 1
+|     trying at i=0 of size 1
+|     trying at i=1 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 26)
+|  destructive reduction led to size: 1808
+|  reduce using passes...
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --dce -all" succeeded, reduced size to 1797
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --optimize-instructions -all" succeeded, reduced size to 1751
+|    command "/home/doehyunbaek/wasm-r3/third_party/binaryen/bin/wasm-opt /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm -o /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm --optimize-instructions -all" succeeded, reduced size to 1744
+|  after pass reduction: 1744
+|  pass progress: 64, last destructive: 236
+|  reduce destructively... (factor: 9)
+|    25% of funcs complete
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      block-nop removed
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceChild succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      tryToReplaceCurrent succeeded (in 1)
+|      block-nop removed
+|    50% of funcs complete
+|    75% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 1, decisionCounter: 11400714819328657753, numFuncs 4)
+|     trying at i=1 of size 1
+|     trying at i=2 of size 1
+|     trying at i=3 of size 1
+|     trying at i=0 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 9)
+|  destructive reduction led to size: 956
+|  reduce using passes...
+|  after pass reduction: 956
+|  pass progress: 0, last destructive: 262
+|  reduce destructively... (factor: 5)
+
+|! WARNING: writing before destructive reduction fails, very unlikely reduction can work
+[ProgramResult] code: 256 stdout: 
+Not interesting
+[====]
+in 0.02973 seconds
+[/ProgramResult]
+
+|    25% of funcs complete
+|    50% of funcs complete
+|    75% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 3, decisionCounter: 11400714819325119971, numFuncs 4)
+|     trying at i=3 of size 1
+|     trying at i=0 of size 1
+|     trying at i=1 of size 1
+|     trying at i=2 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 5)
+|  reduce destructively... (factor: 1)
+
+|! WARNING: writing before destructive reduction fails, very unlikely reduction can work
+[ProgramResult] code: 256 stdout: 
+Not interesting
+[====]
+in 0.0311874 seconds
+[/ProgramResult]
+
+|    25% of funcs complete
+|    50% of funcs complete
+|    75% of funcs complete
+|    100% of funcs complete
+|    try to remove functions (base: 1, decisionCounter: 9332004828757039569, numFuncs 4)
+|     trying at i=1 of size 1
+|     trying at i=2 of size 1
+|     trying at i=3 of size 1
+|     trying at i=0 of size 1
+|    try to simplify elem segments
+|    try to remove exports (with factor 1)
+|  destructive reduction led to size: 956
+|  reduce using passes...
+|  after pass reduction: 956
+|finished, final size: 956
+Interesting!
+len(testset): 1
+command:
+ timeout 86400s wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-708ea77.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm' -t /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all_test.wasm -w /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.hybrid-all.wasm /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.sliced.wasm

@@ -519,9 +519,9 @@
             "code-size": 4989
         },
         "wasm-reduce": {
-            "time": 163.53580856323242,
-            "module-size": 61,
-            "code-size": 16
+            "time": 215.82854962348938,
+            "module-size": 552,
+            "code-size": 499
         },
         "wasm-slice": {
             "time": 560.7057807445526,
@@ -530,9 +530,9 @@
             "target-size": 6762
         },
         "wasm-hybrid-all": {
-            "time": 33.66325068473816,
-            "module-size": 62,
-            "code-size": 15
+            "time": 124.9759202003479,
+            "module-size": 956,
+            "code-size": 894
         },
         "wasm-hybrid-target": {
             "time": 434.246458530426,
@@ -645,9 +645,9 @@
             "code-size": 219
         },
         "wasm-reduce": {
-            "time": 412.1361882686615,
-            "module-size": 68,
-            "code-size": 20
+            "time": 645.9628677368164,
+            "module-size": 3514,
+            "code-size": 3438
         },
         "wasm-slice": {
             "time": 3261.7688353061676,
@@ -656,9 +656,9 @@
             "target-size": 10354
         },
         "wasm-hybrid-all": {
-            "time": 275.1675634384155,
-            "module-size": 63,
-            "code-size": 15
+            "time": 121.910719871521,
+            "module-size": 93,
+            "code-size": 54
         },
         "wasm-hybrid-target": {
             "time": 292.00916361808777,

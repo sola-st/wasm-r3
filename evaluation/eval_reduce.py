@@ -9,23 +9,27 @@ ONLY_FAIL = os.getenv("ONLY_FAIL", False)
 MAX_WORKER = int(os.getenv("MAX_WORKER", 8))
 
 testname_to_oracle = {
-    'guiicons': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'rfxgen': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'riconpacker': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'rguistyler': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'rguilayout': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'funky-kart': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'sqlgui': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'jsc': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'boa': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-6d2b057.py",
-    'pacalc': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-81555ab.py",
-    'bullet': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-f7aca00.py",
-    'sandspiel': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-ccf0c56.py",
-    'pathfinding': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-ccf0c56.py",
-    'parquet': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-33ec201.py",
-    'figma-startpage': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-33ec201.py",
-    'ffmpeg': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-4e3e221.py",
-    'jqkungfu': f"{WASMR3_PATH}/evaluation/benchmarks/fixed-by-4e3e221.py",
+    'boa': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'bullet': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-f7aca00.py", # fix RR-Reduce not working
+    'commanderkeen': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-25e04ac.py", # fix slippage of RR-Reduce
+    'ffmpeg': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-4e3e221.py",
+    'figma-startpage': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-33ec201.py",
+    'funky-kart': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'guiicons': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'hydro': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py", # fix slippage of wasm-reduce
+    'jqkungfu': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-4e3e221.py",
+    'jsc': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'mandelbrot': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-0b43b85.py",
+    'pacalc': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-81555ab.py",
+    'parquet': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-33ec201.py",
+    'pathfinding': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-ccf0c56.py",
+    'rfxgen': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'rguilayout': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'rguistyler': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'riconpacker': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'rtexviewer': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py", # fix slippage of wasm-reduce
+    'sandspiel': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-ccf0c56.py",
+    'sqlgui': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
 }
 
 
@@ -66,7 +70,7 @@ def tool_to_command(tool, test_input, oracle_script):
             f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.reduced_test.wasm"
         )
         work_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.reduced.wasm"
-        return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
+        return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
     elif tool == "wasm-hybrid-all":
         suffix = util.tool_to_suffix[tool]
         test_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}_test.wasm"
@@ -74,7 +78,7 @@ def tool_to_command(tool, test_input, oracle_script):
         wasm_slice_output_path = (
             f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.sliced.wasm"
         )
-        return f"wasm-reduce-all -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
+        return f"wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
     elif tool == "wasm-hybrid-target":
         suffix = util.tool_to_suffix[tool]
         test_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}_test.wasm"
@@ -82,7 +86,7 @@ def tool_to_command(tool, test_input, oracle_script):
         wasm_slice_output_path = (
             f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.sliced.wasm"
         )
-        return f"wasm-reduce-target -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
+        return f"wasm-reduce-target -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
     elif tool == "wasm-hybrid-remain":
         suffix = util.tool_to_suffix[tool]
         test_path = f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.{suffix}_test.wasm"
@@ -90,7 +94,7 @@ def tool_to_command(tool, test_input, oracle_script):
         wasm_slice_output_path = (
             f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}/{test_name}.sliced.wasm"
         )
-        return f"wasm-reduce-remain -to 60 -b $BINARYEN_ROOT/bin '--command={oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
+        return f"wasm-reduce-remain -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
     elif (
         tool == "wasm-shrink"
     ):  # https://github.com/doehyunbaek/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
@@ -107,7 +111,7 @@ def run_command(tool, oracle_script, test_input):
     if not command:
         print(f"Error: Unknown tool '{tool}'")
         sys.exit(1)
-
+    print('command:\n', command)
     result = subprocess.run(
         command,
         shell=True,
