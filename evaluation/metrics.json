@@ -994,9 +994,9 @@
             "code-size": 5356751
         },
         "wasm-reduce": {
-            "time": 86400.01130652428,
-            "module-size": 4145831,
-            "code-size": 4014762
+            "time": 1472.3886215686798,
+            "module-size": 535,
+            "code-size": 479
         },
         "wasm-slice": {
             "time": 16.98512887954712,

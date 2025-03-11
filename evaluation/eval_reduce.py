@@ -16,7 +16,7 @@ testname_to_oracle = {
     'figma-startpage': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-33ec201.py",
     'funky-kart': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
     'guiicons': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
-    'hydro': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py", # fix slippage of wasm-reduce
+    'hydro': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py",
     'jqkungfu': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-4e3e221.py",
     'jsc': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
     'mandelbrot': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-0b43b85.py",
@@ -27,7 +27,7 @@ testname_to_oracle = {
     'rguilayout': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
     'rguistyler': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
     'riconpacker': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
-    'rtexviewer': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py", # fix slippage of wasm-reduce
+    'rtexviewer': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py",
     'sandspiel': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-ccf0c56.py",
     'sqlgui': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
 }
