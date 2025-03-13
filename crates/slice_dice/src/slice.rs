@@ -43,7 +43,7 @@ pub fn generate(
         }
         if line.starts_with(" (export") {
             writeln!(rest_file, "{}", line)?;
-            writeln!(part_file, "{}", line)?;
+            // writeln!(part_file, "{}", line)?;
             continue;
         }
         if line.starts_with(" (func") {

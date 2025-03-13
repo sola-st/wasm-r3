@@ -65,7 +65,7 @@ def get_fidx():
 def run_slicedice(testname, fidx):
     try:
         # fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
-        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx} --alternativeTrace --alternativeDownload"
+        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx} --alternativeDownload"
         print(command)
         output = subprocess.run(command, shell=True, text=True)
         # TODO: make this configurable
