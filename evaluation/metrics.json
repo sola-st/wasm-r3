@@ -729,30 +729,20 @@
             "code-size": 3595700
         },
         "wasm-reduce": {
-            "time": 86400.00453615189,
-            "module-size": 849187,
-            "code-size": 767796
+            "time": 86400.00873208046,
+            "module-size": 1874019,
+            "code-size": 1577758
         },
         "wasm-slice": {
             "time": 3667.878022670746,
-            "module-size": 482405,
-            "code-size": 141210,
-            "target-size": 1859
+            "module-size": 379253,
+            "code-size": 52744,
+            "target-size": 782
         },
         "wasm-hybrid-all": {
             "time": 86400.00170731544,
             "module-size": 1388,
             "code-size": 1329
-        },
-        "wasm-hybrid-target": {
-            "time": 15639.7174949646,
-            "module-size": 144449,
-            "code-size": 139545
-        },
-        "wasm-hybrid-remain": {
-            "time": 16978.108206272125,
-            "module-size": 14666,
-            "code-size": 9775
         }
     },
     "boa": {

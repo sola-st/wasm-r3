@@ -11,7 +11,7 @@ MAX_WORKER = int(os.getenv("MAX_WORKER", 8))
 testname_to_oracle = {
     'boa': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
     'bullet': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-f7aca00.py", # fix RR-Reduce not working
-    'commanderkeen': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-25e04ac.py", # fix slippage of RR-Reduce
+    'commanderkeen': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-25e04ac.py",
     'ffmpeg': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-4e3e221.py",
     'figma-startpage': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-33ec201.py",
     'funky-kart': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
