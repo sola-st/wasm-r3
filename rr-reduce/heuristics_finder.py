@@ -10,14 +10,16 @@ def extract_heuristic_fidx(command_output: str):
     pattern = r'<wasm func(?:tion)? #?(\d+)>'
     matches = re.findall(pattern, command_output)
 
-    # If no matches found, try to find indices in the error message
     if not matches:
         error_pattern = r'(?:^|\n)\s*\d+:\s*0x[0-9a-fA-F]+ - .*?!<wasm function (\d+)>'
         matches = re.findall(error_pattern, command_output, re.MULTILINE)
 
-    # If still no matches found, try to find indices in the bail out message
     if not matches:
         bailout_pattern = r'function #(\d+):'
+        matches = re.findall(bailout_pattern, command_output)
+
+    if not matches:
+        bailout_pattern = r'\[spc-jit\] #(\d+)'
         matches = re.findall(bailout_pattern, command_output)
 
     # TODO: evaluate preserving the order
@@ -41,12 +43,15 @@ ffmpeg_output = '''CompletedProcess(args='timeout 10s wizard-253bd02 -mode=jit b
 CompletedProcess(args='timeout 20s wizard-4e3e221 -mode=jit benchmarks/ffmpeg/out/186/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
 Interesting!'''
 
+bullet_output = '''CompletedProcess(args='timeout 10s wizard-d46ae4f -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm', returncode=255, stdout='', stderr='!NullCheckException\\n\\tin [spc-jit] #2706\\n\\tin [spc-jit] #1277\\n\\tin [spc-jit] #1278\\n\\tin [spc-jit] #2484\\n\\tin [spc-jit] #1252\\n\\tin [spc-jit] #1300\\n\\tin [spc-jit] #1345\\n\\tin [spc-jit] #1606\\n\\tin [spc-jit] #1624\\n\\tin [spc-jit] #1689\\n\\tin [spc-jit] #0\\n\\tin X86_64Spc.invoke() [src/engine/x86-64/X86_64SinglePassCompiler.v3 @ 794:57]\\n\\tin X86_64Runtime.invoke() [src/engine/x86-64/X86_64Runtime.v3 @ 117:48]\\n\\tin X86_64Runtime.runWithTailCalls() [src/engine/x86-64/X86_64Runtime.v3 @ 45:57]\\n\\tin X86_64Runtime.run() [src/engine/x86-64/X86_64Runtime.v3 @ 17:43]\\n\\tin X86_64SpcAotStrategy.call() [src/engine/x86-64/X86_64Target.v3 @ 141:41]\\n\\tin Execute.call() [src/engine/Execute.v3 @ 28:36]\\n\\tin main() [src/wizeng.main.v3 @ 144:29]\\n\\n')\nCompletedProcess(args='timeout 20s wizard-f7aca00 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm', returncode=0, stdout='', stderr='')\nInteresting!'''
+
 wasmedge3076_output = '''CompletedProcess(args='timeout 1s /home/doehyunbaek/.wasmedge/bin/wasmedge compile /home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm wasmedge#3076.wasm.so && timeout 1s /home/doehyunbaek/.wasmedge/bin/wasmedge wasmedge#3076.wasm.so main', returncode=134, stdout='[2025-03-18 10:36:26.089] [info] compile start\n[2025-03-18 10:36:26.092] [info] verify start\n[2025-03-18 10:36:26.095] [info] optimize start\n[2025-03-18 10:36:26.178] [info] codegen start\n[2025-03-18 10:36:26.263] [info] output start\n[2025-03-18 10:36:26.266] [info] compile done\n[2025-03-18 10:36:26.553] [error] execution failed: integer divide by zero, Code: 0x404\n[2025-03-18 10:36:26.553] [error]     When executing function name: "main"\n', stderr='')
 CompletedProcess(args='timeout 5s wasmtime --invoke main /home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm', returncode=134, stdout='', stderr='Error: failed to run main module `/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm`\n\nCaused by:\n    0: failed to invoke `main`\n    1: error while executing at wasm backtrace:\n           0: 0x1f2e - <unknown>!<wasm function 7>\n           1: 0x1fbb - <unknown>!<wasm function 8>\n           2: 0x223a - <unknown>!<wasm function 12>\n           3: 0x2359 - <unknown>!<wasm function 13>\n           4: 0x7e2d - <unknown>!<wasm function 130>\n    2: memory fault at wasm address 0x10000204c in linear memory of size 0x100000000\n    3: wasm trap: out of bounds memory access\n')'''
 
 assert extract_heuristic_fidx(boa_output) == [0, 103, 149, 286, 1476, 2824]
 assert extract_heuristic_fidx(funky_kart) == [0, 431, 462, 1092, 1529]
 assert extract_heuristic_fidx(wamr2450_output) == [17, 21, 22, 64, 65]
+assert extract_heuristic_fidx(bullet_output) == [0, 1252, 1277, 1278, 1300, 1345, 1606, 1624, 1689, 2484, 2706]
 assert extract_heuristic_fidx(ffmpeg_output) == [1]
 assert extract_heuristic_fidx(wasmedge3076_output) == [7, 8, 12, 13, 130]
 
