@@ -11,7 +11,7 @@ WASM = sys.argv[1]
 PRINT_OUTPUT = os.getenv('PRINT_OUTPUT', 'False').lower() in ('true', '1', 't')
 
 def wrong_on_target():
-    command = f'timeout 1s wasmedge-96ecb67 compile {WASM} wasmedge#3076.wasm.so && timeout 1s wasmedge-96ecb67 wasmedge#3076.wasm.so main'
+    command = f'timeout 1s /home/doehyunbaek/.wasmedge/bin/wasmedge compile {WASM} wasmedge#3076.wasm.so && timeout 1s /home/doehyunbaek/.wasmedge/bin/wasmedge wasmedge#3076.wasm.so main'
     result = subprocess.run(
         command,
         shell=True,
@@ -19,8 +19,8 @@ def wrong_on_target():
         text=True,
     )
     if PRINT_OUTPUT: print(result)
-    expected_output = 'execution failed: integer divide by zero, Code: 0x84'
-    if expected_output in result.stdout:
+    expected_output = 'wasm trap: out of bounds memory access'
+    if expected_output not in result.stdout:
         return True
     else:
         return False

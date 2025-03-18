@@ -41,10 +41,14 @@ ffmpeg_output = '''CompletedProcess(args='timeout 10s wizard-253bd02 -mode=jit b
 CompletedProcess(args='timeout 20s wizard-4e3e221 -mode=jit benchmarks/ffmpeg/out/186/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
 Interesting!'''
 
+wasmedge3076_output = '''CompletedProcess(args='timeout 1s /home/doehyunbaek/.wasmedge/bin/wasmedge compile /home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm wasmedge#3076.wasm.so && timeout 1s /home/doehyunbaek/.wasmedge/bin/wasmedge wasmedge#3076.wasm.so main', returncode=134, stdout='[2025-03-18 10:36:26.089] [info] compile start\n[2025-03-18 10:36:26.092] [info] verify start\n[2025-03-18 10:36:26.095] [info] optimize start\n[2025-03-18 10:36:26.178] [info] codegen start\n[2025-03-18 10:36:26.263] [info] output start\n[2025-03-18 10:36:26.266] [info] compile done\n[2025-03-18 10:36:26.553] [error] execution failed: integer divide by zero, Code: 0x404\n[2025-03-18 10:36:26.553] [error]     When executing function name: "main"\n', stderr='')
+CompletedProcess(args='timeout 5s wasmtime --invoke main /home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm', returncode=134, stdout='', stderr='Error: failed to run main module `/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm`\n\nCaused by:\n    0: failed to invoke `main`\n    1: error while executing at wasm backtrace:\n           0: 0x1f2e - <unknown>!<wasm function 7>\n           1: 0x1fbb - <unknown>!<wasm function 8>\n           2: 0x223a - <unknown>!<wasm function 12>\n           3: 0x2359 - <unknown>!<wasm function 13>\n           4: 0x7e2d - <unknown>!<wasm function 130>\n    2: memory fault at wasm address 0x10000204c in linear memory of size 0x100000000\n    3: wasm trap: out of bounds memory access\n')'''
+
 assert extract_heuristic_fidx(boa_output) == [0, 103, 149, 286, 1476, 2824]
 assert extract_heuristic_fidx(funky_kart) == [0, 431, 462, 1092, 1529]
 assert extract_heuristic_fidx(wamr2450_output) == [17, 21, 22, 64, 65]
 assert extract_heuristic_fidx(ffmpeg_output) == [1]
+assert extract_heuristic_fidx(wasmedge3076_output) == [7, 8, 12, 13, 130]
 
 def get_heuristic_fidx(test_input, oracle_script) -> list:
     command = f'python {oracle_script} {test_input}'

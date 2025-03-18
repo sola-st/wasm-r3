@@ -230,13 +230,13 @@
             "code-size": 18
         },
         "wasm-slice": {
-            "time": 3600,
-            "module-size": 34320,
-            "code-size": 31365,
-            "target-size": 5926
+            "time": 202.6016891002655,
+            "module-size": 6258,
+            "code-size": 882,
+            "target-size": 104
         },
         "wasm-hybrid-all": {
-            "time": 557.312408208847,
+            "time": 0.6664700508117676,
             "module-size": 63,
             "code-size": 18
         },
