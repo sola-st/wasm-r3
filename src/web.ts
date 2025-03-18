@@ -66,7 +66,9 @@ export class Analyser {
                 }
                 this.alternateTraces[index].push(trace);
             }
-            // console.log(`Browser console: ${message.text()}`);
+            if (process.env.LOG_BROWSER_CONSOLE === '1') {
+                console.log(`Browser console: ${message.text()}`);
+            }
         });
         this.page.on('pageerror', msg => {
             console.log(`Browser pageerror: ${msg}`);
