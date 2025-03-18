@@ -47,7 +47,7 @@ export class Analyser {
             this.browser = await chromium.connectOverCDP(`http://localhost:${CDP_PORT}`);
         } else {
             this.browser = await browserType.launch({
-                headless: options.headless, args: [
+                headless: false, args: [
                     // '--disable-web-security',
                     '--js-flags="--max_old_space_size=8192"',
                     '--enable-experimental-web-platform-features',
