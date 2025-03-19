@@ -8,7 +8,7 @@
             "code-size": 1913,
             "function_count": 12,
             "dynamic_function_count": 8,
-            "fixed-by": "0.14.0-rc.5"
+            "fixed-by": "93fd4ae"
         },
         "wasm-shrink": {
             "time": 105.75285744667053,
@@ -176,7 +176,7 @@
             "code-size": 19098,
             "function_count": 76,
             "dynamic_function_count": 5,
-            "fixed-by": "0.14.0-rc.5"
+            "fixed-by": "93fd4ae"
         },
         "wasm-shrink": {
             "time": 189.67841958999634,
@@ -218,7 +218,7 @@
             "code-size": 31365,
             "function_count": 131,
             "dynamic_function_count": 6,
-            "fixed-by": "0.14.0-rc.4"
+            "fixed-by": "93fd4ae"
         },
         "wasm-shrink": {
             "time": 3399.466275215149,
@@ -554,7 +554,7 @@
             "code-size": 243564,
             "function_count": 1006,
             "dynamic_function_count": 11,
-            "fixed-by": "0.14.0-rc.4"
+            "fixed-by": "93fd4ae"
         },
         "wasm-shrink": {
             "time": 3600.00191116333,
