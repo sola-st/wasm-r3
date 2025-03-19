@@ -25,3 +25,5 @@ table
 *.aot
 *.so
 *.ipynb
+wasmedge-*
+!*.tar.gz
