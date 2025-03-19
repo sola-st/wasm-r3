@@ -60,7 +60,7 @@ start_metrics = {
     "boa": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/boa/boa.wasm",
         }
@@ -68,7 +68,7 @@ start_metrics = {
     "guiicons": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/guiicons/guiicons.wasm",
         }
@@ -76,7 +76,7 @@ start_metrics = {
     "funky-kart": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/funky-kart/funky-kart.wasm",
         }
@@ -84,7 +84,7 @@ start_metrics = {
     "jsc": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jsc/jsc.wasm",
         }
@@ -92,7 +92,7 @@ start_metrics = {
     "rfxgen": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rfxgen/rfxgen.wasm",
         }
@@ -100,7 +100,7 @@ start_metrics = {
     "rguilayout": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm",
             "fixed-by": "6d2b057"
         }
@@ -108,7 +108,7 @@ start_metrics = {
     "rguistyler": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguistyler/rguistyler.wasm",
         }
@@ -116,7 +116,7 @@ start_metrics = {
     "riconpacker": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/riconpacker/riconpacker.wasm",
         }
@@ -124,7 +124,7 @@ start_metrics = {
     "sqlgui": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sqlgui/sqlgui.wasm",
         }
@@ -132,7 +132,7 @@ start_metrics = {
     "commanderkeen": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "25e04ac",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/commanderkeen/commanderkeen.wasm",
         }
@@ -140,7 +140,7 @@ start_metrics = {
     "hydro": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "708ea77",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm",
         }
@@ -148,7 +148,7 @@ start_metrics = {
     "rtexviewer": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "708ea77",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.wasm",
         }
@@ -156,7 +156,7 @@ start_metrics = {
     "mandelbrot": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard-0d6926f",
+            "engine": "wizard",
             "fixed-by": "0b43b8",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
         }
@@ -228,7 +228,7 @@ start_metrics = {
     "wasmedge#3057": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wasmedge-96ecb67",
+            "engine": "wasmedge",
             "fixed-by": "0.14.0-rc.4",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
         }
@@ -236,7 +236,7 @@ start_metrics = {
     "wasmedge#3076": {  # this doesn't work for wasm-slice
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wasmedge-96ecb67",
+            "engine": "wasmedge",
             "fixed-by": "0.14.0-rc.4",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
         }
@@ -252,7 +252,7 @@ start_metrics = {
     "wasmedge#3019": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wasmedge-96ecb67",
+            "engine": "wasmedge",
             "fixed-by": "0.14.0-rc.5",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
         }
@@ -276,7 +276,7 @@ start_metrics = {
     "wasmedge#3018": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wasmedge-96ecb67",
+            "engine": "wasmedge",
             "fixed-by": "0.14.0-rc.5",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
         }

@@ -30,6 +30,10 @@ testname_to_oracle = {
     'rtexviewer': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py",
     'sandspiel': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-ccf0c56.py",
     'sqlgui': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'wasmedge#3018': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-93fd4ae.py",
+    'wasmedge#3019': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-93fd4ae.py",
+    'wasmedge#3057': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-93fd4ae.py",
+    'wasmedge#3076': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-93fd4ae.py",
 }
 
 
