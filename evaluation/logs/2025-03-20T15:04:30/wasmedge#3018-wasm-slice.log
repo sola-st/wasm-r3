@@ -1,0 +1,1019 @@
+2025-03-20 17:19:51,491 - INFO - command:
+PRINT=1 timeout 86400s /home/doehyunbaek/wasm-r3/rr-reduce/wasm-slice /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-93fd4ae.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm
+2025-03-20 17:19:51,708 - INFO - test_input: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm
+2025-03-20 17:19:51,708 - INFO - save_path: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.sliced.wasm
+2025-03-20 17:19:51,803 - INFO - CompletedProcess(args='python /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-93fd4ae.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm', returncode=0, stdout='Attribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (i32)* @trap\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t0\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t1\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t2\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t3\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t4\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t5\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t8\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t10\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t11\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ni64 (%ExecCtx*)* @f0\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f1\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i64)* @f2\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32)* @f3\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ndouble (%ExecCtx*, double, i32)* @f4\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f5\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32)* @f6\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32, i32)* @f7\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ni64 (%ExecCtx*)* @f8\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i32, i32, i32, i32)* @f9\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\ndouble (%ExecCtx*, double, i32)* @f10\nAttribute \'"�%(��W\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1a(��W\x00"="\\12\\00"\' should have an Argument\n{ float, i32, i32, i32, i32 } (%ExecCtx*)* @f11\nAlias and aliasee types should match!\nvoid (%ExecCtx*, i8*, i8*, i8*)** @t6\nAlias and aliasee types should match!\nvoid (%ExecCtx*, i8*, i8*, i8*)** @t7\nAlias and aliasee types should match!\nvoid (%ExecCtx*, i8*, i8*, i8*)** @t9\n\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (i32)* @trap\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t0\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t1\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t2\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t3\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t4\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t5\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t8\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t10\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i8*, i8*, i8*)* @t11\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ni64 (%ExecCtx*)* @f0\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f1\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i64)* @f2\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32)* @f3\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ndouble (%ExecCtx*, double, i32)* @f4\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f5\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32)* @f6\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ni32 (%ExecCtx*, i32, i32, i32)* @f7\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ni64 (%ExecCtx*)* @f8\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\nvoid (%ExecCtx*, i32, i32, i32, i32)* @f9\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\ndouble (%ExecCtx*, double, i32)* @f10\nAttribute \'"ٔ\n�(V\x00\x00\x02\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00no-stack-arg-probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00��\n�(V\x00"="\\12\\00"\' should have an Argument\n{ float, i32, i32, i32, i32 } (%ExecCtx*)* @f11\n\nInteresting!\n', stderr='')
+2025-03-20 17:19:51,803 - INFO - > test
+2025-03-20 17:19:51,803 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 0 --alternativeDownload
+2025-03-20 17:19:51,803 - INFO - 
+2025-03-20 17:19:51,882 - INFO - (node:1137781) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:19:51,882 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:19:52,180 - INFO - undefined
+2025-03-20 17:19:52,181 - INFO - wasmedge#3018-0:
+2025-03-20 17:19:52,218 - INFO - Running slice-dice: 38ms
+2025-03-20 17:19:56,049 - INFO - Running wasm-r3: 3830ms
+2025-03-20 17:19:56,050 - INFO - Sliced file size: 6096bytes
+2025-03-20 17:19:56,229 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,229 - INFO - void (i32)* @trap
+2025-03-20 17:19:56,229 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,229 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:19:56,229 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,229 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,230 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,230 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,230 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,230 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,230 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,230 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,230 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,230 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:19:56,230 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,231 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:19:56,231 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,231 - INFO - i64 (%ExecCtx*)* @f1
+2025-03-20 17:19:56,231 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,231 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f2
+2025-03-20 17:19:56,231 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,231 - INFO - void (%ExecCtx*, i64)* @f3
+2025-03-20 17:19:56,231 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,231 - INFO - i32 (%ExecCtx*, i32, i32)* @f4
+2025-03-20 17:19:56,231 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,231 - INFO - double (%ExecCtx*, double, i32)* @f5
+2025-03-20 17:19:56,231 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,231 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:19:56,231 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,231 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:19:56,231 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,232 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:19:56,232 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,232 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:19:56,232 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,232 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:19:56,232 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,232 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:19:56,232 - INFO - Attribute '"�S���`                no-stack-arg-probe              �H���` "="\12\00"' should have an Argument
+2025-03-20 17:19:56,232 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:19:56,232 - INFO - 
+2025-03-20 17:19:56,232 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,232 - INFO - void (i32)* @trap
+2025-03-20 17:19:56,232 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,232 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:19:56,232 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,232 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:19:56,232 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,233 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:19:56,233 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - i64 (%ExecCtx*)* @f1
+2025-03-20 17:19:56,234 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f2
+2025-03-20 17:19:56,234 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - void (%ExecCtx*, i64)* @f3
+2025-03-20 17:19:56,234 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - i32 (%ExecCtx*, i32, i32)* @f4
+2025-03-20 17:19:56,234 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - double (%ExecCtx*, double, i32)* @f5
+2025-03-20 17:19:56,234 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:19:56,234 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:19:56,234 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:19:56,234 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,234 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:19:56,235 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,235 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:19:56,235 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,235 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:19:56,235 - INFO - Attribute '")�"�aY                no-stack-arg-probe              ��"�aY "="\12\00"' should have an Argument
+2025-03-20 17:19:56,235 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:19:56,235 - INFO - 
+2025-03-20 17:19:56,235 - INFO - Not interesting
+2025-03-20 17:19:56,321 - INFO - 
+2025-03-20 17:19:56,321 - INFO - > test
+2025-03-20 17:19:56,321 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 1 --alternativeDownload
+2025-03-20 17:19:56,321 - INFO - 
+2025-03-20 17:19:56,399 - INFO - (node:1138385) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:19:56,399 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:19:56,690 - INFO - undefined
+2025-03-20 17:19:56,690 - INFO - wasmedge#3018-1:
+2025-03-20 17:19:56,731 - INFO - Running slice-dice: 41ms
+2025-03-20 17:20:00,449 - INFO - Running wasm-r3: 3718ms
+2025-03-20 17:20:00,450 - INFO - Sliced file size: 6087bytes
+2025-03-20 17:20:00,610 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,610 - INFO - void (i32)* @trap
+2025-03-20 17:20:00,610 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,610 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:00,610 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,610 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:00,610 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,610 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:00,610 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,610 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:00,610 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,610 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:00,610 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,610 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:00,610 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,610 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,611 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,611 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,611 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,611 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,611 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f1
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,611 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,611 - INFO - void (%ExecCtx*, i64)* @f3
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,611 - INFO - i32 (%ExecCtx*, i32, i32)* @f4
+2025-03-20 17:20:00,611 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - double (%ExecCtx*, double, i32)* @f5
+2025-03-20 17:20:00,612 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:20:00,612 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:00,612 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:00,612 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:00,612 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:00,612 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:00,612 - INFO - Attribute '"tF�V                no-stack-arg-probe              �hF�V "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:00,612 - INFO - 
+2025-03-20 17:20:00,612 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,612 - INFO - void (i32)* @trap
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:00,613 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,613 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f1
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - void (%ExecCtx*, i64)* @f3
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - i32 (%ExecCtx*, i32, i32)* @f4
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - double (%ExecCtx*, double, i32)* @f5
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:20:00,614 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,614 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:00,615 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,615 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:00,615 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,615 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:00,615 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,615 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:00,615 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,615 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:00,615 - INFO - Attribute '"iD��A]                no-stack-arg-probe               9��A] "="\12\00"' should have an Argument
+2025-03-20 17:20:00,615 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:00,615 - INFO - 
+2025-03-20 17:20:00,615 - INFO - Not interesting
+2025-03-20 17:20:00,698 - INFO - 
+2025-03-20 17:20:00,699 - INFO - > test
+2025-03-20 17:20:00,699 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 2 --alternativeDownload
+2025-03-20 17:20:00,699 - INFO - 
+2025-03-20 17:20:00,783 - INFO - (node:1138981) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:20:00,783 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:20:01,072 - INFO - undefined
+2025-03-20 17:20:01,073 - INFO - wasmedge#3018-2:
+2025-03-20 17:20:01,113 - INFO - Running slice-dice: 41ms
+2025-03-20 17:20:05,062 - INFO - Running wasm-r3: 3949ms
+2025-03-20 17:20:05,064 - INFO - Sliced file size: 6449bytes
+2025-03-20 17:20:05,236 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,236 - INFO - void (i32)* @trap
+2025-03-20 17:20:05,236 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,236 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:05,236 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,237 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:05,237 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,237 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:05,237 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,237 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:05,237 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,237 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:05,237 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,237 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:05,237 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,237 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:05,237 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,237 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:05,237 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,237 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,238 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,238 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,238 - INFO - void (%ExecCtx*, i64)* @f1
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,238 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,238 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,238 - INFO - i32 (%ExecCtx*, i32, i32)* @f4
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,238 - INFO - double (%ExecCtx*, double, i32)* @f5
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,238 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:20:05,238 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:05,239 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:05,239 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:05,239 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:05,239 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:05,239 - INFO - Attribute '"�Dl|�a                no-stack-arg-probe              `9l|�a "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:05,239 - INFO - 
+2025-03-20 17:20:05,239 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - void (i32)* @trap
+2025-03-20 17:20:05,239 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:05,239 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,239 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,240 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,240 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,240 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,240 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,240 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,240 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,240 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,240 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:05,240 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:05,241 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - void (%ExecCtx*, i64)* @f1
+2025-03-20 17:20:05,241 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:05,241 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:05,241 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - i32 (%ExecCtx*, i32, i32)* @f4
+2025-03-20 17:20:05,241 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - double (%ExecCtx*, double, i32)* @f5
+2025-03-20 17:20:05,241 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:20:05,241 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:05,241 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,241 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:05,242 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,242 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:05,242 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,242 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:05,242 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,242 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:05,242 - INFO - Attribute '"�˙Y                no-stack-arg-probe              �	˙Y "="\12\00"' should have an Argument
+2025-03-20 17:20:05,242 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:05,242 - INFO - 
+2025-03-20 17:20:05,242 - INFO - Not interesting
+2025-03-20 17:20:05,341 - INFO - 
+2025-03-20 17:20:05,341 - INFO - > test
+2025-03-20 17:20:05,341 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 3 --alternativeDownload
+2025-03-20 17:20:05,341 - INFO - 
+2025-03-20 17:20:05,428 - INFO - (node:1139802) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:20:05,428 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:20:05,718 - INFO - undefined
+2025-03-20 17:20:05,718 - INFO - wasmedge#3018-3:
+2025-03-20 17:20:05,758 - INFO - Running slice-dice: 40ms
+2025-03-20 17:20:09,621 - INFO - Running wasm-r3: 3863ms
+2025-03-20 17:20:09,622 - INFO - Sliced file size: 6049bytes
+2025-03-20 17:20:09,776 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,776 - INFO - void (i32)* @trap
+2025-03-20 17:20:09,776 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,776 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:09,776 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,776 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:09,776 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,776 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:09,776 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,776 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:09,776 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,776 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:09,776 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,776 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:09,776 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - i32 (%ExecCtx*, i32, i32)* @f1
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:09,777 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,777 - INFO - double (%ExecCtx*, double, i32)* @f5
+2025-03-20 17:20:09,778 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,778 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:20:09,778 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,778 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:09,778 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,778 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:09,778 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,778 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:09,778 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,778 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:09,778 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,778 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:09,778 - INFO - Attribute '"�O:a�d                no-stack-arg-probe              �D:a�d "="\12\00"' should have an Argument
+2025-03-20 17:20:09,778 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:09,778 - INFO - 
+2025-03-20 17:20:09,778 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,778 - INFO - void (i32)* @trap
+2025-03-20 17:20:09,778 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,779 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:09,779 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - i32 (%ExecCtx*, i32, i32)* @f1
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - double (%ExecCtx*, double, i32)* @f5
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,780 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:09,780 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,781 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:09,781 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,781 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:09,781 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,781 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:09,781 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,781 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:09,781 - INFO - Attribute '"����Y                no-stack-arg-probe              ����Y "="\12\00"' should have an Argument
+2025-03-20 17:20:09,781 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:09,781 - INFO - 
+2025-03-20 17:20:09,781 - INFO - Not interesting
+2025-03-20 17:20:09,868 - INFO - 
+2025-03-20 17:20:09,868 - INFO - > test
+2025-03-20 17:20:09,868 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 4 --alternativeDownload
+2025-03-20 17:20:09,868 - INFO - 
+2025-03-20 17:20:09,949 - INFO - (node:1140437) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:20:09,949 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:20:10,245 - INFO - undefined
+2025-03-20 17:20:10,245 - INFO - wasmedge#3018-4:
+2025-03-20 17:20:10,289 - INFO - Running slice-dice: 44ms
+2025-03-20 17:20:14,336 - INFO - Running wasm-r3: 4047ms
+2025-03-20 17:20:14,337 - INFO - Sliced file size: 6093bytes
+2025-03-20 17:20:14,507 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,507 - INFO - void (i32)* @trap
+2025-03-20 17:20:14,507 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,507 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:14,507 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,507 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:14,507 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,507 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:14,507 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,507 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:14,507 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,507 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:14,507 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,507 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,508 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,508 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,508 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,508 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,508 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,508 - INFO - double (%ExecCtx*, double, i32)* @f1
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,508 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,508 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:14,508 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:14,509 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:14,509 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:20:14,509 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:14,509 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:14,509 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:14,509 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:14,509 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:14,509 - INFO - Attribute '")��ZZ                no-stack-arg-probe              ��ZZ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,509 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:14,510 - INFO - 
+2025-03-20 17:20:14,510 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,510 - INFO - void (i32)* @trap
+2025-03-20 17:20:14,510 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,510 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:14,510 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,510 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:14,510 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,510 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:14,510 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,510 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:14,510 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,510 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:14,510 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,510 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:14,510 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,510 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - double (%ExecCtx*, double, i32)* @f1
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:14,511 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,511 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:14,512 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,512 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f6
+2025-03-20 17:20:14,512 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,512 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:14,512 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,512 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:14,512 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,512 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:14,512 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,512 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:14,512 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,512 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:14,512 - INFO - Attribute '"�#�f]_                no-stack-arg-probe              P�f]_ "="\12\00"' should have an Argument
+2025-03-20 17:20:14,512 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:14,512 - INFO - 
+2025-03-20 17:20:14,512 - INFO - Not interesting
+2025-03-20 17:20:14,599 - INFO - 
+2025-03-20 17:20:14,600 - INFO - > test
+2025-03-20 17:20:14,600 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 5 --alternativeDownload
+2025-03-20 17:20:14,600 - INFO - 
+2025-03-20 17:20:14,674 - INFO - (node:1141149) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:20:14,675 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:20:14,976 - INFO - undefined
+2025-03-20 17:20:14,976 - INFO - wasmedge#3018-5:
+2025-03-20 17:20:15,014 - INFO - Running slice-dice: 38ms
+2025-03-20 17:20:19,025 - INFO - Running wasm-r3: WARNING: roundtrip of 6877853142648312859: 6877853142648313000
+2025-03-20 17:20:19,025 - INFO - 4011ms
+2025-03-20 17:20:19,026 - INFO - Sliced file size: 6598bytes
+2025-03-20 17:20:19,194 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,194 - INFO - void (i32)* @trap
+2025-03-20 17:20:19,194 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,194 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:19,194 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,194 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:19,194 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,194 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:19,194 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,194 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:19,194 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,194 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:19,194 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,194 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:19,194 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,195 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:19,195 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,195 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:19,195 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,195 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:19,195 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,195 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:19,195 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,195 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:19,195 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,195 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f1
+2025-03-20 17:20:19,195 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,195 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:19,195 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,195 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:19,195 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:19,196 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:19,196 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - double (%ExecCtx*, double, i32)* @f6
+2025-03-20 17:20:19,196 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:19,196 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:19,196 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:19,196 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:19,196 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:19,196 - INFO - Attribute '")��c\                no-stack-arg-probe              ���c\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,196 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:19,196 - INFO - 
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (i32)* @trap
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:19,197 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,197 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f1
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,198 - INFO - double (%ExecCtx*, double, i32)* @f6
+2025-03-20 17:20:19,198 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,199 - INFO - i32 (%ExecCtx*, i32, i32)* @f7
+2025-03-20 17:20:19,199 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,199 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:19,199 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,199 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:19,199 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,199 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:19,199 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,199 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:19,199 - INFO - Attribute '"�TV��\                no-stack-arg-probe              @IV��\ "="\12\00"' should have an Argument
+2025-03-20 17:20:19,199 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:19,199 - INFO - 
+2025-03-20 17:20:19,199 - INFO - Not interesting
+2025-03-20 17:20:19,284 - INFO - 
+2025-03-20 17:20:19,284 - INFO - > test
+2025-03-20 17:20:19,284 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 6 --alternativeDownload
+2025-03-20 17:20:19,284 - INFO - 
+2025-03-20 17:20:19,364 - INFO - (node:1141902) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:20:19,365 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:20:19,640 - INFO - undefined
+2025-03-20 17:20:19,641 - INFO - wasmedge#3018-6:
+2025-03-20 17:20:19,678 - INFO - Running slice-dice: 38ms
+2025-03-20 17:20:23,634 - INFO - Running wasm-r3: 3956ms
+2025-03-20 17:20:23,636 - INFO - Sliced file size: 6304bytes
+2025-03-20 17:20:23,788 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,788 - INFO - void (i32)* @trap
+2025-03-20 17:20:23,788 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,788 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:23,788 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,788 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:23,788 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,788 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:23,788 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,788 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:23,789 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,789 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:23,789 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,789 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:23,789 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,789 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:23,789 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,789 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:23,789 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,789 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:23,789 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,789 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:23,789 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,789 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:23,789 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,789 - INFO - i32 (%ExecCtx*, i32, i32)* @f1
+2025-03-20 17:20:23,790 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,790 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:23,790 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,790 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:23,790 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,790 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:23,790 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,790 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:23,790 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,790 - INFO - double (%ExecCtx*, double, i32)* @f6
+2025-03-20 17:20:23,790 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,790 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f7
+2025-03-20 17:20:23,790 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,790 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:23,790 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,790 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:23,791 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,791 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:23,791 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,791 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:23,791 - INFO - Attribute '"	��YY                no-stack-arg-probe              ���YY "="\12\00"' should have an Argument
+2025-03-20 17:20:23,791 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:23,791 - INFO - 
+2025-03-20 17:20:23,791 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,791 - INFO - void (i32)* @trap
+2025-03-20 17:20:23,791 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,791 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:23,791 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,791 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:23,791 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,791 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:23,791 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,791 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,792 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,792 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,792 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,792 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,792 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,792 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,792 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,792 - INFO - i32 (%ExecCtx*, i32, i32)* @f1
+2025-03-20 17:20:23,792 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,793 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:23,793 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,793 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:23,793 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,793 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:23,793 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,793 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:23,793 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,793 - INFO - double (%ExecCtx*, double, i32)* @f6
+2025-03-20 17:20:23,793 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,793 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f7
+2025-03-20 17:20:23,793 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,793 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f8
+2025-03-20 17:20:23,793 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,793 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:23,793 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,794 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:23,794 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,794 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:23,794 - INFO - Attribute '"��9�W                no-stack-arg-probe              @�9�W "="\12\00"' should have an Argument
+2025-03-20 17:20:23,794 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:23,794 - INFO - 
+2025-03-20 17:20:23,794 - INFO - Not interesting
+2025-03-20 17:20:23,879 - INFO - 
+2025-03-20 17:20:23,879 - INFO - > test
+2025-03-20 17:20:23,879 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 7 --alternativeDownload
+2025-03-20 17:20:23,879 - INFO - 
+2025-03-20 17:20:23,963 - INFO - (node:1142711) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:20:23,963 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:20:24,342 - INFO - undefined
+2025-03-20 17:20:24,342 - INFO - wasmedge#3018-7:
+2025-03-20 17:20:24,379 - INFO - Running slice-dice: 37ms
+2025-03-20 17:20:28,311 - INFO - Running wasm-r3: 3932ms
+2025-03-20 17:20:28,312 - INFO - Sliced file size: 6224bytes
+2025-03-20 17:20:28,463 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,463 - INFO - void (i32)* @trap
+2025-03-20 17:20:28,464 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,464 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:28,464 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,464 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:28,464 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,464 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:28,464 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,464 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:28,464 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,464 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:28,465 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,465 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:28,465 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,465 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:28,465 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,465 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:28,465 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,465 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:28,465 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,465 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:28,465 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,465 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:28,466 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,466 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f1
+2025-03-20 17:20:28,466 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,466 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:28,466 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,466 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:28,466 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,466 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:28,466 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,466 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:28,466 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,466 - INFO - double (%ExecCtx*, double, i32)* @f6
+2025-03-20 17:20:28,466 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,467 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f7
+2025-03-20 17:20:28,467 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,467 - INFO - i32 (%ExecCtx*, i32, i32)* @f8
+2025-03-20 17:20:28,467 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,467 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:28,467 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,467 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:28,467 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,467 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:28,467 - INFO - Attribute '"�_/<Ua                no-stack-arg-probe              @T/<Ua "="\12\00"' should have an Argument
+2025-03-20 17:20:28,467 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:28,467 - INFO - 
+2025-03-20 17:20:28,467 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,467 - INFO - void (i32)* @trap
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,468 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,468 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,468 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,468 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,468 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,468 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,468 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,468 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:28,468 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f1
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - double (%ExecCtx*, double, i32)* @f6
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f7
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - i32 (%ExecCtx*, i32, i32)* @f8
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - i64 (%ExecCtx*)* @f9
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:28,469 - INFO - Attribute '"�=�I`                no-stack-arg-probe              �t=�I` "="\12\00"' should have an Argument
+2025-03-20 17:20:28,469 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:28,469 - INFO - 
+2025-03-20 17:20:28,469 - INFO - Not interesting
+2025-03-20 17:20:28,553 - INFO - 
+2025-03-20 17:20:28,554 - INFO - > test
+2025-03-20 17:20:28,554 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t wasmedge#3018 -i 8 --alternativeDownload
+2025-03-20 17:20:28,554 - INFO - 
+2025-03-20 17:20:28,636 - INFO - (node:1143263) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:20:28,636 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:20:28,990 - INFO - undefined
+2025-03-20 17:20:28,990 - INFO - wasmedge#3018-8:
+2025-03-20 17:20:29,030 - INFO - Running slice-dice: 40ms
+2025-03-20 17:20:33,184 - INFO - Running wasm-r3: 4152ms
+2025-03-20 17:20:33,185 - INFO - Sliced file size: 6426bytes
+2025-03-20 17:20:33,335 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,335 - INFO - void (i32)* @trap
+2025-03-20 17:20:33,335 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,335 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:33,335 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,335 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:33,335 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,335 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:33,335 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,335 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - i64 (%ExecCtx*)* @f1
+2025-03-20 17:20:33,336 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,336 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - double (%ExecCtx*, double, i32)* @f6
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f7
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - i32 (%ExecCtx*, i32, i32)* @f8
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f9
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,337 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:33,337 - INFO - Attribute '"�TF�a                no-stack-arg-probe              �IF�a "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:33,338 - INFO - 
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - void (i32)* @trap
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t0
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t1
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t2
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t3
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t4
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t5
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,338 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t6
+2025-03-20 17:20:33,338 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t7
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t8
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - void (%ExecCtx*, i8*, i8*, i8*)* @t9
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - void (%ExecCtx*)* @f0
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - i64 (%ExecCtx*)* @f1
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - i64 (%ExecCtx*)* @f2
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32)* @f3
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - void (%ExecCtx*, i64)* @f4
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - i32 (%ExecCtx*, i32, i32)* @f5
+2025-03-20 17:20:33,339 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,339 - INFO - double (%ExecCtx*, double, i32)* @f6
+2025-03-20 17:20:33,340 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,340 - INFO - i32 (%ExecCtx*, i32, i32, i32, i32, i32, i32)* @f7
+2025-03-20 17:20:33,340 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,340 - INFO - i32 (%ExecCtx*, i32, i32)* @f8
+2025-03-20 17:20:33,340 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,340 - INFO - i32 (%ExecCtx*, i32, i32, i32)* @f9
+2025-03-20 17:20:33,340 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,340 - INFO - void (%ExecCtx*, i32, i32, i32, i32)* @f10
+2025-03-20 17:20:33,340 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,340 - INFO - double (%ExecCtx*, double, i32)* @f11
+2025-03-20 17:20:33,340 - INFO - Attribute '"�j x^                no-stack-arg-probe              ��i x^ "="\12\00"' should have an Argument
+2025-03-20 17:20:33,340 - INFO - { float, i32, i32, i32, i32 } (%ExecCtx*)* @f12
+2025-03-20 17:20:33,340 - INFO - 
+2025-03-20 17:20:33,340 - INFO - Interesting!
+2025-03-20 17:20:33,341 - INFO - 
+2025-03-20 17:20:33,341 - INFO - Heuristic function indices: []
+2025-03-20 17:20:33,341 - INFO - Dynamic function indices (except heuristic): [0, 1, 2, 3, 4, 5, 6, 7]
+2025-03-20 17:20:33,341 - INFO - All function indices (except heuristic and dynamic): [8, 9, 10, 11]
+2025-03-20 17:20:33,341 - INFO - Running wasmedge#3018 - 0
+2025-03-20 17:20:33,341 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 0 --alternativeDownload
+2025-03-20 17:20:33,341 - INFO - Running wasmedge#3018 - 1
+2025-03-20 17:20:33,341 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 1 --alternativeDownload
+2025-03-20 17:20:33,341 - INFO - Running wasmedge#3018 - 2
+2025-03-20 17:20:33,341 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 2 --alternativeDownload
+2025-03-20 17:20:33,341 - INFO - Running wasmedge#3018 - 3
+2025-03-20 17:20:33,341 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 3 --alternativeDownload
+2025-03-20 17:20:33,341 - INFO - Running wasmedge#3018 - 4
+2025-03-20 17:20:33,341 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 4 --alternativeDownload
+2025-03-20 17:20:33,341 - INFO - Running wasmedge#3018 - 5
+2025-03-20 17:20:33,341 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 5 --alternativeDownload
+2025-03-20 17:20:33,342 - INFO - Running wasmedge#3018 - 6
+2025-03-20 17:20:33,342 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 6 --alternativeDownload
+2025-03-20 17:20:33,342 - INFO - Running wasmedge#3018 - 7
+2025-03-20 17:20:33,342 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 7 --alternativeDownload
+2025-03-20 17:20:33,342 - INFO - Running wasmedge#3018 - 8
+2025-03-20 17:20:33,342 - INFO - timeout 120s npm test slicedice -- -t wasmedge#3018 -i 8 --alternativeDownload
+2025-03-20 17:20:33,342 - INFO - Oracle script passed for wasmedge#3018 - 8
+2025-03-20 17:20:33,342 - INFO - Sliced wasm file size: 6426

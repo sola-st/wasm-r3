@@ -94,6 +94,12 @@ def run_slicedice(testname, fidx):
 print(f'test_input: {test_input}')
 print(f'save_path: {save_path}')
 
+# Strip debug information from the original WebAssembly file
+stripped_wasm_path = f"{os.path.dirname(test_input)}/{test_name}.stripped.wasm"
+strip_command = f"{WASMR3_PATH}/third_party/wasm-tools/target/release/wasm-tools strip --all -o {stripped_wasm_path} {test_input}"
+subprocess.run(strip_command, shell=True, check=True)
+shutil.copy(stripped_wasm_path, test_input)
+
 shutil.copy(
     test_input,
     save_path,

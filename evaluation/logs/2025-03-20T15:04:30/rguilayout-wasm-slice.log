@@ -1,0 +1,56 @@
+2025-03-20 15:06:13,885 - INFO - command:
+PRINT=1 timeout 86400s /home/doehyunbaek/wasm-r3/rr-reduce/wasm-slice /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-6d2b057.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm
+2025-03-20 15:06:16,615 - INFO - 
+2025-03-20 15:06:16,616 - INFO - > test
+2025-03-20 15:06:16,616 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t rguilayout -i 0 --alternativeDownload
+2025-03-20 15:06:16,616 - INFO - 
+2025-03-20 15:06:16,713 - INFO - (node:8619) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:06:16,714 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:06:17,227 - INFO - undefined
+2025-03-20 15:06:17,227 - INFO - rguilayout-0:
+2025-03-20 15:06:18,730 - INFO - Running slice-dice: 1503ms
+2025-03-20 15:06:47,722 - INFO - Running wasm-r3: 28992ms
+2025-03-20 15:06:47,726 - INFO - Sliced file size: 117931bytes
+2025-03-20 15:06:47,781 - INFO - CompletedProcess(args='timeout 10s wizard-92a3330 -mode=int /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/out/0/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:06:47,781 - INFO - Not interesting
+2025-03-20 15:06:47,887 - INFO - 
+2025-03-20 15:06:47,887 - INFO - > test
+2025-03-20 15:06:47,887 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t rguilayout -i 37 --alternativeDownload
+2025-03-20 15:06:47,887 - INFO - 
+2025-03-20 15:06:47,974 - INFO - (node:10333) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:06:47,975 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:06:48,333 - INFO - undefined
+2025-03-20 15:06:48,333 - INFO - rguilayout-37:
+2025-03-20 15:06:49,230 - INFO - Running slice-dice: 896ms
+2025-03-20 15:07:24,757 - INFO - Running wasm-r3: 35526ms
+2025-03-20 15:07:24,762 - INFO - Sliced file size: 291217bytes
+2025-03-20 15:07:24,983 - INFO - CompletedProcess(args='timeout 10s wizard-92a3330 -mode=int /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/out/37/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:07:24,983 - INFO - Not interesting
+2025-03-20 15:07:25,138 - INFO - 
+2025-03-20 15:07:25,138 - INFO - > test
+2025-03-20 15:07:25,138 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t rguilayout -i 216 --alternativeDownload
+2025-03-20 15:07:25,138 - INFO - 
+2025-03-20 15:07:25,230 - INFO - (node:11477) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:07:25,230 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:07:25,604 - INFO - undefined
+2025-03-20 15:07:25,605 - INFO - rguilayout-216:
+2025-03-20 15:07:26,872 - INFO - Running slice-dice: 1268ms
+2025-03-20 15:08:32,521 - INFO - Running wasm-r3: 65649ms
+2025-03-20 15:08:32,526 - INFO - Sliced file size: 384884bytes
+2025-03-20 15:08:32,815 - INFO - CompletedProcess(args='timeout 10s wizard-92a3330 -mode=int /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/out/216/benchmarks/bin_1/replay.wasm', returncode=10, stdout='<wasm func "r3_main"> +15\n  <wasm func #1> +25577\n    !trap[MEM_OUT_OF_BOUNDS]\n', stderr='')
+2025-03-20 15:08:32,815 - INFO - CompletedProcess(args='timeout 20s wizard-6d2b057 -mode=int /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/out/216/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:08:32,816 - INFO - Interesting!
+2025-03-20 15:08:32,822 - INFO - test_input: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm
+2025-03-20 15:08:32,822 - INFO - save_path: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.sliced.wasm
+2025-03-20 15:08:32,822 - INFO - CompletedProcess(args='python /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-6d2b057.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm', returncode=0, stdout="CompletedProcess(args='timeout 10s wizard-92a3330 -mode=int /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm', returncode=10, stdout='<wasm func #0> +23\\n  <wasm func #216> +16684\\n    <wasm func #37> +2129\\n      !trap[UNREACHABLE]\\n', stderr='')\nCompletedProcess(args='timeout 20s wizard-6d2b057 -mode=int /home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm', returncode=0, stdout='', stderr='')\nInteresting!\n", stderr='')
+2025-03-20 15:08:32,823 - INFO - Heuristic function indices: [0, 37, 216]
+2025-03-20 15:08:32,823 - INFO - Dynamic function indices (except heuristic): [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 23, 24, 25, 26, 28, 33, 34, 35, 39, 41, 42, 43, 44, 45, 46, 47, 51, 53, 56, 59, 60, 61, 63, 64, 65, 66, 69, 71, 72, 75, 77, 81, 82, 84, 85, 87, 89, 92, 95, 99, 100, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 114, 119, 122, 123, 124, 125, 126, 131, 133, 134, 135, 136, 138, 140, 143, 147, 148, 150, 154, 158, 170, 177, 178, 179, 180, 181, 184, 185, 186, 196, 217, 218, 219, 220, 229, 231, 241, 243, 244, 245, 246, 247, 248, 249, 250, 253, 254, 255, 256, 257, 258, 259, 261, 263, 265, 267, 268, 269, 278, 279, 280, 281, 282, 289, 290, 291, 292, 293, 294, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 322, 323, 324, 326, 327, 328, 330, 331, 332, 334, 335, 336, 337, 338, 341, 345, 346, 347, 375, 406, 427, 478, 500, 502]
+2025-03-20 15:08:32,823 - INFO - All function indices (except heuristic and dynamic): [2, 19, 22, 27, 29, 30, 31, 32, 36, 38, 40, 48, 49, 50, 52, 54, 55, 57, 58, 62, 67, 68, 70, 73, 74, 76, 78, 79, 80, 83, 86, 88, 90, 91, 93, 94, 96, 97, 98, 101, 112, 113, 115, 116, 117, 118, 120, 121, 127, 128, 129, 130, 132, 137, 139, 141, 142, 144, 145, 146, 149, 151, 152, 153, 155, 156, 157, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 171, 172, 173, 174, 175, 176, 182, 183, 187, 188, 189, 190, 191, 192, 193, 194, 195, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 221, 222, 223, 224, 225, 226, 227, 228, 230, 232, 233, 234, 235, 236, 237, 238, 239, 240, 242, 251, 252, 260, 262, 264, 266, 270, 271, 272, 273, 274, 275, 276, 277, 283, 284, 285, 286, 287, 288, 295, 296, 297, 298, 299, 321, 325, 329, 333, 339, 340, 342, 343, 344, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 501, 503, 504, 505, 506, 507, 508, 509]
+2025-03-20 15:08:32,823 - INFO - Running rguilayout - 0
+2025-03-20 15:08:32,823 - INFO - timeout 120s npm test slicedice -- -t rguilayout -i 0 --alternativeDownload
+2025-03-20 15:08:32,823 - INFO - Running rguilayout - 37
+2025-03-20 15:08:32,823 - INFO - timeout 120s npm test slicedice -- -t rguilayout -i 37 --alternativeDownload
+2025-03-20 15:08:32,823 - INFO - Running rguilayout - 216
+2025-03-20 15:08:32,823 - INFO - timeout 120s npm test slicedice -- -t rguilayout -i 216 --alternativeDownload
+2025-03-20 15:08:32,823 - INFO - Oracle script passed for rguilayout - 216
+2025-03-20 15:08:32,823 - INFO - Sliced wasm file size: 384884

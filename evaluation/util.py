@@ -1,4 +1,5 @@
 import re, os, json
+import subprocess
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
 PAPER_PATH = os.getenv("PAPER_PATH", "/home/don/rr-reduce-paper/issta_2025")
 TEST_NAME = os.getenv("TEST_NAME")
@@ -8,13 +9,79 @@ def sh(cmd):
     result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
     return f'{result.stdout}\n{result.stderr}\n'
 
+testname_to_oracle = {
+    'boa': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'bullet': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-f7aca00.py", # fix RR-Reduce not working
+    'commanderkeen': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-25e04ac.py",
+    'ffmpeg': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-4e3e221.py",
+    'figma-startpage': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-33ec201.py",
+    'funky-kart': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'guiicons': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'hydro': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py",
+    'jqkungfu': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-4e3e221.py",
+    'jsc': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'mandelbrot': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-0b43b85.py",
+    'pacalc': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-81555ab.py",
+    'parquet': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-33ec201.py",
+    'pathfinding': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-ccf0c56.py",
+    'rfxgen': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'rguilayout': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'rguistyler': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'riconpacker': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'rtexviewer': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-708ea77.py",
+    'sandspiel': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-ccf0c56.py",
+    'sqlgui': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-6d2b057.py",
+    'wamr#2450': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-e360b7a.py",
+    'wamr#2789': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-718f067.py",
+    'wamr#2862': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-0ee5ffc.py",
+    'wasmedge#3018': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-93fd4ae.py",
+    'wasmedge#3019': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-93fd4ae.py",
+    'wasmedge#3057': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-93fd4ae.py",
+    'wasmedge#3076': f"{WASMR3_PATH}/evaluation/oracle/fixed-by-93fd4ae.py",
+}
+
+def load_metrics(path):
+    with open(path, "r") as f:
+        return json.load(f)
+
+
+def update_metrics(metrics, results):
+    for testname, tool, elapsed, module_size, code_size, target_size in results:
+        if metrics[testname].get(tool) is None:
+            metrics[testname][tool] = {}
+        metrics[testname][tool][f"time"] = elapsed
+        metrics[testname][tool][f"module-size"] = module_size
+        metrics[testname][tool][f"code-size"] = code_size
+        if tool == 'wasm-slice':
+            metrics[testname][tool][f"target-size"] = target_size
+
+    with open("metrics.json", "w") as f:
+        json.dump(metrics, f, indent=4)
+
+def run_with_retries(command, max_retries=3):
+            retry_count = 0
+            while retry_count < max_retries:
+                try:
+                    result = subprocess.run(command, shell=True, check=True)
+                    return result
+                except subprocess.CalledProcessError as e:
+                    if e.returncode == 1:
+                        print(
+                            f"Command failed with exit code 1. Retrying... (Attempt {retry_count + 1}/{max_retries})"
+                        )
+                        retry_count += 1
+                        if retry_count == max_retries:
+                            raise  # If all retries failed, raise the exception
+                    else:
+                        raise  # If exit code is not 1, raise the exception immediately
+
 tool_to_suffix = {
     "wasm-slice": "sliced",
+    "wasm-hybrid-all": "hybrid-all",
     "wasm-reduce": "reduced",
     "wasm-shrink": "shrunken",
-    "wasm-hybrid-all": "hybrid-all",
-    "wasm-hybrid-target": "hybrid-target",
-    "wasm-hybrid-remain": "hybrid-remain",
+    # "wasm-hybrid-target": "hybrid-target",
+    # "wasm-hybrid-remain": "hybrid-remain",
 }
 
 short_case = [
@@ -60,7 +127,7 @@ start_metrics = {
     "boa": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/boa/boa.wasm",
         }
@@ -68,7 +135,7 @@ start_metrics = {
     "guiicons": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/guiicons/guiicons.wasm",
         }
@@ -76,7 +143,7 @@ start_metrics = {
     "funky-kart": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/funky-kart/funky-kart.wasm",
         }
@@ -84,7 +151,7 @@ start_metrics = {
     "jsc": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jsc/jsc.wasm",
         }
@@ -92,7 +159,7 @@ start_metrics = {
     "rfxgen": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rfxgen/rfxgen.wasm",
         }
@@ -100,7 +167,7 @@ start_metrics = {
     "rguilayout": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm",
             "fixed-by": "6d2b057"
         }
@@ -108,7 +175,7 @@ start_metrics = {
     "rguistyler": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rguistyler/rguistyler.wasm",
         }
@@ -116,7 +183,7 @@ start_metrics = {
     "riconpacker": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/riconpacker/riconpacker.wasm",
         }
@@ -124,7 +191,7 @@ start_metrics = {
     "sqlgui": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "6d2b057",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sqlgui/sqlgui.wasm",
         }
@@ -132,7 +199,7 @@ start_metrics = {
     "commanderkeen": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "25e04ac",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/commanderkeen/commanderkeen.wasm",
         }
@@ -140,7 +207,7 @@ start_metrics = {
     "hydro": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "708ea77",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm",
         }
@@ -148,7 +215,7 @@ start_metrics = {
     "rtexviewer": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "708ea77",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.wasm",
         }
@@ -156,7 +223,7 @@ start_metrics = {
     "mandelbrot": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "0b43b8",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
         }
@@ -164,7 +231,7 @@ start_metrics = {
     "pacalc": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "81555ab",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm",
         }
@@ -172,7 +239,7 @@ start_metrics = {
     "bullet": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "f7aca00",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm",
         }
@@ -180,7 +247,7 @@ start_metrics = {
     "sandspiel": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "ccf0c56",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm",
         }
@@ -188,7 +255,7 @@ start_metrics = {
     "pathfinding": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "ccf0c56",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm",
         }
@@ -196,7 +263,7 @@ start_metrics = {
     "parquet": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "33ec201",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm",
         }
@@ -204,7 +271,7 @@ start_metrics = {
     "figma-startpage": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "33ec201",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm",
         }
@@ -212,7 +279,7 @@ start_metrics = {
     "ffmpeg": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "4e3e221",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm",
         }
@@ -220,7 +287,7 @@ start_metrics = {
     "jqkungfu": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
-            "engine": "wizard",
+            "engine": "Wizard",
             "fixed-by": "4e3e221",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm",
         }
@@ -228,7 +295,7 @@ start_metrics = {
     "wasmedge#3057": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wasmedge",
+            "engine": "WasmEdge",
             "fixed-by": "93fd4ae",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
         }
@@ -236,7 +303,7 @@ start_metrics = {
     "wasmedge#3076": {  # this doesn't work for wasm-slice
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wasmedge",
+            "engine": "WasmEdge",
             "fixed-by": "93fd4ae",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
         }
@@ -244,7 +311,7 @@ start_metrics = {
     "wamr#2450": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wamr-0b0af1b",
+            "engine": "WAMR",
             "fixed-by": "e360b7",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2450/wamr#2450.wasm",
         }
@@ -252,7 +319,7 @@ start_metrics = {
     "wasmedge#3019": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wasmedge",
+            "engine": "WasmEdge",
             "fixed-by": "93fd4ae",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
         }
@@ -260,7 +327,7 @@ start_metrics = {
     "wamr#2789": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wamr-0b0af1b",
+            "engine": "WAMR",
             "fixed-by": "718f06", # They leave it open as an limitation
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2789/wamr#2789.wasm",
         }
@@ -268,7 +335,7 @@ start_metrics = {
     "wamr#2862": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wamr-7308b1e",
+            "engine": "WAMR",
             "fixed-by": "0ee5ff",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
         }
@@ -276,7 +343,7 @@ start_metrics = {
     "wasmedge#3018": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "wasmedge",
+            "engine": "WasmEdge",
             "fixed-by": "93fd4ae",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
         }
@@ -417,9 +484,16 @@ if __name__ == "__main__":
         else:
             metrics[key] = value
 
+    for key in metrics:
+        input_path = metrics[key]["metadata"]["path"]
+        module_size, code_size, target_size = get_sizes(input_path)
+        metrics[key]['metadata']["module-size"] = module_size
+        metrics[key]['metadata']["code-size"] = code_size
+
+
     # for key in metrics:
     #     input_path = metrics[key]["metadata"]["path"]
-    #     for tool in ['wasm-slice', 'wasm-hybrid', 'wasm-reduce', 'wasm-shrink']:
+    #     for tool in ['wasm-slice', 'wasm-hybrid-all', 'wasm-reduce', 'wasm-shrink']:
     #         if not metrics[key].get(tool):
     #             metrics[key][tool] = {}
     #         tool_path = input_path.replace(".wasm", f".{tool_to_suffix[tool]}.wasm")
@@ -428,6 +502,5 @@ if __name__ == "__main__":
     #         metrics[key][tool]["code-size"] = code_size
     #         if tool == 'wasm-slice':
     #             metrics[key][tool]["target-size"] = target_size
-    # Save the updated metrics back to the JSON file
     with open("metrics.json", "w") as f:
         json.dump(metrics, f, indent=4)

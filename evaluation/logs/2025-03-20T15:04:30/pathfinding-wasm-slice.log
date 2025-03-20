@@ -1,0 +1,517 @@
+2025-03-20 15:29:35,631 - INFO - command:
+PRINT=1 timeout 86400s /home/doehyunbaek/wasm-r3/rr-reduce/wasm-slice /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-ccf0c56.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm
+2025-03-20 15:29:38,624 - INFO - 
+2025-03-20 15:29:38,624 - INFO - > test
+2025-03-20 15:29:38,625 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 0 --alternativeDownload
+2025-03-20 15:29:38,625 - INFO - 
+2025-03-20 15:29:38,708 - INFO - (node:210842) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:29:38,708 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:29:39,024 - INFO - undefined
+2025-03-20 15:29:39,024 - INFO - pathfinding-0:
+2025-03-20 15:29:39,453 - INFO - Running slice-dice: 429ms
+2025-03-20 15:29:57,332 - INFO - Running wasm-r3: 17879ms
+2025-03-20 15:29:57,334 - INFO - Sliced file size: 14797bytes
+2025-03-20 15:29:57,385 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/0/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:29:57,385 - INFO - Not interesting
+2025-03-20 15:29:57,493 - INFO - 
+2025-03-20 15:29:57,493 - INFO - > test
+2025-03-20 15:29:57,493 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 1 --alternativeDownload
+2025-03-20 15:29:57,493 - INFO - 
+2025-03-20 15:29:57,574 - INFO - (node:214611) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:29:57,574 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:29:57,918 - INFO - undefined
+2025-03-20 15:29:57,918 - INFO - pathfinding-1:
+2025-03-20 15:29:58,375 - INFO - Running slice-dice: 457ms
+2025-03-20 15:31:49,729 - INFO - Running wasm-r3: 111353ms
+2025-03-20 15:31:49,732 - INFO - Sliced file size: 2002278bytes
+2025-03-20 15:31:50,380 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/1/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:31:50,380 - INFO - Not interesting
+2025-03-20 15:31:50,490 - INFO - 
+2025-03-20 15:31:50,490 - INFO - > test
+2025-03-20 15:31:50,490 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 2 --alternativeDownload
+2025-03-20 15:31:50,490 - INFO - 
+2025-03-20 15:31:50,565 - INFO - (node:230934) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:31:50,566 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:31:50,910 - INFO - undefined
+2025-03-20 15:31:50,910 - INFO - pathfinding-2:
+2025-03-20 15:31:51,439 - INFO - Running slice-dice: 528ms
+2025-03-20 15:33:50,508 - INFO - Running wasm-r3:
+2025-03-20 15:33:50,508 - INFO - > test
+2025-03-20 15:33:50,508 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 3 --alternativeDownload
+2025-03-20 15:33:50,508 - INFO - 
+2025-03-20 15:33:50,594 - INFO - (node:242980) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:33:50,594 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:33:50,974 - INFO - node:internal/process/promises:394
+2025-03-20 15:33:50,974 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:33:50,974 - INFO - ^
+2025-03-20 15:33:50,975 - INFO - 
+2025-03-20 15:33:50,975 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:33:50,975 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:33:50,975 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:33:50,975 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:33:50,975 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:33:50,975 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:33:50,975 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:33:50,975 - INFO - 
+2025-03-20 15:33:50,975 - INFO - Node.js v23.4.0
+2025-03-20 15:33:50,997 - INFO - undefined
+2025-03-20 15:33:50,998 - INFO - pathfinding-3:
+2025-03-20 15:33:51,519 - INFO - Running slice-dice: 522ms
+2025-03-20 15:35:38,129 - INFO - Running wasm-r3: 106610ms
+2025-03-20 15:35:38,132 - INFO - Sliced file size: 2764032bytes
+2025-03-20 15:35:38,703 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/3/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:35:38,704 - INFO - Not interesting
+2025-03-20 15:35:38,838 - INFO - 
+2025-03-20 15:35:38,838 - INFO - > test
+2025-03-20 15:35:38,838 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 6 --alternativeDownload
+2025-03-20 15:35:38,838 - INFO - 
+2025-03-20 15:35:38,927 - INFO - (node:256931) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:35:38,927 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:35:39,246 - INFO - undefined
+2025-03-20 15:35:39,246 - INFO - pathfinding-6:
+2025-03-20 15:35:39,941 - INFO - Running slice-dice: 695ms
+2025-03-20 15:37:38,828 - INFO - Running wasm-r3:
+2025-03-20 15:37:38,829 - INFO - > test
+2025-03-20 15:37:38,829 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 7 --alternativeDownload
+2025-03-20 15:37:38,829 - INFO - 
+2025-03-20 15:37:38,920 - INFO - (node:271779) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:37:38,920 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:37:39,096 - INFO - node:internal/process/promises:394
+2025-03-20 15:37:39,096 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:37:39,096 - INFO - ^
+2025-03-20 15:37:39,096 - INFO - 
+2025-03-20 15:37:39,096 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:37:39,096 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:37:39,096 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:37:39,096 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:37:39,096 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:37:39,096 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:37:39,097 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:37:39,097 - INFO - 
+2025-03-20 15:37:39,097 - INFO - Node.js v23.4.0
+2025-03-20 15:37:39,294 - INFO - undefined
+2025-03-20 15:37:39,294 - INFO - pathfinding-7:
+2025-03-20 15:37:39,738 - INFO - Running slice-dice: 444ms
+2025-03-20 15:39:38,865 - INFO - Running wasm-r3:
+2025-03-20 15:39:38,865 - INFO - > test
+2025-03-20 15:39:38,865 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 8 --alternativeDownload
+2025-03-20 15:39:38,865 - INFO - 
+2025-03-20 15:39:38,953 - INFO - (node:286171) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:39:38,953 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:39:39,105 - INFO - node:internal/process/promises:394
+2025-03-20 15:39:39,105 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:39:39,105 - INFO - ^
+2025-03-20 15:39:39,105 - INFO - 
+2025-03-20 15:39:39,105 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:39:39,106 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:39:39,106 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:39:39,106 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:39:39,106 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:39:39,106 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:39:39,106 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:39:39,106 - INFO - 
+2025-03-20 15:39:39,106 - INFO - Node.js v23.4.0
+2025-03-20 15:39:39,294 - INFO - undefined
+2025-03-20 15:39:39,294 - INFO - pathfinding-8:
+2025-03-20 15:39:39,743 - INFO - Running slice-dice: 449ms
+2025-03-20 15:41:38,883 - INFO - Running wasm-r3:
+2025-03-20 15:41:38,883 - INFO - > test
+2025-03-20 15:41:38,883 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 11 --alternativeDownload
+2025-03-20 15:41:38,883 - INFO - 
+2025-03-20 15:41:38,997 - INFO - (node:299733) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:41:38,997 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:41:39,014 - INFO - node:internal/process/promises:394
+2025-03-20 15:41:39,014 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:41:39,014 - INFO - ^
+2025-03-20 15:41:39,014 - INFO - 
+2025-03-20 15:41:39,015 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:41:39,015 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:41:39,015 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:41:39,015 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:41:39,015 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:41:39,015 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:41:39,015 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:41:39,015 - INFO - 
+2025-03-20 15:41:39,015 - INFO - Node.js v23.4.0
+2025-03-20 15:41:39,434 - INFO - undefined
+2025-03-20 15:41:39,434 - INFO - pathfinding-11:
+2025-03-20 15:41:40,126 - INFO - Running slice-dice: 691ms
+2025-03-20 15:43:38,914 - INFO - Running wasm-r3:
+2025-03-20 15:43:38,914 - INFO - > test
+2025-03-20 15:43:38,914 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 12 --alternativeDownload
+2025-03-20 15:43:38,914 - INFO - 
+2025-03-20 15:43:39,025 - INFO - (node:313450) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:43:39,025 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:43:39,249 - INFO - node:internal/process/promises:394
+2025-03-20 15:43:39,249 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:43:39,249 - INFO - ^
+2025-03-20 15:43:39,249 - INFO - 
+2025-03-20 15:43:39,249 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:43:39,249 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:43:39,249 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:43:39,249 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:43:39,249 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:43:39,249 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:43:39,250 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:43:39,250 - INFO - 
+2025-03-20 15:43:39,250 - INFO - Node.js v23.4.0
+2025-03-20 15:43:39,410 - INFO - undefined
+2025-03-20 15:43:39,410 - INFO - pathfinding-12:
+2025-03-20 15:43:40,055 - INFO - Running slice-dice: 645ms
+2025-03-20 15:43:59,702 - INFO - Running wasm-r3: 19647ms
+2025-03-20 15:43:59,704 - INFO - Sliced file size: 37932bytes
+2025-03-20 15:43:59,757 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/12/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:43:59,758 - INFO - Not interesting
+2025-03-20 15:43:59,868 - INFO - 
+2025-03-20 15:43:59,869 - INFO - > test
+2025-03-20 15:43:59,869 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 14 --alternativeDownload
+2025-03-20 15:43:59,869 - INFO - 
+2025-03-20 15:43:59,955 - INFO - (node:316508) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:43:59,956 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:44:00,287 - INFO - undefined
+2025-03-20 15:44:00,287 - INFO - pathfinding-14:
+2025-03-20 15:44:00,834 - INFO - Running slice-dice: 547ms
+2025-03-20 15:45:39,926 - INFO - Running wasm-r3: 99091ms
+2025-03-20 15:45:39,930 - INFO - Sliced file size: 3807971bytes
+2025-03-20 15:45:40,436 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/14/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:45:40,436 - INFO - Not interesting
+2025-03-20 15:45:40,566 - INFO - 
+2025-03-20 15:45:40,566 - INFO - > test
+2025-03-20 15:45:40,566 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 17 --alternativeDownload
+2025-03-20 15:45:40,566 - INFO - 
+2025-03-20 15:45:40,655 - INFO - (node:327644) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:45:40,656 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:45:41,000 - INFO - undefined
+2025-03-20 15:45:41,000 - INFO - pathfinding-17:
+2025-03-20 15:45:41,774 - INFO - Running slice-dice: 774ms
+2025-03-20 15:45:58,918 - INFO - Running wasm-r3: 17144ms
+2025-03-20 15:45:58,920 - INFO - Sliced file size: 13735bytes
+2025-03-20 15:45:58,974 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/17/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:45:58,974 - INFO - Not interesting
+2025-03-20 15:45:59,066 - INFO - 
+2025-03-20 15:45:59,066 - INFO - > test
+2025-03-20 15:45:59,066 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 18 --alternativeDownload
+2025-03-20 15:45:59,066 - INFO - 
+2025-03-20 15:45:59,141 - INFO - (node:330470) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:45:59,141 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:45:59,493 - INFO - undefined
+2025-03-20 15:45:59,494 - INFO - pathfinding-18:
+2025-03-20 15:45:59,957 - INFO - Running slice-dice: 463ms
+2025-03-20 15:46:17,252 - INFO - Running wasm-r3: 17295ms
+2025-03-20 15:46:17,253 - INFO - Sliced file size: 32839bytes
+2025-03-20 15:46:17,305 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/18/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:46:17,305 - INFO - Not interesting
+2025-03-20 15:46:17,422 - INFO - 
+2025-03-20 15:46:17,422 - INFO - > test
+2025-03-20 15:46:17,422 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 19 --alternativeDownload
+2025-03-20 15:46:17,422 - INFO - 
+2025-03-20 15:46:17,498 - INFO - (node:333193) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:46:17,498 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:46:17,797 - INFO - undefined
+2025-03-20 15:46:17,797 - INFO - pathfinding-19:
+2025-03-20 15:46:18,242 - INFO - Running slice-dice: 445ms
+2025-03-20 15:47:46,231 - INFO - Running wasm-r3: 87989ms
+2025-03-20 15:47:46,236 - INFO - Sliced file size: 6720352bytes
+2025-03-20 15:47:46,686 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/19/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:47:46,686 - INFO - Not interesting
+2025-03-20 15:47:46,776 - INFO - 
+2025-03-20 15:47:46,776 - INFO - > test
+2025-03-20 15:47:46,777 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 21 --alternativeDownload
+2025-03-20 15:47:46,777 - INFO - 
+2025-03-20 15:47:46,857 - INFO - (node:343860) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:47:46,858 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:47:47,181 - INFO - undefined
+2025-03-20 15:47:47,181 - INFO - pathfinding-21:
+2025-03-20 15:47:47,641 - INFO - Running slice-dice: 460ms
+2025-03-20 15:48:04,945 - INFO - Running wasm-r3: 17304ms
+2025-03-20 15:48:04,948 - INFO - Sliced file size: 15125bytes
+2025-03-20 15:48:05,010 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/21/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:48:05,010 - INFO - Not interesting
+2025-03-20 15:48:05,112 - INFO - 
+2025-03-20 15:48:05,113 - INFO - > test
+2025-03-20 15:48:05,113 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 36 --alternativeDownload
+2025-03-20 15:48:05,113 - INFO - 
+2025-03-20 15:48:05,205 - INFO - (node:346889) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:48:05,206 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:48:05,573 - INFO - undefined
+2025-03-20 15:48:05,573 - INFO - pathfinding-36:
+2025-03-20 15:48:06,091 - INFO - Running slice-dice: 518ms
+2025-03-20 15:48:22,881 - INFO - Running wasm-r3: 16790ms
+2025-03-20 15:48:22,883 - INFO - Sliced file size: 15352bytes
+2025-03-20 15:48:22,939 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/36/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:48:22,940 - INFO - Not interesting
+2025-03-20 15:48:23,037 - INFO - 
+2025-03-20 15:48:23,037 - INFO - > test
+2025-03-20 15:48:23,037 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 44 --alternativeDownload
+2025-03-20 15:48:23,037 - INFO - 
+2025-03-20 15:48:23,142 - INFO - (node:349589) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:48:23,142 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:48:23,449 - INFO - undefined
+2025-03-20 15:48:23,449 - INFO - pathfinding-44:
+2025-03-20 15:48:23,943 - INFO - Running slice-dice: 494ms
+2025-03-20 15:48:42,390 - INFO - Running wasm-r3: 18446ms
+2025-03-20 15:48:42,391 - INFO - Sliced file size: 61623bytes
+2025-03-20 15:48:42,445 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/44/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:48:42,445 - INFO - Not interesting
+2025-03-20 15:48:42,580 - INFO - 
+2025-03-20 15:48:42,580 - INFO - > test
+2025-03-20 15:48:42,580 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 45 --alternativeDownload
+2025-03-20 15:48:42,580 - INFO - 
+2025-03-20 15:48:42,679 - INFO - (node:352417) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:48:42,679 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:48:43,119 - INFO - undefined
+2025-03-20 15:48:43,119 - INFO - pathfinding-45:
+2025-03-20 15:48:43,601 - INFO - Running slice-dice: 482ms
+2025-03-20 15:49:01,151 - INFO - Running wasm-r3: 17549ms
+2025-03-20 15:49:01,153 - INFO - Sliced file size: 28932bytes
+2025-03-20 15:49:01,206 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/45/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:49:01,206 - INFO - Not interesting
+2025-03-20 15:49:01,303 - INFO - 
+2025-03-20 15:49:01,303 - INFO - > test
+2025-03-20 15:49:01,304 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 46 --alternativeDownload
+2025-03-20 15:49:01,304 - INFO - 
+2025-03-20 15:49:01,382 - INFO - (node:355363) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:49:01,382 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:49:01,703 - INFO - undefined
+2025-03-20 15:49:01,703 - INFO - pathfinding-46:
+2025-03-20 15:49:02,187 - INFO - Running slice-dice: 483ms
+2025-03-20 15:49:19,729 - INFO - Running wasm-r3: 17542ms
+2025-03-20 15:49:19,731 - INFO - Sliced file size: 21548bytes
+2025-03-20 15:49:19,790 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/46/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:49:19,791 - INFO - Not interesting
+2025-03-20 15:49:19,888 - INFO - 
+2025-03-20 15:49:19,888 - INFO - > test
+2025-03-20 15:49:19,888 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 49 --alternativeDownload
+2025-03-20 15:49:19,888 - INFO - 
+2025-03-20 15:49:19,967 - INFO - (node:358330) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:49:19,967 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:49:20,325 - INFO - undefined
+2025-03-20 15:49:20,325 - INFO - pathfinding-49:
+2025-03-20 15:49:20,836 - INFO - Running slice-dice: 511ms
+2025-03-20 15:49:37,328 - INFO - Running wasm-r3: 16492ms
+2025-03-20 15:49:37,330 - INFO - Sliced file size: 13667bytes
+2025-03-20 15:49:37,397 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/49/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:49:37,397 - INFO - Not interesting
+2025-03-20 15:49:37,543 - INFO - 
+2025-03-20 15:49:37,543 - INFO - > test
+2025-03-20 15:49:37,543 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 50 --alternativeDownload
+2025-03-20 15:49:37,543 - INFO - 
+2025-03-20 15:49:37,633 - INFO - (node:360952) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:49:37,633 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:49:37,920 - INFO - undefined
+2025-03-20 15:49:37,920 - INFO - pathfinding-50:
+2025-03-20 15:49:38,397 - INFO - Running slice-dice: 477ms
+2025-03-20 15:50:23,497 - INFO - Running wasm-r3: 45100ms
+2025-03-20 15:50:23,500 - INFO - Sliced file size: 2541305bytes
+2025-03-20 15:50:23,788 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/50/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:50:23,788 - INFO - Not interesting
+2025-03-20 15:50:23,892 - INFO - 
+2025-03-20 15:50:23,892 - INFO - > test
+2025-03-20 15:50:23,893 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 56 --alternativeDownload
+2025-03-20 15:50:23,893 - INFO - 
+2025-03-20 15:50:23,971 - INFO - (node:366344) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:50:23,971 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:50:24,408 - INFO - undefined
+2025-03-20 15:50:24,408 - INFO - pathfinding-56:
+2025-03-20 15:50:24,882 - INFO - Running slice-dice: 474ms
+2025-03-20 15:50:42,011 - INFO - Running wasm-r3: 17129ms
+2025-03-20 15:50:42,013 - INFO - Sliced file size: 15074bytes
+2025-03-20 15:50:42,061 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/56/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:50:42,061 - INFO - Not interesting
+2025-03-20 15:50:42,154 - INFO - 
+2025-03-20 15:50:42,154 - INFO - > test
+2025-03-20 15:50:42,154 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 57 --alternativeDownload
+2025-03-20 15:50:42,154 - INFO - 
+2025-03-20 15:50:42,253 - INFO - (node:369496) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:50:42,253 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:50:42,556 - INFO - undefined
+2025-03-20 15:50:42,556 - INFO - pathfinding-57:
+2025-03-20 15:50:43,032 - INFO - Running slice-dice: 476ms
+2025-03-20 15:50:59,715 - INFO - Running wasm-r3: 16683ms
+2025-03-20 15:50:59,716 - INFO - Sliced file size: 13799bytes
+2025-03-20 15:50:59,763 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/57/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:50:59,763 - INFO - Not interesting
+2025-03-20 15:50:59,873 - INFO - 
+2025-03-20 15:50:59,874 - INFO - > test
+2025-03-20 15:50:59,874 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 70 --alternativeDownload
+2025-03-20 15:50:59,874 - INFO - 
+2025-03-20 15:50:59,948 - INFO - (node:372214) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:50:59,948 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:51:00,227 - INFO - undefined
+2025-03-20 15:51:00,228 - INFO - pathfinding-70:
+2025-03-20 15:51:00,698 - INFO - Running slice-dice: 471ms
+2025-03-20 15:51:17,274 - INFO - Running wasm-r3: 16576ms
+2025-03-20 15:51:17,275 - INFO - Sliced file size: 13572bytes
+2025-03-20 15:51:17,321 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/70/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:51:17,321 - INFO - Not interesting
+2025-03-20 15:51:17,413 - INFO - 
+2025-03-20 15:51:17,413 - INFO - > test
+2025-03-20 15:51:17,413 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 86 --alternativeDownload
+2025-03-20 15:51:17,413 - INFO - 
+2025-03-20 15:51:17,495 - INFO - (node:374737) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:51:17,495 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:51:17,845 - INFO - undefined
+2025-03-20 15:51:17,845 - INFO - pathfinding-86:
+2025-03-20 15:51:18,284 - INFO - Running slice-dice: 439ms
+2025-03-20 15:51:49,926 - INFO - Running wasm-r3: WARNING: roundtrip of 0.8586807250976562: 0.8586807250976563
+2025-03-20 15:51:49,926 - INFO - WARNING: roundtrip of 0.6246719360351562: 0.6246719360351563
+2025-03-20 15:51:49,926 - INFO - WARNING: roundtrip of 0.8487930297851562: 0.8487930297851563
+2025-03-20 15:51:49,926 - INFO - WARNING: roundtrip of 0.6337966918945312: 0.6337966918945313
+2025-03-20 15:51:49,926 - INFO - 31642ms
+2025-03-20 15:51:49,928 - INFO - Sliced file size: 235133bytes
+2025-03-20 15:51:50,128 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/86/benchmarks/bin_1/replay.wasm', returncode=10, stdout='!trap[MEM_OUT_OF_BOUNDS]\n', stderr='')
+2025-03-20 15:51:50,128 - INFO - CompletedProcess(args='timeout 20s wizard-ccf0c56 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/86/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:51:50,128 - INFO - Interesting!
+2025-03-20 15:51:50,225 - INFO - 
+2025-03-20 15:51:50,225 - INFO - > test
+2025-03-20 15:51:50,225 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 87 --alternativeDownload
+2025-03-20 15:51:50,225 - INFO - 
+2025-03-20 15:51:50,306 - INFO - (node:378815) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:51:50,306 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:51:50,604 - INFO - undefined
+2025-03-20 15:51:50,604 - INFO - pathfinding-87:
+2025-03-20 15:51:51,048 - INFO - Running slice-dice: 444ms
+2025-03-20 15:52:08,173 - INFO - Running wasm-r3: 17124ms
+2025-03-20 15:52:08,175 - INFO - Sliced file size: 13751bytes
+2025-03-20 15:52:08,227 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/87/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:52:08,227 - INFO - Not interesting
+2025-03-20 15:52:08,330 - INFO - 
+2025-03-20 15:52:08,330 - INFO - > test
+2025-03-20 15:52:08,330 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 88 --alternativeDownload
+2025-03-20 15:52:08,330 - INFO - 
+2025-03-20 15:52:08,409 - INFO - (node:381671) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:52:08,409 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:52:08,749 - INFO - undefined
+2025-03-20 15:52:08,750 - INFO - pathfinding-88:
+2025-03-20 15:52:09,261 - INFO - Running slice-dice: 512ms
+2025-03-20 15:52:26,417 - INFO - Running wasm-r3: 17156ms
+2025-03-20 15:52:26,419 - INFO - Sliced file size: 15220bytes
+2025-03-20 15:52:26,468 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/88/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:52:26,468 - INFO - Not interesting
+2025-03-20 15:52:26,584 - INFO - 
+2025-03-20 15:52:26,584 - INFO - > test
+2025-03-20 15:52:26,584 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 89 --alternativeDownload
+2025-03-20 15:52:26,584 - INFO - 
+2025-03-20 15:52:26,661 - INFO - (node:384799) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:52:26,661 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:52:26,973 - INFO - undefined
+2025-03-20 15:52:26,974 - INFO - pathfinding-89:
+2025-03-20 15:52:27,586 - INFO - Running slice-dice: 613ms
+2025-03-20 15:54:26,635 - INFO - Running wasm-r3:
+2025-03-20 15:54:26,635 - INFO - > test
+2025-03-20 15:54:26,635 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 90 --alternativeDownload
+2025-03-20 15:54:26,636 - INFO - 
+2025-03-20 15:54:26,738 - INFO - (node:397573) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:54:26,738 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:54:26,859 - INFO - node:internal/process/promises:394
+2025-03-20 15:54:26,859 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:54:26,859 - INFO - ^
+2025-03-20 15:54:26,859 - INFO - 
+2025-03-20 15:54:26,859 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:54:26,859 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:54:26,859 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:54:26,859 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:54:26,859 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:54:26,860 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:54:26,860 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:54:26,860 - INFO - 
+2025-03-20 15:54:26,860 - INFO - Node.js v23.4.0
+2025-03-20 15:54:27,085 - INFO - undefined
+2025-03-20 15:54:27,085 - INFO - pathfinding-90:
+2025-03-20 15:54:27,579 - INFO - Running slice-dice: 494ms
+2025-03-20 15:54:44,675 - INFO - Running wasm-r3: 17096ms
+2025-03-20 15:54:44,676 - INFO - Sliced file size: 14302bytes
+2025-03-20 15:54:44,726 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/90/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:54:44,727 - INFO - Not interesting
+2025-03-20 15:54:44,823 - INFO - 
+2025-03-20 15:54:44,823 - INFO - > test
+2025-03-20 15:54:44,824 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t pathfinding -i 91 --alternativeDownload
+2025-03-20 15:54:44,824 - INFO - 
+2025-03-20 15:54:44,907 - INFO - (node:400500) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:54:44,907 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:54:45,222 - INFO - undefined
+2025-03-20 15:54:45,222 - INFO - pathfinding-91:
+2025-03-20 15:54:45,931 - INFO - Running slice-dice: 708ms
+2025-03-20 15:55:04,007 - INFO - Running wasm-r3: 18076ms
+2025-03-20 15:55:04,009 - INFO - Sliced file size: 69029bytes
+2025-03-20 15:55:04,083 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/91/benchmarks/bin_1/replay.wasm', returncode=10, stdout='!trap[MEM_OUT_OF_BOUNDS]\n', stderr='')
+2025-03-20 15:55:04,083 - INFO - CompletedProcess(args='timeout 20s wizard-ccf0c56 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/91/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:55:04,083 - INFO - Interesting!
+2025-03-20 15:55:04,089 - INFO - test_input: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm
+2025-03-20 15:55:04,089 - INFO - save_path: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.sliced.wasm
+2025-03-20 15:55:04,089 - INFO - CompletedProcess(args='python /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-ccf0c56.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm', returncode=0, stdout="CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm', returncode=10, stdout='!trap[MEM_OUT_OF_BOUNDS]\\n', stderr='')\nCompletedProcess(args='timeout 20s wizard-ccf0c56 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm', returncode=0, stdout='', stderr='')\nInteresting!\n", stderr='')
+2025-03-20 15:55:04,089 - INFO - Heuristic function indices: []
+2025-03-20 15:55:04,089 - INFO - Dynamic function indices (except heuristic): [0, 1, 2, 3, 6, 7, 8, 11, 12, 14, 17, 18, 19, 21, 36, 44, 45, 46, 49, 50, 56, 57, 70, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 98, 99, 106, 107, 108, 109, 113, 115, 118, 121, 122, 123, 125, 126, 127, 128, 130, 131, 132, 133, 134, 135, 136, 137, 138]
+2025-03-20 15:55:04,089 - INFO - All function indices (except heuristic and dynamic): [4, 5, 9, 10, 13, 15, 16, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 38, 39, 40, 41, 42, 43, 47, 48, 51, 52, 53, 54, 55, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 96, 97, 100, 101, 102, 103, 104, 105, 110, 111, 112, 114, 116, 117, 119, 120, 124, 129]
+2025-03-20 15:55:04,089 - INFO - Running pathfinding - 0
+2025-03-20 15:55:04,089 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 0 --alternativeDownload
+2025-03-20 15:55:04,089 - INFO - Running pathfinding - 1
+2025-03-20 15:55:04,089 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 1 --alternativeDownload
+2025-03-20 15:55:04,089 - INFO - Running pathfinding - 2
+2025-03-20 15:55:04,089 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 2 --alternativeDownload
+2025-03-20 15:55:04,089 - INFO - Failed to run pathfinding - 2
+2025-03-20 15:55:04,090 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/2/benchmarks/bin_1/replay.wasm'
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 3
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 3 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 6
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 6 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Failed to run pathfinding - 6
+2025-03-20 15:55:04,090 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/6/benchmarks/bin_1/replay.wasm'
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 7
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 7 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Failed to run pathfinding - 7
+2025-03-20 15:55:04,090 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/7/benchmarks/bin_1/replay.wasm'
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 8
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 8 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Failed to run pathfinding - 8
+2025-03-20 15:55:04,090 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/8/benchmarks/bin_1/replay.wasm'
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 11
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 11 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Failed to run pathfinding - 11
+2025-03-20 15:55:04,090 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/11/benchmarks/bin_1/replay.wasm'
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 12
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 12 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 14
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 14 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 17
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 17 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 18
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 18 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 19
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 19 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 21
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 21 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 36
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 36 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 44
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 44 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 45
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 45 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 46
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 46 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 49
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 49 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 50
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 50 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 56
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 56 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 57
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 57 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 70
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 70 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 86
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 86 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 87
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 87 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 88
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 88 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 89
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 89 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Failed to run pathfinding - 89
+2025-03-20 15:55:04,090 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/out/89/benchmarks/bin_1/replay.wasm'
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 90
+2025-03-20 15:55:04,090 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 90 --alternativeDownload
+2025-03-20 15:55:04,090 - INFO - Running pathfinding - 91
+2025-03-20 15:55:04,091 - INFO - timeout 120s npm test slicedice -- -t pathfinding -i 91 --alternativeDownload
+2025-03-20 15:55:04,091 - INFO - Oracle script passed for pathfinding - 91
+2025-03-20 15:55:04,091 - INFO - Sliced wasm file size: 69029

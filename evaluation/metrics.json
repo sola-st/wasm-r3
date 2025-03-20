@@ -20,8 +20,8 @@
             "code-size": 24
         },
         "wasm-slice": {
-            "time": 120.15244555473328,
-            "module-size": 6436,
+            "time": 41.85452961921692,
+            "module-size": 6426,
             "code-size": 454,
             "target-size": 327
         },
@@ -29,22 +29,12 @@
             "time": 11.141263008117676,
             "module-size": 51,
             "code-size": 11
-        },
-        "wasm-hybrid-target": {
-            "time": 33.779242515563965,
-            "module-size": 306,
-            "code-size": 143
-        },
-        "wasm-hybrid-remain": {
-            "time": 9.283906936645508,
-            "module-size": 539,
-            "code-size": 384
         }
     },
     "wamr#2789": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "Wamr",
+            "engine": "WAMR",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2789/wamr#2789.wasm",
             "module-size": 24058,
             "code-size": 17604,
@@ -62,31 +52,21 @@
             "code-size": 9
         },
         "wasm-slice": {
-            "time": 245.1454358100891,
-            "module-size": 7867,
-            "code-size": 336,
-            "target-size": 31
+            "time": 7080.533674001694,
+            "module-size": 24058,
+            "code-size": 17604,
+            "target-size": 138
         },
         "wasm-hybrid-all": {
             "time": 8.379764795303345,
             "module-size": 54,
             "code-size": 9
-        },
-        "wasm-hybrid-target": {
-            "time": 3.7936654090881348,
-            "module-size": 556,
-            "code-size": 309
-        },
-        "wasm-hybrid-remain": {
-            "time": 6.930682420730591,
-            "module-size": 506,
-            "code-size": 265
         }
     },
     "wamr#2450": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "Wamr",
+            "engine": "WAMR",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2450/wamr#2450.wasm",
             "module-size": 25797,
             "code-size": 24482,
@@ -104,31 +84,21 @@
             "code-size": 8
         },
         "wasm-slice": {
-            "time": 13.62869644165039,
-            "module-size": 3070,
-            "code-size": 1061,
-            "target-size": 459
+            "time": 95.69208359718323,
+            "module-size": 2775,
+            "code-size": 816,
+            "target-size": 423
         },
         "wasm-hybrid-all": {
             "time": 11.630863189697266,
             "module-size": 50,
             "code-size": 8
-        },
-        "wasm-hybrid-target": {
-            "time": 7.9095776081085205,
-            "module-size": 1579,
-            "code-size": 1300
-        },
-        "wasm-hybrid-remain": {
-            "time": 9.123645067214966,
-            "module-size": 1007,
-            "code-size": 735
         }
     },
     "wamr#2862": {
         "metadata": {
             "origin": "WASMaker",
-            "engine": "Wamr",
+            "engine": "WAMR",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
             "module-size": 23078,
             "code-size": 19727,
@@ -146,8 +116,8 @@
             "code-size": 36
         },
         "wasm-slice": {
-            "time": 181.76640391349792,
-            "module-size": 6669,
+            "time": 340.8531141281128,
+            "module-size": 6661,
             "code-size": 1829,
             "target-size": 1404
         },
@@ -155,16 +125,6 @@
             "time": 33.63482618331909,
             "module-size": 82,
             "code-size": 36
-        },
-        "wasm-hybrid-target": {
-            "time": 146.14568948745728,
-            "module-size": 765,
-            "code-size": 480
-        },
-        "wasm-hybrid-remain": {
-            "time": 211.47862601280212,
-            "module-size": 3515,
-            "code-size": 1699
         }
     },
     "wasmedge#3019": {
@@ -188,8 +148,8 @@
             "code-size": 12
         },
         "wasm-slice": {
-            "time": 121.2945818901062,
-            "module-size": 7319,
+            "time": 39.82285976409912,
+            "module-size": 7309,
             "code-size": 716,
             "target-size": 175
         },
@@ -197,16 +157,6 @@
             "time": 13.152365446090698,
             "module-size": 52,
             "code-size": 12
-        },
-        "wasm-hybrid-target": {
-            "time": 72.27545046806335,
-            "module-size": 880,
-            "code-size": 565
-        },
-        "wasm-hybrid-remain": {
-            "time": 30.65645432472229,
-            "module-size": 813,
-            "code-size": 499
         }
     },
     "wasmedge#3076": {
@@ -230,7 +180,7 @@
             "code-size": 18
         },
         "wasm-slice": {
-            "time": 202.6016891002655,
+            "time": 798.819550037384,
             "module-size": 6258,
             "code-size": 882,
             "target-size": 104
@@ -239,16 +189,6 @@
             "time": 0.6664700508117676,
             "module-size": 63,
             "code-size": 18
-        },
-        "wasm-hybrid-target": {
-            "time": 1359.7582173347473,
-            "module-size": 27095,
-            "code-size": 26715
-        },
-        "wasm-hybrid-remain": {
-            "time": 1729.3724329471588,
-            "module-size": 6210,
-            "code-size": 5839
         }
     },
     "mandelbrot": {
@@ -256,7 +196,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
-            "module-size": 240404,
+            "module-size": 239428,
             "code-size": 64515,
             "function_count": 167,
             "dynamic_function_count": 38,
@@ -272,8 +212,8 @@
             "code-size": 174
         },
         "wasm-slice": {
-            "time": 136.70975804328918,
-            "module-size": 93332,
+            "time": 302.07858872413635,
+            "module-size": 92124,
             "code-size": 61097,
             "target-size": 1655
         },
@@ -281,16 +221,6 @@
             "time": 86400.00161862373,
             "module-size": 803,
             "code-size": 713
-        },
-        "wasm-hybrid-target": {
-            "time": 12530.85262799263,
-            "module-size": 62912,
-            "code-size": 59687
-        },
-        "wasm-hybrid-remain": {
-            "time": 24978.820024967194,
-            "module-size": 4837,
-            "code-size": 2439
         }
     },
     "guiicons": {
@@ -314,8 +244,8 @@
             "code-size": 33541
         },
         "wasm-slice": {
-            "time": 37.72848653793335,
-            "module-size": 284089,
+            "time": 95.64821672439575,
+            "module-size": 282330,
             "code-size": 172650,
             "target-size": 120092
         },
@@ -323,16 +253,6 @@
             "time": 8499.677067518234,
             "module-size": 33137,
             "code-size": 33063
-        },
-        "wasm-hybrid-target": {
-            "time": 11763.526218652725,
-            "module-size": 102615,
-            "code-size": 87096
-        },
-        "wasm-hybrid-remain": {
-            "time": 1826.6998450756073,
-            "module-size": 131800,
-            "code-size": 122423
         }
     },
     "rguilayout": {
@@ -356,25 +276,15 @@
             "code-size": 34002
         },
         "wasm-slice": {
-            "time": 58.28675699234009,
-            "module-size": 386586,
-            "code-size": 262206,
+            "time": 138.94412326812744,
+            "module-size": 384884,
+            "code-size": 262186,
             "target-size": 157996
         },
         "wasm-hybrid-all": {
             "time": 10013.578892946243,
             "module-size": 35695,
             "code-size": 35613
-        },
-        "wasm-hybrid-target": {
-            "time": 8560.047185182571,
-            "module-size": 149313,
-            "code-size": 137443
-        },
-        "wasm-hybrid-remain": {
-            "time": 4301.123516559601,
-            "module-size": 169436,
-            "code-size": 160330
         }
     },
     "rguistyler": {
@@ -398,8 +308,8 @@
             "code-size": 33198
         },
         "wasm-slice": {
-            "time": 36.254287004470825,
-            "module-size": 459603,
+            "time": 98.86753630638123,
+            "module-size": 457813,
             "code-size": 279821,
             "target-size": 144615
         },
@@ -407,16 +317,6 @@
             "time": 86400.00210356712,
             "module-size": 35106,
             "code-size": 32978
-        },
-        "wasm-hybrid-target": {
-            "time": 86400.00214576721,
-            "module-size": 188595,
-            "code-size": 168041
-        },
-        "wasm-hybrid-remain": {
-            "time": 7840.695984363556,
-            "module-size": 163050,
-            "code-size": 147250
         }
     },
     "riconpacker": {
@@ -440,8 +340,8 @@
             "code-size": 32967
         },
         "wasm-slice": {
-            "time": 8.05976390838623,
-            "module-size": 284560,
+            "time": 21.141382455825806,
+            "module-size": 282782,
             "code-size": 170002,
             "target-size": 142554
         },
@@ -449,16 +349,6 @@
             "time": 86400.00162243843,
             "module-size": 32874,
             "code-size": 32801
-        },
-        "wasm-hybrid-target": {
-            "time": 19231.28117084503,
-            "module-size": 70896,
-            "code-size": 60343
-        },
-        "wasm-hybrid-remain": {
-            "time": 1215.0687017440796,
-            "module-size": 153593,
-            "code-size": 145157
         }
     },
     "rfxgen": {
@@ -482,8 +372,8 @@
             "code-size": 33946
         },
         "wasm-slice": {
-            "time": 54.98775601387024,
-            "module-size": 353937,
+            "time": 151.03309082984924,
+            "module-size": 352165,
             "code-size": 205267,
             "target-size": 114484
         },
@@ -491,16 +381,6 @@
             "time": 12514.18942952156,
             "module-size": 33139,
             "code-size": 32972
-        },
-        "wasm-hybrid-target": {
-            "time": 6475.170036315918,
-            "module-size": 142341,
-            "code-size": 123809
-        },
-        "wasm-hybrid-remain": {
-            "time": 13697.710086345673,
-            "module-size": 130241,
-            "code-size": 117166
         }
     },
     "rtexviewer": {
@@ -508,7 +388,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.wasm",
-            "module-size": 386612,
+            "module-size": 382179,
             "code-size": 296617,
             "function_count": 688,
             "dynamic_function_count": 3,
@@ -524,8 +404,8 @@
             "code-size": 499
         },
         "wasm-slice": {
-            "time": 560.7057807445526,
-            "module-size": 122140,
+            "time": 1333.828381538391,
+            "module-size": 118796,
             "code-size": 10194,
             "target-size": 6762
         },
@@ -533,16 +413,6 @@
             "time": 124.9759202003479,
             "module-size": 956,
             "code-size": 894
-        },
-        "wasm-hybrid-target": {
-            "time": 434.246458530426,
-            "module-size": 12500,
-            "code-size": 3460
-        },
-        "wasm-hybrid-remain": {
-            "time": 575.4218943119049,
-            "module-size": 16750,
-            "code-size": 9518
         }
     },
     "wasmedge#3057": {
@@ -566,8 +436,8 @@
             "code-size": 12
         },
         "wasm-slice": {
-            "time": 121.415846824646,
-            "module-size": 38854,
+            "time": 6696.048426151276,
+            "module-size": 38841,
             "code-size": 6134,
             "target-size": 424
         },
@@ -575,16 +445,6 @@
             "time": 15.277360439300537,
             "module-size": 51,
             "code-size": 11
-        },
-        "wasm-hybrid-target": {
-            "time": 237.76490950584412,
-            "module-size": 7221,
-            "code-size": 5734
-        },
-        "wasm-hybrid-remain": {
-            "time": 530.0693914890289,
-            "module-size": 5939,
-            "code-size": 4456
         }
     },
     "funky-kart": {
@@ -592,7 +452,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/funky-kart/funky-kart.wasm",
-            "module-size": 3725096,
+            "module-size": 3715092,
             "code-size": 607293,
             "function_count": 1587,
             "dynamic_function_count": 946,
@@ -608,8 +468,8 @@
             "code-size": 34660
         },
         "wasm-slice": {
-            "time": 239.3024525642395,
-            "module-size": 1847672,
+            "time": 601.2215757369995,
+            "module-size": 1846613,
             "code-size": 119321,
             "target-size": 106812
         },
@@ -617,16 +477,6 @@
             "time": 86400.00183320045,
             "module-size": 34851,
             "code-size": 33062
-        },
-        "wasm-hybrid-target": {
-            "time": 86400.00228381157,
-            "module-size": 52610,
-            "code-size": 45766
-        },
-        "wasm-hybrid-remain": {
-            "time": 1282.173968076706,
-            "module-size": 118926,
-            "code-size": 113172
         }
     },
     "hydro": {
@@ -650,8 +500,8 @@
             "code-size": 3438
         },
         "wasm-slice": {
-            "time": 3261.7688353061676,
-            "module-size": 173931,
+            "time": 7533.338087797165,
+            "module-size": 173718,
             "code-size": 18651,
             "target-size": 10354
         },
@@ -659,16 +509,6 @@
             "time": 121.910719871521,
             "module-size": 93,
             "code-size": 54
-        },
-        "wasm-hybrid-target": {
-            "time": 292.00916361808777,
-            "module-size": 12229,
-            "code-size": 8324
-        },
-        "wasm-hybrid-remain": {
-            "time": 282.11272072792053,
-            "module-size": 20202,
-            "code-size": 16726
         }
     },
     "sqlgui": {
@@ -676,7 +516,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sqlgui/sqlgui.wasm",
-            "module-size": 712714,
+            "module-size": 700671,
             "code-size": 628046,
             "function_count": 1895,
             "dynamic_function_count": 626,
@@ -692,25 +532,15 @@
             "code-size": 76827
         },
         "wasm-slice": {
-            "time": 37.147342681884766,
-            "module-size": 219504,
-            "code-size": 83434,
+            "time": 67.4765374660492,
+            "module-size": 223440,
+            "code-size": 87850,
             "target-size": 33851
         },
         "wasm-hybrid-all": {
             "time": 42285.294662714005,
             "module-size": 69225,
             "code-size": 59162
-        },
-        "wasm-hybrid-target": {
-            "time": 13465.36177778244,
-            "module-size": 94298,
-            "code-size": 82839
-        },
-        "wasm-hybrid-remain": {
-            "time": 86400.00214409828,
-            "module-size": 46467,
-            "code-size": 41731
         }
     },
     "commanderkeen": {
@@ -734,7 +564,7 @@
             "code-size": 1577758
         },
         "wasm-slice": {
-            "time": 3667.878022670746,
+            "time": 1261.2897565364838,
             "module-size": 379253,
             "code-size": 52744,
             "target-size": 782
@@ -750,7 +580,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/boa/boa.wasm",
-            "module-size": 22264897,
+            "module-size": 22232839,
             "code-size": 5198069,
             "function_count": 4598,
             "dynamic_function_count": 463,
@@ -766,8 +596,8 @@
             "code-size": 317816
         },
         "wasm-slice": {
-            "time": 53.416030406951904,
-            "module-size": 17262345,
+            "time": 103.26796627044678,
+            "module-size": 17257569,
             "code-size": 70776,
             "target-size": 48862
         },
@@ -775,16 +605,6 @@
             "time": 2882.3422441482544,
             "module-size": 36287,
             "code-size": 36204
-        },
-        "wasm-hybrid-target": {
-            "time": 4425.053728342056,
-            "module-size": 86773,
-            "code-size": 54781
-        },
-        "wasm-hybrid-remain": {
-            "time": 5917.302379369736,
-            "module-size": 84998,
-            "code-size": 67289
         }
     },
     "jsc": {
@@ -792,7 +612,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jsc/jsc.wasm",
-            "module-size": 5470456,
+            "module-size": 5310908,
             "code-size": 4342199,
             "function_count": 20800,
             "dynamic_function_count": 2437,
@@ -808,8 +628,8 @@
             "code-size": 310331
         },
         "wasm-slice": {
-            "time": 48.98214316368103,
-            "module-size": 1911844,
+            "time": 123.66328310966492,
+            "module-size": 1911475,
             "code-size": 275255,
             "target-size": 170880
         },
@@ -817,16 +637,6 @@
             "time": 16784.42043852806,
             "module-size": 35920,
             "code-size": 35869
-        },
-        "wasm-hybrid-target": {
-            "time": 12416.444705486298,
-            "module-size": 187009,
-            "code-size": 140091
-        },
-        "wasm-hybrid-remain": {
-            "time": 5606.457209587097,
-            "module-size": 288749,
-            "code-size": 254122
         }
     },
     "pacalc": {
@@ -835,7 +645,7 @@
             "engine": "Wizard",
             "fixed-by": "81555ab",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm",
-            "module-size": 291250,
+            "module-size": 287248,
             "code-size": 238902
         },
         "wasm-reduce": {
@@ -844,8 +654,8 @@
             "code-size": 18412
         },
         "wasm-slice": {
-            "time": 20.87259006500244,
-            "module-size": 100360,
+            "time": 44.46190524101257,
+            "module-size": 92785,
             "code-size": 34808,
             "target-size": 2136
         },
@@ -861,7 +671,7 @@
             "engine": "Wizard",
             "fixed-by": "f7aca00",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm",
-            "module-size": 688142,
+            "module-size": 669413,
             "code-size": 536115
         },
         "wasm-reduce": {
@@ -876,7 +686,7 @@
             "engine": "Wizard",
             "fixed-by": "ccf0c56",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm",
-            "module-size": 921840,
+            "module-size": 921399,
             "code-size": 919085
         },
         "wasm-reduce": {
@@ -885,10 +695,10 @@
             "code-size": 4267
         },
         "wasm-slice": {
-            "time": 789.3074715137482,
-            "module-size": 6219,
-            "code-size": 1202,
-            "target-size": 277
+            "time": 8350.150287389755,
+            "module-size": 5079,
+            "code-size": 467,
+            "target-size": 10
         },
         "wasm-hybrid-all": {
             "time": 79.66955757141113,
@@ -902,7 +712,7 @@
             "engine": "Wizard",
             "fixed-by": "ccf0c56",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm",
-            "module-size": 197113,
+            "module-size": 189302,
             "code-size": 180026
         },
         "wasm-reduce": {
@@ -911,8 +721,8 @@
             "code-size": 1023
         },
         "wasm-slice": {
-            "time": 1245.7624626159668,
-            "module-size": 69355,
+            "time": 1528.465171098709,
+            "module-size": 69029,
             "code-size": 56136,
             "target-size": 209
         },
@@ -928,7 +738,7 @@
             "engine": "Wizard",
             "fixed-by": "33ec201",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm",
-            "module-size": 3158214,
+            "module-size": 3136920,
             "code-size": 1731592
         },
         "wasm-reduce": {
@@ -937,8 +747,8 @@
             "code-size": 5
         },
         "wasm-slice": {
-            "time": 5.920238494873047,
-            "module-size": 1529462,
+            "time": 11.214611530303955,
+            "module-size": 1527955,
             "code-size": 16181,
             "target-size": 6
         },
@@ -954,7 +764,7 @@
             "engine": "Wizard",
             "fixed-by": "33ec201",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm",
-            "module-size": 1109056,
+            "module-size": 1071691,
             "code-size": 882961
         },
         "wasm-reduce": {
@@ -963,8 +773,8 @@
             "code-size": 5
         },
         "wasm-slice": {
-            "time": 4.348644495010376,
-            "module-size": 399854,
+            "time": 7.693531274795532,
+            "module-size": 394795,
             "code-size": 28558,
             "target-size": 10
         },
@@ -980,7 +790,7 @@
             "engine": "Wizard",
             "fixed-by": "4e3e221",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm",
-            "module-size": 5922149,
+            "module-size": 5883253,
             "code-size": 5356751
         },
         "wasm-reduce": {
@@ -989,8 +799,8 @@
             "code-size": 479
         },
         "wasm-slice": {
-            "time": 16.98512887954712,
-            "module-size": 751544,
+            "time": 26.166879177093506,
+            "module-size": 751087,
             "code-size": 33037,
             "target-size": 6088
         },
@@ -1006,7 +816,7 @@
             "engine": "Wizard",
             "fixed-by": "4e3e221",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm",
-            "module-size": 824655,
+            "module-size": 820696,
             "code-size": 487607
         },
         "wasm-reduce": {
@@ -1015,8 +825,8 @@
             "code-size": 4654
         },
         "wasm-slice": {
-            "time": 2.807171583175659,
-            "module-size": 379196,
+            "time": 6.231900930404663,
+            "module-size": 377372,
             "code-size": 25613,
             "target-size": 22234
         },

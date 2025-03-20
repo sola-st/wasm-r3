@@ -44,7 +44,7 @@ def wrong_on_target():
         text=True,
         errors='replace',            # Better handling of binary artifacts
     )
-    if PRINT: print(result)
+    if PRINT: print(result.stderr)
     expected_output = 'out of bounds memory access'
     if expected_output not in (result.stdout + result.stderr):
         return True
@@ -60,7 +60,7 @@ def correct_on_other():
         text=True,
         errors='replace',            # Better handling of binary artifacts
     )
-    if PRINT: print(result)
+    if PRINT: print(result.stderr)
     expected_output = 'out of bounds memory access'
     if expected_output in result.stdout + result.stderr:
         return True

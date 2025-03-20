@@ -8,7 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 WASM = sys.argv[1]
-PRINT_OUTPUT = os.getenv('PRINT', 'False').lower() in ('true', '1', 't')
+PRINT = os.getenv('PRINT', 'False').lower() in ('true', '1', 't')
 
 
 def wrong_on_target():
@@ -19,7 +19,7 @@ def wrong_on_target():
         capture_output=True,
         text=True,
     )
-    if PRINT_OUTPUT: print(result)
+    if PRINT: print(result)
     if (result.returncode != 0 and result.returncode != 124 # traps but not timeout
         and 'X86_64Assembler' not in result.stderr): # not compile error
         return True
@@ -34,7 +34,7 @@ def correct_on_other():
         capture_output=True,
         text=True,
     )
-    if PRINT_OUTPUT: print(result)
+    if PRINT: print(result)
     if result.returncode == 0:
         return True
     else:

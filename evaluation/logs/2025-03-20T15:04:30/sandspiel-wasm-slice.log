@@ -1,0 +1,1560 @@
+2025-03-20 15:20:18,374 - INFO - command:
+PRINT=1 timeout 86400s /home/doehyunbaek/wasm-r3/rr-reduce/wasm-slice /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-ccf0c56.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm
+2025-03-20 15:20:33,231 - INFO - 
+2025-03-20 15:20:33,231 - INFO - > test
+2025-03-20 15:20:33,231 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 0 --alternativeDownload
+2025-03-20 15:20:33,231 - INFO - 
+2025-03-20 15:20:33,328 - INFO - (node:127822) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:20:33,328 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:20:33,699 - INFO - undefined
+2025-03-20 15:20:33,699 - INFO - sandspiel-0:
+2025-03-20 15:20:34,569 - INFO - Running slice-dice: 870ms
+2025-03-20 15:22:33,201 - INFO - Running wasm-r3:
+2025-03-20 15:22:33,201 - INFO - > test
+2025-03-20 15:22:33,201 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 1 --alternativeDownload
+2025-03-20 15:22:33,201 - INFO - 
+2025-03-20 15:22:33,296 - INFO - (node:148381) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:22:33,296 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:22:33,451 - INFO - node:internal/process/promises:394
+2025-03-20 15:22:33,451 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:22:33,451 - INFO - ^
+2025-03-20 15:22:33,451 - INFO - 
+2025-03-20 15:22:33,451 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:22:33,451 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:22:33,451 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:22:33,451 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:22:33,452 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:22:33,452 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:22:33,452 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:22:33,452 - INFO - 
+2025-03-20 15:22:33,452 - INFO - Node.js v23.4.0
+2025-03-20 15:22:33,766 - INFO - undefined
+2025-03-20 15:22:33,766 - INFO - sandspiel-1:
+2025-03-20 15:22:34,910 - INFO - Running slice-dice: 1144ms
+2025-03-20 15:24:33,232 - INFO - Running wasm-r3:
+2025-03-20 15:24:33,232 - INFO - > test
+2025-03-20 15:24:33,233 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 2 --alternativeDownload
+2025-03-20 15:24:33,233 - INFO - 
+2025-03-20 15:24:33,341 - INFO - (node:164929) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:24:33,341 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:24:33,435 - INFO - node:internal/process/promises:394
+2025-03-20 15:24:33,435 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:24:33,435 - INFO - ^
+2025-03-20 15:24:33,435 - INFO - 
+2025-03-20 15:24:33,435 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:24:33,435 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:24:33,435 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:24:33,435 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:24:33,435 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:24:33,435 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:24:33,435 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:24:33,436 - INFO - 
+2025-03-20 15:24:33,436 - INFO - Node.js v23.4.0
+2025-03-20 15:24:33,725 - INFO - undefined
+2025-03-20 15:24:33,725 - INFO - sandspiel-2:
+2025-03-20 15:24:34,825 - INFO - Running slice-dice: 1099ms
+2025-03-20 15:26:06,854 - INFO - Running wasm-r3: 92029ms
+2025-03-20 15:26:06,858 - INFO - Sliced file size: 9913bytes
+2025-03-20 15:26:06,916 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/2/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:26:06,916 - INFO - Not interesting
+2025-03-20 15:26:07,032 - INFO - 
+2025-03-20 15:26:07,032 - INFO - > test
+2025-03-20 15:26:07,032 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 3 --alternativeDownload
+2025-03-20 15:26:07,032 - INFO - 
+2025-03-20 15:26:07,121 - INFO - (node:180026) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:26:07,122 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:26:07,442 - INFO - undefined
+2025-03-20 15:26:07,443 - INFO - sandspiel-3:
+2025-03-20 15:26:08,480 - INFO - Running slice-dice: 1037ms
+2025-03-20 15:28:07,036 - INFO - Running wasm-r3:
+2025-03-20 15:28:07,036 - INFO - > test
+2025-03-20 15:28:07,037 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 7 --alternativeDownload
+2025-03-20 15:28:07,037 - INFO - 
+2025-03-20 15:28:07,117 - INFO - (node:196427) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:28:07,117 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:28:07,465 - INFO - node:internal/process/promises:394
+2025-03-20 15:28:07,465 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:28:07,465 - INFO - ^
+2025-03-20 15:28:07,465 - INFO - 
+2025-03-20 15:28:07,465 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:28:07,465 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:28:07,465 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:28:07,465 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:28:07,465 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:28:07,465 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:28:07,465 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:28:07,465 - INFO - 
+2025-03-20 15:28:07,465 - INFO - Node.js v23.4.0
+2025-03-20 15:28:07,606 - INFO - undefined
+2025-03-20 15:28:07,606 - INFO - sandspiel-7:
+2025-03-20 15:28:08,846 - INFO - Running slice-dice: 1240ms
+2025-03-20 15:29:43,233 - INFO - Running wasm-r3: 94387ms
+2025-03-20 15:29:43,236 - INFO - Sliced file size: 15096bytes
+2025-03-20 15:29:43,286 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/7/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:29:43,286 - INFO - Not interesting
+2025-03-20 15:29:43,399 - INFO - 
+2025-03-20 15:29:43,399 - INFO - > test
+2025-03-20 15:29:43,399 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 10 --alternativeDownload
+2025-03-20 15:29:43,399 - INFO - 
+2025-03-20 15:29:43,486 - INFO - (node:211957) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:29:43,486 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:29:43,780 - INFO - undefined
+2025-03-20 15:29:43,780 - INFO - sandspiel-10:
+2025-03-20 15:29:44,741 - INFO - Running slice-dice: 961ms
+2025-03-20 15:31:40,111 - INFO - Running wasm-r3: 115370ms
+2025-03-20 15:31:40,113 - INFO - Sliced file size: 5806bytes
+2025-03-20 15:31:40,166 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/10/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:31:40,166 - INFO - Not interesting
+2025-03-20 15:31:40,270 - INFO - 
+2025-03-20 15:31:40,270 - INFO - > test
+2025-03-20 15:31:40,270 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 11 --alternativeDownload
+2025-03-20 15:31:40,270 - INFO - 
+2025-03-20 15:31:40,350 - INFO - (node:229188) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:31:40,350 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:31:40,773 - INFO - undefined
+2025-03-20 15:31:40,774 - INFO - sandspiel-11:
+2025-03-20 15:31:42,153 - INFO - Running slice-dice: 1380ms
+2025-03-20 15:33:40,104 - INFO - Running wasm-r3: 117950ms
+2025-03-20 15:33:40,107 - INFO - Sliced file size: 5873bytes
+2025-03-20 15:33:40,156 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/11/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:33:40,156 - INFO - Not interesting
+2025-03-20 15:33:40,260 - INFO - 
+2025-03-20 15:33:40,260 - INFO - > test
+2025-03-20 15:33:40,260 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 12 --alternativeDownload
+2025-03-20 15:33:40,260 - INFO - 
+2025-03-20 15:33:40,345 - INFO - (node:241467) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:33:40,345 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:33:40,793 - INFO - undefined
+2025-03-20 15:33:40,794 - INFO - sandspiel-12:
+2025-03-20 15:33:42,350 - INFO - Running slice-dice: 1556ms
+2025-03-20 15:35:40,194 - INFO - Running wasm-r3: node:internal/process/promises:394
+2025-03-20 15:35:40,194 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:35:40,194 - INFO - ^
+2025-03-20 15:35:40,194 - INFO - 
+2025-03-20 15:35:40,194 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:35:40,194 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:35:40,194 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:35:40,194 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:35:40,194 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:35:40,194 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:35:40,194 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:35:40,194 - INFO - 
+2025-03-20 15:35:40,194 - INFO - Node.js v23.4.0
+2025-03-20 15:35:40,281 - INFO - 
+2025-03-20 15:35:40,281 - INFO - > test
+2025-03-20 15:35:40,281 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 14 --alternativeDownload
+2025-03-20 15:35:40,281 - INFO - 
+2025-03-20 15:35:40,381 - INFO - (node:257378) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:35:40,382 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:35:40,720 - INFO - undefined
+2025-03-20 15:35:40,720 - INFO - sandspiel-14:
+2025-03-20 15:35:41,805 - INFO - Running slice-dice: 1084ms
+2025-03-20 15:37:40,260 - INFO - Running wasm-r3:
+2025-03-20 15:37:40,261 - INFO - > test
+2025-03-20 15:37:40,261 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 20 --alternativeDownload
+2025-03-20 15:37:40,261 - INFO - 
+2025-03-20 15:37:40,340 - INFO - (node:272058) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:37:40,340 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:37:40,443 - INFO - node:internal/process/promises:394
+2025-03-20 15:37:40,444 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:37:40,444 - INFO - ^
+2025-03-20 15:37:40,444 - INFO - 
+2025-03-20 15:37:40,444 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:37:40,444 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:37:40,444 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:37:40,444 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:37:40,444 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:37:40,444 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:37:40,444 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:37:40,444 - INFO - 
+2025-03-20 15:37:40,444 - INFO - Node.js v23.4.0
+2025-03-20 15:37:40,703 - INFO - undefined
+2025-03-20 15:37:40,703 - INFO - sandspiel-20:
+2025-03-20 15:37:41,740 - INFO - Running slice-dice: 1037ms
+2025-03-20 15:39:40,194 - INFO - Running wasm-r3: node:internal/process/promises:394
+2025-03-20 15:39:40,194 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:39:40,194 - INFO - ^
+2025-03-20 15:39:40,194 - INFO - 
+2025-03-20 15:39:40,194 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:39:40,195 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:39:40,195 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:39:40,195 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:39:40,195 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:39:40,195 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:39:40,195 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:39:40,195 - INFO - 
+2025-03-20 15:39:40,195 - INFO - Node.js v23.4.0
+2025-03-20 15:39:40,313 - INFO - 
+2025-03-20 15:39:40,313 - INFO - > test
+2025-03-20 15:39:40,313 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 24 --alternativeDownload
+2025-03-20 15:39:40,313 - INFO - 
+2025-03-20 15:39:40,414 - INFO - (node:286552) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:39:40,414 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:39:40,827 - INFO - undefined
+2025-03-20 15:39:40,827 - INFO - sandspiel-24:
+2025-03-20 15:39:42,562 - INFO - Running slice-dice: 1735ms
+2025-03-20 15:41:40,318 - INFO - Running wasm-r3:
+2025-03-20 15:41:40,318 - INFO - > test
+2025-03-20 15:41:40,318 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 25 --alternativeDownload
+2025-03-20 15:41:40,318 - INFO - 
+2025-03-20 15:41:40,353 - INFO - node:internal/process/promises:394
+2025-03-20 15:41:40,353 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:41:40,353 - INFO - ^
+2025-03-20 15:41:40,353 - INFO - 
+2025-03-20 15:41:40,353 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:41:40,353 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:41:40,353 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:41:40,353 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:41:40,353 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:41:40,354 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:41:40,354 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:41:40,354 - INFO - 
+2025-03-20 15:41:40,354 - INFO - Node.js v23.4.0
+2025-03-20 15:41:40,405 - INFO - (node:300062) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:41:40,405 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:41:40,707 - INFO - undefined
+2025-03-20 15:41:40,707 - INFO - sandspiel-25:
+2025-03-20 15:41:41,755 - INFO - Running slice-dice: 1048ms
+2025-03-20 15:43:40,212 - INFO - Running wasm-r3: node:internal/process/promises:394
+2025-03-20 15:43:40,212 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:43:40,212 - INFO - ^
+2025-03-20 15:43:40,212 - INFO - 
+2025-03-20 15:43:40,212 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:43:40,212 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:43:40,213 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:43:40,213 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:43:40,213 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:43:40,213 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:43:40,213 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:43:40,213 - INFO - 
+2025-03-20 15:43:40,213 - INFO - Node.js v23.4.0
+2025-03-20 15:43:40,294 - INFO - 
+2025-03-20 15:43:40,294 - INFO - > test
+2025-03-20 15:43:40,294 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 27 --alternativeDownload
+2025-03-20 15:43:40,294 - INFO - 
+2025-03-20 15:43:40,383 - INFO - (node:313694) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:43:40,383 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:43:40,723 - INFO - undefined
+2025-03-20 15:43:40,723 - INFO - sandspiel-27:
+2025-03-20 15:43:41,805 - INFO - Running slice-dice: 1082ms
+2025-03-20 15:45:40,308 - INFO - Running wasm-r3:
+2025-03-20 15:45:40,308 - INFO - > test
+2025-03-20 15:45:40,308 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 30 --alternativeDownload
+2025-03-20 15:45:40,309 - INFO - 
+2025-03-20 15:45:40,422 - INFO - (node:327606) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:45:40,422 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:45:40,577 - INFO - node:internal/process/promises:394
+2025-03-20 15:45:40,577 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:45:40,577 - INFO - ^
+2025-03-20 15:45:40,577 - INFO - 
+2025-03-20 15:45:40,577 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:45:40,577 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:45:40,577 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:45:40,577 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:45:40,577 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:45:40,577 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:45:40,577 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:45:40,577 - INFO - 
+2025-03-20 15:45:40,577 - INFO - Node.js v23.4.0
+2025-03-20 15:45:40,900 - INFO - undefined
+2025-03-20 15:45:40,900 - INFO - sandspiel-30:
+2025-03-20 15:45:42,004 - INFO - Running slice-dice: 1104ms
+2025-03-20 15:47:25,891 - INFO - Running wasm-r3: 103886ms
+2025-03-20 15:47:25,893 - INFO - Sliced file size: 5295bytes
+2025-03-20 15:47:25,950 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/30/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:47:25,951 - INFO - Not interesting
+2025-03-20 15:47:26,122 - INFO - 
+2025-03-20 15:47:26,123 - INFO - > test
+2025-03-20 15:47:26,123 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 39 --alternativeDownload
+2025-03-20 15:47:26,123 - INFO - 
+2025-03-20 15:47:26,206 - INFO - (node:341381) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:47:26,206 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:47:26,540 - INFO - undefined
+2025-03-20 15:47:26,540 - INFO - sandspiel-39:
+2025-03-20 15:47:28,162 - INFO - Running slice-dice: 1621ms
+2025-03-20 15:49:00,380 - INFO - Running wasm-r3: 92217ms
+2025-03-20 15:49:00,384 - INFO - Sliced file size: 28039bytes
+2025-03-20 15:49:00,437 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/39/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:49:00,438 - INFO - Not interesting
+2025-03-20 15:49:00,601 - INFO - 
+2025-03-20 15:49:00,601 - INFO - > test
+2025-03-20 15:49:00,601 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 41 --alternativeDownload
+2025-03-20 15:49:00,602 - INFO - 
+2025-03-20 15:49:00,699 - INFO - (node:355184) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:49:00,699 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:49:01,010 - INFO - undefined
+2025-03-20 15:49:01,010 - INFO - sandspiel-41:
+2025-03-20 15:49:02,227 - INFO - Running slice-dice: 1217ms
+2025-03-20 15:50:36,422 - INFO - Running wasm-r3: 94194ms
+2025-03-20 15:50:36,424 - INFO - Sliced file size: 5283bytes
+2025-03-20 15:50:36,477 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/41/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:50:36,477 - INFO - Not interesting
+2025-03-20 15:50:36,566 - INFO - 
+2025-03-20 15:50:36,566 - INFO - > test
+2025-03-20 15:50:36,566 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 45 --alternativeDownload
+2025-03-20 15:50:36,566 - INFO - 
+2025-03-20 15:50:36,651 - INFO - (node:368276) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:50:36,651 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:50:36,983 - INFO - undefined
+2025-03-20 15:50:36,984 - INFO - sandspiel-45:
+2025-03-20 15:50:37,970 - INFO - Running slice-dice: 987ms
+2025-03-20 15:52:08,924 - INFO - Running wasm-r3: 90954ms
+2025-03-20 15:52:08,926 - INFO - Sliced file size: 6492bytes
+2025-03-20 15:52:08,976 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/45/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:52:08,976 - INFO - Not interesting
+2025-03-20 15:52:09,092 - INFO - 
+2025-03-20 15:52:09,092 - INFO - > test
+2025-03-20 15:52:09,092 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 46 --alternativeDownload
+2025-03-20 15:52:09,092 - INFO - 
+2025-03-20 15:52:09,176 - INFO - (node:381808) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:52:09,176 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:52:09,521 - INFO - undefined
+2025-03-20 15:52:09,522 - INFO - sandspiel-46:
+2025-03-20 15:52:10,657 - INFO - Running slice-dice: 1135ms
+2025-03-20 15:54:09,149 - INFO - Running wasm-r3:
+2025-03-20 15:54:09,149 - INFO - > test
+2025-03-20 15:54:09,149 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 53 --alternativeDownload
+2025-03-20 15:54:09,149 - INFO - 
+2025-03-20 15:54:09,232 - INFO - node:internal/process/promises:394
+2025-03-20 15:54:09,232 - INFO - triggerUncaughtException(err, true /* fromPromise */);
+2025-03-20 15:54:09,232 - INFO - ^
+2025-03-20 15:54:09,232 - INFO - 
+2025-03-20 15:54:09,232 - INFO - frame.evaluate: Target page, context or browser has been closed
+2025-03-20 15:54:09,232 - INFO - at /home/doehyunbaek/wasm-r3/src/web.ts:162:36
+2025-03-20 15:54:09,232 - INFO - at Analyser.getResults (/home/doehyunbaek/wasm-r3/src/web.ts:161:57)
+2025-03-20 15:54:09,232 - INFO - at Analyser.stop (/home/doehyunbaek/wasm-r3/src/web.ts:103:34)
+2025-03-20 15:54:09,232 - INFO - at runWasmR3 (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:56:34)
+2025-03-20 15:54:09,232 - INFO - at async runSliceDiceTests (/home/doehyunbaek/wasm-r3/src/test-slice-dice.ts:23:5)
+2025-03-20 15:54:09,232 - INFO - at async run (/home/doehyunbaek/wasm-r3/src/test.ts:116:5)
+2025-03-20 15:54:09,232 - INFO - 
+2025-03-20 15:54:09,232 - INFO - Node.js v23.4.0
+2025-03-20 15:54:09,258 - INFO - (node:395553) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:54:09,258 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:54:09,736 - INFO - undefined
+2025-03-20 15:54:09,736 - INFO - sandspiel-53:
+2025-03-20 15:54:11,369 - INFO - Running slice-dice: 1632ms
+2025-03-20 15:55:39,689 - INFO - Running wasm-r3: 88320ms
+2025-03-20 15:55:39,692 - INFO - Sliced file size: 5216bytes
+2025-03-20 15:55:39,748 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/53/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:55:39,748 - INFO - Not interesting
+2025-03-20 15:55:39,837 - INFO - 
+2025-03-20 15:55:39,837 - INFO - > test
+2025-03-20 15:55:39,838 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 58 --alternativeDownload
+2025-03-20 15:55:39,838 - INFO - 
+2025-03-20 15:55:39,915 - INFO - (node:408007) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:55:39,915 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:55:40,235 - INFO - undefined
+2025-03-20 15:55:40,235 - INFO - sandspiel-58:
+2025-03-20 15:55:41,263 - INFO - Running slice-dice: 1028ms
+2025-03-20 15:57:07,675 - INFO - Running wasm-r3: 86412ms
+2025-03-20 15:57:07,678 - INFO - Sliced file size: 6249bytes
+2025-03-20 15:57:07,730 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/58/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:57:07,730 - INFO - Not interesting
+2025-03-20 15:57:07,820 - INFO - 
+2025-03-20 15:57:07,820 - INFO - > test
+2025-03-20 15:57:07,820 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 61 --alternativeDownload
+2025-03-20 15:57:07,820 - INFO - 
+2025-03-20 15:57:07,897 - INFO - (node:420136) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:57:07,897 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:57:08,176 - INFO - undefined
+2025-03-20 15:57:08,176 - INFO - sandspiel-61:
+2025-03-20 15:57:09,270 - INFO - Running slice-dice: 1094ms
+2025-03-20 15:58:33,230 - INFO - Running wasm-r3: 83960ms
+2025-03-20 15:58:33,233 - INFO - Sliced file size: 5224bytes
+2025-03-20 15:58:33,287 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/61/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:58:33,287 - INFO - Not interesting
+2025-03-20 15:58:33,373 - INFO - 
+2025-03-20 15:58:33,373 - INFO - > test
+2025-03-20 15:58:33,373 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 62 --alternativeDownload
+2025-03-20 15:58:33,373 - INFO - 
+2025-03-20 15:58:33,460 - INFO - (node:432417) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:58:33,460 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:58:33,790 - INFO - undefined
+2025-03-20 15:58:33,791 - INFO - sandspiel-62:
+2025-03-20 15:58:35,061 - INFO - Running slice-dice: 1271ms
+2025-03-20 15:59:59,262 - INFO - Running wasm-r3: 84201ms
+2025-03-20 15:59:59,265 - INFO - Sliced file size: 5224bytes
+2025-03-20 15:59:59,317 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/62/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 15:59:59,317 - INFO - Not interesting
+2025-03-20 15:59:59,421 - INFO - 
+2025-03-20 15:59:59,421 - INFO - > test
+2025-03-20 15:59:59,421 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 63 --alternativeDownload
+2025-03-20 15:59:59,422 - INFO - 
+2025-03-20 15:59:59,504 - INFO - (node:445255) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 15:59:59,504 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 15:59:59,797 - INFO - undefined
+2025-03-20 15:59:59,797 - INFO - sandspiel-63:
+2025-03-20 16:00:00,877 - INFO - Running slice-dice: 1081ms
+2025-03-20 16:01:25,981 - INFO - Running wasm-r3: 85104ms
+2025-03-20 16:01:25,984 - INFO - Sliced file size: 7619bytes
+2025-03-20 16:01:26,035 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/63/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:01:26,035 - INFO - Not interesting
+2025-03-20 16:01:26,184 - INFO - 
+2025-03-20 16:01:26,184 - INFO - > test
+2025-03-20 16:01:26,184 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 64 --alternativeDownload
+2025-03-20 16:01:26,184 - INFO - 
+2025-03-20 16:01:26,273 - INFO - (node:457921) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:01:26,273 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:01:26,633 - INFO - undefined
+2025-03-20 16:01:26,633 - INFO - sandspiel-64:
+2025-03-20 16:01:27,704 - INFO - Running slice-dice: 1070ms
+2025-03-20 16:02:51,500 - INFO - Running wasm-r3: 83796ms
+2025-03-20 16:02:51,503 - INFO - Sliced file size: 6367bytes
+2025-03-20 16:02:51,549 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/64/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:02:51,550 - INFO - Not interesting
+2025-03-20 16:02:51,640 - INFO - 
+2025-03-20 16:02:51,640 - INFO - > test
+2025-03-20 16:02:51,640 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 65 --alternativeDownload
+2025-03-20 16:02:51,641 - INFO - 
+2025-03-20 16:02:51,718 - INFO - (node:470520) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:02:51,718 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:02:52,019 - INFO - undefined
+2025-03-20 16:02:52,019 - INFO - sandspiel-65:
+2025-03-20 16:02:52,989 - INFO - Running slice-dice: 970ms
+2025-03-20 16:04:17,189 - INFO - Running wasm-r3: 84200ms
+2025-03-20 16:04:17,191 - INFO - Sliced file size: 6365bytes
+2025-03-20 16:04:17,237 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/65/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:04:17,237 - INFO - Not interesting
+2025-03-20 16:04:17,325 - INFO - 
+2025-03-20 16:04:17,325 - INFO - > test
+2025-03-20 16:04:17,325 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 78 --alternativeDownload
+2025-03-20 16:04:17,325 - INFO - 
+2025-03-20 16:04:17,397 - INFO - (node:483576) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:04:17,397 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:04:17,692 - INFO - undefined
+2025-03-20 16:04:17,692 - INFO - sandspiel-78:
+2025-03-20 16:04:18,664 - INFO - Running slice-dice: 972ms
+2025-03-20 16:06:10,215 - INFO - Running wasm-r3: 111550ms
+2025-03-20 16:06:10,220 - INFO - Sliced file size: 5675bytes
+2025-03-20 16:06:10,289 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/78/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:06:10,289 - INFO - Not interesting
+2025-03-20 16:06:10,393 - INFO - 
+2025-03-20 16:06:10,393 - INFO - > test
+2025-03-20 16:06:10,393 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 86 --alternativeDownload
+2025-03-20 16:06:10,394 - INFO - 
+2025-03-20 16:06:10,499 - INFO - (node:499422) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:06:10,500 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:06:10,938 - INFO - undefined
+2025-03-20 16:06:10,939 - INFO - sandspiel-86:
+2025-03-20 16:06:12,244 - INFO - Running slice-dice: 1305ms
+2025-03-20 16:07:53,174 - INFO - Running wasm-r3: 100929ms
+2025-03-20 16:07:53,176 - INFO - Sliced file size: 5228bytes
+2025-03-20 16:07:53,234 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/86/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:07:53,234 - INFO - Not interesting
+2025-03-20 16:07:53,342 - INFO - 
+2025-03-20 16:07:53,342 - INFO - > test
+2025-03-20 16:07:53,342 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 87 --alternativeDownload
+2025-03-20 16:07:53,342 - INFO - 
+2025-03-20 16:07:53,445 - INFO - (node:512242) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:07:53,445 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:07:53,879 - INFO - undefined
+2025-03-20 16:07:53,880 - INFO - sandspiel-87:
+2025-03-20 16:07:55,394 - INFO - Running slice-dice: 1514ms
+2025-03-20 16:09:20,849 - INFO - Running wasm-r3: 85454ms
+2025-03-20 16:09:20,851 - INFO - Sliced file size: 5340bytes
+2025-03-20 16:09:20,899 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/87/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:09:20,899 - INFO - Not interesting
+2025-03-20 16:09:20,995 - INFO - 
+2025-03-20 16:09:20,995 - INFO - > test
+2025-03-20 16:09:20,995 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 93 --alternativeDownload
+2025-03-20 16:09:20,995 - INFO - 
+2025-03-20 16:09:21,072 - INFO - (node:528729) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:09:21,072 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:09:21,374 - INFO - undefined
+2025-03-20 16:09:21,374 - INFO - sandspiel-93:
+2025-03-20 16:09:22,858 - INFO - Running slice-dice: 1484ms
+2025-03-20 16:10:47,798 - INFO - Running wasm-r3: 84938ms
+2025-03-20 16:10:47,801 - INFO - Sliced file size: 5074bytes
+2025-03-20 16:10:47,854 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/93/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:10:47,854 - INFO - Not interesting
+2025-03-20 16:10:47,952 - INFO - 
+2025-03-20 16:10:47,952 - INFO - > test
+2025-03-20 16:10:47,952 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 4 --alternativeDownload
+2025-03-20 16:10:47,952 - INFO - 
+2025-03-20 16:10:48,041 - INFO - (node:546313) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:10:48,041 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:10:48,331 - INFO - undefined
+2025-03-20 16:10:48,331 - INFO - sandspiel-4:
+2025-03-20 16:10:49,253 - INFO - Running slice-dice: 922ms
+2025-03-20 16:12:12,588 - INFO - Running wasm-r3: 83335ms
+2025-03-20 16:12:12,591 - INFO - Sliced file size: 5966bytes
+2025-03-20 16:12:12,650 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/4/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:12:12,650 - INFO - Not interesting
+2025-03-20 16:12:12,744 - INFO - 
+2025-03-20 16:12:12,744 - INFO - > test
+2025-03-20 16:12:12,744 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 5 --alternativeDownload
+2025-03-20 16:12:12,744 - INFO - 
+2025-03-20 16:12:12,841 - INFO - (node:558267) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:12:12,841 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:12:13,203 - INFO - undefined
+2025-03-20 16:12:13,204 - INFO - sandspiel-5:
+2025-03-20 16:12:14,268 - INFO - Running slice-dice: 1065ms
+2025-03-20 16:13:37,264 - INFO - Running wasm-r3: 82996ms
+2025-03-20 16:13:37,267 - INFO - Sliced file size: 5778bytes
+2025-03-20 16:13:37,320 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/5/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:13:37,320 - INFO - Not interesting
+2025-03-20 16:13:37,411 - INFO - 
+2025-03-20 16:13:37,411 - INFO - > test
+2025-03-20 16:13:37,411 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 6 --alternativeDownload
+2025-03-20 16:13:37,411 - INFO - 
+2025-03-20 16:13:37,492 - INFO - (node:570068) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:13:37,492 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:13:37,798 - INFO - undefined
+2025-03-20 16:13:37,798 - INFO - sandspiel-6:
+2025-03-20 16:13:38,789 - INFO - Running slice-dice: 991ms
+2025-03-20 16:15:02,860 - INFO - Running wasm-r3: 84070ms
+2025-03-20 16:15:02,862 - INFO - Sliced file size: 6001bytes
+2025-03-20 16:15:02,915 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/6/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:15:02,915 - INFO - Not interesting
+2025-03-20 16:15:03,017 - INFO - 
+2025-03-20 16:15:03,017 - INFO - > test
+2025-03-20 16:15:03,017 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 8 --alternativeDownload
+2025-03-20 16:15:03,018 - INFO - 
+2025-03-20 16:15:03,103 - INFO - (node:582272) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:15:03,103 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:15:03,462 - INFO - undefined
+2025-03-20 16:15:03,462 - INFO - sandspiel-8:
+2025-03-20 16:15:05,006 - INFO - Running slice-dice: 1544ms
+2025-03-20 16:16:28,024 - INFO - Running wasm-r3: 83017ms
+2025-03-20 16:16:28,026 - INFO - Sliced file size: 5711bytes
+2025-03-20 16:16:28,076 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/8/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:16:28,076 - INFO - Not interesting
+2025-03-20 16:16:28,169 - INFO - 
+2025-03-20 16:16:28,170 - INFO - > test
+2025-03-20 16:16:28,170 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 9 --alternativeDownload
+2025-03-20 16:16:28,170 - INFO - 
+2025-03-20 16:16:28,260 - INFO - (node:593944) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:16:28,260 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:16:28,570 - INFO - undefined
+2025-03-20 16:16:28,570 - INFO - sandspiel-9:
+2025-03-20 16:16:29,651 - INFO - Running slice-dice: 1081ms
+2025-03-20 16:17:54,677 - INFO - Running wasm-r3: 85026ms
+2025-03-20 16:17:54,680 - INFO - Sliced file size: 5745bytes
+2025-03-20 16:17:54,734 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/9/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:17:54,734 - INFO - Not interesting
+2025-03-20 16:17:54,863 - INFO - 
+2025-03-20 16:17:54,863 - INFO - > test
+2025-03-20 16:17:54,863 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 13 --alternativeDownload
+2025-03-20 16:17:54,863 - INFO - 
+2025-03-20 16:17:54,949 - INFO - (node:605994) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:17:54,949 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:17:55,247 - INFO - undefined
+2025-03-20 16:17:55,248 - INFO - sandspiel-13:
+2025-03-20 16:17:56,323 - INFO - Running slice-dice: 1076ms
+2025-03-20 16:19:20,926 - INFO - Running wasm-r3: 84603ms
+2025-03-20 16:19:20,929 - INFO - Sliced file size: 5407bytes
+2025-03-20 16:19:20,993 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/13/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:19:20,993 - INFO - Not interesting
+2025-03-20 16:19:21,093 - INFO - 
+2025-03-20 16:19:21,093 - INFO - > test
+2025-03-20 16:19:21,093 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 15 --alternativeDownload
+2025-03-20 16:19:21,093 - INFO - 
+2025-03-20 16:19:21,169 - INFO - (node:619007) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:19:21,169 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:19:21,480 - INFO - undefined
+2025-03-20 16:19:21,481 - INFO - sandspiel-15:
+2025-03-20 16:19:22,442 - INFO - Running slice-dice: 961ms
+2025-03-20 16:20:45,400 - INFO - Running wasm-r3: 82957ms
+2025-03-20 16:20:45,402 - INFO - Sliced file size: 5389bytes
+2025-03-20 16:20:45,449 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/15/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:20:45,450 - INFO - Not interesting
+2025-03-20 16:20:45,546 - INFO - 
+2025-03-20 16:20:45,546 - INFO - > test
+2025-03-20 16:20:45,546 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 16 --alternativeDownload
+2025-03-20 16:20:45,546 - INFO - 
+2025-03-20 16:20:45,627 - INFO - (node:631243) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:20:45,628 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:20:45,942 - INFO - undefined
+2025-03-20 16:20:45,942 - INFO - sandspiel-16:
+2025-03-20 16:20:46,802 - INFO - Running slice-dice: 860ms
+2025-03-20 16:22:11,390 - INFO - Running wasm-r3: 84588ms
+2025-03-20 16:22:11,392 - INFO - Sliced file size: 5396bytes
+2025-03-20 16:22:11,440 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/16/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:22:11,440 - INFO - Not interesting
+2025-03-20 16:22:11,540 - INFO - 
+2025-03-20 16:22:11,540 - INFO - > test
+2025-03-20 16:22:11,541 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 17 --alternativeDownload
+2025-03-20 16:22:11,541 - INFO - 
+2025-03-20 16:22:11,645 - INFO - (node:644068) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:22:11,645 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:22:11,946 - INFO - undefined
+2025-03-20 16:22:11,947 - INFO - sandspiel-17:
+2025-03-20 16:22:12,924 - INFO - Running slice-dice: 978ms
+2025-03-20 16:23:36,927 - INFO - Running wasm-r3: 84003ms
+2025-03-20 16:23:36,931 - INFO - Sliced file size: 5387bytes
+2025-03-20 16:23:36,996 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/17/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:23:36,996 - INFO - Not interesting
+2025-03-20 16:23:37,101 - INFO - 
+2025-03-20 16:23:37,101 - INFO - > test
+2025-03-20 16:23:37,101 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 18 --alternativeDownload
+2025-03-20 16:23:37,101 - INFO - 
+2025-03-20 16:23:37,189 - INFO - (node:657214) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:23:37,190 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:23:37,639 - INFO - undefined
+2025-03-20 16:23:37,639 - INFO - sandspiel-18:
+2025-03-20 16:23:38,763 - INFO - Running slice-dice: 1124ms
+2025-03-20 16:25:02,375 - INFO - Running wasm-r3: 83611ms
+2025-03-20 16:25:02,379 - INFO - Sliced file size: 5380bytes
+2025-03-20 16:25:02,431 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/18/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:25:02,431 - INFO - Not interesting
+2025-03-20 16:25:02,570 - INFO - 
+2025-03-20 16:25:02,570 - INFO - > test
+2025-03-20 16:25:02,570 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 19 --alternativeDownload
+2025-03-20 16:25:02,570 - INFO - 
+2025-03-20 16:25:02,658 - INFO - (node:669296) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:25:02,658 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:25:02,948 - INFO - undefined
+2025-03-20 16:25:02,949 - INFO - sandspiel-19:
+2025-03-20 16:25:04,147 - INFO - Running slice-dice: 1198ms
+2025-03-20 16:26:27,109 - INFO - Running wasm-r3: 82962ms
+2025-03-20 16:26:27,112 - INFO - Sliced file size: 5165bytes
+2025-03-20 16:26:27,161 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/19/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:26:27,161 - INFO - Not interesting
+2025-03-20 16:26:27,253 - INFO - 
+2025-03-20 16:26:27,253 - INFO - > test
+2025-03-20 16:26:27,253 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 21 --alternativeDownload
+2025-03-20 16:26:27,253 - INFO - 
+2025-03-20 16:26:27,333 - INFO - (node:681086) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:26:27,333 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:26:27,638 - INFO - undefined
+2025-03-20 16:26:27,638 - INFO - sandspiel-21:
+2025-03-20 16:26:28,603 - INFO - Running slice-dice: 965ms
+2025-03-20 16:27:52,579 - INFO - Running wasm-r3: 83976ms
+2025-03-20 16:27:52,581 - INFO - Sliced file size: 5350bytes
+2025-03-20 16:27:52,631 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/21/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:27:52,631 - INFO - Not interesting
+2025-03-20 16:27:52,722 - INFO - 
+2025-03-20 16:27:52,722 - INFO - > test
+2025-03-20 16:27:52,722 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 22 --alternativeDownload
+2025-03-20 16:27:52,723 - INFO - 
+2025-03-20 16:27:52,801 - INFO - (node:693284) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:27:52,801 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:27:53,114 - INFO - undefined
+2025-03-20 16:27:53,114 - INFO - sandspiel-22:
+2025-03-20 16:27:54,216 - INFO - Running slice-dice: 1102ms
+2025-03-20 16:29:17,041 - INFO - Running wasm-r3: 82825ms
+2025-03-20 16:29:17,045 - INFO - Sliced file size: 5305bytes
+2025-03-20 16:29:17,089 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/22/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:29:17,089 - INFO - Not interesting
+2025-03-20 16:29:17,182 - INFO - 
+2025-03-20 16:29:17,182 - INFO - > test
+2025-03-20 16:29:17,182 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 23 --alternativeDownload
+2025-03-20 16:29:17,182 - INFO - 
+2025-03-20 16:29:17,260 - INFO - (node:704996) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:29:17,260 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:29:17,564 - INFO - undefined
+2025-03-20 16:29:17,564 - INFO - sandspiel-23:
+2025-03-20 16:29:18,596 - INFO - Running slice-dice: 1032ms
+2025-03-20 16:30:41,961 - INFO - Running wasm-r3: 83364ms
+2025-03-20 16:30:41,963 - INFO - Sliced file size: 5289bytes
+2025-03-20 16:30:42,009 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/23/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:30:42,009 - INFO - Not interesting
+2025-03-20 16:30:42,111 - INFO - 
+2025-03-20 16:30:42,111 - INFO - > test
+2025-03-20 16:30:42,111 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 26 --alternativeDownload
+2025-03-20 16:30:42,111 - INFO - 
+2025-03-20 16:30:42,189 - INFO - (node:717032) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:30:42,189 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:30:42,536 - INFO - undefined
+2025-03-20 16:30:42,536 - INFO - sandspiel-26:
+2025-03-20 16:30:43,958 - INFO - Running slice-dice: 1422ms
+2025-03-20 16:32:06,631 - INFO - Running wasm-r3: 82672ms
+2025-03-20 16:32:06,634 - INFO - Sliced file size: 5346bytes
+2025-03-20 16:32:06,684 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/26/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:32:06,684 - INFO - Not interesting
+2025-03-20 16:32:06,783 - INFO - 
+2025-03-20 16:32:06,783 - INFO - > test
+2025-03-20 16:32:06,783 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 28 --alternativeDownload
+2025-03-20 16:32:06,783 - INFO - 
+2025-03-20 16:32:06,867 - INFO - (node:728723) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:32:06,867 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:32:07,184 - INFO - undefined
+2025-03-20 16:32:07,184 - INFO - sandspiel-28:
+2025-03-20 16:32:08,147 - INFO - Running slice-dice: 962ms
+2025-03-20 16:33:37,253 - INFO - Running wasm-r3: 89106ms
+2025-03-20 16:33:37,256 - INFO - Sliced file size: 5270bytes
+2025-03-20 16:33:37,311 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/28/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:33:37,311 - INFO - Not interesting
+2025-03-20 16:33:37,399 - INFO - 
+2025-03-20 16:33:37,399 - INFO - > test
+2025-03-20 16:33:37,399 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 29 --alternativeDownload
+2025-03-20 16:33:37,399 - INFO - 
+2025-03-20 16:33:37,499 - INFO - (node:741659) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:33:37,499 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:33:37,893 - INFO - undefined
+2025-03-20 16:33:37,893 - INFO - sandspiel-29:
+2025-03-20 16:33:39,000 - INFO - Running slice-dice: 1107ms
+2025-03-20 16:35:02,469 - INFO - Running wasm-r3: 83468ms
+2025-03-20 16:35:02,472 - INFO - Sliced file size: 5270bytes
+2025-03-20 16:35:02,526 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/29/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:35:02,526 - INFO - Not interesting
+2025-03-20 16:35:02,621 - INFO - 
+2025-03-20 16:35:02,621 - INFO - > test
+2025-03-20 16:35:02,621 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 31 --alternativeDownload
+2025-03-20 16:35:02,621 - INFO - 
+2025-03-20 16:35:02,708 - INFO - (node:753674) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:35:02,708 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:35:03,092 - INFO - undefined
+2025-03-20 16:35:03,092 - INFO - sandspiel-31:
+2025-03-20 16:35:04,083 - INFO - Running slice-dice: 991ms
+2025-03-20 16:36:27,441 - INFO - Running wasm-r3: 83357ms
+2025-03-20 16:36:27,444 - INFO - Sliced file size: 5241bytes
+2025-03-20 16:36:27,508 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/31/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:36:27,508 - INFO - Not interesting
+2025-03-20 16:36:27,601 - INFO - 
+2025-03-20 16:36:27,601 - INFO - > test
+2025-03-20 16:36:27,601 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 32 --alternativeDownload
+2025-03-20 16:36:27,601 - INFO - 
+2025-03-20 16:36:27,688 - INFO - (node:765601) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:36:27,688 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:36:27,999 - INFO - undefined
+2025-03-20 16:36:27,999 - INFO - sandspiel-32:
+2025-03-20 16:36:29,020 - INFO - Running slice-dice: 1021ms
+2025-03-20 16:37:52,320 - INFO - Running wasm-r3: 83300ms
+2025-03-20 16:37:52,323 - INFO - Sliced file size: 5231bytes
+2025-03-20 16:37:52,378 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/32/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:37:52,378 - INFO - Not interesting
+2025-03-20 16:37:52,469 - INFO - 
+2025-03-20 16:37:52,469 - INFO - > test
+2025-03-20 16:37:52,469 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 33 --alternativeDownload
+2025-03-20 16:37:52,470 - INFO - 
+2025-03-20 16:37:52,557 - INFO - (node:777329) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:37:52,557 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:37:52,868 - INFO - undefined
+2025-03-20 16:37:52,869 - INFO - sandspiel-33:
+2025-03-20 16:37:53,857 - INFO - Running slice-dice: 989ms
+2025-03-20 16:39:17,091 - INFO - Running wasm-r3: 83234ms
+2025-03-20 16:39:17,094 - INFO - Sliced file size: 5236bytes
+2025-03-20 16:39:17,151 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/33/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:39:17,151 - INFO - Not interesting
+2025-03-20 16:39:17,275 - INFO - 
+2025-03-20 16:39:17,275 - INFO - > test
+2025-03-20 16:39:17,275 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 34 --alternativeDownload
+2025-03-20 16:39:17,275 - INFO - 
+2025-03-20 16:39:17,346 - INFO - (node:789895) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:39:17,346 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:39:17,625 - INFO - undefined
+2025-03-20 16:39:17,625 - INFO - sandspiel-34:
+2025-03-20 16:39:18,664 - INFO - Running slice-dice: 1039ms
+2025-03-20 16:40:42,187 - INFO - Running wasm-r3: 83523ms
+2025-03-20 16:40:42,189 - INFO - Sliced file size: 5246bytes
+2025-03-20 16:40:42,239 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/34/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:40:42,239 - INFO - Not interesting
+2025-03-20 16:40:42,348 - INFO - 
+2025-03-20 16:40:42,348 - INFO - > test
+2025-03-20 16:40:42,348 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 35 --alternativeDownload
+2025-03-20 16:40:42,348 - INFO - 
+2025-03-20 16:40:42,427 - INFO - (node:801992) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:40:42,427 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:40:42,739 - INFO - undefined
+2025-03-20 16:40:42,739 - INFO - sandspiel-35:
+2025-03-20 16:40:43,763 - INFO - Running slice-dice: 1024ms
+2025-03-20 16:42:07,183 - INFO - Running wasm-r3: 83420ms
+2025-03-20 16:42:07,187 - INFO - Sliced file size: 5216bytes
+2025-03-20 16:42:07,252 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/35/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:42:07,253 - INFO - Not interesting
+2025-03-20 16:42:07,363 - INFO - 
+2025-03-20 16:42:07,363 - INFO - > test
+2025-03-20 16:42:07,363 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 36 --alternativeDownload
+2025-03-20 16:42:07,363 - INFO - 
+2025-03-20 16:42:07,445 - INFO - (node:813802) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:42:07,445 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:42:07,731 - INFO - undefined
+2025-03-20 16:42:07,731 - INFO - sandspiel-36:
+2025-03-20 16:42:08,716 - INFO - Running slice-dice: 985ms
+2025-03-20 16:43:33,263 - INFO - Running wasm-r3: 84547ms
+2025-03-20 16:43:33,266 - INFO - Sliced file size: 5234bytes
+2025-03-20 16:43:33,319 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/36/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:43:33,319 - INFO - Not interesting
+2025-03-20 16:43:33,411 - INFO - 
+2025-03-20 16:43:33,411 - INFO - > test
+2025-03-20 16:43:33,411 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 37 --alternativeDownload
+2025-03-20 16:43:33,411 - INFO - 
+2025-03-20 16:43:33,485 - INFO - (node:826401) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:43:33,486 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:43:33,888 - INFO - undefined
+2025-03-20 16:43:33,888 - INFO - sandspiel-37:
+2025-03-20 16:43:35,035 - INFO - Running slice-dice: 1146ms
+2025-03-20 16:44:59,494 - INFO - Running wasm-r3: 84459ms
+2025-03-20 16:44:59,497 - INFO - Sliced file size: 5221bytes
+2025-03-20 16:44:59,548 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/37/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:44:59,549 - INFO - Not interesting
+2025-03-20 16:44:59,555 - INFO - test_input: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm
+2025-03-20 16:44:59,555 - INFO - save_path: /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.sliced.wasm
+2025-03-20 16:44:59,555 - INFO - CompletedProcess(args='python /home/doehyunbaek/wasm-r3/evaluation/oracle/fixed-by-ccf0c56.py /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm', returncode=0, stdout="CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm', returncode=10, stdout='!trap[MEM_OUT_OF_BOUNDS]\\n', stderr='')\nCompletedProcess(args='timeout 20s wizard-ccf0c56 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm', returncode=0, stdout='', stderr='')\nInteresting!\n", stderr='')
+2025-03-20 16:44:59,555 - INFO - Heuristic function indices: []
+2025-03-20 16:44:59,555 - INFO - Dynamic function indices (except heuristic): [0, 1, 2, 3, 7, 10, 11, 12, 14, 20, 24, 25, 27, 30, 39, 41, 45, 46, 53, 58, 61, 62, 63, 64, 65, 78, 86, 87, 93]
+2025-03-20 16:44:59,555 - INFO - All function indices (except heuristic and dynamic): [4, 5, 6, 8, 9, 13, 15, 16, 17, 18, 19, 21, 22, 23, 26, 28, 29, 31, 32, 33, 34, 35, 36, 37, 38, 40, 42, 43, 44, 47, 48, 49, 50, 51, 52, 54, 55, 56, 57, 59, 60, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 79, 80, 81, 82, 83, 84, 85, 88, 89, 90, 91, 92, 94, 95]
+2025-03-20 16:44:59,555 - INFO - Running sandspiel - 0
+2025-03-20 16:44:59,555 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 0 --alternativeDownload
+2025-03-20 16:44:59,555 - INFO - Failed to run sandspiel - 0
+2025-03-20 16:44:59,555 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/0/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,555 - INFO - Running sandspiel - 1
+2025-03-20 16:44:59,555 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 1 --alternativeDownload
+2025-03-20 16:44:59,555 - INFO - Failed to run sandspiel - 1
+2025-03-20 16:44:59,555 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/1/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,556 - INFO - Running sandspiel - 2
+2025-03-20 16:44:59,556 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 2 --alternativeDownload
+2025-03-20 16:44:59,556 - INFO - Running sandspiel - 3
+2025-03-20 16:44:59,556 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 3 --alternativeDownload
+2025-03-20 16:44:59,556 - INFO - Failed to run sandspiel - 3
+2025-03-20 16:44:59,556 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/3/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,556 - INFO - Running sandspiel - 7
+2025-03-20 16:44:59,556 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 7 --alternativeDownload
+2025-03-20 16:44:59,556 - INFO - Running sandspiel - 10
+2025-03-20 16:44:59,556 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 10 --alternativeDownload
+2025-03-20 16:44:59,556 - INFO - Running sandspiel - 11
+2025-03-20 16:44:59,556 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 11 --alternativeDownload
+2025-03-20 16:44:59,556 - INFO - Running sandspiel - 12
+2025-03-20 16:44:59,556 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 12 --alternativeDownload
+2025-03-20 16:44:59,556 - INFO - Failed to run sandspiel - 12
+2025-03-20 16:44:59,556 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/12/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,556 - INFO - Running sandspiel - 14
+2025-03-20 16:44:59,556 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 14 --alternativeDownload
+2025-03-20 16:44:59,556 - INFO - Failed to run sandspiel - 14
+2025-03-20 16:44:59,557 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/14/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,557 - INFO - Running sandspiel - 20
+2025-03-20 16:44:59,557 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 20 --alternativeDownload
+2025-03-20 16:44:59,557 - INFO - Failed to run sandspiel - 20
+2025-03-20 16:44:59,557 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/20/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,557 - INFO - Running sandspiel - 24
+2025-03-20 16:44:59,557 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 24 --alternativeDownload
+2025-03-20 16:44:59,557 - INFO - Failed to run sandspiel - 24
+2025-03-20 16:44:59,557 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/24/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,557 - INFO - Running sandspiel - 25
+2025-03-20 16:44:59,557 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 25 --alternativeDownload
+2025-03-20 16:44:59,557 - INFO - Failed to run sandspiel - 25
+2025-03-20 16:44:59,557 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/25/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,557 - INFO - Running sandspiel - 27
+2025-03-20 16:44:59,557 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 27 --alternativeDownload
+2025-03-20 16:44:59,557 - INFO - Failed to run sandspiel - 27
+2025-03-20 16:44:59,557 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/27/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,557 - INFO - Running sandspiel - 30
+2025-03-20 16:44:59,557 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 30 --alternativeDownload
+2025-03-20 16:44:59,558 - INFO - Running sandspiel - 39
+2025-03-20 16:44:59,558 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 39 --alternativeDownload
+2025-03-20 16:44:59,558 - INFO - Running sandspiel - 41
+2025-03-20 16:44:59,558 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 41 --alternativeDownload
+2025-03-20 16:44:59,558 - INFO - Running sandspiel - 45
+2025-03-20 16:44:59,558 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 45 --alternativeDownload
+2025-03-20 16:44:59,558 - INFO - Running sandspiel - 46
+2025-03-20 16:44:59,558 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 46 --alternativeDownload
+2025-03-20 16:44:59,558 - INFO - Failed to run sandspiel - 46
+2025-03-20 16:44:59,558 - INFO - [Errno 2] No such file or directory: '/home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/46/benchmarks/bin_1/replay.wasm'
+2025-03-20 16:44:59,558 - INFO - Running sandspiel - 53
+2025-03-20 16:44:59,558 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 53 --alternativeDownload
+2025-03-20 16:44:59,558 - INFO - Running sandspiel - 58
+2025-03-20 16:44:59,558 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 58 --alternativeDownload
+2025-03-20 16:44:59,558 - INFO - Running sandspiel - 61
+2025-03-20 16:44:59,558 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 61 --alternativeDownload
+2025-03-20 16:44:59,558 - INFO - Running sandspiel - 62
+2025-03-20 16:44:59,558 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 62 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 63
+2025-03-20 16:44:59,559 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 63 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 64
+2025-03-20 16:44:59,559 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 64 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 65
+2025-03-20 16:44:59,559 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 65 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 78
+2025-03-20 16:44:59,559 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 78 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 86
+2025-03-20 16:44:59,559 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 86 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 87
+2025-03-20 16:44:59,559 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 87 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 93
+2025-03-20 16:44:59,559 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 93 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 4
+2025-03-20 16:44:59,559 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 4 --alternativeDownload
+2025-03-20 16:44:59,559 - INFO - Running sandspiel - 5
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 5 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 6
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 6 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 8
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 8 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 9
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 9 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 13
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 13 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 15
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 15 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 16
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 16 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 17
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 17 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 18
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 18 --alternativeDownload
+2025-03-20 16:44:59,560 - INFO - Running sandspiel - 19
+2025-03-20 16:44:59,560 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 19 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 21
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 21 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 22
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 22 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 23
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 23 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 26
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 26 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 28
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 28 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 29
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 29 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 31
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 31 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 32
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 32 --alternativeDownload
+2025-03-20 16:44:59,561 - INFO - Running sandspiel - 33
+2025-03-20 16:44:59,561 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 33 --alternativeDownload
+2025-03-20 16:44:59,562 - INFO - Running sandspiel - 34
+2025-03-20 16:44:59,562 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 34 --alternativeDownload
+2025-03-20 16:44:59,562 - INFO - Running sandspiel - 35
+2025-03-20 16:44:59,562 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 35 --alternativeDownload
+2025-03-20 16:44:59,562 - INFO - Running sandspiel - 36
+2025-03-20 16:44:59,562 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 36 --alternativeDownload
+2025-03-20 16:44:59,562 - INFO - Running sandspiel - 37
+2025-03-20 16:44:59,562 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 37 --alternativeDownload
+2025-03-20 16:44:59,562 - INFO - Running sandspiel - 38
+2025-03-20 16:44:59,645 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 38 --alternativeDownload
+2025-03-20 16:44:59,645 - INFO - > test
+2025-03-20 16:44:59,645 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 38 --alternativeDownload
+2025-03-20 16:44:59,645 - INFO - 
+2025-03-20 16:44:59,735 - INFO - (node:838394) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:44:59,736 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:45:00,082 - INFO - undefined
+2025-03-20 16:45:00,082 - INFO - sandspiel-38:
+2025-03-20 16:45:01,114 - INFO - Running slice-dice: 1032ms
+2025-03-20 16:46:24,931 - INFO - Running wasm-r3: 83817ms
+2025-03-20 16:46:24,934 - INFO - Sliced file size: 5234bytes
+2025-03-20 16:46:24,992 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/38/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:46:24,992 - INFO - Not interesting
+2025-03-20 16:46:25,114 - INFO - 
+2025-03-20 16:46:25,114 - INFO - > test
+2025-03-20 16:46:25,114 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 40 --alternativeDownload
+2025-03-20 16:46:25,114 - INFO - 
+2025-03-20 16:46:25,191 - INFO - (node:850036) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:46:25,192 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:46:25,504 - INFO - undefined
+2025-03-20 16:46:25,504 - INFO - sandspiel-40:
+2025-03-20 16:46:26,594 - INFO - Running slice-dice: 1090ms
+2025-03-20 16:47:49,785 - INFO - Running wasm-r3: 83191ms
+2025-03-20 16:47:49,787 - INFO - Sliced file size: 5228bytes
+2025-03-20 16:47:49,852 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/40/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:47:49,852 - INFO - Not interesting
+2025-03-20 16:47:49,946 - INFO - 
+2025-03-20 16:47:49,946 - INFO - > test
+2025-03-20 16:47:49,946 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 42 --alternativeDownload
+2025-03-20 16:47:49,946 - INFO - 
+2025-03-20 16:47:50,032 - INFO - (node:861414) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:47:50,032 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:47:50,341 - INFO - undefined
+2025-03-20 16:47:50,341 - INFO - sandspiel-42:
+2025-03-20 16:47:51,407 - INFO - Running slice-dice: 1066ms
+2025-03-20 16:49:15,908 - INFO - Running wasm-r3: 84500ms
+2025-03-20 16:49:15,911 - INFO - Sliced file size: 5177bytes
+2025-03-20 16:49:15,967 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/42/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:49:15,967 - INFO - Not interesting
+2025-03-20 16:49:16,059 - INFO - 
+2025-03-20 16:49:16,059 - INFO - > test
+2025-03-20 16:49:16,059 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 43 --alternativeDownload
+2025-03-20 16:49:16,059 - INFO - 
+2025-03-20 16:49:16,147 - INFO - (node:873854) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:49:16,147 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:49:16,483 - INFO - undefined
+2025-03-20 16:49:16,483 - INFO - sandspiel-43:
+2025-03-20 16:49:17,974 - INFO - Running slice-dice: 1491ms
+2025-03-20 16:50:41,591 - INFO - Running wasm-r3: 83616ms
+2025-03-20 16:50:41,593 - INFO - Sliced file size: 5180bytes
+2025-03-20 16:50:41,639 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/43/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:50:41,640 - INFO - Not interesting
+2025-03-20 16:50:41,732 - INFO - 
+2025-03-20 16:50:41,732 - INFO - > test
+2025-03-20 16:50:41,732 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 44 --alternativeDownload
+2025-03-20 16:50:41,732 - INFO - 
+2025-03-20 16:50:41,810 - INFO - (node:886543) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:50:41,811 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:50:42,146 - INFO - undefined
+2025-03-20 16:50:42,146 - INFO - sandspiel-44:
+2025-03-20 16:50:43,713 - INFO - Running slice-dice: 1566ms
+2025-03-20 16:52:08,387 - INFO - Running wasm-r3: 84674ms
+2025-03-20 16:52:08,389 - INFO - Sliced file size: 5157bytes
+2025-03-20 16:52:08,438 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/44/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:52:08,438 - INFO - Not interesting
+2025-03-20 16:52:08,540 - INFO - 
+2025-03-20 16:52:08,540 - INFO - > test
+2025-03-20 16:52:08,540 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 47 --alternativeDownload
+2025-03-20 16:52:08,540 - INFO - 
+2025-03-20 16:52:08,642 - INFO - (node:898716) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:52:08,642 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:52:09,010 - INFO - undefined
+2025-03-20 16:52:09,010 - INFO - sandspiel-47:
+2025-03-20 16:52:10,074 - INFO - Running slice-dice: 1063ms
+2025-03-20 16:53:35,365 - INFO - Running wasm-r3: 85291ms
+2025-03-20 16:53:35,367 - INFO - Sliced file size: 5169bytes
+2025-03-20 16:53:35,418 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/47/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:53:35,418 - INFO - Not interesting
+2025-03-20 16:53:35,516 - INFO - 
+2025-03-20 16:53:35,516 - INFO - > test
+2025-03-20 16:53:35,516 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 48 --alternativeDownload
+2025-03-20 16:53:35,516 - INFO - 
+2025-03-20 16:53:35,591 - INFO - (node:911852) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:53:35,592 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:53:35,898 - INFO - undefined
+2025-03-20 16:53:35,899 - INFO - sandspiel-48:
+2025-03-20 16:53:36,877 - INFO - Running slice-dice: 979ms
+2025-03-20 16:55:00,228 - INFO - Running wasm-r3: 83350ms
+2025-03-20 16:55:00,231 - INFO - Sliced file size: 5147bytes
+2025-03-20 16:55:00,279 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/48/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:55:00,279 - INFO - Not interesting
+2025-03-20 16:55:00,433 - INFO - 
+2025-03-20 16:55:00,433 - INFO - > test
+2025-03-20 16:55:00,433 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 49 --alternativeDownload
+2025-03-20 16:55:00,433 - INFO - 
+2025-03-20 16:55:00,522 - INFO - (node:924755) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:55:00,523 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:55:00,817 - INFO - undefined
+2025-03-20 16:55:00,817 - INFO - sandspiel-49:
+2025-03-20 16:55:01,792 - INFO - Running slice-dice: 975ms
+2025-03-20 16:56:24,446 - INFO - Running wasm-r3: 82654ms
+2025-03-20 16:56:24,448 - INFO - Sliced file size: 5142bytes
+2025-03-20 16:56:24,500 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/49/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:56:24,500 - INFO - Not interesting
+2025-03-20 16:56:24,597 - INFO - 
+2025-03-20 16:56:24,597 - INFO - > test
+2025-03-20 16:56:24,597 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 50 --alternativeDownload
+2025-03-20 16:56:24,597 - INFO - 
+2025-03-20 16:56:24,683 - INFO - (node:936489) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:56:24,683 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:56:24,977 - INFO - undefined
+2025-03-20 16:56:24,977 - INFO - sandspiel-50:
+2025-03-20 16:56:25,968 - INFO - Running slice-dice: 990ms
+2025-03-20 16:57:50,138 - INFO - Running wasm-r3: 84169ms
+2025-03-20 16:57:50,140 - INFO - Sliced file size: 5146bytes
+2025-03-20 16:57:50,186 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/50/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:57:50,186 - INFO - Not interesting
+2025-03-20 16:57:50,281 - INFO - 
+2025-03-20 16:57:50,281 - INFO - > test
+2025-03-20 16:57:50,281 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 51 --alternativeDownload
+2025-03-20 16:57:50,281 - INFO - 
+2025-03-20 16:57:50,367 - INFO - (node:948836) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:57:50,368 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:57:50,708 - INFO - undefined
+2025-03-20 16:57:50,709 - INFO - sandspiel-51:
+2025-03-20 16:57:51,795 - INFO - Running slice-dice: 1087ms
+2025-03-20 16:59:15,647 - INFO - Running wasm-r3: 83852ms
+2025-03-20 16:59:15,649 - INFO - Sliced file size: 5140bytes
+2025-03-20 16:59:15,699 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/51/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 16:59:15,699 - INFO - Not interesting
+2025-03-20 16:59:15,804 - INFO - 
+2025-03-20 16:59:15,804 - INFO - > test
+2025-03-20 16:59:15,804 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 52 --alternativeDownload
+2025-03-20 16:59:15,804 - INFO - 
+2025-03-20 16:59:15,891 - INFO - (node:961473) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 16:59:15,891 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 16:59:16,255 - INFO - undefined
+2025-03-20 16:59:16,255 - INFO - sandspiel-52:
+2025-03-20 16:59:17,744 - INFO - Running slice-dice: 1489ms
+2025-03-20 17:00:40,645 - INFO - Running wasm-r3: 82901ms
+2025-03-20 17:00:40,649 - INFO - Sliced file size: 5153bytes
+2025-03-20 17:00:40,705 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/52/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:00:40,705 - INFO - Not interesting
+2025-03-20 17:00:40,847 - INFO - 
+2025-03-20 17:00:40,847 - INFO - > test
+2025-03-20 17:00:40,847 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 54 --alternativeDownload
+2025-03-20 17:00:40,848 - INFO - 
+2025-03-20 17:00:40,942 - INFO - (node:973628) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:00:40,942 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:00:41,297 - INFO - undefined
+2025-03-20 17:00:41,298 - INFO - sandspiel-54:
+2025-03-20 17:00:42,060 - INFO - Running slice-dice: 763ms
+2025-03-20 17:02:06,091 - INFO - Running wasm-r3: 84031ms
+2025-03-20 17:02:06,095 - INFO - Sliced file size: 5173bytes
+2025-03-20 17:02:06,148 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/54/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:02:06,148 - INFO - Not interesting
+2025-03-20 17:02:06,249 - INFO - 
+2025-03-20 17:02:06,250 - INFO - > test
+2025-03-20 17:02:06,250 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 55 --alternativeDownload
+2025-03-20 17:02:06,250 - INFO - 
+2025-03-20 17:02:06,337 - INFO - (node:985849) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:02:06,337 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:02:06,724 - INFO - undefined
+2025-03-20 17:02:06,724 - INFO - sandspiel-55:
+2025-03-20 17:02:07,749 - INFO - Running slice-dice: 1025ms
+2025-03-20 17:03:31,297 - INFO - Running wasm-r3: 83548ms
+2025-03-20 17:03:31,301 - INFO - Sliced file size: 5132bytes
+2025-03-20 17:03:31,372 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/55/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:03:31,372 - INFO - Not interesting
+2025-03-20 17:03:31,495 - INFO - 
+2025-03-20 17:03:31,495 - INFO - > test
+2025-03-20 17:03:31,495 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 56 --alternativeDownload
+2025-03-20 17:03:31,495 - INFO - 
+2025-03-20 17:03:31,577 - INFO - (node:998175) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:03:31,577 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:03:31,934 - INFO - undefined
+2025-03-20 17:03:31,934 - INFO - sandspiel-56:
+2025-03-20 17:03:33,440 - INFO - Running slice-dice: 1505ms
+2025-03-20 17:04:57,564 - INFO - Running wasm-r3: 84124ms
+2025-03-20 17:04:57,567 - INFO - Sliced file size: 5131bytes
+2025-03-20 17:04:57,618 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/56/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:04:57,618 - INFO - Not interesting
+2025-03-20 17:04:57,717 - INFO - 
+2025-03-20 17:04:57,717 - INFO - > test
+2025-03-20 17:04:57,717 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 57 --alternativeDownload
+2025-03-20 17:04:57,718 - INFO - 
+2025-03-20 17:04:57,815 - INFO - (node:1010217) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:04:57,815 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:04:58,112 - INFO - undefined
+2025-03-20 17:04:58,112 - INFO - sandspiel-57:
+2025-03-20 17:04:59,257 - INFO - Running slice-dice: 1145ms
+2025-03-20 17:06:22,813 - INFO - Running wasm-r3: 83556ms
+2025-03-20 17:06:22,816 - INFO - Sliced file size: 5116bytes
+2025-03-20 17:06:22,872 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/57/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:06:22,872 - INFO - Not interesting
+2025-03-20 17:06:22,962 - INFO - 
+2025-03-20 17:06:22,963 - INFO - > test
+2025-03-20 17:06:22,963 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 59 --alternativeDownload
+2025-03-20 17:06:22,963 - INFO - 
+2025-03-20 17:06:23,062 - INFO - (node:1021602) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:06:23,062 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:06:23,369 - INFO - undefined
+2025-03-20 17:06:23,369 - INFO - sandspiel-59:
+2025-03-20 17:06:24,449 - INFO - Running slice-dice: 1080ms
+2025-03-20 17:07:47,879 - INFO - Running wasm-r3: 83430ms
+2025-03-20 17:07:47,881 - INFO - Sliced file size: 5104bytes
+2025-03-20 17:07:47,931 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/59/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:07:47,932 - INFO - Not interesting
+2025-03-20 17:07:48,080 - INFO - 
+2025-03-20 17:07:48,080 - INFO - > test
+2025-03-20 17:07:48,080 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 60 --alternativeDownload
+2025-03-20 17:07:48,080 - INFO - 
+2025-03-20 17:07:48,175 - INFO - (node:1033664) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:07:48,175 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:07:48,480 - INFO - undefined
+2025-03-20 17:07:48,480 - INFO - sandspiel-60:
+2025-03-20 17:07:49,472 - INFO - Running slice-dice: 992ms
+2025-03-20 17:09:13,106 - INFO - Running wasm-r3: 83634ms
+2025-03-20 17:09:13,108 - INFO - Sliced file size: 5115bytes
+2025-03-20 17:09:13,158 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/60/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:09:13,159 - INFO - Not interesting
+2025-03-20 17:09:13,254 - INFO - 
+2025-03-20 17:09:13,254 - INFO - > test
+2025-03-20 17:09:13,254 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 66 --alternativeDownload
+2025-03-20 17:09:13,254 - INFO - 
+2025-03-20 17:09:13,344 - INFO - (node:1045268) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:09:13,344 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:09:13,723 - INFO - undefined
+2025-03-20 17:09:13,723 - INFO - sandspiel-66:
+2025-03-20 17:09:15,002 - INFO - Running slice-dice: 1279ms
+2025-03-20 17:10:37,348 - INFO - Running wasm-r3: 82345ms
+2025-03-20 17:10:37,351 - INFO - Sliced file size: 5124bytes
+2025-03-20 17:10:37,401 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/66/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:10:37,402 - INFO - Not interesting
+2025-03-20 17:10:37,535 - INFO - 
+2025-03-20 17:10:37,535 - INFO - > test
+2025-03-20 17:10:37,535 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 67 --alternativeDownload
+2025-03-20 17:10:37,535 - INFO - 
+2025-03-20 17:10:37,635 - INFO - (node:1056836) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:10:37,635 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:10:38,017 - INFO - undefined
+2025-03-20 17:10:38,017 - INFO - sandspiel-67:
+2025-03-20 17:10:39,608 - INFO - Running slice-dice: 1591ms
+2025-03-20 17:12:08,609 - INFO - Running wasm-r3: 89000ms
+2025-03-20 17:12:08,612 - INFO - Sliced file size: 5099bytes
+2025-03-20 17:12:08,664 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/67/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:12:08,664 - INFO - Not interesting
+2025-03-20 17:12:08,755 - INFO - 
+2025-03-20 17:12:08,755 - INFO - > test
+2025-03-20 17:12:08,756 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 68 --alternativeDownload
+2025-03-20 17:12:08,756 - INFO - 
+2025-03-20 17:12:08,839 - INFO - (node:1069375) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:12:08,839 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:12:09,125 - INFO - undefined
+2025-03-20 17:12:09,126 - INFO - sandspiel-68:
+2025-03-20 17:12:10,182 - INFO - Running slice-dice: 1057ms
+2025-03-20 17:13:33,859 - INFO - Running wasm-r3: 83677ms
+2025-03-20 17:13:33,863 - INFO - Sliced file size: 5101bytes
+2025-03-20 17:13:33,914 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/68/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:13:33,915 - INFO - Not interesting
+2025-03-20 17:13:34,010 - INFO - 
+2025-03-20 17:13:34,011 - INFO - > test
+2025-03-20 17:13:34,011 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 69 --alternativeDownload
+2025-03-20 17:13:34,011 - INFO - 
+2025-03-20 17:13:34,104 - INFO - (node:1081305) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:13:34,104 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:13:34,421 - INFO - undefined
+2025-03-20 17:13:34,421 - INFO - sandspiel-69:
+2025-03-20 17:13:35,995 - INFO - Running slice-dice: 1574ms
+2025-03-20 17:14:57,888 - INFO - Running wasm-r3: 81892ms
+2025-03-20 17:14:57,891 - INFO - Sliced file size: 5103bytes
+2025-03-20 17:14:57,942 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/69/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:14:57,942 - INFO - Not interesting
+2025-03-20 17:14:58,045 - INFO - 
+2025-03-20 17:14:58,045 - INFO - > test
+2025-03-20 17:14:58,045 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 70 --alternativeDownload
+2025-03-20 17:14:58,045 - INFO - 
+2025-03-20 17:14:58,126 - INFO - (node:1093370) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:14:58,126 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:14:58,491 - INFO - undefined
+2025-03-20 17:14:58,491 - INFO - sandspiel-70:
+2025-03-20 17:14:59,533 - INFO - Running slice-dice: 1042ms
+2025-03-20 17:16:21,367 - INFO - Running wasm-r3: 81834ms
+2025-03-20 17:16:21,369 - INFO - Sliced file size: 5103bytes
+2025-03-20 17:16:21,416 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/70/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:16:21,416 - INFO - Not interesting
+2025-03-20 17:16:21,517 - INFO - 
+2025-03-20 17:16:21,517 - INFO - > test
+2025-03-20 17:16:21,517 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 71 --alternativeDownload
+2025-03-20 17:16:21,517 - INFO - 
+2025-03-20 17:16:21,602 - INFO - (node:1105988) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:16:21,602 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:16:21,864 - INFO - undefined
+2025-03-20 17:16:21,864 - INFO - sandspiel-71:
+2025-03-20 17:16:22,866 - INFO - Running slice-dice: 1001ms
+2025-03-20 17:17:46,600 - INFO - Running wasm-r3: 83734ms
+2025-03-20 17:17:46,603 - INFO - Sliced file size: 5101bytes
+2025-03-20 17:17:46,658 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/71/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:17:46,658 - INFO - Not interesting
+2025-03-20 17:17:46,760 - INFO - 
+2025-03-20 17:17:46,760 - INFO - > test
+2025-03-20 17:17:46,760 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 72 --alternativeDownload
+2025-03-20 17:17:46,760 - INFO - 
+2025-03-20 17:17:46,843 - INFO - (node:1119208) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:17:46,843 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:17:47,183 - INFO - undefined
+2025-03-20 17:17:47,183 - INFO - sandspiel-72:
+2025-03-20 17:17:48,142 - INFO - Running slice-dice: 959ms
+2025-03-20 17:19:08,430 - INFO - Running wasm-r3: 80288ms
+2025-03-20 17:19:08,433 - INFO - Sliced file size: 5111bytes
+2025-03-20 17:19:08,477 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/72/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:19:08,477 - INFO - Not interesting
+2025-03-20 17:19:08,565 - INFO - 
+2025-03-20 17:19:08,565 - INFO - > test
+2025-03-20 17:19:08,565 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 73 --alternativeDownload
+2025-03-20 17:19:08,565 - INFO - 
+2025-03-20 17:19:08,646 - INFO - (node:1131051) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:19:08,647 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:19:08,912 - INFO - undefined
+2025-03-20 17:19:08,912 - INFO - sandspiel-73:
+2025-03-20 17:19:09,889 - INFO - Running slice-dice: 976ms
+2025-03-20 17:20:31,759 - INFO - Running wasm-r3: 81870ms
+2025-03-20 17:20:31,762 - INFO - Sliced file size: 5111bytes
+2025-03-20 17:20:31,811 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/73/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:20:31,811 - INFO - Not interesting
+2025-03-20 17:20:31,902 - INFO - 
+2025-03-20 17:20:31,902 - INFO - > test
+2025-03-20 17:20:31,902 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 74 --alternativeDownload
+2025-03-20 17:20:31,902 - INFO - 
+2025-03-20 17:20:31,982 - INFO - (node:1144029) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:20:31,982 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:20:32,257 - INFO - undefined
+2025-03-20 17:20:32,257 - INFO - sandspiel-74:
+2025-03-20 17:20:33,165 - INFO - Running slice-dice: 908ms
+2025-03-20 17:21:44,464 - INFO - Running wasm-r3: 71299ms
+2025-03-20 17:21:44,467 - INFO - Sliced file size: 5101bytes
+2025-03-20 17:21:44,516 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/74/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:21:44,516 - INFO - Not interesting
+2025-03-20 17:21:44,600 - INFO - 
+2025-03-20 17:21:44,600 - INFO - > test
+2025-03-20 17:21:44,600 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 75 --alternativeDownload
+2025-03-20 17:21:44,600 - INFO - 
+2025-03-20 17:21:44,670 - INFO - (node:1150327) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:21:44,670 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:21:44,947 - INFO - undefined
+2025-03-20 17:21:44,947 - INFO - sandspiel-75:
+2025-03-20 17:21:45,854 - INFO - Running slice-dice: 907ms
+2025-03-20 17:22:57,963 - INFO - Running wasm-r3: 72109ms
+2025-03-20 17:22:57,966 - INFO - Sliced file size: 5098bytes
+2025-03-20 17:22:58,009 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/75/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:22:58,009 - INFO - Not interesting
+2025-03-20 17:22:58,100 - INFO - 
+2025-03-20 17:22:58,100 - INFO - > test
+2025-03-20 17:22:58,100 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 76 --alternativeDownload
+2025-03-20 17:22:58,100 - INFO - 
+2025-03-20 17:22:58,167 - INFO - (node:1156696) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:22:58,167 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:22:58,477 - INFO - undefined
+2025-03-20 17:22:58,477 - INFO - sandspiel-76:
+2025-03-20 17:22:59,410 - INFO - Running slice-dice: 934ms
+2025-03-20 17:24:10,723 - INFO - Running wasm-r3: 71312ms
+2025-03-20 17:24:10,725 - INFO - Sliced file size: 5097bytes
+2025-03-20 17:24:10,767 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/76/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:24:10,768 - INFO - Not interesting
+2025-03-20 17:24:10,852 - INFO - 
+2025-03-20 17:24:10,853 - INFO - > test
+2025-03-20 17:24:10,853 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 77 --alternativeDownload
+2025-03-20 17:24:10,853 - INFO - 
+2025-03-20 17:24:10,927 - INFO - (node:1162610) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:24:10,927 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:24:11,222 - INFO - undefined
+2025-03-20 17:24:11,222 - INFO - sandspiel-77:
+2025-03-20 17:24:12,170 - INFO - Running slice-dice: 948ms
+2025-03-20 17:25:15,044 - INFO - Running wasm-r3: 62874ms
+2025-03-20 17:25:15,046 - INFO - Sliced file size: 5079bytes
+2025-03-20 17:25:15,083 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/77/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:25:15,083 - INFO - Not interesting
+2025-03-20 17:25:15,154 - INFO - 
+2025-03-20 17:25:15,154 - INFO - > test
+2025-03-20 17:25:15,154 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 79 --alternativeDownload
+2025-03-20 17:25:15,154 - INFO - 
+2025-03-20 17:25:15,210 - INFO - (node:1164294) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:25:15,210 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:25:15,420 - INFO - undefined
+2025-03-20 17:25:15,420 - INFO - sandspiel-79:
+2025-03-20 17:25:16,115 - INFO - Running slice-dice: 695ms
+2025-03-20 17:26:15,009 - INFO - Running wasm-r3: 58894ms
+2025-03-20 17:26:15,012 - INFO - Sliced file size: 5088bytes
+2025-03-20 17:26:15,047 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/79/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:26:15,047 - INFO - Not interesting
+2025-03-20 17:26:15,114 - INFO - 
+2025-03-20 17:26:15,114 - INFO - > test
+2025-03-20 17:26:15,114 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 80 --alternativeDownload
+2025-03-20 17:26:15,114 - INFO - 
+2025-03-20 17:26:15,178 - INFO - (node:1164909) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:26:15,178 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:26:15,393 - INFO - undefined
+2025-03-20 17:26:15,393 - INFO - sandspiel-80:
+2025-03-20 17:26:16,123 - INFO - Running slice-dice: 730ms
+2025-03-20 17:27:16,749 - INFO - Running wasm-r3: 60626ms
+2025-03-20 17:27:16,751 - INFO - Sliced file size: 5080bytes
+2025-03-20 17:27:16,786 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/80/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:27:16,786 - INFO - Not interesting
+2025-03-20 17:27:16,850 - INFO - 
+2025-03-20 17:27:16,850 - INFO - > test
+2025-03-20 17:27:16,850 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 81 --alternativeDownload
+2025-03-20 17:27:16,850 - INFO - 
+2025-03-20 17:27:16,908 - INFO - (node:1165810) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:27:16,909 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:27:17,120 - INFO - undefined
+2025-03-20 17:27:17,120 - INFO - sandspiel-81:
+2025-03-20 17:27:17,802 - INFO - Running slice-dice: 682ms
+2025-03-20 17:28:17,752 - INFO - Running wasm-r3: 59950ms
+2025-03-20 17:28:17,754 - INFO - Sliced file size: 5081bytes
+2025-03-20 17:28:17,789 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/81/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:28:17,790 - INFO - Not interesting
+2025-03-20 17:28:17,854 - INFO - 
+2025-03-20 17:28:17,854 - INFO - > test
+2025-03-20 17:28:17,854 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 82 --alternativeDownload
+2025-03-20 17:28:17,854 - INFO - 
+2025-03-20 17:28:17,913 - INFO - (node:1166431) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:28:17,913 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:28:18,118 - INFO - undefined
+2025-03-20 17:28:18,118 - INFO - sandspiel-82:
+2025-03-20 17:28:18,805 - INFO - Running slice-dice: 687ms
+2025-03-20 17:29:19,153 - INFO - Running wasm-r3: 60348ms
+2025-03-20 17:29:19,155 - INFO - Sliced file size: 5078bytes
+2025-03-20 17:29:19,191 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/82/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:29:19,191 - INFO - Not interesting
+2025-03-20 17:29:19,259 - INFO - 
+2025-03-20 17:29:19,259 - INFO - > test
+2025-03-20 17:29:19,259 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 83 --alternativeDownload
+2025-03-20 17:29:19,259 - INFO - 
+2025-03-20 17:29:19,320 - INFO - (node:1167330) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:29:19,320 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:29:19,532 - INFO - undefined
+2025-03-20 17:29:19,532 - INFO - sandspiel-83:
+2025-03-20 17:29:20,243 - INFO - Running slice-dice: 711ms
+2025-03-20 17:30:19,135 - INFO - Running wasm-r3: 58892ms
+2025-03-20 17:30:19,137 - INFO - Sliced file size: 5081bytes
+2025-03-20 17:30:19,173 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/83/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:30:19,173 - INFO - Not interesting
+2025-03-20 17:30:19,244 - INFO - 
+2025-03-20 17:30:19,245 - INFO - > test
+2025-03-20 17:30:19,245 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 84 --alternativeDownload
+2025-03-20 17:30:19,245 - INFO - 
+2025-03-20 17:30:19,309 - INFO - (node:1167954) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:30:19,309 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:30:19,531 - INFO - undefined
+2025-03-20 17:30:19,532 - INFO - sandspiel-84:
+2025-03-20 17:30:20,258 - INFO - Running slice-dice: 727ms
+2025-03-20 17:31:19,480 - INFO - Running wasm-r3: 59222ms
+2025-03-20 17:31:19,481 - INFO - Sliced file size: 5082bytes
+2025-03-20 17:31:19,516 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/84/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:31:19,517 - INFO - Not interesting
+2025-03-20 17:31:19,586 - INFO - 
+2025-03-20 17:31:19,586 - INFO - > test
+2025-03-20 17:31:19,586 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 85 --alternativeDownload
+2025-03-20 17:31:19,586 - INFO - 
+2025-03-20 17:31:19,646 - INFO - (node:1168835) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:31:19,646 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:31:19,857 - INFO - undefined
+2025-03-20 17:31:19,857 - INFO - sandspiel-85:
+2025-03-20 17:31:20,594 - INFO - Running slice-dice: 737ms
+2025-03-20 17:32:21,632 - INFO - Running wasm-r3: 61038ms
+2025-03-20 17:32:21,634 - INFO - Sliced file size: 5078bytes
+2025-03-20 17:32:21,671 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/85/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:32:21,671 - INFO - Not interesting
+2025-03-20 17:32:21,731 - INFO - 
+2025-03-20 17:32:21,732 - INFO - > test
+2025-03-20 17:32:21,732 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 88 --alternativeDownload
+2025-03-20 17:32:21,732 - INFO - 
+2025-03-20 17:32:21,788 - INFO - (node:1169472) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:32:21,788 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:32:21,986 - INFO - undefined
+2025-03-20 17:32:21,986 - INFO - sandspiel-88:
+2025-03-20 17:32:22,675 - INFO - Running slice-dice: 689ms
+2025-03-20 17:33:22,111 - INFO - Running wasm-r3: 59435ms
+2025-03-20 17:33:22,113 - INFO - Sliced file size: 5080bytes
+2025-03-20 17:33:22,151 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/88/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:33:22,151 - INFO - Not interesting
+2025-03-20 17:33:22,220 - INFO - 
+2025-03-20 17:33:22,220 - INFO - > test
+2025-03-20 17:33:22,220 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 89 --alternativeDownload
+2025-03-20 17:33:22,220 - INFO - 
+2025-03-20 17:33:22,277 - INFO - (node:1170356) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:33:22,277 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:33:22,490 - INFO - undefined
+2025-03-20 17:33:22,490 - INFO - sandspiel-89:
+2025-03-20 17:33:23,208 - INFO - Running slice-dice: 718ms
+2025-03-20 17:34:24,011 - INFO - Running wasm-r3: 60803ms
+2025-03-20 17:34:24,014 - INFO - Sliced file size: 5079bytes
+2025-03-20 17:34:24,049 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/89/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:34:24,049 - INFO - Not interesting
+2025-03-20 17:34:24,124 - INFO - 
+2025-03-20 17:34:24,124 - INFO - > test
+2025-03-20 17:34:24,124 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 90 --alternativeDownload
+2025-03-20 17:34:24,124 - INFO - 
+2025-03-20 17:34:24,188 - INFO - (node:1170994) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:34:24,188 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:34:24,396 - INFO - undefined
+2025-03-20 17:34:24,396 - INFO - sandspiel-90:
+2025-03-20 17:34:25,087 - INFO - Running slice-dice: 691ms
+2025-03-20 17:35:23,873 - INFO - Running wasm-r3: 58785ms
+2025-03-20 17:35:23,875 - INFO - Sliced file size: 5079bytes
+2025-03-20 17:35:23,913 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/90/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:35:23,914 - INFO - Not interesting
+2025-03-20 17:35:23,981 - INFO - 
+2025-03-20 17:35:23,981 - INFO - > test
+2025-03-20 17:35:23,981 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 91 --alternativeDownload
+2025-03-20 17:35:23,981 - INFO - 
+2025-03-20 17:35:24,050 - INFO - (node:1171879) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:35:24,050 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:35:24,263 - INFO - undefined
+2025-03-20 17:35:24,263 - INFO - sandspiel-91:
+2025-03-20 17:35:24,995 - INFO - Running slice-dice: 732ms
+2025-03-20 17:36:26,022 - INFO - Running wasm-r3: 61027ms
+2025-03-20 17:36:26,024 - INFO - Sliced file size: 5072bytes
+2025-03-20 17:36:26,061 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/91/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:36:26,062 - INFO - Not interesting
+2025-03-20 17:36:26,132 - INFO - 
+2025-03-20 17:36:26,132 - INFO - > test
+2025-03-20 17:36:26,132 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 92 --alternativeDownload
+2025-03-20 17:36:26,132 - INFO - 
+2025-03-20 17:36:26,192 - INFO - (node:1172510) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:36:26,192 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:36:26,402 - INFO - undefined
+2025-03-20 17:36:26,402 - INFO - sandspiel-92:
+2025-03-20 17:36:27,139 - INFO - Running slice-dice: 737ms
+2025-03-20 17:37:26,612 - INFO - Running wasm-r3: 59473ms
+2025-03-20 17:37:26,614 - INFO - Sliced file size: 5072bytes
+2025-03-20 17:37:26,651 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/92/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:37:26,651 - INFO - Not interesting
+2025-03-20 17:37:26,721 - INFO - 
+2025-03-20 17:37:26,721 - INFO - > test
+2025-03-20 17:37:26,721 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 94 --alternativeDownload
+2025-03-20 17:37:26,721 - INFO - 
+2025-03-20 17:37:26,779 - INFO - (node:1173401) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:37:26,779 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:37:26,999 - INFO - undefined
+2025-03-20 17:37:26,999 - INFO - sandspiel-94:
+2025-03-20 17:37:27,717 - INFO - Running slice-dice: 718ms
+2025-03-20 17:38:27,352 - INFO - Running wasm-r3: 59635ms
+2025-03-20 17:38:27,354 - INFO - Sliced file size: 5079bytes
+2025-03-20 17:38:27,389 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/94/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:38:27,390 - INFO - Not interesting
+2025-03-20 17:38:27,456 - INFO - 
+2025-03-20 17:38:27,456 - INFO - > test
+2025-03-20 17:38:27,456 - INFO - > xvfb-run -a node --experimental-strip-types ./src/test.ts slicedice -t sandspiel -i 95 --alternativeDownload
+2025-03-20 17:38:27,456 - INFO - 
+2025-03-20 17:38:27,514 - INFO - (node:1174027) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+2025-03-20 17:38:27,514 - INFO - (Use `node --trace-warnings ...` to show where the warning was created)
+2025-03-20 17:38:27,727 - INFO - undefined
+2025-03-20 17:38:27,727 - INFO - sandspiel-95:
+2025-03-20 17:38:28,459 - INFO - Running slice-dice: 732ms
+2025-03-20 17:39:28,476 - INFO - Running wasm-r3: 60017ms
+2025-03-20 17:39:28,478 - INFO - Sliced file size: 5079bytes
+2025-03-20 17:39:28,518 - INFO - CompletedProcess(args='timeout 10s wizard-25abe41 -mode=jit /home/doehyunbaek/wasm-r3/evaluation/benchmarks/sandspiel/out/95/benchmarks/bin_1/replay.wasm', returncode=0, stdout='', stderr='')
+2025-03-20 17:39:28,518 - INFO - Not interesting
+2025-03-20 17:39:28,521 - INFO - 
+2025-03-20 17:39:28,521 - INFO - Running sandspiel - 40
+2025-03-20 17:39:28,521 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 40 --alternativeDownload
+2025-03-20 17:39:28,521 - INFO - Running sandspiel - 42
+2025-03-20 17:39:28,521 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 42 --alternativeDownload
+2025-03-20 17:39:28,521 - INFO - Running sandspiel - 43
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 43 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 44
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 44 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 47
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 47 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 48
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 48 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 49
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 49 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 50
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 50 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 51
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 51 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 52
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 52 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 54
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 54 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 55
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 55 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 56
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 56 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 57
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 57 --alternativeDownload
+2025-03-20 17:39:28,522 - INFO - Running sandspiel - 59
+2025-03-20 17:39:28,522 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 59 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 60
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 60 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 66
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 66 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 67
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 67 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 68
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 68 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 69
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 69 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 70
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 70 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 71
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 71 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 72
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 72 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 73
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 73 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 74
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 74 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 75
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 75 --alternativeDownload
+2025-03-20 17:39:28,523 - INFO - Running sandspiel - 76
+2025-03-20 17:39:28,523 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 76 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 77
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 77 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 79
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 79 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 80
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 80 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 81
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 81 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 82
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 82 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 83
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 83 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 84
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 84 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 85
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 85 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 88
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 88 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 89
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 89 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 90
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 90 --alternativeDownload
+2025-03-20 17:39:28,524 - INFO - Running sandspiel - 91
+2025-03-20 17:39:28,524 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 91 --alternativeDownload
+2025-03-20 17:39:28,525 - INFO - Running sandspiel - 92
+2025-03-20 17:39:28,525 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 92 --alternativeDownload
+2025-03-20 17:39:28,525 - INFO - Running sandspiel - 94
+2025-03-20 17:39:28,525 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 94 --alternativeDownload
+2025-03-20 17:39:28,525 - INFO - Running sandspiel - 95
+2025-03-20 17:39:28,525 - INFO - timeout 120s npm test slicedice -- -t sandspiel -i 95 --alternativeDownload
+2025-03-20 17:39:28,525 - INFO - Failed to find a suitable reduced wasm file
+2025-03-20 17:39:28,525 - INFO - Returning original wasm file
