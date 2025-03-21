@@ -1,1 +1,3 @@
 *.stripped.wasm
+*.log
+*.log.*
