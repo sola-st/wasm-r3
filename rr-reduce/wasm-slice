@@ -65,7 +65,7 @@ def get_fidx():
 def run_slicedice(testname, fidx):
     try:
         # fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
-        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx} --alternativeDownload"
+        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx} --alternativeTrace --alternativeDownload"
         print(command)
         output = subprocess.run(command, shell=True, text=True)
         # TODO: make this configurable
@@ -100,13 +100,12 @@ strip_command = f"{WASMR3_PATH}/third_party/wasm-tools/target/release/wasm-tools
 subprocess.run(strip_command, shell=True, check=True)
 shutil.copy(stripped_wasm_path, test_input)
 
-shutil.copy(
-    test_input,
-    save_path,
-)
 for fidx in get_fidx():
     print(f"Running {test_name} - {fidx}")
     run_slicedice(test_name, fidx)
 print("Failed to find a suitable reduced wasm file")
 print("Returning original wasm file")
-# We alreday copied
+shutil.copy(
+    test_input,
+    save_path,
+)

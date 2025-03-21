@@ -51,7 +51,7 @@ async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string
     await expect(page.getByText('milliseconds')).toBeVisible({ timeout });
   } catch (e) {
     did_timeout = true;
-    // console.log(`Timed out after ${timeout}ms`);
+    console.log(`Timed out after ${timeout}ms`);
   }
   const results = await analyser.stop();
   await Benchmark.fromAnalysisResult(results).save(`${subsetPath}/benchmarks`, { trace: options.dumpTrace, rustBackend: options.rustBackend });

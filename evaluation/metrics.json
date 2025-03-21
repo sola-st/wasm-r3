@@ -52,10 +52,10 @@
             "code-size": 9
         },
         "wasm-slice": {
-            "time": 7080.533674001694,
-            "module-size": 24058,
-            "code-size": 17604,
-            "target-size": 138
+            "time": 126.97488832473755,
+            "module-size": 7867,
+            "code-size": 336,
+            "target-size": 31
         },
         "wasm-hybrid-all": {
             "time": 8.379764795303345,
@@ -100,7 +100,7 @@
             "origin": "WASMaker",
             "engine": "WAMR",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
-            "module-size": 23078,
+            "module-size": 23077,
             "code-size": 19727,
             "function_count": 73,
             "dynamic_function_count": 0,
@@ -116,8 +116,8 @@
             "code-size": 36
         },
         "wasm-slice": {
-            "time": 340.8531141281128,
-            "module-size": 6661,
+            "time": 238.98165011405945,
+            "module-size": 6669,
             "code-size": 1829,
             "target-size": 1404
         },
@@ -564,8 +564,8 @@
             "code-size": 1577758
         },
         "wasm-slice": {
-            "time": 1261.2897565364838,
-            "module-size": 379253,
+            "time": 1189.941921710968,
+            "module-size": 387482,
             "code-size": 52744,
             "target-size": 782
         },
@@ -695,10 +695,10 @@
             "code-size": 4267
         },
         "wasm-slice": {
-            "time": 8350.150287389755,
-            "module-size": 5079,
-            "code-size": 467,
-            "target-size": 10
+            "time": 18.462881565093994,
+            "module-size": 5922,
+            "code-size": 1202,
+            "target-size": 277
         },
         "wasm-hybrid-all": {
             "time": 79.66955757141113,

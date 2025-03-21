@@ -10,8 +10,9 @@ EVAL_PATH = os.path.join(WASMR3_PATH, 'evaluation')
 MAX_WORKER = int(os.getenv("MAX_WORKER", 1))
 
 # Set up logging to file
-current_time = time.strftime("%Y-%m-%dT%H:%M:%S")
-log_dir = os.path.join(WASMR3_PATH, "evaluation", "logs", current_time)
+current_date = time.strftime("%Y%m%d")
+current_time = time.strftime("%H%M%S")
+log_dir = os.path.join(WASMR3_PATH, "evaluation", "logs", current_date, current_time)
 os.makedirs(log_dir, exist_ok=True)
 
 entry_logger = logging.getLogger('entry_logger')
@@ -24,7 +25,7 @@ entry_logger.addHandler(file_handler)
 
 def setup_individual_logger(testname, tool):
     individual_log_file = os.path.join(log_dir, f"{testname}-{tool}.log")
-    individual_handler = RotatingFileHandler(individual_log_file, maxBytes=50*1024*1024)
+    individual_handler = RotatingFileHandler(individual_log_file, maxBytes=50*1024*1024, backupCount=20)
     individual_handler.setLevel(logging.INFO)
     individual_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
     individual_logger = logging.getLogger(f"{testname}-{tool}")
@@ -51,7 +52,8 @@ test_choice = sys.argv[1]
 tool_choice = sys.argv[2]
 if test_choice == "all":
     # TODO: fix bullet
-    testset = [test for test in valid_tests if test != 'bullet']
+    prioritize = ['wamr#2789', 'wamr#2862', 'sandspiel', 'commanderkeen']
+    testset =  prioritize+ [test for test in valid_tests if test != 'bullet' and test not in prioritize]
     # testset = valid_tests
 else:
     testset = [test_choice]
@@ -122,7 +124,7 @@ def run_reduction_tool(testname, tool):
         module_size, code_size, target_size = util.get_sizes(reduced_path)
         start_module_size = metrics[testname]['metadata']['module-size']
         if not (start_module_size > module_size):
-            entry_logger.warn(f"Failed to reduce {testname} / {tool}")
+            entry_logger.warning(f"Failed to reduce {testname} / {tool}")
         else:
             entry_logger.info(f"Finished reduction for {testname} / {tool}: Elapsed time: {elapsed} seconds, Module size: {module_size}, Code size: {code_size}, Target size: {target_size}")
         return [testname, tool, elapsed, module_size, code_size, target_size]
