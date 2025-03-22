@@ -76,21 +76,16 @@ def tool_to_command(tool, test_input, oracle_script):
         )
         work_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.reduced.wasm"
         return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/binaryen/bin/wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
-    elif tool == "wasm-hybrid-all":
-        suffix = util.tool_to_suffix[tool]
-        test_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.{suffix}_test.wasm"
-        work_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.{suffix}.wasm"
-        wasm_slice_output_path = (
-            f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.sliced.wasm"
-        )
-        return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/binaryen/bin/wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {wasm_slice_output_path}"
     elif (
         tool == "wasm-shrink"
     ):  # https://github.com/doehyunbaek/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
         return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/wasm-tools/target/release/wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":
-
+        # Takes about 3 hours in lenovo
         return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-slice {oracle_script} {test_input}"
+    elif tool == "wasm-hybrid":
+        # takes full 24 hours
+        return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-hybrid {oracle_script} {test_input}"
     else:
         exit("not supported")
 

@@ -25,8 +25,8 @@
             "code-size": 454,
             "target-size": 327
         },
-        "wasm-hybrid-all": {
-            "time": 11.141263008117676,
+        "wasm-hybrid": {
+            "time": 38.65552115440369,
             "module-size": 51,
             "code-size": 11
         }
@@ -57,8 +57,8 @@
             "code-size": 336,
             "target-size": 31
         },
-        "wasm-hybrid-all": {
-            "time": 8.379764795303345,
+        "wasm-hybrid": {
+            "time": 241.3735523223877,
             "module-size": 54,
             "code-size": 9
         }
@@ -89,10 +89,10 @@
             "code-size": 816,
             "target-size": 423
         },
-        "wasm-hybrid-all": {
-            "time": 11.630863189697266,
-            "module-size": 50,
-            "code-size": 8
+        "wasm-hybrid": {
+            "time": 119.70044469833374,
+            "module-size": 71,
+            "code-size": 15
         }
     },
     "wamr#2862": {
@@ -121,8 +121,8 @@
             "code-size": 1829,
             "target-size": 1404
         },
-        "wasm-hybrid-all": {
-            "time": 33.63482618331909,
+        "wasm-hybrid": {
+            "time": 956.721177816391,
             "module-size": 82,
             "code-size": 36
         }
@@ -153,8 +153,8 @@
             "code-size": 716,
             "target-size": 175
         },
-        "wasm-hybrid-all": {
-            "time": 13.152365446090698,
+        "wasm-hybrid": {
+            "time": 37.85395288467407,
             "module-size": 52,
             "code-size": 12
         }
@@ -185,8 +185,8 @@
             "code-size": 882,
             "target-size": 104
         },
-        "wasm-hybrid-all": {
-            "time": 0.6664700508117676,
+        "wasm-hybrid": {
+            "time": 1134.497887134552,
             "module-size": 63,
             "code-size": 18
         }
@@ -217,8 +217,8 @@
             "code-size": 61097,
             "target-size": 1655
         },
-        "wasm-hybrid-all": {
-            "time": 86400.00161862373,
+        "wasm-hybrid": {
+            "time": 310.1287932395935,
             "module-size": 803,
             "code-size": 713
         }
@@ -249,10 +249,10 @@
             "code-size": 172650,
             "target-size": 120092
         },
-        "wasm-hybrid-all": {
-            "time": 8499.677067518234,
-            "module-size": 33137,
-            "code-size": 33063
+        "wasm-hybrid": {
+            "time": 188.44890451431274,
+            "module-size": 33433,
+            "code-size": 33262
         }
     },
     "rguilayout": {
@@ -281,10 +281,10 @@
             "code-size": 262186,
             "target-size": 157996
         },
-        "wasm-hybrid-all": {
-            "time": 10013.578892946243,
-            "module-size": 35695,
-            "code-size": 35613
+        "wasm-hybrid": {
+            "time": 111.97189974784851,
+            "module-size": 33383,
+            "code-size": 33301
         }
     },
     "rguistyler": {
@@ -313,10 +313,10 @@
             "code-size": 279821,
             "target-size": 144615
         },
-        "wasm-hybrid-all": {
-            "time": 86400.00210356712,
-            "module-size": 35106,
-            "code-size": 32978
+        "wasm-hybrid": {
+            "time": 80.1488618850708,
+            "module-size": 33334,
+            "code-size": 33252
         }
     },
     "riconpacker": {
@@ -345,10 +345,10 @@
             "code-size": 170002,
             "target-size": 142554
         },
-        "wasm-hybrid-all": {
-            "time": 86400.00162243843,
-            "module-size": 32874,
-            "code-size": 32801
+        "wasm-hybrid": {
+            "time": 18.535332679748535,
+            "module-size": 40821,
+            "code-size": 40674
         }
     },
     "rfxgen": {
@@ -377,10 +377,10 @@
             "code-size": 205267,
             "target-size": 114484
         },
-        "wasm-hybrid-all": {
-            "time": 12514.18942952156,
-            "module-size": 33139,
-            "code-size": 32972
+        "wasm-hybrid": {
+            "time": 144.65948271751404,
+            "module-size": 33135,
+            "code-size": 32950
         }
     },
     "rtexviewer": {
@@ -409,10 +409,10 @@
             "code-size": 10194,
             "target-size": 6762
         },
-        "wasm-hybrid-all": {
-            "time": 124.9759202003479,
-            "module-size": 956,
-            "code-size": 894
+        "wasm-hybrid": {
+            "time": 1578.05495095253,
+            "module-size": 85,
+            "code-size": 46
         }
     },
     "wasmedge#3057": {
@@ -441,8 +441,8 @@
             "code-size": 6134,
             "target-size": 424
         },
-        "wasm-hybrid-all": {
-            "time": 15.277360439300537,
+        "wasm-hybrid": {
+            "time": 4945.992043733597,
             "module-size": 51,
             "code-size": 11
         }
@@ -473,10 +473,10 @@
             "code-size": 119321,
             "target-size": 106812
         },
-        "wasm-hybrid-all": {
-            "time": 86400.00183320045,
-            "module-size": 34851,
-            "code-size": 33062
+        "wasm-hybrid": {
+            "time": 605.1225953102112,
+            "module-size": 34848,
+            "code-size": 33053
         }
     },
     "hydro": {
@@ -505,10 +505,10 @@
             "code-size": 18651,
             "target-size": 10354
         },
-        "wasm-hybrid-all": {
-            "time": 121.910719871521,
-            "module-size": 93,
-            "code-size": 54
+        "wasm-hybrid": {
+            "time": 6923.704140901566,
+            "module-size": 1009,
+            "code-size": 939
         }
     },
     "sqlgui": {
@@ -537,10 +537,10 @@
             "code-size": 87850,
             "target-size": 33851
         },
-        "wasm-hybrid-all": {
-            "time": 42285.294662714005,
-            "module-size": 69225,
-            "code-size": 59162
+        "wasm-hybrid": {
+            "time": 62.720606327056885,
+            "module-size": 1399,
+            "code-size": 1350
         }
     },
     "commanderkeen": {
@@ -569,8 +569,8 @@
             "code-size": 52744,
             "target-size": 782
         },
-        "wasm-hybrid-all": {
-            "time": 86400.00170731544,
+        "wasm-hybrid": {
+            "time": 1268.6907455921173,
             "module-size": 1388,
             "code-size": 1329
         }
@@ -601,8 +601,8 @@
             "code-size": 70776,
             "target-size": 48862
         },
-        "wasm-hybrid-all": {
-            "time": 2882.3422441482544,
+        "wasm-hybrid": {
+            "time": 198.6167709827423,
             "module-size": 36287,
             "code-size": 36204
         }
@@ -633,10 +633,10 @@
             "code-size": 275255,
             "target-size": 170880
         },
-        "wasm-hybrid-all": {
-            "time": 16784.42043852806,
-            "module-size": 35920,
-            "code-size": 35869
+        "wasm-hybrid": {
+            "time": 120.47153043746948,
+            "module-size": 34078,
+            "code-size": 34032
         }
     },
     "pacalc": {
@@ -659,10 +659,10 @@
             "code-size": 34808,
             "target-size": 2136
         },
-        "wasm-hybrid-all": {
-            "time": 13160.42043852806,
-            "module-size": 2130,
-            "code-size": 2088
+        "wasm-hybrid": {
+            "time": 86400.00307536125,
+            "module-size": 1872,
+            "code-size": 1822
         }
     },
     "bullet": {
@@ -700,10 +700,10 @@
             "code-size": 1202,
             "target-size": 277
         },
-        "wasm-hybrid-all": {
-            "time": 79.66955757141113,
-            "module-size": 96,
-            "code-size": 48
+        "wasm-hybrid": {
+            "time": 1294.4277935028076,
+            "module-size": 92,
+            "code-size": 44
         }
     },
     "pathfinding": {
@@ -726,10 +726,10 @@
             "code-size": 56136,
             "target-size": 209
         },
-        "wasm-hybrid-all": {
-            "time": 513.7927114963531,
-            "module-size": 94,
-            "code-size": 45
+        "wasm-hybrid": {
+            "time": 2175.611538887024,
+            "module-size": 107,
+            "code-size": 58
         }
     },
     "parquet": {
@@ -752,10 +752,10 @@
             "code-size": 16181,
             "target-size": 6
         },
-        "wasm-hybrid-all": {
-            "time": 20.095752000808716,
-            "module-size": 971,
-            "code-size": 5
+        "wasm-hybrid": {
+            "time": 1925.9685127735138,
+            "module-size": 18146,
+            "code-size": 12798
         }
     },
     "figma-startpage": {
@@ -778,10 +778,10 @@
             "code-size": 28558,
             "target-size": 10
         },
-        "wasm-hybrid-all": {
-            "time": 25.031139373779297,
-            "module-size": 355,
-            "code-size": 5
+        "wasm-hybrid": {
+            "time": 2648.6080491542816,
+            "module-size": 28444,
+            "code-size": 21450
         }
     },
     "ffmpeg": {
@@ -804,10 +804,10 @@
             "code-size": 33037,
             "target-size": 6088
         },
-        "wasm-hybrid-all": {
-            "time": 131.14664793014526,
-            "module-size": 90,
-            "code-size": 49
+        "wasm-hybrid": {
+            "time": 4005.484921693802,
+            "module-size": 3292,
+            "code-size": 1152
         }
     },
     "jqkungfu": {
@@ -830,10 +830,10 @@
             "code-size": 25613,
             "target-size": 22234
         },
-        "wasm-hybrid-all": {
-            "time": 1196.6334323883057,
-            "module-size": 11291,
-            "code-size": 10858
+        "wasm-hybrid": {
+            "time": 5117.803116798401,
+            "module-size": 26983,
+            "code-size": 18431
         }
     }
 }

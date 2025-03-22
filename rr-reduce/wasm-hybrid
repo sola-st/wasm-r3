@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+import os
+import subprocess
+import argparse
+
+# Configuration (modify these if needed)
+WASM_SLICE_PATH = "/home/doehyunbaek/wasm-r3/rr-reduce/wasm-slice"
+SLICE_ENV_VARS = {'PRINT': '1'}  # Added environment variable
+DEFAULT_TIMEOUT = "60"
+
+def main():
+    parser = argparse.ArgumentParser(description='WASM hybrid reducer combining slice and reduce')
+    parser.add_argument('oracle_script', help='Oracle verification script')
+    parser.add_argument('test_input', help='Input WASM file')
+    args = parser.parse_args()
+
+    # Validate environment variables
+    required_env = ['WASMR3_PATH', 'BINARYEN_ROOT']
+    for var in required_env:
+        if not os.environ.get(var):
+            print(f"Error: {var} environment variable not set")
+            return 1
+
+    # Set up paths
+    test_name = os.path.splitext(os.path.basename(args.test_input))[0]
+    benchmark_dir = os.path.join(
+        os.environ['WASMR3_PATH'],
+        'evaluation',
+        'benchmarks',
+        test_name
+    )
+    os.makedirs(benchmark_dir, exist_ok=True)
+
+    # Generate output paths
+    suffix = "hybrid"
+    paths = {
+        'sliced': os.path.join(benchmark_dir, f"{test_name}.sliced.wasm"),
+        'test': os.path.join(benchmark_dir, f"{test_name}.{suffix}_test.wasm"),
+        'work': os.path.join(benchmark_dir, f"{test_name}.{suffix}.wasm")
+    }
+
+    # Phase 1: Run wasm-slice
+    slice_cmd = [
+        WASM_SLICE_PATH,
+        os.path.abspath(args.oracle_script),
+        os.path.abspath(args.test_input)
+    ]
+
+    print("\n=== Running wasm-slice ===")
+    slice_env = os.environ.copy()
+    slice_env.update(SLICE_ENV_VARS)
+    slice_result = subprocess.run(
+        slice_cmd,
+        cwd=benchmark_dir,
+        capture_output=True,
+        text=True,
+        env=slice_env
+    )
+
+    if slice_result.returncode != 0 or not os.path.exists(paths['sliced']):
+        print("Slice phase failed!")
+        print("STDOUT:", slice_result.stdout)
+        print("STDERR:", slice_result.stderr)
+        return 1
+
+    # Phase 2: Run wasm-reduce
+    reduce_cmd = (
+        f"wasm-reduce -to {DEFAULT_TIMEOUT} "
+        f"-b {os.environ['BINARYEN_ROOT']}/bin "
+        f"--command 'python {os.path.abspath(args.oracle_script)} {paths['test']}' "
+        f"-t {paths['test']} -w {paths['work']} {paths['sliced']}"
+    )
+
+    # Then run with shell=True:
+    reduce_result = subprocess.run(
+        reduce_cmd,  # Pass as string with shell=True
+        cwd=benchmark_dir,
+        shell=True,
+        capture_output=True,
+        text=True
+    )
+
+    print("Reduction result:", "SUCCESS" if reduce_result.returncode == 0 else "FAILED")
+    print("STDOUT:", reduce_result.stdout)
+    print("STDERR:", reduce_result.stderr)
+
+    return reduce_result.returncode
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())

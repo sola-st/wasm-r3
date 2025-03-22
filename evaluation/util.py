@@ -77,7 +77,7 @@ def run_with_retries(command, max_retries=3):
 
 tool_to_suffix = {
     "wasm-slice": "sliced",
-    "wasm-hybrid-all": "hybrid-all",
+    "wasm-hybrid": "hybrid",
     "wasm-reduce": "reduced",
     "wasm-shrink": "shrunken",
     # "wasm-hybrid-target": "hybrid-target",
