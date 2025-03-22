@@ -19,8 +19,7 @@ build/
 __pycache__/
 nohup.out
 table
-*.hybrid_test.wasm
-*.reduced_test.wasm
+*_test.wasm
 *.shrunken.wat
 *.aot
 *.so
