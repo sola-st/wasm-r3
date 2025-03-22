@@ -16,7 +16,7 @@ tests/*output.txt
 out/
 build/
 .vscode
-__pycache__
+__pycache__/
 nohup.out
 table
 *.hybrid_test.wasm
