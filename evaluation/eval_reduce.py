@@ -73,9 +73,7 @@ entry_logger.info(f'toolset: {toolset}')
 def tool_to_command(tool, test_input, oracle_script):
     test_name = os.path.splitext(os.path.basename(test_input))[0]
     if tool == "wasm-reduce":
-        test_path = (
-            f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.reduced_test.wasm"
-        )
+        test_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.reduced_test.wasm"
         work_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.reduced.wasm"
         return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/binaryen/bin/wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
     elif (
@@ -84,10 +82,12 @@ def tool_to_command(tool, test_input, oracle_script):
         return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/wasm-tools/target/release/wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":
         # Takes about 3 hours in lenovo
-        return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-slice {oracle_script} {test_input}"
+        test_output = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.sliced.wasm"
+        return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-slice {oracle_script} {test_input} {test_output}"
     elif tool == "wasm-hybrid":
         # takes full 24 hours
-        return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-hybrid {oracle_script} {test_input}"
+        test_output = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.hybrid_temp.wasm"
+        return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-hybrid {oracle_script} {test_input} {test_output}"
     else:
         exit("not supported")
 

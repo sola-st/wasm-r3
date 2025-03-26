@@ -10,17 +10,14 @@ PARALLEL = os.getenv
 TIMEOUT = 600
 
 # The Wasm file is given as the first and only argument to the script.
-if len(sys.argv) != 3:
-    print("Usage: wasm-slice <ORACLE_SCRIPT> <WASM_FILE>")
+if len(sys.argv) != 4:
+    print("Usage: wasm-slice <ORACLE_SCRIPT> <WASM_FILE> <OUTPUT_PATH")
     sys.exit(1)
 
 oracle_script = sys.argv[1]
 test_input = sys.argv[2]
 test_name = os.path.splitext(os.path.basename(test_input))[0]
-save_path = f"{os.getenv(
-            "BENCHMARK_PATH",
-            f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}",
-        )}/{test_name}.sliced.wasm"
+save_path = sys.argv[3]
 
 # We prioritize single function replay of heuristic > dynamic > all
 def get_fidx():

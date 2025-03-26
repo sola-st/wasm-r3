@@ -12,6 +12,7 @@ def main():
     parser = argparse.ArgumentParser(description='WASM hybrid reducer combining slice and reduce')
     parser.add_argument('oracle_script', help='Oracle verification script')
     parser.add_argument('test_input', help='Input WASM file')
+    parser.add_argument('test_output', help='Output WASM file')
     args = parser.parse_args()
 
     # Validate environment variables
@@ -43,7 +44,8 @@ def main():
     slice_cmd = [
         WASM_SLICE_PATH,
         os.path.abspath(args.oracle_script),
-        os.path.abspath(args.test_input)
+        os.path.abspath(args.test_input),
+        os.path.abspath(args.test_output)
     ]
 
     print("\n=== Running wasm-slice ===")
