@@ -53,7 +53,7 @@ metrics = util.load_metrics(f'{EVAL_PATH}/metrics.json')
 test_choice = sys.argv[1]
 tool_choice = sys.argv[2]
 if test_choice == "all":
-    prioritize = ['bullet', 'wamr#2789', 'wamr#2862', 'sandspiel', 'commanderkeen']
+    prioritize = ['bullet', 'commanderkeen', 'sandspiel','wamr#2789', 'wamr#2862']
     testset =  prioritize + [test for test in valid_tests if test not in prioritize]
 else:
     testset = [test_choice]

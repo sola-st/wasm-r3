@@ -45,7 +45,7 @@ async function runWasmR3(options: any, subsetPath: string, benchmarkPath: string
   // Running the actual Wasm-R3
   let analyser = new Analyser('./dist/src/tracer.cjs', options);
   let page = await analyser.start(url[1], { headless: options.headless });
-  const timeout = 120_000; // could go high as 115 seconds
+  const timeout = 600_000;
   let did_timeout = false;
   try {
     await expect(page.getByText('milliseconds')).toBeVisible({ timeout });

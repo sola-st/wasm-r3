@@ -7,7 +7,7 @@ import heuristics_finder
 # TODO: why?
 WASMR3_PATH = os.getenv("WASMR3_PATH", "/home/wasm-r3")
 PARALLEL = os.getenv
-TIMEOUT = 120
+TIMEOUT = 600
 
 # The Wasm file is given as the first and only argument to the script.
 if len(sys.argv) != 3:
