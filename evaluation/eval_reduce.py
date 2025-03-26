@@ -8,9 +8,11 @@ TIMEOUT = 3600 * 24
 WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
 EVAL_PATH = os.path.join(WASMR3_PATH, 'evaluation')
 MAX_WORKER = int(os.getenv("MAX_WORKER", 1))
+BINARYEN_CORES = int(os.getenv("BINARYEN_CORES", 1))
+
 
 # Set up logging to file
-current_date = time.strftime("%Y%m%d")
+current_date = time.strftime("%y%m%d")
 current_time = time.strftime("%H%M%S")
 log_dir = os.path.join(WASMR3_PATH, "evaluation", "logs", current_date, current_time)
 os.makedirs(log_dir, exist_ok=True)
@@ -51,10 +53,8 @@ metrics = util.load_metrics(f'{EVAL_PATH}/metrics.json')
 test_choice = sys.argv[1]
 tool_choice = sys.argv[2]
 if test_choice == "all":
-    # TODO: fix bullet
-    prioritize = ['wamr#2789', 'wamr#2862', 'sandspiel', 'commanderkeen']
-    testset =  prioritize+ [test for test in valid_tests if test != 'bullet' and test not in prioritize]
-    # testset = valid_tests
+    prioritize = ['bullet', 'wamr#2789', 'wamr#2862', 'sandspiel', 'commanderkeen']
+    testset =  prioritize + [test for test in valid_tests if test not in prioritize]
 else:
     testset = [test_choice]
 
@@ -63,6 +63,8 @@ if tool_choice == "all":
 else:
     toolset = [tool_choice]
 
+entry_logger.info(f"MAX_WORKER: {MAX_WORKER}")
+entry_logger.info(f"BINARYEN_CORES: {BINARYEN_CORES}")
 entry_logger.info(f"len(testset): {len(testset)}")
 entry_logger.info(f'testset: {testset}')
 entry_logger.info(f"len(toolset): {len(toolset)}")
