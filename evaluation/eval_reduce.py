@@ -53,7 +53,7 @@ metrics = util.load_metrics(f'{EVAL_PATH}/metrics.json')
 test_choice = sys.argv[1]
 tool_choice = sys.argv[2]
 if test_choice == "all":
-    prioritize = ['bullet', 'commanderkeen', 'sandspiel','wamr#2789', 'wamr#2862']
+    prioritize = ['bullet', 'commanderkeen', 'hydro', 'rtexviewer', 'sandspiel', 'wamr#2450','wamr#2789', 'wamr#2862', 'wasmedge#3018', 'wasmedge#3019', 'wasmedge#3057', 'wasmedge#3076']
     testset =  prioritize + [test for test in valid_tests if test not in prioritize]
 else:
     testset = [test_choice]
@@ -86,7 +86,7 @@ def tool_to_command(tool, test_input, oracle_script):
         return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-slice {oracle_script} {test_input} {test_output}"
     elif tool == "wasm-hybrid":
         # takes full 24 hours
-        test_output = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.hybrid_temp.wasm"
+        test_output = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.hybrid.wasm"
         return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-hybrid {oracle_script} {test_input} {test_output}"
     else:
         exit("not supported")
@@ -117,6 +117,7 @@ def run_reduction_tool(testname, tool):
         elapsed = end_time - start_time
         if stderr_output:
             entry_logger.error(stderr_output.strip())
+            individual_logger.error(stderr_output.strip())
 
         module_size, code_size, target_size = util.get_sizes(reduced_path)
         start_module_size = metrics[testname]['metadata']['module-size']
