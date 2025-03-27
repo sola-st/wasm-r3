@@ -84,7 +84,7 @@ def main():
         f"wasm-reduce -to {DEFAULT_TIMEOUT} "
         f"-b {os.environ['BINARYEN_ROOT']}/bin "
         f"--command 'python {os.path.abspath(args.oracle_script)} {paths['test']}' "
-        f"-t {paths['test']} -w {paths['work']} {paths['sliced']}"
+        f"-t {paths['test']} -w {paths['work']} {paths['sliced']} 2>&1"
     )
     print("\n=== Running wasm-reduce ===")
     print(f"command:\n{reduce_cmd}")

@@ -75,7 +75,7 @@ def tool_to_command(tool, test_input, oracle_script):
     if tool == "wasm-reduce":
         test_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.reduced_test.wasm"
         work_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.reduced.wasm"
-        return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/binaryen/bin/wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input}"
+        return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/binaryen/bin/wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input} 2>&1"
     elif (
         tool == "wasm-shrink"
     ):  # https://github.com/doehyunbaek/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
@@ -121,7 +121,11 @@ def run_reduction_tool(testname, tool):
 
         module_size, code_size, target_size = util.get_sizes(reduced_path)
         start_module_size = metrics[testname]['metadata']['module-size']
-        if not (start_module_size > module_size):
+
+        oracle_command = f"python {oracle_path} {reduced_path}"
+        result = subprocess.run(oracle_command, shell=True, check=True)
+
+        if not (result.returncode == 0 and start_module_size > module_size):
             entry_logger.warning(f"Failed to reduce {testname} / {tool}")
         else:
             entry_logger.info(f"Finished reduction for {testname} / {tool}: Elapsed time: {elapsed} seconds, Module size: {module_size}, Code size: {code_size}, Target size: {target_size}")
