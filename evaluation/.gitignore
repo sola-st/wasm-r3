@@ -1,3 +1,4 @@
 *.stripped.wasm
 *.log
+__pycache__
 *.log.*
