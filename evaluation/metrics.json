@@ -11,22 +11,23 @@
             "fixed-by": "93fd4ae"
         },
         "wasm-shrink": {
-            "time": 105.75285744667053,
-            "code-size": 162
+            "time": 169.52240920066833,
+            "code-size": 89,
+            "module-size": 147
         },
         "wasm-reduce": {
-            "time": 15.401313781738281,
+            "time": 23.392134428024292,
             "module-size": 69,
             "code-size": 24
         },
         "wasm-slice": {
-            "time": 42.717544078826904,
+            "time": 35.11284923553467,
             "module-size": 6436,
             "code-size": 454,
             "target-size": 327
         },
         "wasm-hybrid": {
-            "time": 38.65552115440369,
+            "time": 49.34497284889221,
             "module-size": 51,
             "code-size": 11
         }
@@ -43,22 +44,23 @@
             "fixed-by": "718f06"
         },
         "wasm-shrink": {
-            "time": 104.0040831565857,
-            "code-size": 9
+            "time": 24.025312423706055,
+            "code-size": 9,
+            "module-size": 50
         },
         "wasm-reduce": {
-            "time": 195.34218335151672,
+            "time": 6.29561448097229,
             "module-size": 54,
             "code-size": 9
         },
         "wasm-slice": {
-            "time": 240.34550619125366,
+            "time": 600.3539299964905,
             "module-size": 7867,
             "code-size": 336,
             "target-size": 31
         },
         "wasm-hybrid": {
-            "time": 241.3735523223877,
+            "time": 610.0844984054565,
             "module-size": 54,
             "code-size": 9
         }
@@ -75,24 +77,25 @@
             "fixed-by": "e360b7"
         },
         "wasm-shrink": {
-            "time": 49.409502267837524,
-            "code-size": 2811
+            "time": 34.873801469802856,
+            "code-size": 2811,
+            "module-size": 2866
         },
         "wasm-reduce": {
-            "time": 28.741395235061646,
+            "time": 31.064985275268555,
             "module-size": 51,
             "code-size": 8
         },
         "wasm-slice": {
-            "time": 94.61046528816223,
+            "time": 78.0199465751648,
             "module-size": 2785,
             "code-size": 816,
             "target-size": 423
         },
         "wasm-hybrid": {
-            "time": 119.70044469833374,
-            "module-size": 71,
-            "code-size": 15
+            "time": 79.74434161186218,
+            "module-size": 51,
+            "code-size": 8
         }
     },
     "wamr#2862": {
@@ -100,29 +103,30 @@
             "origin": "WASMaker",
             "engine": "WAMR",
             "path": "/home/doehyunbaek/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
-            "module-size": 23077,
+            "module-size": 23078,
             "code-size": 19727,
             "function_count": 73,
             "dynamic_function_count": 0,
             "fixed-by": "0ee5ff"
         },
         "wasm-shrink": {
-            "time": 228.26962161064148,
-            "code-size": 582
+            "time": 299.782434463501,
+            "code-size": 582,
+            "module-size": 672
         },
         "wasm-reduce": {
-            "time": 41.81227493286133,
+            "time": 54.32008147239685,
             "module-size": 82,
             "code-size": 36
         },
         "wasm-slice": {
-            "time": 673.1392347812653,
+            "time": 505.6686472892761,
             "module-size": 6669,
             "code-size": 1829,
             "target-size": 1404
         },
         "wasm-hybrid": {
-            "time": 956.721177816391,
+            "time": 308.74349331855774,
             "module-size": 82,
             "code-size": 36
         }
@@ -139,22 +143,23 @@
             "fixed-by": "93fd4ae"
         },
         "wasm-shrink": {
-            "time": 189.67841958999634,
-            "code-size": 1473
+            "time": 10.299533367156982,
+            "code-size": 1473,
+            "module-size": 2032
         },
         "wasm-reduce": {
-            "time": 328.8753798007965,
+            "time": 4194.944451808929,
             "module-size": 60,
             "code-size": 12
         },
         "wasm-slice": {
-            "time": 40.49848675727844,
+            "time": 32.66231822967529,
             "module-size": 7319,
             "code-size": 716,
             "target-size": 175
         },
         "wasm-hybrid": {
-            "time": 37.85395288467407,
+            "time": 52.54663157463074,
             "module-size": 52,
             "code-size": 12
         }
@@ -171,24 +176,25 @@
             "fixed-by": "93fd4ae"
         },
         "wasm-shrink": {
-            "time": 3399.466275215149,
-            "code-size": 1505
+            "time": 86400.00230026245,
+            "code-size": 8571,
+            "module-size": 9791
         },
         "wasm-reduce": {
-            "time": 536.5448153018951,
-            "module-size": 63,
-            "code-size": 18
+            "time": 1017.2391982078552,
+            "module-size": 251,
+            "code-size": 205
         },
         "wasm-slice": {
-            "time": 790.2273771762848,
+            "time": 1112.378564119339,
             "module-size": 6270,
             "code-size": 882,
             "target-size": 104
         },
         "wasm-hybrid": {
-            "time": 1134.497887134552,
-            "module-size": 63,
-            "code-size": 18
+            "time": 891.2712812423706,
+            "module-size": 51,
+            "code-size": 11
         }
     },
     "mandelbrot": {
@@ -203,24 +209,25 @@
             "fixed-by": "0b43b8"
         },
         "wasm-shrink": {
-            "time": 3600.002639055252,
-            "code-size": 18474
+            "time": 15178.219116687775,
+            "code-size": 17421,
+            "module-size": 178771
         },
         "wasm-reduce": {
             "time": 71808.21468353271,
-            "module-size": 238,
-            "code-size": 174
+            "module-size": 126377,
+            "code-size": 13824
         },
         "wasm-slice": {
-            "time": 325.04887676239014,
-            "module-size": 92124,
+            "time": 202.48461866378784,
+            "module-size": 92725,
             "code-size": 61097,
             "target-size": 1655
         },
         "wasm-hybrid": {
-            "time": 310.1287932395935,
-            "module-size": 803,
-            "code-size": 713
+            "time": 73068.81916451454,
+            "module-size": 365,
+            "code-size": 276
         }
     },
     "guiicons": {
@@ -235,24 +242,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.00350856781,
-            "code-size": 121466
+            "time": 1284.6527338027954,
+            "code-size": 121144,
+            "module-size": 121565
         },
         "wasm-reduce": {
-            "time": 33682.15699982643,
-            "module-size": 33801,
-            "code-size": 33541
+            "time": 29266.117651700974,
+            "module-size": 33497,
+            "code-size": 33288
         },
         "wasm-slice": {
-            "time": 192.871808052063,
+            "time": 104.64383864402771,
             "module-size": 284079,
             "code-size": 172650,
             "target-size": 120092
         },
         "wasm-hybrid": {
-            "time": 188.44890451431274,
-            "module-size": 33433,
-            "code-size": 33262
+            "time": 20215.87429213524,
+            "module-size": 34051,
+            "code-size": 33839
         }
     },
     "rguilayout": {
@@ -267,24 +275,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.002114534378,
-            "code-size": 367138
+            "time": 37380.381868600845,
+            "code-size": 159823,
+            "module-size": 160231
         },
         "wasm-reduce": {
-            "time": 35370.805013895035,
-            "module-size": 34098,
-            "code-size": 34002
+            "time": 34244.442142248154,
+            "module-size": 33873,
+            "code-size": 33760
         },
         "wasm-slice": {
-            "time": 129.55483317375183,
+            "time": 164.47674655914307,
             "module-size": 386573,
             "code-size": 262186,
             "target-size": 157996
         },
         "wasm-hybrid": {
-            "time": 111.97189974784851,
-            "module-size": 33383,
-            "code-size": 33301
+            "time": 9677.297091245651,
+            "module-size": 43998,
+            "code-size": 43834
         }
     },
     "rguistyler": {
@@ -299,24 +308,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.002942800522,
-            "code-size": 158279
+            "time": 2126.941755056381,
+            "code-size": 149312,
+            "module-size": 149785
         },
         "wasm-reduce": {
-            "time": 12633.311501026154,
-            "module-size": 33325,
-            "code-size": 33198
+            "time": 34934.174304008484,
+            "module-size": 33625,
+            "code-size": 33534
         },
         "wasm-slice": {
-            "time": 86.42658162117004,
+            "time": 109.88758659362793,
             "module-size": 459593,
             "code-size": 279821,
             "target-size": 144615
         },
         "wasm-hybrid": {
-            "time": 80.1488618850708,
-            "module-size": 33334,
-            "code-size": 33252
+            "time": 9552.471434354782,
+            "module-size": 33620,
+            "code-size": 33497
         }
     },
     "riconpacker": {
@@ -331,24 +341,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.0029859542847,
-            "code-size": 152319
+            "time": 1506.5716044902802,
+            "code-size": 143075,
+            "module-size": 143487
         },
         "wasm-reduce": {
-            "time": 36618.533792972565,
-            "module-size": 33185,
-            "code-size": 32967
+            "time": 68186.17720913887,
+            "module-size": 32958,
+            "code-size": 32796
         },
         "wasm-slice": {
-            "time": 19.113847732543945,
+            "time": 26.646989345550537,
             "module-size": 284550,
             "code-size": 170002,
             "target-size": 142554
         },
         "wasm-hybrid": {
-            "time": 18.535332679748535,
-            "module-size": 40821,
-            "code-size": 40674
+            "time": 20362.774285554886,
+            "module-size": 33631,
+            "code-size": 33433
         }
     },
     "rfxgen": {
@@ -363,24 +374,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.002011537552,
-            "code-size": 324603
+            "time": 24208.879021406174,
+            "code-size": 115900,
+            "module-size": 116318
         },
         "wasm-reduce": {
-            "time": 12547.61466383934,
-            "module-size": 34100,
-            "code-size": 33946
+            "time": 9475.097469806671,
+            "module-size": 34161,
+            "code-size": 33968
         },
         "wasm-slice": {
-            "time": 171.63930654525757,
+            "time": 165.90990138053894,
             "module-size": 353927,
             "code-size": 205267,
             "target-size": 114484
         },
         "wasm-hybrid": {
-            "time": 144.65948271751404,
-            "module-size": 33135,
-            "code-size": 32950
+            "time": 12867.32171344757,
+            "module-size": 33130,
+            "code-size": 33047
         }
     },
     "rtexviewer": {
@@ -395,22 +407,23 @@
             "fixed-by": "708ea77"
         },
         "wasm-shrink": {
-            "time": 1061.7089478969574,
-            "code-size": 4989
+            "time": 744.5164504051208,
+            "code-size": 4023,
+            "module-size": 4160
         },
         "wasm-reduce": {
-            "time": 215.82854962348938,
+            "time": 196.7614860534668,
             "module-size": 552,
             "code-size": 499
         },
         "wasm-slice": {
-            "time": 1381.1368832588196,
+            "time": 943.3573076725006,
             "module-size": 120540,
             "code-size": 10194,
             "target-size": 6762
         },
         "wasm-hybrid": {
-            "time": 1578.05495095253,
+            "time": 978.3104777336121,
             "module-size": 85,
             "code-size": 46
         }
@@ -427,22 +440,23 @@
             "fixed-by": "93fd4ae"
         },
         "wasm-shrink": {
-            "time": 3600.00191116333,
-            "code-size": 102869
+            "time": 86400.00236439705,
+            "code-size": 64487,
+            "module-size": 75032
         },
         "wasm-reduce": {
-            "time": 1193.007273197174,
+            "time": 2598.6112065315247,
             "module-size": 58,
             "code-size": 12
         },
         "wasm-slice": {
-            "time": 5438.210055112839,
+            "time": 3966.644023180008,
             "module-size": 38854,
             "code-size": 6134,
             "target-size": 424
         },
         "wasm-hybrid": {
-            "time": 4945.992043733597,
+            "time": 4149.941699743271,
             "module-size": 51,
             "code-size": 11
         }
@@ -459,24 +473,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.0027742385864,
-            "code-size": 133741
+            "time": 86400.00352716446,
+            "code-size": 219299,
+            "module-size": 1839309
         },
         "wasm-reduce": {
-            "time": 86400.00259923935,
-            "module-size": 36085,
-            "code-size": 34660
+            "time": 86400.00349807739,
+            "module-size": 36196,
+            "code-size": 34956
         },
         "wasm-slice": {
-            "time": 604.9476301670074,
+            "time": 628.0408811569214,
             "module-size": 1847294,
             "code-size": 119321,
             "target-size": 106812
         },
         "wasm-hybrid": {
-            "time": 605.1225953102112,
-            "module-size": 34848,
-            "code-size": 33053
+            "time": 86400.00450205803,
+            "module-size": 34727,
+            "code-size": 33062
         }
     },
     "hydro": {
@@ -491,22 +506,23 @@
             "fixed-by": "708ea77"
         },
         "wasm-shrink": {
-            "time": 2329.881902217865,
-            "code-size": 219
+            "time": 86400.00717973709,
+            "code-size": 6363,
+            "module-size": 6509
         },
         "wasm-reduce": {
-            "time": 645.9628677368164,
+            "time": 541.6615028381348,
             "module-size": 3514,
             "code-size": 3438
         },
         "wasm-slice": {
-            "time": 5930.601603507996,
+            "time": 4112.064702510834,
             "module-size": 173923,
             "code-size": 18651,
             "target-size": 10354
         },
         "wasm-hybrid": {
-            "time": 6923.704140901566,
+            "time": 4520.944466590881,
             "module-size": 1009,
             "code-size": 939
         }
@@ -523,24 +539,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.0026733875275,
-            "code-size": 107838
+            "time": 12192.879705190659,
+            "code-size": 136032,
+            "module-size": 166828
         },
         "wasm-reduce": {
-            "time": 13116.87040567398,
+            "time": 13534.904925823212,
             "module-size": 94479,
             "code-size": 76827
         },
         "wasm-slice": {
-            "time": 64.58311462402344,
+            "time": 64.29929041862488,
             "module-size": 223902,
             "code-size": 87850,
             "target-size": 33851
         },
         "wasm-hybrid": {
-            "time": 62.720606327056885,
-            "module-size": 1399,
-            "code-size": 1350
+            "time": 50971.67985749245,
+            "module-size": 78782,
+            "code-size": 70069
         }
     },
     "commanderkeen": {
@@ -555,24 +572,25 @@
             "fixed-by": "25e04ac"
         },
         "wasm-shrink": {
-            "time": 3600.002872467041,
-            "code-size": 3595700
+            "time": 86400.00494480133,
+            "code-size": 1546590,
+            "module-size": 1926441
         },
         "wasm-reduce": {
-            "time": 86400.00873208046,
-            "module-size": 1874019,
-            "code-size": 1577758
+            "time": 86400.00617218018,
+            "module-size": 1582242,
+            "code-size": 1309098
         },
         "wasm-slice": {
-            "time": 1235.3144686222076,
+            "time": 1290.8108625411987,
             "module-size": 387482,
             "code-size": 52744,
             "target-size": 782
         },
         "wasm-hybrid": {
-            "time": 1268.6907455921173,
-            "module-size": 1388,
-            "code-size": 1329
+            "time": 5654.838240623474,
+            "module-size": 951,
+            "code-size": 158
         }
     },
     "boa": {
@@ -587,24 +605,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.004360437393,
-            "code-size": 4524891
+            "time": 28437.742268800735,
+            "code-size": 462472,
+            "module-size": 1879166
         },
         "wasm-reduce": {
-            "time": 86400.00992512703,
-            "module-size": 1873987,
-            "code-size": 317816
+            "time": 86400.01694726944,
+            "module-size": 1891718,
+            "code-size": 374687
         },
         "wasm-slice": {
-            "time": 184.60286784172058,
-            "module-size": 17257569,
+            "time": 134.5729534626007,
+            "module-size": 17259050,
             "code-size": 70776,
             "target-size": 48862
         },
         "wasm-hybrid": {
-            "time": 198.6167709827423,
-            "module-size": 36287,
-            "code-size": 36204
+            "time": 3011.6641776561737,
+            "module-size": 33417,
+            "code-size": 33358
         }
     },
     "jsc": {
@@ -619,24 +638,25 @@
             "fixed-by": "6d2b057"
         },
         "wasm-shrink": {
-            "time": 3600.0058438777924,
-            "code-size": 4207833
+            "time": 86400.00876712799,
+            "code-size": 2801149,
+            "module-size": 3196413
         },
         "wasm-reduce": {
-            "time": 86400,
-            "module-size": 497737,
-            "code-size": 310331
+            "time": 86400.01014709473,
+            "module-size": 420644,
+            "code-size": 276361
         },
         "wasm-slice": {
-            "time": 214.48847150802612,
+            "time": 149.86933660507202,
             "module-size": 1911982,
             "code-size": 275255,
             "target-size": 170880
         },
         "wasm-hybrid": {
-            "time": 120.47153043746948,
-            "module-size": 34078,
-            "code-size": 34032
+            "time": 15290.337896823883,
+            "module-size": 34169,
+            "code-size": 34107
         }
     },
     "pacalc": {
@@ -649,20 +669,25 @@
             "code-size": 238902
         },
         "wasm-reduce": {
-            "time": 8195.857340097427,
-            "module-size": 19917,
-            "code-size": 18412
+            "time": 1014.0946445465088,
+            "module-size": 575,
+            "code-size": 525
         },
         "wasm-slice": {
-            "time": 40.27271866798401,
-            "module-size": 92785,
+            "time": 31.373513221740723,
+            "module-size": 94974,
             "code-size": 34808,
             "target-size": 2136
         },
         "wasm-hybrid": {
-            "time": 86400.00307536125,
-            "module-size": 1872,
-            "code-size": 1822
+            "time": 23287.306507110596,
+            "module-size": 246,
+            "code-size": 196
+        },
+        "wasm-shrink": {
+            "time": 615.7495205402374,
+            "module-size": 54501,
+            "code-size": 42629
         }
     },
     "bullet": {
@@ -675,9 +700,25 @@
             "code-size": 536115
         },
         "wasm-reduce": {
-            "time": 86400.00287055969,
-            "module-size": 376869,
-            "code-size": 363523
+            "time": 86400.00311684608,
+            "module-size": 45260,
+            "code-size": 36263
+        },
+        "wasm-slice": {
+            "time": 36135.31406068802,
+            "module-size": 237033,
+            "code-size": 14724,
+            "target-size": 297
+        },
+        "wasm-hybrid": {
+            "time": 37168.26954627037,
+            "module-size": 105,
+            "code-size": 53
+        },
+        "wasm-shrink": {
+            "time": 86400.0028078556,
+            "module-size": 349068,
+            "code-size": 335796
         }
     },
     "sandspiel": {
@@ -690,20 +731,25 @@
             "code-size": 919085
         },
         "wasm-reduce": {
-            "time": 86400.00384640694,
-            "module-size": 4312,
-            "code-size": 4267
+            "time": 84626.88336229324,
+            "module-size": 79,
+            "code-size": 35
         },
         "wasm-slice": {
-            "time": 1199.6576952934265,
-            "module-size": 5922,
+            "time": 1828.7338705062866,
+            "module-size": 6059,
             "code-size": 1202,
             "target-size": 277
         },
         "wasm-hybrid": {
-            "time": 1294.4277935028076,
+            "time": 1782.0295088291168,
             "module-size": 92,
             "code-size": 44
+        },
+        "wasm-shrink": {
+            "time": 2570.414118051529,
+            "module-size": 882458,
+            "code-size": 882345
         }
     },
     "pathfinding": {
@@ -716,20 +762,25 @@
             "code-size": 180026
         },
         "wasm-reduce": {
-            "time": 12057.170331716537,
-            "module-size": 3908,
-            "code-size": 1023
+            "time": 3627.1450023651123,
+            "module-size": 199,
+            "code-size": 74
         },
         "wasm-slice": {
-            "time": 1541.379581451416,
-            "module-size": 69029,
+            "time": 1505.2248828411102,
+            "module-size": 69345,
             "code-size": 56136,
             "target-size": 209
         },
         "wasm-hybrid": {
-            "time": 2175.611538887024,
-            "module-size": 107,
-            "code-size": 58
+            "time": 1706.8123543262482,
+            "module-size": 101,
+            "code-size": 52
+        },
+        "wasm-shrink": {
+            "time": 3721.7623720169067,
+            "module-size": 21949,
+            "code-size": 19020
         }
     },
     "parquet": {
@@ -741,21 +792,26 @@
             "module-size": 3136920,
             "code-size": 1731592
         },
+        "wasm-shrink": {
+            "time": 86400.00823926926,
+            "module-size": 443598,
+            "code-size": 440543
+        },
         "wasm-reduce": {
-            "time": 346.6841731071472,
+            "time": 216.00335359573364,
             "module-size": 44,
             "code-size": 5
         },
         "wasm-slice": {
-            "time": 14.12299656867981,
+            "time": 8.324711799621582,
             "module-size": 1529083,
             "code-size": 16181,
             "target-size": 6
         },
         "wasm-hybrid": {
-            "time": 1925.9685127735138,
-            "module-size": 18146,
-            "code-size": 12798
+            "time": 29.077985048294067,
+            "module-size": 971,
+            "code-size": 5
         }
     },
     "figma-startpage": {
@@ -767,21 +823,26 @@
             "module-size": 1071691,
             "code-size": 882961
         },
+        "wasm-shrink": {
+            "time": 86400.00649762154,
+            "module-size": 161000,
+            "code-size": 157705
+        },
         "wasm-reduce": {
-            "time": 216.4395718574524,
+            "time": 123.11476922035217,
             "module-size": 61,
             "code-size": 5
         },
         "wasm-slice": {
-            "time": 8.6208815574646,
+            "time": 5.434139966964722,
             "module-size": 396618,
             "code-size": 28558,
             "target-size": 10
         },
         "wasm-hybrid": {
-            "time": 2648.6080491542816,
-            "module-size": 28444,
-            "code-size": 21450
+            "time": 26.5349760055542,
+            "module-size": 355,
+            "code-size": 5
         }
     },
     "ffmpeg": {
@@ -793,21 +854,26 @@
             "module-size": 5883253,
             "code-size": 5356751
         },
+        "wasm-shrink": {
+            "time": 86400.00794363022,
+            "module-size": 293177,
+            "code-size": 239282
+        },
         "wasm-reduce": {
-            "time": 1472.3886215686798,
+            "time": 982.9793357849121,
             "module-size": 535,
             "code-size": 479
         },
         "wasm-slice": {
-            "time": 34.218193769454956,
+            "time": 19.715471506118774,
             "module-size": 751472,
             "code-size": 33037,
             "target-size": 6088
         },
         "wasm-hybrid": {
-            "time": 4005.484921693802,
-            "module-size": 3292,
-            "code-size": 1152
+            "time": 135.6099169254303,
+            "module-size": 86,
+            "code-size": 45
         }
     },
     "jqkungfu": {
@@ -819,21 +885,26 @@
             "module-size": 820696,
             "code-size": 487607
         },
+        "wasm-shrink": {
+            "time": 86400.00581550598,
+            "module-size": 15370,
+            "code-size": 15255
+        },
         "wasm-reduce": {
-            "time": 7084.2051429748535,
-            "module-size": 7850,
-            "code-size": 4654
+            "time": 1241.573254108429,
+            "module-size": 14163,
+            "code-size": 13570
         },
         "wasm-slice": {
-            "time": 5.948474884033203,
+            "time": 3.9429430961608887,
             "module-size": 378009,
             "code-size": 25613,
             "target-size": 22234
         },
         "wasm-hybrid": {
-            "time": 5117.803116798401,
-            "module-size": 26983,
-            "code-size": 18431
+            "time": 187.00412845611572,
+            "module-size": 1321,
+            "code-size": 1248
         }
     }
 }
