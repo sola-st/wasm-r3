@@ -25,7 +25,7 @@ PRINT = os.getenv('PRINT', 'False').lower() in ('true', '1', 't')
 
 def wrong_on_target():
     command = f'timeout 10s wizard-6e594e9 -mode=jit {WASM}'
-    # command = f'timeout 10s /home/doehyunbaek/wasm-r3/third_party/wizard-engine/bin/wizeng.x86-64-linux -mode=int {WASM}'
+    # command = f'timeout 10s /home/<anom>/wasm-r3/third_party/wizard-engine/bin/wizeng.x86-64-linux -mode=int {WASM}'
     result = subprocess.run(
         command,
         shell=True,

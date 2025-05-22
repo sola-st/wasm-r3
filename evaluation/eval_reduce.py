@@ -78,7 +78,7 @@ def tool_to_command(tool, test_input, oracle_script):
         return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/binaryen/bin/wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input} 2>&1"
     elif (
         tool == "wasm-shrink"
-    ):  # https://github.com/doehyunbaek/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
+    ):  # https://github.com/<anom>/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
         return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/wasm-tools/target/release/wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":
         # Takes about 3 hours in lenovo
