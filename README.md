@@ -20,5 +20,4 @@ The Repository is structured as follows:
 - `./evaluation`: This directory contains evaluation set and evaluation scripts.
   - `./evaluation/benchmarks`: This directory contains 28 Wasm programs used for the evaluation of RR-Reduce. We also include output of RR-Reduce (suffixed with .sliced.wasm), Hybrid-Reduce (suffixed with .hybrid.wasm), wasm-reduce (suffixed with .reduced.wasm), and wasm-shrink (suffixed with shrunken.wasm).
   - `./evaluation/engines`: This directory contains different versioins of three Wasm engines used for the evaluation.
-  - `./evaluation/logs`: This directory contains experiment logs of the evaluation.
   - `./evaluation/oracle`: This directory contains oracle scripts used for the evaluation.
