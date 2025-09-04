@@ -27,7 +27,7 @@ export default async function runSliceDiceTests(names: string[], options) {
 
 function runSliceDice(replayWasmPath: string, fidx: string) {
   process.stdout.write('    Running slice-dice: ');
-  const command = `/home/<anom>/wasm-r3/crates/target/release/slice_dice ${replayWasmPath} ${fidx} 1`;
+  const command = `slice_dice ${replayWasmPath} ${fidx} 1`;
   const startTime = Date.now();
   execSync(command);
   const endTime = Date.now();
@@ -92,7 +92,7 @@ function getSubsetFidx(replayWasmPath: string, name: string) {
   try {
   } catch (e) {
   }
-  const command = `/home/<anom>/wasm-r3/crates/target/release/slice_dice ${replayWasmPath}`;
+  const command = `slice_dice ${replayWasmPath}`;
   const stdout = execSync(command, { stdio: ['pipe', 'pipe', 'ignore'] });
   const matches = stdout.toString().match(/\d+/g);
   if (matches) {

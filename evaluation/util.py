@@ -131,7 +131,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "6d2b057",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/boa/boa.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/boa/boa.wasm",
         }
     },
     "guiicons": {
@@ -140,7 +140,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "6d2b057",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/guiicons/guiicons.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/guiicons/guiicons.wasm",
         }
     },
     "funky-kart": {
@@ -149,7 +149,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "6d2b057",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/funky-kart/funky-kart.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/funky-kart/funky-kart.wasm",
         }
     },
     "jsc": {
@@ -158,7 +158,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "6d2b057",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/jsc/jsc.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/jsc/jsc.wasm",
         }
     },
     "rfxgen": {
@@ -167,14 +167,14 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "6d2b057",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/rfxgen/rfxgen.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/rfxgen/rfxgen.wasm",
         }
     },
     "rguilayout": {
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm",
             "fixed-by": "6d2b057",
             "wrong-code": True,
         }
@@ -185,7 +185,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "6d2b057",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/rguistyler/rguistyler.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/rguistyler/rguistyler.wasm",
         }
     },
     "riconpacker": {
@@ -194,7 +194,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "6d2b057",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/riconpacker/riconpacker.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/riconpacker/riconpacker.wasm",
         }
     },
     "sqlgui": {
@@ -203,7 +203,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "6d2b057",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/sqlgui/sqlgui.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/sqlgui/sqlgui.wasm",
         }
     },
     "commanderkeen": {
@@ -212,7 +212,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "bc135ad",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/commanderkeen/commanderkeen.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/commanderkeen/commanderkeen.wasm",
         }
     },
     "hydro": {
@@ -221,7 +221,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "708ea77",
             "wrong-code": False,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm",
         }
     },
     "rtexviewer": {
@@ -230,7 +230,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "708ea77",
             "wrong-code": False,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.wasm",
         }
     },
     "mandelbrot": {
@@ -239,7 +239,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "0b43b8",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
         }
     },
     "pacalc": {
@@ -248,7 +248,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "81555ab",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm",
         }
     },
     "bullet": {
@@ -257,7 +257,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "f7aca00",
             "wrong-code": False,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm",
         }
     },
     "sandspiel": {
@@ -266,7 +266,7 @@ start_metrics = {
             "engine": "Wizard",
             "wrong-code": True,
             "fixed-by": "ccf0c56",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm",
         }
     },
     "pathfinding": {
@@ -275,7 +275,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "ccf0c56",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm",
         }
     },
     "parquet": {
@@ -284,7 +284,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "33ec201",
             "wrong-code": False,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm",
         }
     },
     "figma-startpage": {
@@ -293,7 +293,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "33ec201",
             "wrong-code": False,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm",
         }
     },
     "ffmpeg": {
@@ -302,7 +302,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "4e3e221",
             "wrong-code": False,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm",
         }
     },
     "jqkungfu": {
@@ -311,7 +311,7 @@ start_metrics = {
             "engine": "Wizard",
             "fixed-by": "4e3e221",
             "wrong-code": False,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm",
         }
     },
     "wasmedge#3057": {
@@ -320,7 +320,7 @@ start_metrics = {
             "engine": "WasmEdge",
             "fixed-by": "93fd4ae",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
         }
     },
     "wasmedge#3076": {
@@ -329,7 +329,7 @@ start_metrics = {
             "engine": "WasmEdge",
             "fixed-by": "93fd4ae",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
         }
     },
     "wamr#2450": {
@@ -338,7 +338,7 @@ start_metrics = {
             "engine": "WAMR",
             "fixed-by": "e360b7",
             "wrong-code": False,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wamr#2450/wamr#2450.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wamr#2450/wamr#2450.wasm",
         }
     },
     "wasmedge#3019": {
@@ -347,7 +347,7 @@ start_metrics = {
             "engine": "WasmEdge",
             "wrong-code": True,
             "fixed-by": "93fd4ae",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
         }
     },
     "wamr#2789": {
@@ -356,7 +356,7 @@ start_metrics = {
             "engine": "WAMR",
             "wrong-code": False,
             "fixed-by": "718f06",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wamr#2789/wamr#2789.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wamr#2789/wamr#2789.wasm",
         }
     },
     "wamr#2862": {
@@ -365,7 +365,7 @@ start_metrics = {
             "engine": "WAMR",
             "fixed-by": "0ee5ff",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
         }
     },
     "wasmedge#3018": {
@@ -374,7 +374,7 @@ start_metrics = {
             "engine": "WasmEdge",
             "fixed-by": "93fd4ae",
             "wrong-code": True,
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
         }
     }
 }
@@ -487,7 +487,7 @@ assert extract_target_bytes(wamr_2861_objdump_output, [1]) == 327
 
 def get_sizes(path):
     module_size = os.path.getsize(path)
-    objdump_result = sh(f'/home/<anom>/wasm-r3/third_party/wasm-tools/target/release/wasm-tools objdump {path}')
+    objdump_result = sh(f'wasm-tools objdump {path}')
     code_size = extract_code_bytes(objdump_result)
     # TODO: not hardcode target
     target_indices = [1]

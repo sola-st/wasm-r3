@@ -1,0 +1,27 @@
+{
+  "name": "JS + Python + Rust Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "v22.18.0"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12.3"
+    },
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "1.84.0"
+    }
+  },
+  "postCreateCommand": "bash ./.devcontainer/postCreateCommand.sh",
+  "remoteEnv": {
+    "BINARYEN_ROOT": "/workspaces/wasm-r3/third_party/binaryen",
+    "WASMR3_PATH": "/workspaces/wasm-r3",
+    "PATH": "/workspaces/wasm-r3/rr-reduce/:/workspaces/wasm-r3/crates/target/release:/workspaces/wasm-r3/evaluation/engines:/workspaces/wasm-r3/third_party/wasm-tools/target/release/:/workspaces/wasm-r3/third_party/binaryen/bin/:/workspaces/wasm-r3/third_party/wizard-engine/virgil/bin:/workspaces/wasm-r3/third_party/wizard-engine/bin:${containerEnv:PATH}"
+  },
+  "customizations": {
+  },
+  "remoteUser": "vscode"
+}

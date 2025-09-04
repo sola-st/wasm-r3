@@ -3,7 +3,7 @@
         "metadata": {
             "origin": "WASMaker",
             "engine": "WasmEdge",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wasmedge#3018/wasmedge#3018.wasm",
             "module-size": 7540,
             "code-size": 1913,
             "function_count": 12,
@@ -38,7 +38,7 @@
         "metadata": {
             "origin": "WASMaker",
             "engine": "WAMR",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wamr#2789/wamr#2789.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wamr#2789/wamr#2789.wasm",
             "module-size": 24058,
             "code-size": 17604,
             "function_count": 58,
@@ -73,7 +73,7 @@
         "metadata": {
             "origin": "WASMaker",
             "engine": "WAMR",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wamr#2450/wamr#2450.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wamr#2450/wamr#2450.wasm",
             "module-size": 25797,
             "code-size": 24482,
             "function_count": 66,
@@ -108,7 +108,7 @@
         "metadata": {
             "origin": "WASMaker",
             "engine": "WAMR",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wamr#2862/wamr#2862.wasm",
             "module-size": 23078,
             "code-size": 19727,
             "function_count": 73,
@@ -143,7 +143,7 @@
         "metadata": {
             "origin": "WASMaker",
             "engine": "WasmEdge",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wasmedge#3019/wasmedge#3019.wasm",
             "module-size": 24255,
             "code-size": 19098,
             "function_count": 76,
@@ -178,7 +178,7 @@
         "metadata": {
             "origin": "WASMaker",
             "engine": "WasmEdge",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wasmedge#3076/wasmedge#3076.wasm",
             "module-size": 34320,
             "code-size": 31365,
             "function_count": 131,
@@ -213,12 +213,12 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/mandelbrot/mandelbrot.wasm",
             "module-size": 239428,
             "code-size": 64515,
             "function_count": 167,
             "dynamic_function_count": 38,
-            "fixed-by": "0b43b8",
+            "fixed-by": "0b43b85",
             "wrong-code": true
         },
         "wasm-shrink": {
@@ -248,7 +248,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/guiicons/guiicons.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/guiicons/guiicons.wasm",
             "module-size": 376838,
             "code-size": 285840,
             "function_count": 505,
@@ -283,7 +283,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/rguilayout/rguilayout.wasm",
             "module-size": 516369,
             "code-size": 416692,
             "function_count": 510,
@@ -318,7 +318,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/rguistyler/rguistyler.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/rguistyler/rguistyler.wasm",
             "module-size": 558009,
             "code-size": 410845,
             "function_count": 575,
@@ -353,7 +353,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/riconpacker/riconpacker.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/riconpacker/riconpacker.wasm",
             "module-size": 486543,
             "code-size": 398627,
             "function_count": 576,
@@ -388,7 +388,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/rfxgen/rfxgen.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/rfxgen/rfxgen.wasm",
             "module-size": 502035,
             "code-size": 378918,
             "function_count": 587,
@@ -423,7 +423,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/rtexviewer/rtexviewer.wasm",
             "module-size": 382179,
             "code-size": 296617,
             "function_count": 688,
@@ -458,7 +458,7 @@
         "metadata": {
             "origin": "WASMaker",
             "engine": "WasmEdge",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/wasmedge#3057/wasmedge#3057.wasm",
             "module-size": 256185,
             "code-size": 243564,
             "function_count": 1006,
@@ -493,7 +493,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/funky-kart/funky-kart.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/funky-kart/funky-kart.wasm",
             "module-size": 3715092,
             "code-size": 607293,
             "function_count": 1587,
@@ -528,7 +528,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/hydro/hydro.wasm",
             "module-size": 824085,
             "code-size": 719538,
             "function_count": 1592,
@@ -563,7 +563,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/sqlgui/sqlgui.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/sqlgui/sqlgui.wasm",
             "module-size": 700671,
             "code-size": 628046,
             "function_count": 1895,
@@ -598,7 +598,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/commanderkeen/commanderkeen.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/commanderkeen/commanderkeen.wasm",
             "module-size": 4331018,
             "code-size": 3914616,
             "function_count": 1970,
@@ -633,7 +633,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/boa/boa.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/boa/boa.wasm",
             "module-size": 22232839,
             "code-size": 5198069,
             "function_count": 4598,
@@ -668,7 +668,7 @@
         "metadata": {
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/jsc/jsc.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/jsc/jsc.wasm",
             "module-size": 5310908,
             "code-size": 4342199,
             "function_count": 20800,
@@ -704,7 +704,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "fixed-by": "81555ab",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/pacalc/pacalc.wasm",
             "module-size": 287248,
             "code-size": 238902,
             "wrong-code": true
@@ -737,7 +737,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "fixed-by": "f7aca00",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/bullet/bullet.wasm",
             "module-size": 669413,
             "code-size": 536115,
             "wrong-code": false
@@ -770,7 +770,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "fixed-by": "ccf0c56",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/sandspiel/sandspiel.wasm",
             "module-size": 921399,
             "code-size": 919085,
             "wrong-code": true
@@ -803,7 +803,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "fixed-by": "ccf0c56",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/pathfinding/pathfinding.wasm",
             "module-size": 189302,
             "code-size": 180026,
             "wrong-code": true
@@ -836,7 +836,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "fixed-by": "33ec201",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/parquet/parquet.wasm",
             "module-size": 3136920,
             "code-size": 1731592,
             "wrong-code": false
@@ -869,7 +869,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "fixed-by": "33ec201",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/figma-startpage/figma-startpage.wasm",
             "module-size": 1071691,
             "code-size": 882961,
             "wrong-code": false
@@ -902,7 +902,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "fixed-by": "4e3e221",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/ffmpeg/ffmpeg.wasm",
             "module-size": 5883253,
             "code-size": 5356751,
             "wrong-code": false
@@ -935,7 +935,7 @@
             "origin": "Wasm-R3-Bench",
             "engine": "Wizard",
             "fixed-by": "4e3e221",
-            "path": "/home/<anom>/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm",
+            "path": "/workspaces/wasm-r3/evaluation/benchmarks/jqkungfu/jqkungfu.wasm",
             "module-size": 820696,
             "code-size": 487607,
             "wrong-code": false

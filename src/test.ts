@@ -3,7 +3,6 @@ import path, { extname, join } from "path";
 import { createServer, Server } from "http";
 import commandLineArgs from "command-line-args";
 import { execSync } from "child_process";
-import { filter } from "./filter.ts";
 import Benchmark, { Analyser, commonOptions } from "./web.ts";
 import runSliceDiceTests from "./test-slice-dice.ts";
 import { exit } from "process";
@@ -91,9 +90,6 @@ const testOptions = [
     let testNames = await getDirectoryNames(
       path.join(process.cwd(), "tests", options.category)
     );
-    if (filter[options.category]) {
-      testNames = testNames.filter(name => !filter[options.category].includes(name));
-    }
     if (options.testcases !== undefined) {
       testNames = testNames.filter((n) => options.testcases.includes(n));
       testNames = Array.from(new Set([...testNames, ...options.testcases]));

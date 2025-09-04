@@ -13,7 +13,7 @@ TIMEOUT = 600
 
 # The Wasm file is given as the first and only argument to the script.
 if len(sys.argv) != 4:
-    print("Usage: wasm-slice <ORACLE_SCRIPT> <WASM_FILE> <OUTPUT_PATH")
+    print("Usage: wasm-slice <ORACLE_SCRIPT> <WASM_FILE> <OUTPUT_PATH>")
     sys.exit(1)
 
 oracle_script = sys.argv[1]

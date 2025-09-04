@@ -4,12 +4,13 @@ import util
 import logging
 from logging.handlers import RotatingFileHandler
 
-TIMEOUT = 3600 * 24
-WASMR3_PATH = os.getenv("WASMR3_PATH", "~/wasm-r3")
+BINARYEN_ROOT = os.getenv("BINARYEN_ROOT")
+WASMR3_PATH = os.getenv("WASMR3_PATH")
 EVAL_PATH = os.path.join(WASMR3_PATH, 'evaluation')
-MAX_WORKER = int(os.getenv("MAX_WORKER", 1))
-BINARYEN_CORES = int(os.getenv("BINARYEN_CORES", 1))
 
+TIMEOUT = 3600 * 24
+MAX_WORKER = int(os.getenv("MAX_WORKER", 8))
+BINARYEN_CORES = int(os.getenv("BINARYEN_CORES", 4))
 
 # Set up logging to file
 current_date = time.strftime("%y%m%d")
@@ -19,11 +20,18 @@ os.makedirs(log_dir, exist_ok=True)
 
 entry_logger = logging.getLogger('entry_logger')
 entry_logger.setLevel(logging.INFO)
+
 log_file = os.path.join(log_dir, "entry.log")
 file_handler = RotatingFileHandler(log_file, maxBytes=50*1024*1024)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 entry_logger.addHandler(file_handler)
+
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(logging.WARN)
+console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+entry_logger.addHandler(console_handler)
+
 
 def setup_individual_logger(testname, tool):
     individual_log_file = os.path.join(log_dir, f"{testname}-{tool}.log")
@@ -75,19 +83,17 @@ def tool_to_command(tool, test_input, oracle_script):
     if tool == "wasm-reduce":
         test_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.reduced_test.wasm"
         work_path = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.reduced.wasm"
-        return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/binaryen/bin/wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input} 2>&1"
+        return f"timeout {TIMEOUT}s wasm-reduce -to 60 -b $BINARYEN_ROOT/bin '--command=python {oracle_script} {test_path}' -t {test_path} -w {work_path} {test_input} 2>&1"
     elif (
         tool == "wasm-shrink"
-    ):  # https://github.com/<anom>/wasm-tools/commit/5a9e4470f7023e08405d1d1e4e1fac0069680af1
-        return f"timeout {TIMEOUT}s {WASMR3_PATH}/third_party/wasm-tools/target/release/wasm-tools shrink {oracle_script} {test_input}"
+    ):
+        return f"timeout {TIMEOUT}s wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":
-        # Takes about 3 hours in lenovo
         test_output = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.sliced.wasm"
-        return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-slice {oracle_script} {test_input} {test_output}"
+        return f"PRINT=1 timeout {TIMEOUT}s wasm-slice {oracle_script} {test_input} {test_output}"
     elif tool == "wasm-hybrid":
-        # takes full 24 hours
         test_output = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.hybrid.wasm"
-        return f"PRINT=1 timeout {TIMEOUT}s {WASMR3_PATH}/rr-reduce/wasm-hybrid {oracle_script} {test_input} {test_output}"
+        return f"PRINT=1 timeout {TIMEOUT}s wasm-hybrid {oracle_script} {test_input} {test_output}"
     else:
         exit("not supported")
 

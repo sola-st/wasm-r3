@@ -4,7 +4,7 @@ import subprocess
 import argparse
 
 # Configuration (modify these if needed)
-WASM_SLICE_PATH = "/home/<anom>/wasm-r3/rr-reduce/wasm-slice"
+WASM_SLICE_PATH = "wasm-slice"
 DEFAULT_TIMEOUT = "60"
 
 def main():
