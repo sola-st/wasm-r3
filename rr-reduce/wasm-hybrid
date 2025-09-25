@@ -1,110 +1,127 @@
 #!/usr/bin/env python3
-import os, shutil
+
+from pathlib import Path
+import os, shutil, sys
 import subprocess
 import argparse
+
+ROOT = Path(__file__).resolve().parents[1]  # /workspaces/wasm-r3
+sys.path.insert(0, str(ROOT))
+from evaluation import util
 
 # Configuration (modify these if needed)
 WASM_SLICE_PATH = "wasm-slice"
 DEFAULT_TIMEOUT = "60"
 
-def main():
-    parser = argparse.ArgumentParser(description='WASM hybrid reducer combining slice and reduce')
-    parser.add_argument('oracle_script', help='Oracle verification script')
-    parser.add_argument('test_input', help='Input WASM file')
-    parser.add_argument('test_output', help='Output WASM file')
-    args = parser.parse_args()
+parser = argparse.ArgumentParser(description='WASM hybrid reducer combining slice and reduce')
+parser.add_argument('oracle_script', help='Oracle verification script')
+parser.add_argument('test_input', help='Input WASM file')
+parser.add_argument('test_output', help='Output WASM file')
+args = parser.parse_args()
 
-    # Validate environment variables
-    required_env = ['WASMR3_PATH', 'BINARYEN_ROOT']
-    for var in required_env:
-        if not os.environ.get(var):
-            print(f"Error: {var} environment variable not set")
-            return 1
-
-    # Set up paths
-    test_name = os.path.splitext(os.path.basename(args.test_input))[0]
-    benchmark_dir = os.path.join(
-        os.environ['WASMR3_PATH'],
-        'evaluation',
-        'benchmarks',
-        test_name
-    )
-    os.makedirs(benchmark_dir, exist_ok=True)
-
-    # Generate output paths
-    suffix = "hybrid"
-    paths = {
-        'test': os.path.join(benchmark_dir, f"{test_name}.{suffix}_test.wasm"),
-        'stripped': os.path.join(benchmark_dir, f"{test_name}.{suffix}_stripped.wasm"),
-        'sliced': os.path.join(benchmark_dir, f"{test_name}.{suffix}_temp.wasm"),
-        'work': args.test_output
-    }
-
-    # Phase 1: Run wasm-slice
-    slice_cmd = (
-        f'PRINT=1 '
-        f"{WASM_SLICE_PATH} "
-        f"{os.path.abspath(args.oracle_script)} "
-        f"{os.path.abspath(args.test_input)} "
-        f"{os.path.abspath(paths['sliced'])}"
-    )
-
-    print("\n=== Running wasm-slice ===")
-    print(f"command:\n{slice_cmd}")
-    slice_result = subprocess.run(
-        slice_cmd,
-        # cwd=benchmark_dir,
-        shell=True,
-        capture_output=True,
-        text=True,
-        env={**os.environ, "PRINT": "1"},  # Ensure PRINT=1 is set
-    )
-
-    if slice_result.returncode != 0 or not os.path.exists(paths['sliced']):
-        print("Slice phase failed!")
-        print("STDOUT:", slice_result.stdout)
-        print("STDERR:", slice_result.stderr)
-        return 1
-    else:
-        print("\n=== wasm-slice completed successfully ===")
-        input_size = os.path.getsize(args.test_input)
-        sliced_size = os.path.getsize(paths['sliced'])
-        print("Size before slice:", input_size)
-        print("Size after slice:", sliced_size)
-
-    # Phase 1-2: Strip names
-    # Strip debug information from the original WebAssembly file
-    strip_command = f"wasm-tools strip --all -o {paths['stripped']} {paths['sliced']}"
-    subprocess.run(strip_command, shell=True, check=True)
-    shutil.copy(paths['stripped'], paths['sliced'])
+oracle_script = args.oracle_script
+test_input = args.test_input
+test_name = os.path.splitext(os.path.basename(test_input))[0]
+test_output = args.test_output
+print(f'Input Oracle Path: {oracle_script}')
+print(f'Input Wasm Path: {test_input}')
+input_module_size, input_code_size, input_target_size = util.get_sizes(test_input)
+print(f'Input Wasm Code Size: {input_code_size:,} bytes')
 
 
-    # Phase 2: Run wasm-reduce
-    reduce_cmd = (
-        f"wasm-reduce -to {DEFAULT_TIMEOUT} "
-        f"-b {os.environ['BINARYEN_ROOT']}/bin "
-        f"--command 'python {os.path.abspath(args.oracle_script)} {paths['test']}' "
-        f"-t {paths['test']} -w {paths['work']} {paths['sliced']} 2>&1"
-    )
-    print("\n=== Running wasm-reduce ===")
-    print(f"command:\n{reduce_cmd}")
+# Validate environment variables
+required_env = ['WASMR3_PATH', 'BINARYEN_ROOT']
+for var in required_env:
+    if not os.environ.get(var):
+        print(f"Error: {var} environment variable not set")
+        sys.exit(1)
 
-    # Then run with shell=True:
-    reduce_result = subprocess.run(
-        reduce_cmd,
-        cwd=benchmark_dir,
-        shell=True,
-        capture_output=True,
-        text=True,
-        env={k: v for k, v in os.environ.items() if k != "PRINT"}
-    )
+# Set up paths
+test_name = os.path.splitext(os.path.basename(test_input))[0]
+benchmark_dir = os.path.join(
+    os.environ['WASMR3_PATH'],
+    'evaluation',
+    'benchmarks',
+    test_name
+)
+os.makedirs(benchmark_dir, exist_ok=True)
 
-    print("Reduction result:", "SUCCESS" if reduce_result.returncode == 0 else "FAILED")
-    print("STDOUT:", reduce_result.stdout)
-    print("STDERR:", reduce_result.stderr)
+# Generate output paths
+suffix = "hybrid"
+paths = {
+    'test': os.path.join(benchmark_dir, f"{test_name}.{suffix}_test.wasm"),
+    'stripped': os.path.join(benchmark_dir, f"{test_name}.{suffix}_stripped.wasm"),
+    'sliced': os.path.join(benchmark_dir, f"{test_name}.{suffix}_temp.wasm"),
+    'work': test_output
+}
 
-    return reduce_result.returncode
+# Phase 1: Run wasm-slice
+slice_cmd = (
+    f'PRINT=1 '
+    f"{WASM_SLICE_PATH} "
+    f"{os.path.abspath(oracle_script)} "
+    f"{os.path.abspath(test_input)} "
+    f"{os.path.abspath(paths['sliced'])}"
+)
 
-if __name__ == "__main__":
-    import sys
-    sys.exit(main())
+print("============================ Running wasm-slice (RR-Reduce) ============================")
+# print(f"command:\n{slice_cmd}")
+slice_result = subprocess.run(
+    slice_cmd,
+    # cwd=benchmark_dir,
+    shell=True,
+    capture_output=True,
+    text=True,
+    env={**os.environ, "PRINT": "1"},  # Ensure PRINT=1 is set
+)
+
+if slice_result.returncode != 0 or not os.path.exists(paths['sliced']):
+    print("Slice phase failed!")
+    print("STDOUT:", slice_result.stdout)
+    print("STDERR:", slice_result.stderr)
+    sys.exit(1)
+
+# Phase 1-2: Strip names
+# Strip debug information from the original WebAssembly file
+strip_command = f"wasm-tools strip --all -o {paths['stripped']} {paths['sliced']}"
+subprocess.run(strip_command, shell=True, check=True)
+shutil.copy(paths['stripped'], paths['sliced'])
+
+
+# Phase 2: Run wasm-reduce
+reduce_cmd = (
+    f"wasm-reduce -to {DEFAULT_TIMEOUT} "
+    f"-b {os.environ['BINARYEN_ROOT']}/bin "
+    f"--command 'python {os.path.abspath(args.oracle_script)} {paths['test']}' "
+    f"-t {paths['test']} -w {paths['work']} {paths['sliced']} 2>&1"
+)
+print("============================ Running wasm-reduce ============================")
+
+# Then run with shell=True:
+reduce_result = subprocess.run(
+    reduce_cmd,
+    cwd=benchmark_dir,
+    shell=True,
+    capture_output=True,
+    text=True,
+    env={k: v for k, v in os.environ.items() if k != "PRINT"}
+)
+
+wasm_reduce_output_path = os.path.join(
+    os.environ['WASMR3_PATH'],
+    'evaluation',
+    'benchmarks',
+    test_name,
+    test_output
+)
+
+shutil.copy(
+    wasm_reduce_output_path,
+    test_output,
+)
+test_output = paths['work']
+module_size, code_size, target_size = util.get_sizes(test_output)
+print(f'Reduced Output Wasm Path: {test_output}')
+print(f"Reduced Output Wasm Code Size: {code_size:,} bytes ({code_size / input_code_size * 100:.2f}% of input)")
+sys.exit(0)
+sys.exit(reduce_result.returncode)

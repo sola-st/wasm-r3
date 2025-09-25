@@ -8,7 +8,7 @@ BINARYEN_ROOT = os.getenv("BINARYEN_ROOT")
 WASMR3_PATH = os.getenv("WASMR3_PATH")
 EVAL_PATH = os.path.join(WASMR3_PATH, 'evaluation')
 
-TIMEOUT = 3600 * 24
+TIMEOUT = int(os.getenv("TIMEOUT", 3600 * 24))
 MAX_WORKER = int(os.getenv("MAX_WORKER", 8))
 BINARYEN_CORES = int(os.getenv("BINARYEN_CORES", 4))
 
@@ -28,7 +28,7 @@ file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(mes
 entry_logger.addHandler(file_handler)
 
 console_handler = logging.StreamHandler(sys.stdout)
-console_handler.setLevel(logging.WARN)
+console_handler.setLevel(logging.INFO)
 console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 entry_logger.addHandler(console_handler)
 
@@ -53,13 +53,13 @@ if "BINARYEN_ROOT" not in os.environ:
 
 valid_tests = util.start_metrics.keys()
 valid_tools = util.tool_to_suffix.keys()
-if len(sys.argv) < 3 or sys.argv[1] not in list(valid_tests) + ["all"] or sys.argv[2] not in list(valid_tools) + ["all"]:
-    entry_logger.error("Usage: python eval_reduce [<test>|all] [<tool>|all]")
+if len(sys.argv) < 3 or sys.argv[1] not in list(valid_tools) + ["all"] or sys.argv[2] not in list(valid_tests) + ["all"]:
+    entry_logger.error("Usage: python eval_reduce [<tool>|all] [<test>|all]")
     sys.exit(1)
 
 metrics = util.load_metrics(f'{EVAL_PATH}/metrics.json')
-test_choice = sys.argv[1]
-tool_choice = sys.argv[2]
+tool_choice = sys.argv[1]
+test_choice = sys.argv[2]
 if test_choice == "all":
     prioritize = ['bullet', 'commanderkeen', 'hydro', 'rtexviewer', 'sandspiel', 'wamr#2450','wamr#2789', 'wamr#2862', 'wasmedge#3018', 'wasmedge#3019', 'wasmedge#3057', 'wasmedge#3076']
     testset =  prioritize + [test for test in valid_tests if test not in prioritize]
@@ -71,12 +71,14 @@ if tool_choice == "all":
 else:
     toolset = [tool_choice]
 
+entry_logger.info(f"Starting experiment... you can also check {log_file} for this log")
 entry_logger.info(f"MAX_WORKER: {MAX_WORKER}")
 entry_logger.info(f"BINARYEN_CORES: {BINARYEN_CORES}")
-entry_logger.info(f"len(testset): {len(testset)}")
-entry_logger.info(f'testset: {testset}')
+entry_logger.info(f"TIMEOUT: {TIMEOUT}")
 entry_logger.info(f"len(toolset): {len(toolset)}")
 entry_logger.info(f'toolset: {toolset}')
+entry_logger.info(f"len(testset): {len(testset)}")
+entry_logger.info(f'testset: {testset}')
 
 def tool_to_command(tool, test_input, oracle_script):
     test_name = os.path.splitext(os.path.basename(test_input))[0]
@@ -90,10 +92,10 @@ def tool_to_command(tool, test_input, oracle_script):
         return f"timeout {TIMEOUT}s wasm-tools shrink {oracle_script} {test_input}"
     elif tool == "wasm-slice":
         test_output = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.sliced.wasm"
-        return f"PRINT=1 timeout {TIMEOUT}s wasm-slice {oracle_script} {test_input} {test_output}"
+        return f"PRINT=1 BINARYEN_CORES=1  timeout {TIMEOUT}s wasm-slice {oracle_script} {test_input} {test_output}"
     elif tool == "wasm-hybrid":
         test_output = f"{EVAL_PATH}/benchmarks/{test_name}/{test_name}.hybrid.wasm"
-        return f"PRINT=1 timeout {TIMEOUT}s wasm-hybrid {oracle_script} {test_input} {test_output}"
+        return f"PRINT=1 BINARYEN_CORES={BINARYEN_CORES} timeout {TIMEOUT}s wasm-hybrid {oracle_script} {test_input} {test_output}"
     else:
         exit("not supported")
 
@@ -106,7 +108,7 @@ def run_reduction_tool(testname, tool):
         reduced_path = f"{EVAL_PATH}/benchmarks/{testname}/{testname}.{util.tool_to_suffix[tool]}.wasm"
 
         command = tool_to_command(tool, input_path, oracle_path)
-        entry_logger.info(f"Starting reduction for {testname} / {tool}")
+        entry_logger.info(f"Starting reduction for {tool} / {testname}, logging to {log_dir}/{testname}-{tool}.log")
         individual_logger.info('command:\n' + command)
         start_time = time.time()
         process = subprocess.Popen(
@@ -129,12 +131,15 @@ def run_reduction_tool(testname, tool):
         start_module_size = metrics[testname]['metadata']['module-size']
 
         oracle_command = f"python {oracle_path} {reduced_path}"
-        result = subprocess.run(oracle_command, shell=True, check=True)
+        result = subprocess.run(oracle_command, shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         if not (result.returncode == 0 and start_module_size > module_size):
-            entry_logger.warning(f"Failed to reduce {testname} / {tool}")
+            entry_logger.warning(f"Failed to reduce {tool} / {testname}")
         else:
-            entry_logger.info(f"Finished reduction for {testname} / {tool}: Elapsed time: {elapsed} seconds, Module size: {module_size}, Code size: {code_size}, Target size: {target_size}")
+            if tool == "wasm-slice":
+                entry_logger.info(f"Finished reduction for {tool} / {testname}: Elapsed time: {elapsed} seconds, Code size: {code_size:,}, Target size: {target_size:,}")
+            else:
+                entry_logger.info(f"Finished reduction for {tool} / {testname}: Elapsed time: {elapsed} seconds, Code size: {code_size:,}")
         return [testname, tool, elapsed, module_size, code_size, target_size]
     except Exception as e:
         entry_logger.error(f"Failed to run {testname} - {tool}\nError: {str(e)}")

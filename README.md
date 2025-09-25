@@ -26,17 +26,113 @@ We provide three ways to install our artifact.
 
 ### Local Install
 
-We officially support only X86-64 based Ubuntu 24.04 machines. Consult [.devcontainer](.devcontainer/) directory to find the relevant scripts.
+We officially support only X86-64 based Ubuntu 24.04 machines for local installation.Consult [.devcontainer](.devcontainer/) directory to find the relevant scripts.
 
 ## Kick-the-tire
 
 We suppose that you have installed the artifact with one of the three methods described above.
 
+### Using wasm-slice (RR-Reduce) tool.
+
+RR-Reduce in the paper is named as [wasm-slice](/rr-reduce/wasm-slice) in the artifact.
+
+Here is the usage:
+
+```console
+vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ wasm-slice
+usage: wasm-slice [-h] oracle_script test_input test_output
+wasm-slice: error: the following arguments are required: oracle_script, test_input, test_output
+```
+
+For example, you can run the following command:
+
+```console
+vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ wasm-slice evaluation/oracle/fixed-by-4e3e221.py evaluation/benchmarks/ffmpeg/ffmpeg.wasm reproduced.ffmpeg.sliced.wasm
+Input Oracle Path: evaluation/oracle/fixed-by-4e3e221.py
+Input Wasm Path: evaluation/benchmarks/ffmpeg/ffmpeg.wasm
+Input Wasm Code Size: 5,356,751 bytes
+============================ Identifying candidate target functions ============================
+Heuristic function indices: [186]
+Dynamic function indices (except heuristic): [0, 253, 473, 1966, 5673, 5715, 5721]
+All function indices (except heuristic and dynamic): [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ...], 5712 remaining
+============================ For each target Function ============================
+Running ffmpeg - 186: Interesting!
+Target function index: 186, identified in heuristic set
+============================ Reduced Output ============================
+Reduced Output Wasm Path: reproduced.ffmpeg.sliced.wasm
+Reduced Output Wasm Code Size: 33,037 bytes (0.62% of input), Target Size: 6,088 bytes (0.11% of input)
+```
+
+You can see that given the oracle script [evaluation/oracle/fixed-by-4e3e221.py](evaluation/oracle/fixed-by-4e3e221.py) and input Wasm [evaluation/benchmarks/ffmpeg/ffmpeg.wasm](evaluation/benchmarks/ffmpeg/ffmpeg.wasm) with size 5,356,751 bytes, RR-Reduce was able to reduce the code size to 0.62% of input in terms of code size (0.11% of input in terms of target size).
+
+### Using Hybrid-Reduce (wasm-hybrid) tool.
+
+Hybrid-Reduce in the paper is named as [wasm-hybrid](/rr-reduce/wasm-hybrid) in the artifact.
+
+Here is the usage:
+
+```console
+vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ wasm-hybrid
+usage: wasm-hybrid [-h] oracle_script test_input test_output
+wasm-hybrid: error: the following arguments are required: oracle_script, test_input, test_output
+```
+
+For example, you can run the following command:
+
+```console
+vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ wasm-hybrid evaluation/oracle/fixed-by-4e3e221.py evaluation/benchmarks/ffmpeg/ffmpeg.wasm reproduced.ffmpeg.hybrid.wasm
+Input Oracle Path: evaluation/oracle/fixed-by-4e3e221.py
+Input Wasm Path: evaluation/benchmarks/ffmpeg/ffmpeg.wasm
+Input Wasm Code Size: 5,356,751 bytes
+============================ Running wasm-slice (RR-Reduce) ============================
+============================ Running wasm-reduce ============================
+Reduced Output Wasm Path: reproduced.ffmpeg.hybrid.wasm
+Reduced Output Wasm Code Size: 45 bytes (0.00% of input)
+```
+
+You can see that given the oracle script [evaluation/oracle/fixed-by-4e3e221.py](evaluation/oracle/fixed-by-4e3e221.py) and input Wasm [evaluation/benchmarks/ffmpeg/ffmpeg.wasm](evaluation/benchmarks/ffmpeg/ffmpeg.wasm) with size 5,356,751 bytes, RR-Reduce was able to reduce the code size to less than 0.01% of input in terms of code size.
+
+Note that time measurement might differ depending on your hardware setup.
+
+### Running the mini-experiments.
+
+All experiments in the paper can be reproduced by running [evaluation/eval_reduce.py](evaluation/eval_reduce.py) script.
+Please refer to the next section for details.
+To quickly check its working, run the following command:
+
+```console
+vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ TIMEOUT=3600 python evaluation/eval_reduce.py all ffmpeg
+2025-09-25 12:43:47,316 - INFO - Starting experiment... you can also check /workspaces/wasm-r3/evaluation/logs/250925/124347/entry.log for logs
+2025-09-25 12:43:47,316 - INFO - MAX_WORKER: 8
+2025-09-25 12:43:47,316 - INFO - BINARYEN_CORES: 4
+2025-09-25 12:43:47,316 - INFO - TIMEOUT: 3600
+2025-09-25 12:43:47,316 - INFO - len(toolset): 4
+2025-09-25 12:43:47,316 - INFO - toolset: dict_keys(['wasm-slice', 'wasm-hybrid', 'wasm-reduce', 'wasm-shrink'])
+2025-09-25 12:43:47,316 - INFO - len(testset): 1
+2025-09-25 12:43:47,316 - INFO - testset: ['ffmpeg']
+2025-09-25 12:43:47,318 - INFO - Starting reduction for wasm-slice / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/124347/ffmpeg-wasm-slice.log
+2025-09-25 12:43:47,318 - INFO - Starting reduction for wasm-hybrid / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/124347/ffmpeg-wasm-hybrid.log
+2025-09-25 12:43:47,319 - INFO - Starting reduction for wasm-reduce / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/124347/ffmpeg-wasm-reduce.log
+2025-09-25 12:43:47,320 - INFO - Starting reduction for wasm-shrink / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/124347/ffmpeg-wasm-shrink.log
+2025-09-25 12:44:29,824 - INFO - Finished reduction for ffmpeg / wasm-slice: Elapsed time: 42.40573763847351 seconds, Module size: 751,472, Code size: 33,037, Target size: 6,088
+2025-09-25 12:49:14,377 - INFO - Finished reduction for ffmpeg / wasm-hybrid: Elapsed time: 327.01451659202576 seconds, Module size: 86, Code size: 45
+2025-09-25 13:34:50,217 - INFO - Finished reduction for ffmpeg / wasm-reduce: Elapsed time: 3062.852060317993 seconds, Module size: 535, Code size: 479
+2025-09-25 13:43:48,822 - INFO - Finished reduction for ffmpeg / wasm-shrink: Elapsed time: 3600.007619857788 seconds, Module size: 5,339,904, Code size: 4,898,069
+2025-09-25 13:43:48,825 - INFO - Took 3601.5086052417755s (1.0004190570116043h)
+```
+
+This runs all four tools (wasm-shrink, wasm-reduce, wasm-slice=RR-Reduce, wasm-hybrid=Hybrid-Reduce) on the ffmpeg benchmark with a timeout of 1 hour (3600 seconds) for each tool.
+For wasm-slice, wasm-hybrid, and wasm-reduce, the tools finished within the timeout and the code size agrees with the [expected output](evaluation/expected_metrics.json#900).
+For wasm-shrink, as it timed out after 1 hour, the output is much larger than the expected ouput.
+For full experiment, please refer to the next section.
+
+NOTE: elapsed time might differ depending on your hardware setup.
+
 # Detailed Description
 
 ## Reproducing the experiments of the paper.
 
-We provide two scripts to reproduce the experiments of the paper.
+We provide one script to reproduce the experiments of the paper and the other script to generate the tables and figures used in the paper.
 
 [evaluation/eval_reduce.py](evaluation/eval_reduce.py) is the main script used for running all the experiments in the paper.
 
@@ -45,8 +141,8 @@ Its usage is as follows: `python eval_reduce [<tool>|all] [<test>|all]`
 For \<tool\>, you can provide one of the four tools listed below:
 - wasm-shrink
 - wasm-reduce
-- wasm-slice (Correspondds to RR-Reduce in the paper.)
-- wasm-hybrid (Corresponds to Hybrid-Reduce in the paper.)
+- wasm-slice (Correspondds to RR-Reduce in the paper)
+- wasm-hybrid (Corresponds to Hybrid-Reduce in the paper)
 
 For \<test\>, you can provide one of the 28 programs listed below:
 - wasmedge#3018   
@@ -84,7 +180,7 @@ Output of the original metric is checked in [evaluation/expected_metrics.json](e
 Output of the individual reduction will be written inside directory [evaluation/benchmarks/\<test>\/]().
 For example, here is what [evaluation/benchmarks/commanderkeen/](evaluation/benchmarks/commanderkeen/). would look like:
 
-```bash
+```console
 vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ ls -l evaluation/benchmarks/commanderkeen/
 total 29436
 -rw-r--r--  1 vscode vscode   363027 Sep  4 21:49 commanderkeen.hybrid_stripped.wasm
@@ -117,28 +213,28 @@ For reference, we provide how long it took to reproduce the experiment with each
 
 NOTE: your result might differ depending on your hardware setup.
 
-```bash
+```console
 vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ python evaluation/eval_reduce.py wasm-shrink all
 2025-09-12 07:30:34,200 - INFO - Took 172802.76957297325s (48.0007693258259h)
 ```
 
-```bash
+```console
 vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ python evaluation/eval_reduce.py wasm-reduce all
 2025-09-08 01:53:27,849 - INFO - Took 161088.80288028717s (44.74688968896866h)
 ```
 
-```bash
+```console
 vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ python evaluation/eval_reduce.py wasm-slice all
 2025-09-04 19:09:01,172 - INFO - Took 18766.46604323387s (5.212907234231631h)
 ```
 
-```bash
+```console
 vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ python evaluation/eval_reduce.py wasm-hybrid all
 2025-09-05 21:53:01,421 - INFO - Took 87603.23522043228s (24.334232005675634h)
 ```
 
 To reproduce the tables and figures used in the paper, you run [evaluation/latexify.py](evaluation/latexify.py).
-```bash
+```console
 vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ python evaluation/latexify.py evaluation/metrics.json
 ```
 The tables and figures will be written to [evaluation/table/](evaluation/table/) and [evaluation/figure/](evaluation/figure/).

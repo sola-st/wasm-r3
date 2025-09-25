@@ -1,5 +1,7 @@
 import subprocess, re, csv, os
 
+os.environ["PRINT"] = "1"          # force PRINT=1 to make heuristic work
+
 def sh(cmd):
     import subprocess
     result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
@@ -59,7 +61,7 @@ def get_heuristic_fidx(test_input, oracle_script) -> list:
     command = f'python {oracle_script} {test_input}'
     try:
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
-        print(result)
+        # print(result)
         return extract_heuristic_fidx(result.stdout)
     except subprocess.CalledProcessError as e:
         print(f"ERROR: {e}")
