@@ -3,9 +3,11 @@ from scipy.stats import gmean
 import json
 import tabulate
 from pathlib import Path
+import sys
 
+metric_path = sys.argv[1] if len(sys.argv) > 1 else 'metrics.json'
 # Load the JSON data
-with open("metrics.json", "r") as f:
+with open(metric_path, "r") as f:
     metrics = json.load(f)
 
 # Prepare the data for tabulation
@@ -47,7 +49,7 @@ with out_path.open("w") as file:
 # %%
 
 # Load the JSON data
-with open("metrics.json", "r") as f:
+with open(metric_path, "r") as f:
     metrics = json.load(f)
 
 # Prepare the data for tabulation
@@ -179,7 +181,7 @@ from scipy.stats import gmean
 import tabulate
 
 # Load the JSON data
-with open("metrics.json", "r") as f:
+with open(metric_path, "r") as f:
     metrics = json.load(f)
 
 # Prepare the data for tabulation
@@ -264,7 +266,7 @@ rcParams.update({
 })
 
 # Load metrics from JSON
-with open("metrics.json") as f:
+with open(metric_path) as f:
     data = json.load(f)
 
 # Group inputs by code size

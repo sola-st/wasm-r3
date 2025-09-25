@@ -1,4 +1,4 @@
-# Execution-Aware Program Reduction for WebAssembly via Record and Replay
+# Execution-Aware Program Reduction for WebAssembly via Record and Replay (ASE 2025)
 
 This repository contains supplementary material for the paper "Execution-Aware Program Reduction for WebAssembly via Record and Replay" (ASE 2025).
 
@@ -26,9 +26,10 @@ We provide three ways to install our artifact.
 
 ### Local Install
 
-We officially support only X86-64 based Ubuntu 24.04 machines for local installation.Consult [.devcontainer](.devcontainer/) directory to find the relevant scripts.
+We officially support only X86-64 based Ubuntu 24.04 machines for local installation.
+Consult [.devcontainer](.devcontainer/) directory to find the relevant scripts.
 
-## Kick-the-tire
+## Kick the Tire
 
 We suppose that you have installed the artifact with one of the three methods described above.
 
@@ -65,7 +66,7 @@ Reduced Output Wasm Code Size: 33,037 bytes (0.62% of input), Target Size: 6,088
 
 You can see that given the oracle script [evaluation/oracle/fixed-by-4e3e221.py](evaluation/oracle/fixed-by-4e3e221.py) and input Wasm [evaluation/benchmarks/ffmpeg/ffmpeg.wasm](evaluation/benchmarks/ffmpeg/ffmpeg.wasm) with size 5,356,751 bytes, RR-Reduce was able to reduce the code size to 0.62% of input in terms of code size (0.11% of input in terms of target size).
 
-### Using Hybrid-Reduce (wasm-hybrid) tool.
+### Using wasm-hybrid (Hybrid-Reduce) tool.
 
 Hybrid-Reduce in the paper is named as [wasm-hybrid](/rr-reduce/wasm-hybrid) in the artifact.
 
@@ -91,8 +92,6 @@ Reduced Output Wasm Code Size: 45 bytes (0.00% of input)
 ```
 
 You can see that given the oracle script [evaluation/oracle/fixed-by-4e3e221.py](evaluation/oracle/fixed-by-4e3e221.py) and input Wasm [evaluation/benchmarks/ffmpeg/ffmpeg.wasm](evaluation/benchmarks/ffmpeg/ffmpeg.wasm) with size 5,356,751 bytes, RR-Reduce was able to reduce the code size to less than 0.01% of input in terms of code size.
-
-Note that time measurement might differ depending on your hardware setup.
 
 ### Running the mini-experiments.
 
@@ -121,8 +120,8 @@ vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ TIMEOUT=3600 python evaluation/eval_
 2025-09-25 15:01:34,582 - INFO - Took 3600.444494009018s (1.0001234705580606h)
 ```
 
-This runs all four tools (wasm-shrink, wasm-reduce, wasm-slice=RR-Reduce, wasm-hybrid=Hybrid-Reduce) on the ffmpeg benchmark with a timeout of 1 hour (3600 seconds) for each tool.
-For wasm-slice, wasm-hybrid, and wasm-reduce, the tools finished within the timeout and the code size agrees with the [expected output](evaluation/expected_metrics.json#900).
+This runs all four tools (wasm-shrink, wasm-reduce, wasm-slice, wasm-hybrid) on [evaluation/benchmarks/ffmpeg/ffmpeg.wasm](evaluation/benchmarks/ffmpeg/ffmpeg.wasm) with a timeout of one hour (3600 seconds) for each tool.
+For wasm-slice, wasm-hybrid, and wasm-reduce, the tools finished within the timeout and the code size agrees with the [expected output](evaluation/expected_metrics.json).
 For wasm-shrink, as it timed out after 1 hour, the output is much larger than the expected ouput.
 For full experiment, please refer to the next section.
 
@@ -175,7 +174,7 @@ For \<test\>, you can provide one of the 28 programs listed below:
 - ffmpeg          
 
 Output of the metric will be written in [evaluation/metrics.json](evaluation/metrics.json) file.
-Output of the original metric is checked in [evaluation/expected_metrics.json](evaluation/expected_metrics.json).
+Output of the original metric is checked in at [evaluation/expected_metrics.json](evaluation/expected_metrics.json).
 
 Output of the individual reduction will be written inside directory [evaluation/benchmarks/\<test>\/]().
 For example, here is what [evaluation/benchmarks/commanderkeen/](evaluation/benchmarks/commanderkeen/). would look like:
@@ -258,3 +257,4 @@ The Repository is structured as follows:
   - `./evaluation/benchmarks`: This directory contains 28 Wasm programs used for the evaluation of RR-Reduce. We also include output of RR-Reduce (suffixed with .sliced.wasm), Hybrid-Reduce (suffixed with .hybrid.wasm), wasm-reduce (suffixed with .reduced.wasm), and wasm-shrink (suffixed with shrunken.wasm).
   - `./evaluation/engines`: This directory contains different versioins of three Wasm engines used for the evaluation.
   - `./evaluation/oracle`: This directory contains oracle scripts used for the evaluation.
+- `./third_party`: This directory contains third party dependencies used in the implementation.
