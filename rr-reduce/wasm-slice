@@ -93,7 +93,7 @@ def run_slicedice(testname, fidx, heuristic_list, dynamic_list, all_list):
         # fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
         print(f"Running {testname} - {fidx}: ", end="")
         command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx} --alternativeTrace --alternativeDownload"
-        print(command)
+        # print(command)
         output = subprocess.run(command, shell=True, text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         # TODO: make this configurable
         replay_wasm_path = f'{os.getenv(

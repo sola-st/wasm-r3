@@ -102,23 +102,23 @@ To quickly check its working, run the following command:
 
 ```console
 vscode ➜ /workspaces/wasm-r3 (ASE_2025) $ TIMEOUT=3600 python evaluation/eval_reduce.py all ffmpeg
-2025-09-25 12:43:47,316 - INFO - Starting experiment... you can also check /workspaces/wasm-r3/evaluation/logs/250925/124347/entry.log for logs
-2025-09-25 12:43:47,316 - INFO - MAX_WORKER: 8
-2025-09-25 12:43:47,316 - INFO - BINARYEN_CORES: 4
-2025-09-25 12:43:47,316 - INFO - TIMEOUT: 3600
-2025-09-25 12:43:47,316 - INFO - len(toolset): 4
-2025-09-25 12:43:47,316 - INFO - toolset: dict_keys(['wasm-slice', 'wasm-hybrid', 'wasm-reduce', 'wasm-shrink'])
-2025-09-25 12:43:47,316 - INFO - len(testset): 1
-2025-09-25 12:43:47,316 - INFO - testset: ['ffmpeg']
-2025-09-25 12:43:47,318 - INFO - Starting reduction for wasm-slice / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/124347/ffmpeg-wasm-slice.log
-2025-09-25 12:43:47,318 - INFO - Starting reduction for wasm-hybrid / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/124347/ffmpeg-wasm-hybrid.log
-2025-09-25 12:43:47,319 - INFO - Starting reduction for wasm-reduce / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/124347/ffmpeg-wasm-reduce.log
-2025-09-25 12:43:47,320 - INFO - Starting reduction for wasm-shrink / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/124347/ffmpeg-wasm-shrink.log
-2025-09-25 12:44:29,824 - INFO - Finished reduction for ffmpeg / wasm-slice: Elapsed time: 42.40573763847351 seconds, Module size: 751,472, Code size: 33,037, Target size: 6,088
-2025-09-25 12:49:14,377 - INFO - Finished reduction for ffmpeg / wasm-hybrid: Elapsed time: 327.01451659202576 seconds, Module size: 86, Code size: 45
-2025-09-25 13:34:50,217 - INFO - Finished reduction for ffmpeg / wasm-reduce: Elapsed time: 3062.852060317993 seconds, Module size: 535, Code size: 479
-2025-09-25 13:43:48,822 - INFO - Finished reduction for ffmpeg / wasm-shrink: Elapsed time: 3600.007619857788 seconds, Module size: 5,339,904, Code size: 4,898,069
-2025-09-25 13:43:48,825 - INFO - Took 3601.5086052417755s (1.0004190570116043h)
+2025-09-25 14:01:34,137 - INFO - Starting experiment... you can also check /workspaces/wasm-r3/evaluation/logs/250925/140134/entry.log for this log
+2025-09-25 14:01:34,137 - INFO - MAX_WORKER: 8
+2025-09-25 14:01:34,137 - INFO - BINARYEN_CORES: 4
+2025-09-25 14:01:34,137 - INFO - TIMEOUT: 3600
+2025-09-25 14:01:34,137 - INFO - len(toolset): 4
+2025-09-25 14:01:34,137 - INFO - toolset: dict_keys(['wasm-slice', 'wasm-hybrid', 'wasm-reduce', 'wasm-shrink'])
+2025-09-25 14:01:34,137 - INFO - len(testset): 1
+2025-09-25 14:01:34,137 - INFO - testset: ['ffmpeg']
+2025-09-25 14:01:34,139 - INFO - Starting reduction for wasm-slice / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/140134/ffmpeg-wasm-slice.log
+2025-09-25 14:01:34,140 - INFO - Starting reduction for wasm-hybrid / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/140134/ffmpeg-wasm-hybrid.log
+2025-09-25 14:01:34,140 - INFO - Starting reduction for wasm-shrink / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/140134/ffmpeg-wasm-shrink.log
+2025-09-25 14:01:34,140 - INFO - Starting reduction for wasm-reduce / ffmpeg, logging to /workspaces/wasm-r3/evaluation/logs/250925/140134/ffmpeg-wasm-reduce.log
+2025-09-25 14:01:49,402 - INFO - Finished reduction for wasm-slice / ffmpeg: Elapsed time: 15.21385669708252 seconds, Code size: 33,037, Target size: 6,088
+2025-09-25 14:03:57,114 - INFO - Finished reduction for wasm-hybrid / ffmpeg: Elapsed time: 142.95170974731445 seconds, Code size: 45
+2025-09-25 14:15:32,657 - INFO - Finished reduction for wasm-reduce / ffmpeg: Elapsed time: 838.4933569431305 seconds, Code size: 479
+2025-09-25 15:01:34,580 - INFO - Finished reduction for wasm-shrink / ffmpeg: Elapsed time: 3600.004099369049 seconds, Code size: 4,039,110
+2025-09-25 15:01:34,582 - INFO - Took 3600.444494009018s (1.0001234705580606h)
 ```
 
 This runs all four tools (wasm-shrink, wasm-reduce, wasm-slice=RR-Reduce, wasm-hybrid=Hybrid-Reduce) on the ffmpeg benchmark with a timeout of 1 hour (3600 seconds) for each tool.
