@@ -7,22 +7,21 @@ This repository contains supplementary material for the paper "Execution-Aware P
 ## Requirements
 
 - Any OS that supports docker can run this artifact.
-- To reproduce the effectiveness and efficiency number of the paper, you might  need a hardware matching the performance of the machine used for the original experiment (Intel Core i9-13900k CPU with 5600Mhz 192GB of DRAM)
+- To reproduce the effectiveness and efficiency number of the paper, you might need a hardware matching the performance of the machine used for the original experiment (Intel Core i9-13900k CPU with 5600Mhz 192GB of DRAM)
 
 ## Installation
 
 We provide three ways to install our artifact.
+
+### Docker (Recommended)
+
+- Run the image: `docker run -it doehyunbaek1/rr-reduce:ase_2025`
 
 ### Visual Studio Code Dev Container (Recommended)
 
 - Install [Visual Studio Code](https://code.visualstudio.com/download) and its [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 - Open the repository in Visual Studio Code: `code .`.
 - Build and open the project with Visual Studio Code Command: `Dev Containers: Rebuild and Reopen in Container`.
-
-### Docker (Recommended)
-
-- Pull the image: `docker pull doehyunbaek1/rr-reduce:final`
-- Run the image: `docker run -it -u vscode --workdir /workspaces/wasm-r3   --entrypoint /usr/bin/bash   -e BINARYEN_ROOT=/workspaces/wasm-r3/third_party/binaryen   -e WASMR3_PATH=/workspaces/wasm-r3   -e PATH=/workspaces/wasm-r3/rr-reduce/:/workspaces/wasm-r3/crates/target/release:/workspaces/wasm-r3/evaluation/engines:/workspaces/wasm-r3/third_party/wasm-tools/target/release/:/workspaces/wasm-r3/third_party/binaryen/bin/:/workspaces/wasm-r3/third_party/wizard-engine/virgil/bin:/workspaces/wasm-r3/third_party/wizard-engine/bin:$PATH   doehyunbaek1/rr-reduce:final`
 
 ### Local Install
 
