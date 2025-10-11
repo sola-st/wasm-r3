@@ -1,18 +1,14 @@
-# Wasm-R3: Record-Reduce-Replay for Realistic and Standalone  WebAssembly Benchmarks
+# Wasm-R3: Record and Replay for WebAssembly
 
-Wasm-R3 is a record and replay framework that enables generation of standalone WebAssembly Benchmarks.
+This repository contains latest code for Wasm-R3, a record and replay technique for WebAssembly.
 
-## Building the tool
+For the artifacts of the exact version used for the evaluation of the papers, please refer to the [Artifacts](#artifacts) section.
 
-We recommend you consult the [wasm-r3.yml](.github/workflows/wasm-r3.yml) workflow file to see the most up-to-date way to build and run the tool.
+## Building the toolchain
 
-Pre-built docker images are also provided at [doehyunbaek1/wasm-r3](https://hub.docker.com/repository/docker/doehyunbaek1/wasm-r3/), but they are not always updated following the main branch.
+We recommend you use [Visual Studio Code Dev Container](.devcontainer) to build Wasm-R3.
 
-As one of the authors regularly run Wasm-R3 on his Arm Mac machine, we are confident Wasm-R3 works well across Linux and Mac.
-
-If you have any problems, please post Github Issue.
-
-## Running
+## Running the toolchain
 ```
 npm start <url>
 ```
@@ -20,7 +16,7 @@ npm start <url>
 
 The command will start the recording. To stop the recording type any key into the terminal and press enter. The benchmark will be saved to disk.
 
-## Testing 
+## Testing the toolchain
 ```
 npm test <category>
 ```
@@ -31,25 +27,67 @@ There are three categories of tests:
 
 The faithfulness of Wasm-R3 is tested by comparing the trace generated during record with the trace generated during replay. The results of the testcases will be generated in the corresponding folders. Interesting files are the `report.txt` which contains information why a testcase failed. Also the trace for the record and the replay phase gets saved in `.r3` files.
 
+## Benchmarks
+
+There are two benchmarks related to the Wasm-R3 toolchain.
+These benchmarks are maintained in the separate repository [wasm-benchmarks](https://github.com/doehyunbaek/wasm-benchmarks).
+
+To access wasm-r3-bench, introduced in the OOPSLA 2024 paper, please refer to the following directory:
+- [wasm-r3-bench](https://github.com/doehyunbaek/wasm-benchmarks/tree/main/wasm-r3-bench) 
+
+To access wasm-reduce-bench, introduced in the ASE 2025 paper, please refer to the following directory:
+- [wasm-reduce-bench](https://github.com/doehyunbaek/wasm-benchmarks/tree/main/wasm-reduce-bench)
+
+## Artifacts
+
+There are two peer-reviwed papers and two Master's thesis related to the Wasm-R3 toolchain.
+To access the artifacts of the exact version used for the evaluation of each paper or thesis, please refer to the following branch:
+- [Wasm-R3: Record-Reduce-Replay for Realistic and Standalone WebAssembly Benchmarks (OOPSLA 2024)](https://dl.acm.org/doi/pdf/10.1145/3689787)
+  - [OOPSLA_2024](https://github.com/sola-st/wasm-r3/tree/OOPSLA_2024)
+- [Execution-Aware Program Reduction for WebAssembly via Record and Replay (ASE 2025)](https://www.arxiv.org/pdf/2506.07834)
+  - [ASE_2025](https://github.com/sola-st/wasm-r3/tree/ASE_2025)
+- [Wasm-R3: Creating Executable Benchmarks of WebAssembly Binaries via Record-Reduce-Replay (University of Stuttgart MS, 2024)](https://elib.uni-stuttgart.de/server/api/core/bitstreams/10b3c7e0-4947-4d23-b374-3c6354e446f3/content)
+  - [JAKOB_MASTER](https://github.com/sola-st/wasm-r3/tree/JAKOB_MASTER)
+- [Automated Construction and Reduction of WebAssembly Benchmarks (KAIST MS, 2025)](https://library.kaist.ac.kr/search/detail/view.do?bibCtrlNo=1122301&flag=dissertation)
+  - [DOEHYUN_MASTER](https://github.com/sola-st/wasm-r3/tree/DOEHYUN_MASTER)
+
 ## Resources
 
-A 15-mintue [talk](https://youtu.be/2VCQBSy9sOg?si=rfRXaP6OT9iPT3Mi) given by one of the authors at Wasm Research Day 2024 is publicly available.
-You can find a brief discussion of the motivation, approach, and evaluation of Wasm-R3.
+For Wasm-R3, a 15-minute [talk](https://youtu.be/2VCQBSy9sOg?si=RSgkfvCCNWQCZnf9) at Wasm Research Day 2024 is publicly available.
+
+For RR-Reduce, a 15-minute [talk rehearsal](https://youtu.be/ksClQmaOyBI?si=VDoHLmMd3R97y7jx) prepared for Wasm Research Day 2025 is publicly available.
 
 A 10-minute [demo](https://youtu.be/2VCQBSy9sOg?si=loWLRALA5G9-wiEW&t=867) performed by one of the authors at Wasm Research Day 2024 is publicly available.
-
 You can find a usage walkthorugh of Wasm-R3 and a sneak peak into its inner workings.
 
 ## Citation
 
-Please refer to Wasm-R3 via our OOPSLA'24 paper:
+To refer to Wasm-R3, please cite the following paper:
 
 ```
-@inproceedings{Baek2024Wasm-R3,
-  title = {Wasm-R3: Record-Reduce-Replay for Realistic and Standalone WebAssembly Benchmarks},
-  author = {Baek, Doehyun and Getz, Jakob and Sim, Yusung and Lehmann, Daniel and Titzer, Ben and Ryu, Sukyoung and Pradel, Michael},
-  year = {2024},
-  booktitle = {Proceedings of the ACM on Programming Languages: Object-Oriented Programming, Systems, Languages \& Applications},
-  series = {OOPSLA '24},
+@article{Baek2024Wasm-R3,
+  author       = {Doehyun Baek and Jakob Getz and Yusung Sim and Daniel Lehmann and Ben L. Titzer and Sukyoung Ryu and Michael Pradel},
+  title        = {Wasm-R3: Record-Reduce-Replay for Realistic and Standalone WebAssembly Benchmarks},
+  journal      = {Proc. {ACM} Program. Lang.},
+  volume       = {8},
+  number       = {{OOPSLA2}},
+  pages        = {2156--2182},
+  year         = {2024},
+  url          = {https://doi.org/10.1145/3689787},
+  doi          = {10.1145/3689787},
+  timestamp    = {Sun, 19 Jan 2025 14:47:44 +0100},
+  biburl       = {https://dblp.org/rec/journals/pacmpl/BaekGS0TRP24.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+```
+
+To refer to RR-Reduce, please cite the following paper:
+
+```
+@inproceedings{Baek2025RR-Reduce,
+  author       = {Doehyun Baek and Daniel Lehmann and Ben L. Titzer and Sukyoung Ryu and Michael Pradel},
+  title        = {Execution-Aware Program Reduction for WebAssembly via Record and Replay},
+  booktitle    = {Proceedings of the 39th {IEEE/ACM} International Conference on Automated Software Engineering, {ASE} 2025, Seoul, South Korea, November 16 - November 20, 2025},
+  year         = {2025},
 }
 ```

@@ -1,0 +1,184 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+import sys, subprocess, os, subprocess, shutil
+import concurrent.futures
+import heuristics_finder
+import concurrent.futures
+import argparse
+import util
+
+ROOT = Path(__file__).resolve().parents[1]  # /workspaces/wasm-r3
+sys.path.insert(0, str(ROOT))
+
+
+WASMR3_PATH = os.getenv("WASMR3_PATH", "/workspaces/wasm-r3")
+BINARYEN_CORES = os.getenv("BINARYEN_CORES", 1)
+# We use 3 max. 4 makes the machine reboot
+max_workers = min(int(BINARYEN_CORES), 3)
+TIMEOUT = 600
+
+parser = argparse.ArgumentParser(description='WASM hybrid reducer combining slice and reduce')
+parser.add_argument('oracle_script', help='Oracle verification script')
+parser.add_argument('test_input', help='Input WASM file')
+parser.add_argument('test_output', help='Output WASM file')
+args = parser.parse_args()
+
+oracle_script = args.oracle_script
+test_input = args.test_input
+test_name = os.path.splitext(os.path.basename(test_input))[0]
+test_output = args.test_output
+print(f'Input Oracle Path: {oracle_script}')
+print(f'Input Wasm Path: {test_input}')
+input_module_size, input_code_size, input_target_size = util.get_sizes(test_input)
+print(f'Input Wasm Code Size: {input_code_size:,} bytes')
+
+# We prioritize single function replay of heuristic > dynamic > all
+def get_fidx():
+    print("============================ Identifying candidate target functions ============================")
+    heuristic_fidx = heuristics_finder.get_heuristic_fidx(test_input, oracle_script)
+    dynamic_fidx = heuristics_finder.get_dynamic_fidx(test_input)
+    all_fidx = heuristics_finder.get_all_fidx(test_input)
+
+    # Summarize and print first 10 items, appending "..." and remaining count if applicable
+    def fmt(items, limit=10):
+        items_list = list(items)
+        preview = items_list[:limit]
+        remaining = max(0, len(items_list) - len(preview))
+        body = ", ".join(str(x) for x in preview)
+        if remaining > 0:
+            return f"[{body}, ...], {remaining} remaining"
+        return f"[{body}]"
+
+    heuristic_list = list(heuristic_fidx)
+    heuristic_set = set(heuristic_list)
+    print(f"Heuristic function indices: {fmt(heuristic_list)}")
+
+    dynamic_list = list(dynamic_fidx)
+    dynamic_set = set(dynamic_list)
+    dynamic_filtered = [idx for idx in dynamic_list if idx not in heuristic_set]
+    print(f"Dynamic function indices (except heuristic): {fmt(dynamic_filtered)}")
+
+    all_list = list(all_fidx)
+    all_filtered = [idx for idx in all_list if idx not in heuristic_set and idx not in dynamic_set]
+    print(f"All function indices (except heuristic and dynamic): {fmt(all_filtered)}")
+
+    # Create a set to keep track of added indices
+    added = set()
+    combined_fidx = []
+
+    # Add heuristic_fidx first
+    for idx in heuristic_fidx:
+        if idx not in added:
+            combined_fidx.append(idx)
+            added.add(idx)
+
+    # Add dynamic_fidx second
+    for idx in dynamic_fidx:
+        if idx not in added:
+            combined_fidx.append(idx)
+            added.add(idx)
+
+    # Add all_fidx last
+    for idx in all_fidx:
+        if idx not in added:
+            combined_fidx.append(idx)
+            added.add(idx)
+
+    return combined_fidx, heuristic_list, dynamic_list, all_list
+
+
+def run_slicedice(testname, fidx, heuristic_list, dynamic_list, all_list):
+    try:
+        # fidxargs = " ".join([f"-i {f}" for f in fidx.split("-")])
+        print(f"Running {testname} - {fidx}: ", end="")
+        command = f"timeout {TIMEOUT}s npm test slicedice -- -t {testname} -i {fidx} --alternativeTrace --alternativeDownload"
+        # print(command)
+        output = subprocess.run(command, shell=True, text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        # TODO: make this configurable
+        replay_wasm_path = f'{os.getenv(
+            "BENCHMARK_PATH",
+            f"{WASMR3_PATH}/evaluation/benchmarks/{test_name}",
+        )}/out/{fidx}/benchmarks/bin_1/replay.wasm'
+        original_file_size = os.path.getsize(test_input)
+        replay_file_size = os.path.getsize(replay_wasm_path)
+        interestingness_command = f"python {oracle_script} {replay_wasm_path}"
+        result = subprocess.run(interestingness_command, shell=True, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if result.returncode == 0 and replay_file_size < original_file_size:
+            print(f"Interesting!")
+            def print_identified_set(fidx):
+                if fidx in heuristic_list:
+                    return "heuristic set"
+                elif fidx in dynamic_list:
+                    return "dynamic set"
+                elif fidx in all_list:
+                    return "all set"
+                else:
+                    return "unknown"
+            print(f"Target function index: {fidx}, identified in {print_identified_set(fidx)}")
+            print("============================ Reduced Output ============================")
+            shutil.copy(
+                replay_wasm_path,
+                test_output,
+            )
+            module_size, code_size, target_size = util.get_sizes(replay_wasm_path)
+            print(f'Reduced Output Wasm Path: {test_output}')
+            print(f"Reduced Output Wasm Code Size: {code_size:,} bytes ({code_size / input_code_size * 100:.2f}% of input), Target Size: {target_size:,} bytes ({target_size / input_code_size * 100:.2f}% of input)")
+            sys.exit(0)
+        else:
+            print("Not interesting")
+            return [testname, fidx, "not interesting"]
+    except Exception as e:
+        print(f"Failed to run {testname} - {fidx}")
+        print(e)
+        return [testname, fidx, "fail"]
+
+
+def worker(fidx, heuristic_list, dynamic_list, all_list):
+    try:
+        run_slicedice(test_name, fidx, heuristic_list, dynamic_list, all_list)
+        # If run_slicedice returns normally, the oracle did not pass.
+        return False
+    except SystemExit as e:
+        # If oracle passes, run_slicedice calls sys.exit(0) with exit code 0.
+        if e.code == 0:
+            return True
+        return False
+    except Exception as ex:
+        print(f"Failed to run {test_name} - {fidx}: {ex}")
+        return False
+
+# Strip debug information from the original WebAssembly file
+stripped_wasm_path = f"{os.path.dirname(test_input)}/{test_name}.stripped.wasm"
+strip_command = f"{WASMR3_PATH}/third_party/wasm-tools/target/release/wasm-tools strip --all -o {stripped_wasm_path} {test_input}"
+subprocess.run(strip_command, shell=True, check=True)
+shutil.copy(stripped_wasm_path, test_input)
+
+if max_workers == 1:
+    fidxs, heuristic_list, dynamic_list, all_list = get_fidx()
+    print("============================ For each target Function ============================")
+    for fidx in fidxs:
+        success = worker(fidx, heuristic_list, dynamic_list, all_list)
+        if success:
+            sys.exit(0)
+else:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        fidxs, heuristic_list, dynamic_list, all_list = get_fidx()
+        futures = {executor.submit(worker, fidx, heuristic_list, dynamic_list, all_list): fidx for fidx in fidxs}
+        print("============================ Identifying candidate target functions ============================")
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                success = future.result()
+                if success:
+                    # Early exit if oracle script passed.
+                    executor.shutdown(wait=False, cancel_futures=True)
+                    sys.exit(0)
+            except Exception as e:
+                print(f"Error: {e}")
+print("Failed to find a suitable reduced wasm file")
+print("Returning original wasm file")
+shutil.copy(
+    test_input,
+    test_output,
+)
+sys.exit(1)

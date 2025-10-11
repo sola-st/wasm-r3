@@ -155,140 +155,6 @@ pub fn generate_replay_wasm(
         }
         // functions
 
-        for (funcidx, func) in &code.imported_funcs() {
-            // TODO: better handling of initialization
-            if *funcidx == INIT_INDEX {
-                continue;
-            }
-            let funcidx = *funcidx;
-            let name = func.import.clone().unwrap().name.clone();
-            let global_idx = format!("$global_{}", funcidx.to_string());
-            let func = code.funcs.get(&funcidx).unwrap();
-            write(
-                stream,
-                &format!("(global {global_idx} (mut i64) (i64.const 0))\n"),
-            )?;
-            let tystr = get_functy_strs(&func.ty);
-            write(
-                stream,
-                &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr}   (local $global_onentry i64)\n",),
-            )?;
-            write(
-                stream,
-                &format!(
-                    "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n
-                    (local.set $global_onentry (global.get {global_idx}))\n",
-                ),
-            )?;
-            for (i, body) in func.bodys.iter().enumerate() {
-                if let Some(body) = body {
-                    let mut bodystr = String::new();
-                    let mut memory_writes = BTreeMap::new();
-                    for event in body {
-                        match event {
-                            HostEvent::MutateMemory {
-                                addr,
-                                data,
-                                import: _,
-                            } => {
-                                if merge_store {
-                                    memory_writes.insert(addr, data);
-                                } else {
-                                    bodystr += &hostevent_to_wat(event, code);
-                                }
-                            }
-                            HostEvent::ExportCall { .. } | HostEvent::ExportCallTable { .. } => {
-                                if merge_store {
-                                    if memory_writes.len() > 0 {
-                                        merge_memory_writes(
-                                            &mut bodystr,
-                                            memory_writes,
-                                            &mut data_segments,
-                                        );
-                                        memory_writes = BTreeMap::new();
-                                    }
-                                    bodystr += &hostevent_to_wat(event, code);
-                                } else {
-                                    bodystr += &hostevent_to_wat(event, code);
-                                }
-                            }
-                            _ => bodystr += &hostevent_to_wat(event, code),
-                        }
-                    }
-                    if memory_writes.len() > 0 {
-                        merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
-                    }
-                    // We add 1 to i because on ith iteration, counter is i + 1
-                    let iter_count = i + 1;
-                    write(
-                        stream,
-                        &format!(
-                            "(if
-                                    (i64.eq (local.get $global_onentry) (i64.const {iter_count}))
-                                    (then {bodystr}))\n"
-                        ),
-                    )?;
-                }
-            }
-            let mut current = 0;
-            for r in func.results.iter() {
-                let ty = &code.funcs.get(&funcidx).unwrap().ty;
-                let _param_tys = ty.params.clone();
-                let new_c = current + r.reps;
-                let c1 = current + 1;
-                let c2 = new_c + 1;
-                let res = match r.results.get(0) {
-                    Some(v) => {
-                        let v = v.to_wat();
-                        format!(
-                            "(return ({} {v}))",
-                            valty_to_const(ty.results.get(0).unwrap())
-                        )
-                    }
-                    None => "(return)".to_owned(),
-                };
-                write(
-                    stream,
-                    &format!(
-                        " (if
-                            (i32.and
-                              (i64.ge_s (local.get $global_onentry) (i64.const {c1}))
-                              (i64.lt_s (local.get $global_onentry) (i64.const {c2}))
-                            )
-                            (then
-                                {res}
-                            )
-                          )"
-                    ),
-                )?;
-                current = new_c;
-            }
-            let ty = &code.funcs.get(&funcidx).unwrap().ty;
-            let _param_tys = ty.params.clone();
-            let default_return = match ty.results.get(0) {
-                Some(v) => match v {
-                    ValType::I32 => "(i32.const 0)",
-                    ValType::I64 => "(i64.const 0)",
-                    ValType::F32 => "(f32.const 0)",
-                    ValType::F64 => "(f64.const 0)",
-                    ValType::V128 => todo!(),
-                    ValType::Funcref => todo!(),
-                    ValType::Externref => todo!(),
-                },
-                None => "",
-            };
-            write(stream, &format!("(return {})", default_return))?;
-            write(stream, ")\n")?;
-        }
-        for data_segment in data_segments {
-            write(stream, "(data \"")?;
-            for byte in data_segment {
-                let byte = byte.0 as usize;
-                write(stream, &format!("\\{byte:02x}",))?;
-            }
-            write(stream, "\")\n")?;
-        }
-
         if current_module == "main" {
             let initialization = code.funcs.get(&INIT_INDEX).unwrap().bodys.last().unwrap();
             write(
@@ -301,7 +167,139 @@ pub fn generate_replay_wasm(
                 }
             }
             write(stream, "(return)\n)")?;
+        } else {
+            for (funcidx, func) in &code.imported_funcs() {
+                // TODO: better handling of initialization
+                if *funcidx == INIT_INDEX {
+                    continue;
+                }
+                let funcidx = *funcidx;
+                let name = func.import.clone().unwrap().name.clone();
+                let global_idx = format!("$global_{}", funcidx.to_string());
+                let func = code.funcs.get(&funcidx).unwrap();
+                let tystr = get_functy_strs(&func.ty);
+                if func.bodys.len() == 0 {
+                    let return_expr = get_return_expr(&func.ty);
+                    write(
+                        stream,
+                        &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr} {return_expr})\n",),
+                    )?;
+                    continue;
+                }
+                write(
+                    stream,
+                    &format!("(global {global_idx} (mut i64) (i64.const 0))\n"),
+                )?;
+                write(
+                    stream,
+                    &format!("(func ${name} (@name \"r3_{name}\") (export \"{name}\") {tystr}   (local $global_onentry i64)\n",),
+                )?;
+                write(
+                    stream,
+                    &format!(
+                        "(global.get {global_idx}) (i64.const 1) (i64.add) (global.set {global_idx})\n
+                        (local.set $global_onentry (global.get {global_idx}))\n",
+                    ),
+                )?;
+                for (i, body) in func.bodys.iter().enumerate() {
+                    if let Some(body) = body {
+                        let mut bodystr = String::new();
+                        let mut memory_writes = BTreeMap::new();
+                        for event in body {
+                            match event {
+                                HostEvent::MutateMemory {
+                                    addr,
+                                    data,
+                                    import: _,
+                                } => {
+                                    if merge_store {
+                                        memory_writes.insert(addr, data);
+                                    } else {
+                                        bodystr += &hostevent_to_wat(event, code);
+                                    }
+                                }
+                                HostEvent::ExportCall { .. } | HostEvent::ExportCallTable { .. } => {
+                                    if merge_store {
+                                        if memory_writes.len() > 0 {
+                                            merge_memory_writes(
+                                                &mut bodystr,
+                                                memory_writes,
+                                                &mut data_segments,
+                                            );
+                                            memory_writes = BTreeMap::new();
+                                        }
+                                        bodystr += &hostevent_to_wat(event, code);
+                                    } else {
+                                        bodystr += &hostevent_to_wat(event, code);
+                                    }
+                                }
+                                _ => bodystr += &hostevent_to_wat(event, code),
+                            }
+                        }
+                        if memory_writes.len() > 0 {
+                            merge_memory_writes(&mut bodystr, memory_writes, &mut data_segments);
+                        }
+                        // We add 1 to i because on ith iteration, counter is i + 1
+                        let iter_count = i + 1;
+                        write(
+                            stream,
+                            &format!(
+                                "(if
+                                        (i64.eq (local.get $global_onentry) (i64.const {iter_count}))
+                                        (then {bodystr}))\n"
+                            ),
+                        )?;
+                    }
+                }
+                let mut current = 0;
+                for r in func.results.iter() {
+                    let ty = &code.funcs.get(&funcidx).unwrap().ty;
+                    let _param_tys = ty.params.clone();
+                    let new_c = current + r.reps;
+                    let c1 = current + 1;
+                    let c2 = new_c + 1;
+                    let res = match r.results.get(0) {
+                        Some(v) => {
+                            let v = v.to_wat();
+                            format!(
+                                "(return ({} {v}))",
+                                valty_to_const(ty.results.get(0).unwrap())
+                            )
+                        }
+                        None => "(return)".to_owned(),
+                    };
+                    write(
+                        stream,
+                        &format!(
+                            " (if
+                                (i32.and
+                                  (i64.ge_s (local.get $global_onentry) (i64.const {c1}))
+                                  (i64.lt_s (local.get $global_onentry) (i64.const {c2}))
+                                )
+                                (then
+                                    {res}
+                                )
+                              )"
+                        ),
+                    )?;
+                    current = new_c;
+                }
+                let ty = &code.funcs.get(&funcidx).unwrap().ty;
+                let _param_tys = ty.params.clone();
+                let return_expr = get_return_expr(ty);
+                write(stream, &return_expr)?;
+                write(stream, ")\n")?;
+            }
         }
+        for data_segment in data_segments {
+            write(stream, "(data \"")?;
+            for byte in data_segment {
+                let byte = byte.0 as usize;
+                write(stream, &format!("\\{byte:02x}",))?;
+            }
+            write(stream, "\")\n")?;
+        }
+
 
         write(stream, ")\n")?;
 
@@ -318,6 +316,24 @@ pub fn generate_replay_wasm(
     generate_single_wasm(replay_path, &module_set, code)?;
 
     Ok(())
+}
+
+fn get_return_expr(ty: &FunctionTy) -> String {
+    if ty.results.is_empty() {
+        return "(return )".to_string();
+    }
+
+    let default_returns: Vec<String> = ty.results.iter().map(|v| match v {
+        ValType::I32 => "(i32.const 0)".to_string(),
+        ValType::I64 => "(i64.const 0)".to_string(),
+        ValType::F32 => "(f32.const 0)".to_string(),
+        ValType::F64 => "(f64.const 0)".to_string(),
+        ValType::V128 => todo!(),
+        ValType::Funcref => todo!(),
+        ValType::Externref => todo!(),
+    }).collect();
+
+    format!("(return {})", default_returns.join(" "))
 }
 
 fn generate_replay_html(
@@ -439,7 +455,7 @@ fn generate_replay_html(
         const {module_escaped}Response = await fetch(\"{current_module}.wasm\");
         const {module_escaped}Binary = await {module_escaped}Response.arrayBuffer();
         const {module_escaped} = await WebAssembly.instantiate({module_escaped}Binary, {module_escaped}Import);
-        
+
         "
         )?;
     }
@@ -484,6 +500,7 @@ fn generate_single_wasm(
         "--rename-export-conflicts",
         "--enable-reference-types",
         "--enable-multimemory",
+        "--enable-multivalue",
         "--enable-bulk-memory",
         "--enable-threads",
         "--debuginfo",
@@ -589,6 +606,7 @@ fn generate_single_wasm(
         "--enable-reference-types",
         "--enable-multimemory",
         "--enable-bulk-memory",
+        "--enable-multivalue",
         "--enable-threads",
         "--debuginfo",
         "merged_1.wasm",
@@ -616,6 +634,7 @@ fn generate_single_wasm(
             "--enable-gc",
             "--enable-bulk-memory",
             "--enable-threads",
+            "--enable-multivalue",
             "--debuginfo",
             // for handling inlining of imported globals. Without this glob-merge node test will fail.
             "--simplify-globals",
@@ -673,7 +692,30 @@ fn merge_memory_writes(
             ));
             data_segments.push(data);
         } else {
-            // merging 4 bytes and 8 bytes is also possible
+            bodystr.push_str(&get_mutatemem_str(data, start_addr));
+        }
+    }
+}
+
+fn get_mutatemem_str(data: Vec<F64>, start_addr: i32) -> String {
+    let mut bodystr = String::new();
+    match data.len() {
+        8 => {
+            let data = data.into_iter().map(|f| f.0 as u8).collect::<Vec<u8>>();
+            let value = u64::from_le_bytes(data.try_into().unwrap());
+            bodystr.push_str(&format!(
+                "(i64.store (i32.const {start_addr}) (i64.const {value}))\n",
+            ));
+        }
+        4 => {
+            let data = data.into_iter().map(|f| f.0 as u8).collect::<Vec<u8>>();
+            let value = u32::from_le_bytes(data.try_into().unwrap());
+            bodystr.push_str(&format!(
+                "(i32.store (i32.const {start_addr}) (i32.const {value}))\n",
+            ));
+        }
+        _ => {
+            // For other lengths, use byte-by-byte storage
             for (j, byte) in data.iter().enumerate() {
                 let addr = start_addr + j as i32;
                 let byte = byte.to_wat();
@@ -682,7 +724,8 @@ fn merge_memory_writes(
                 ));
             }
         }
-    }
+    };
+    bodystr
 }
 
 fn valty_to_const(valty: &ValType) -> String {
@@ -746,12 +789,7 @@ fn hostevent_to_wat(event: &HostEvent, code: &Replay) -> String {
             import: _,
         } => {
             let mut js_string = String::new();
-            for (j, byte) in data.iter().enumerate() {
-                let byte = byte.to_wat();
-                js_string += &format!("i32.const {}\n", addr + j as i32);
-                js_string += &format!("i32.const {}\n", byte);
-                js_string += &format!("i32.store8\n",);
-            }
+            js_string.push_str(&get_mutatemem_str(data.clone(), *addr));
             js_string
         }
         HostEvent::GrowMemory { amount, import: _ } => {

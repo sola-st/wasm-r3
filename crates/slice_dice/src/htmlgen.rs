@@ -51,8 +51,12 @@ pub fn generate(
 
             // Call the main function to start the program
             const startTime = performance.now();
-            for (let i = 0; i < {rep_count}; i++) {{
-                rest.instance.exports.main();
+            try {{
+                for (let i = 0; i < {rep_count}; i++) {{
+                    rest.instance.exports.main();
+                }}
+            }} catch (e) {{
+                console.error(e);
             }}
             const endTime = performance.now();
             const executionTime = endTime - startTime;

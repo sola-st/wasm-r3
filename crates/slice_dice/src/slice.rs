@@ -43,6 +43,9 @@ pub fn generate(
         }
         if line.starts_with(" (export") {
             writeln!(rest_file, "{}", line)?;
+            if line.contains("(func") {
+                writeln!(part_file, "{}", line)?;
+            }
             continue;
         }
         if line.starts_with(" (func") {
@@ -203,7 +206,7 @@ fn rest_transform_memory(line: &str) -> String {
             let memory_name = parts[1];
             let rest = parts[2..].join(" ");
             return format!(
-                " {} {} (export \"r3_memory\") {}",
+                " {} {} (export \"memory\") {}",
                 memory_keyword, memory_name, rest
             );
         }
@@ -219,7 +222,7 @@ fn part_transform_memory(line: &str) -> String {
             let memory_name = parts[1];
             let rest = parts[2..].join(" ");
             return format!(
-                " {} {} (import \"rest\" \"r3_memory\") {}",
+                " {} {} (import \"rest\" \"memory\") {}",
                 memory_keyword, memory_name, rest
             );
         }

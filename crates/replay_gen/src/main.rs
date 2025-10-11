@@ -47,7 +47,9 @@ fn main() -> io::Result<()> {
     Optimizer::discard_empty_body(&mut generator.replay);
 
     // codegen phase
-    Optimizer::split_big_body(&mut generator.replay); // works only for wasm
+    // I turn this off because of regression of e9ef92bf5fd24d0fbb898f3e45e1b026b18b12ab for commanderkeen
+    // TODO: turn this back on
+    // Optimizer::split_big_body(&mut generator.replay);
     generate_replay_wasm(replay_path.unwrap(), &generator.replay, true)?;
 
     Ok(())

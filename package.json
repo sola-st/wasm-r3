@@ -19,10 +19,13 @@
     "ws": "^8.17.1"
   },
   "scripts": {
-    "start": "node --experimental-strip-types ./src/start.ts",
-    "test": "node --experimental-strip-types ./src/test.ts",
-    "build": "npm run build-rust && npm run build-wasabi",
+    "start": "xvfb-run -a node --experimental-strip-types ./src/start.ts",
+    "test": "xvfb-run -a node --experimental-strip-types ./src/test.ts",
+    "build": "npm run build-rust && npm run build-wasabi && npm run build-binaryen && npm run build-wasmtools && npm run build-wizard",
     "build-rust": "cd crates && cargo build --release && cd -",
-    "build-wasabi": "cd third_party/wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && cd ../../.."
+    "build-wasabi": "cd third_party/wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && cd ../../..",
+    "build-binaryen": "cd third_party/binaryen && cmake . && make -j && cd ../..",
+    "build-wasmtools": "cd third_party/wasm-tools && cargo build --release && cd ../..",
+    "build-wizard": "cd third_party/wizard-engine/virgil && make -j && cd .. && make -j && cd .."
   }
 }
