@@ -228,16 +228,13 @@ export default class Benchmark {
         // await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
         if (!fss.existsSync(benchmarkPath)) await fs.mkdir(benchmarkPath, { recursive: true })
         await Promise.all(this.record.map(async ({ binary, trace }, i) => {
-            // FIXME: enable back after hacking on slicedice
             if (i != 1) return;
             const binPath = path.join(benchmarkPath, `bin_${i}`)
             if (!fss.existsSync(binPath)) await fs.mkdir(binPath)
             const tracePath = path.join(binPath, 'trace.r3')
             await fs.writeFile(tracePath, trace.toString())
             await fs.writeFile(path.join(binPath, 'index.wasm'), Buffer.from(binary))
-            // FIXME: enable back after hacking on slicedice
             execSync(`./crates/target/release/replay_gen ${tracePath} ${path.join(binPath, 'index.wasm')} ${path.join(binPath, 'replay.wasm')}`);
-            // execSync(`wasmtime ${path.join(binPath, 'replay.wasm')}`);
         }))
     }
 

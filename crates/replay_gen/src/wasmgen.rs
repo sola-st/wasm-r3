@@ -175,7 +175,7 @@ pub fn generate_replay_wasm(
                 }
                 let funcidx = *funcidx;
                 let name = func.import.clone().unwrap().name.clone();
-                let global_idx = format!("$global_{}", funcidx.to_string());
+                let global_idx = format!("$r3_global_{}", funcidx.to_string());
                 let func = code.funcs.get(&funcidx).unwrap();
                 let tystr = get_functy_strs(&func.ty);
                 if func.bodys.len() == 0 {
