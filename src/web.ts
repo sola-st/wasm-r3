@@ -228,7 +228,6 @@ export default class Benchmark {
         // await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
         if (!fss.existsSync(benchmarkPath)) await fs.mkdir(benchmarkPath, { recursive: true })
         await Promise.all(this.record.map(async ({ binary, trace }, i) => {
-            if (i != 1) return;
             const binPath = path.join(benchmarkPath, `bin_${i}`)
             if (!fss.existsSync(binPath)) await fs.mkdir(binPath)
             const tracePath = path.join(binPath, 'trace.r3')
