@@ -24,7 +24,7 @@
     "build": "npm run build-rust && npm run build-wasabi && npm run build-binaryen && npm run build-wasmtools && npm run build-wizard",
     "build-rust": "cd crates && cargo build --release && cd -",
     "build-wasabi": "cd third_party/wasabi/crates/wasabi_js && npm run build && wasm-pack build --target web && cd ../../..",
-    "build-binaryen": "cd third_party/binaryen && cmake . && make -j && cd ../..",
+    "build-binaryen": "cd third_party/binaryen && cmake . && make -j 8 && cd ../..",
     "build-wasmtools": "cd third_party/wasm-tools && cargo build --release && cd ../..",
     "build-wizard": "cd third_party/wizard-engine/virgil && make -j && cd .. && make -j && cd .."
   }
