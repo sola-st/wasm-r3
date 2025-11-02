@@ -11,11 +11,26 @@
     (async function () {
       const startTime = performance.now();
 
-      // Simulating some asynchronous operation, like loading the iframe
-      await new Promise(resolve => {
-        const iframe = document.querySelector('iframe');
-        iframe.onload = resolve;
-      });
+      // Wait for all iframes (handles "already loaded" and errors)
+      const iframes = Array.from(document.querySelectorAll('iframe'));
+      await Promise.all(
+        iframes.map((iframe) => new Promise((resolve) => {
+          const done = () => {
+            iframe.removeEventListener('load', done);
+            iframe.removeEventListener('error', done);
+            resolve();
+          };
+
+          // If it's already loaded, resolve immediately
+          try {
+            const d = iframe.contentDocument || iframe.contentWindow?.document;
+            if (d && d.readyState === 'complete') return resolve();
+          } catch { /* cross-origin access may throw; fall back to events */ }
+
+          iframe.addEventListener('load', done, { once: true });
+          iframe.addEventListener('error', done, { once: true });
+        }))
+      );
 
       const endTime = performance.now();
       const executionTime = endTime - startTime;
@@ -26,5 +41,4 @@
     })();
   </script>
 </body>
-
 </html>
