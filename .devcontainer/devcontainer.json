@@ -12,7 +12,7 @@
       "version": "3.12.3"
     },
     "ghcr.io/devcontainers/features/rust:1": {
-      "version": "1.84.0"
+      "version": "1.91.0"
     }
   },
   "postCreateCommand": "bash ./.devcontainer/postCreateCommand.sh",
