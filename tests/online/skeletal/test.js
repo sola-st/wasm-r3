@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'http://aws-website-webassemblyskeletalanimation-ffaza.s3-website-us-east-1.amazonaws.com/'

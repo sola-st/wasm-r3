@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'https://microsoft.github.io/onnxjs-demo/#/squeezenet'
@@ -9,7 +9,7 @@ export default async function test(analyser) {
 
   await beSelector.click()
 
-  
+
   const wasmOption = page.locator('div').filter({ hasText: /^CPU-WebAssembly$/ }).nth(1)
   await wasmOption.waitFor({state: 'visible'})
 

@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'https://superpowered.com/js-wasm-sdk/example_timestretching/'

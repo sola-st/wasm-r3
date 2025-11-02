@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 import { expect } from 'playwright/test'
 
 export default async function test(analyser) {
@@ -14,7 +14,7 @@ export default async function test(analyser) {
   const outputText = page.locator('#output')
   await outputText.waitFor({state: 'visible'})
 
-  await templateText.fill('what, {{.planet}}') 
+  await templateText.fill('what, {{.planet}}')
   await expect(outputText).toContainText('what, World', {timeout: 100000})
 
   await delay(5000)

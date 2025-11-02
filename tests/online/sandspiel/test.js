@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 async function clicker(loc, pos) {
   await loc.click({
@@ -17,7 +17,7 @@ export default async function test(analyser) {
   await delay(5000)
 
   // find the canvas
-  const canvasLoc = page.locator('#sand-canvas')  
+  const canvasLoc = page.locator('#sand-canvas')
   await canvasLoc.waitFor({state: 'visible'})
 
   const arr = [
@@ -35,6 +35,6 @@ export default async function test(analyser) {
 
   // wait for another 5s
   await delay(5000)
-  
+
   return await analyser.stop()
 }

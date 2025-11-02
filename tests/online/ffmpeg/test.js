@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'https://w3reality.github.io/async-thread-worker/examples/wasm-ffmpeg/index.html'
@@ -11,8 +11,8 @@ export default async function test(analyser) {
   // await logWindow.waitFor(() => this.textContent().includes('set the subtitle options to the indicated preset'), { timeout: 240000 })
   //
 
-  
-  const consoleLoc = page.locator('#log') 
+
+  const consoleLoc = page.locator('#log')
   await consoleLoc.waitFor({state: 'visible' })
   //console.log('log located')
 

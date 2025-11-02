@@ -1,10 +1,10 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'http://whealy.com/Rust/mandelbrot.html'
   const page = await analyser.start(url, { headless: true })
 
-  const canvas = page.locator('#mandelImage') 
+  const canvas = page.locator('#mandelImage')
   await canvas.waitFor({state: 'visible' })
 
   for (let i = 0; i < 10; i++){
@@ -14,7 +14,7 @@ export default async function test(analyser) {
     })
     await delay(1000)
   }
-  
+
 
   await delay(1000)
 

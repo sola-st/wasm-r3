@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 import {test, expect} from '@playwright/test'
 
 export default async function test(analyser) {
@@ -22,10 +22,10 @@ export default async function test(analyser) {
 
   await runButton.click()
   console.log('runbutton clicked')
-  
+
   const messageSpan = frameLoc.locator('#message')
   await messageSpan.waitFor({state: 'visible'})
-  await expect(messageSpan).toContainText('Done', {timeout: 100000}) 
+  await expect(messageSpan).toContainText('Done', {timeout: 100000})
 
 
   return await analyser.stop()

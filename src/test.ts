@@ -117,7 +117,13 @@ const testOptions = [
 })();
 
 function getPaths(name: string, options: any) {
-  const testJsPath = path.join(process.cwd(), "tests", options.category, "test.js");
+  let testJsPath;
+  if (options.category === "online") {
+    testJsPath = path.join(process.cwd(), "tests", options.category, name, "test.js");
+    console.log(testJsPath)
+  } else {
+    testJsPath = path.join(process.cwd(), "tests", options.category, "test.js");
+  }
   const testPath = path.join(process.cwd(), "tests", options.category, name);
   const referenceTracePath = path.join(testPath, "reference.r3");
   const originalWebsitePath = path.join(testPath, "website");

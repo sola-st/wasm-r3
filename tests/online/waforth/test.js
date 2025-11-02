@@ -1,9 +1,9 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'https://el-tramo.be/waforth'
   const page = await analyser.start(url, { headless: true })
-  
+
   const textInput = page.locator('.Console')
   await textInput.waitFor({state: 'visible'})
   console.log(1)

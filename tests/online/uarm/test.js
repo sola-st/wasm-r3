@@ -1,5 +1,5 @@
 import path from 'path'
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
     const url = 'https://cloudpilot-emu.github.io/uarm-preview/'

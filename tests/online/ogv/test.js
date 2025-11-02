@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'https://brionv.com/misc/ogv.js/demo/'
@@ -6,7 +6,7 @@ export default async function test(analyser) {
   await delay(10000)
 
   const beSelect = page.locator("#player-backend")
-  await beSelect.waitFor({state: 'visible'}) 
+  await beSelect.waitFor({state: 'visible'})
 
   const playButton = page.getByTitle('Play')
   await playButton.waitFor({state: 'visible'})
@@ -14,7 +14,7 @@ export default async function test(analyser) {
   await beSelect.selectOption('Web Assembly')
 
   await playButton.click()
-  
+
   await delay(10000)
 
   return await analyser.stop()

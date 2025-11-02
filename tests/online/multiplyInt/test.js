@@ -1,12 +1,12 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 import { createMeasure } from '../../../dist/src/performance.cjs'
 
 export default async function test(analyser) {
-  const url = 'https://takahirox.github.io/WebAssembly-benchmark/tests/multiplyInt.html' 
+  const url = 'https://takahirox.github.io/WebAssembly-benchmark/tests/multiplyInt.html'
   let page = await analyser.start(url, { headless: true })
 
   const runLoc = page.locator('#run_button')
-  await runLoc.waitFor({state: 'visible'}) 
+  await runLoc.waitFor({state: 'visible'})
   const doneLoc = page.locator('#message')
 
   const p_measureRun = createMeasure('runButton', { phase: 'record', description: 'during user interaction, before clicking run button'} )

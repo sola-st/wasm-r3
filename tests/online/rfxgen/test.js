@@ -1,13 +1,13 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'https://raylibtech.itch.io/rfxgen'
   const page = await analyser.start(url, { headless: true })
 
-  // const canv = page.locator('#canvas') 
+  // const canv = page.locator('#canvas')
   // await canv.waitFor({state: 'visible'}, {timeout: 300000})
   // console.log('canvas on')
-  
+
   await delay(10_000)
 
   return await analyser.stop()

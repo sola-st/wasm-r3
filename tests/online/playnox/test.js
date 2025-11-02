@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 
 export default async function test(analyser) {
   const url = 'https://playnox.xyz/'
@@ -11,7 +11,7 @@ export default async function test(analyser) {
   const canv = page.locator('#canvas')
   await canv.waitFor({state: 'visible'})
 
-  
+
   await delay(10000)
   await canv.click({
     button: 'left',

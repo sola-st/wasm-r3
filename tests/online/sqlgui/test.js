@@ -1,4 +1,4 @@
-import { delay } from '../../../dist/tests/test-utils.cjs'
+import { delay } from '../../../src/test.ts'
 import { createMeasure } from '../../../dist/src/performance.cjs'
 
 export default async function test(analyser) {
