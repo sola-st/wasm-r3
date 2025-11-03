@@ -35,8 +35,8 @@ These benchmarks are maintained in the separate repository [wasm-benchmarks](htt
 To access wasm-r3-bench, introduced in the OOPSLA 2024 paper, please refer to the following directory:
 - [wasm-r3-bench](https://github.com/doehyunbaek/wasm-benchmarks/tree/main/wasm-r3-bench) 
 
-To access wasm-reduce-bench, introduced in the ASE 2025 paper, please refer to the following directory:
-- [wasm-reduce-bench](https://github.com/doehyunbaek/wasm-benchmarks/tree/main/wasm-reduce-bench)
+To access wasm-reduction-bench, introduced in the ASE 2025 paper, please refer to the following directory:
+- [wasm-reduction-bench](https://github.com/doehyunbaek/wasm-benchmarks/tree/main/wasm-reduction-bench)
 
 ## Artifacts
 
