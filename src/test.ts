@@ -48,13 +48,17 @@ async function runSingleTest(options, name: string): Promise<TestReport> {
       success: false,
     }
   }
-  try {
-    execSync(`diff ${referenceTracePath} ${originalTracePath}`);
-  } catch (e) {
-    console.log(`Ref-to-Record diff failed for ${name}`);
-    console.log(e);
-    return {
-      success: false,
+  // Online tests can be inherently non-deterministic and their reference traces can change.
+  // Keep the record-to-replay consistency check, but skip ref-to-record for online.
+  if (options.category !== "online") {
+    try {
+      execSync(`diff ${referenceTracePath} ${originalTracePath}`);
+    } catch (e) {
+      console.log(`Ref-to-Record diff failed for ${name}`);
+      console.log(e);
+      return {
+        success: false,
+      }
     }
   }
   return {
