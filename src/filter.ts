@@ -1,45 +1,44 @@
 export const filter = {
-  core: [
-    'table-get',
-    'table-get-big',
-    'table-exp-call-private-function', // unknown function wasabi
-    'table-exp-call-private-function-params', // unknown function wasabi
-    'table-exp-call-private-function-mul-table', // unreachable
-    'table-exp-host-mod-multiple', // unreachable
-    'table-exp-host-add-friend', // unreachable
-    'table-exp-internal-mod',
-    'table-exp-host-grow', // no ref trace
-    'table-exp-host-mod', // no ref trace
-    'table-imp-host-mod', // trace diff
-    'table-imp-init-max',
-    'call-exp-after-import-call-table-get', // unknown function wasabi
-    'test04', // duplicate func export
-    'rust-game-of-life', // fail only at CI
-    "pass-big-number" // better handling of i64 value is needed
+  "core": [
+    "table-get",
+    "table-get-big",
+    "table-exp-call-private-function",
+    "table-exp-call-private-function-params",
+    "table-exp-call-private-function-mul-table",
+    "table-exp-host-mod-multiple",
+    "table-exp-host-add-friend",
+    "table-exp-internal-mod",
+    "table-exp-host-grow",
+    "table-exp-host-mod",
+    "table-imp-host-mod",
+    "table-imp-init-max",
+    "call-exp-after-import-call-table-get",
+    "test04",
+    "rust-game-of-life",
+    "pass-big-number"
   ],
-  proxy: [
-    // TODO: fix these regressions
-    "basic-new-Instance-module", // TypeError: Cannot read properties of undefined (reading 'forEach')
-    "basic-new-Instance-compile", // TypeError: Cannot read properties of undefined (reading 'forEach')
-    "basic-new-Instance-compileStreaming", // TypeError: Cannot read properties of undefined (reading 'forEach')
-    "external-call", // SyntaxError: Identifier 'wasm' has already been declared
-    "multiple-worker-different-name", // SyntaxError: Identifier 'MEM_PAGE_SIZE' has already been declared
+  "proxy": [
+    "basic-new-Instance-module",
+    "basic-new-Instance-compile",
+    "basic-new-Instance-compileStreaming",
+    "external-call",
+    "multiple-worker-different-name"
   ],
-  online: [
+  "online": [
     "boa",
     "bullet",
     "commanderkeen",
-    "factorial",
+    "ffmpeg",
     "fib",
     "figma-startpage",
     "fractals",
     "funky-kart",
-    "game-of-life",
     "gotemplate",
     "guiicons",
     "handy-tools",
     "heatmap",
     "hnset-bench",
+    "hydro",
     "image-convolute",
     "jqkungfu",
     "jsc",
@@ -59,7 +58,6 @@ export const filter = {
     "rfxgen",
     "rguilayout",
     "rguistyler",
-    "riconpacker",
     "roslyn",
     "rustpython",
     "sandspiel",
@@ -69,6 +67,7 @@ export const filter = {
     "takahirox",
     "timestretch",
     "uarm",
+    "virtualkc",
     "visual6502remix",
     "waforth",
     "wheel",

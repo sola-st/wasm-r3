@@ -8,7 +8,7 @@ import type { Browser, Frame, Worker, Page } from 'playwright'
 export const commonOptions = [
     { name: "firefoxFrontend", alias: "f", type: Boolean },
     { name: "webkitFrontend", alias: "w", type: Boolean },
-    { name: "alternativeDownload", type: Boolean, defaultValue: false },
+    // { name: "alternativeDownload", type: Boolean, defaultValue: false },
     { name: "alternativeTrace", type: Boolean, defaultValue: false },
 ]
 
@@ -103,7 +103,9 @@ export class Analyser {
             traces = (await this.getResults()).map(t => trimFromLastOccurance(t, 'ER'))
         }
         let originalWasmBuffer;
-        if (this.options.alternativeDownload) {
+        // TODO: this has been disabled after https://github.com/doehyunbaek/wasabi/commit/eb3077d27835d2eb5d27a26e29e9ef8c82efe9cc
+        // if (this.options.alternativeDownload) {
+        if (false) {
             originalWasmBuffer = await this.getBuffersThroughDownloads()
         } else {
             originalWasmBuffer = await this.getBuffers()
