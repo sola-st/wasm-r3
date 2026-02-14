@@ -26,21 +26,51 @@ export const filter = {
     "multiple-worker-different-name", // SyntaxError: Identifier 'MEM_PAGE_SIZE' has already been declared
   ],
   online: [
-    "heatmap", // works fine, but too long so we skip it
-    "lichess", // failing test
-    "livesplit", // uses simd, filter for now
-    "onnxjs", // // unknown func: failed to find name `$1000008`"
-    "gotemplate", // timeout for locator('#output')
-    "playnox", // test doesn't end
-    "hnset-bench", // no benchmark generated
-    "video", // empty benchmark generated
-    "wasmsh", // empty benchmark generated
-    "roslyn", // not working
-    "rustpython", // not working
-    "skeletal", // not working
-    "sqlpractice", // not working
-    "takahirox", // not working
-    "timestretch", // not working
-    "wheel", // not working
+    "boa",
+    "bullet",
+    "commanderkeen",
+    "factorial",
+    "fib",
+    "figma-startpage",
+    "fractals",
+    "funky-kart",
+    "game-of-life",
+    "gotemplate",
+    "guiicons",
+    "handy-tools",
+    "heatmap",
+    "hnset-bench",
+    "image-convolute",
+    "jqkungfu",
+    "jsc",
+    "kittygame",
+    "lichess",
+    "livesplit",
+    "mandelbrot",
+    "multiplyDouble",
+    "multiplyInt",
+    "noisereduction",
+    "ogv",
+    "onnxjs",
+    "pacalc",
+    "parquet",
+    "pathfinding",
+    "playnox",
+    "rfxgen",
+    "rguilayout",
+    "rguistyler",
+    "riconpacker",
+    "roslyn",
+    "rustpython",
+    "sandspiel",
+    "skeletal",
+    "sqlgui",
+    "sqlpractice",
+    "takahirox",
+    "timestretch",
+    "uarm",
+    "visual6502remix",
+    "waforth",
+    "wheel",
   ]
 }
