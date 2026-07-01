@@ -2,7 +2,6 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^20.9.0",
-    "@types/ws": "^8.5.10",
     "bun-types": "latest",
     "typescript": "^5.2.2",
     "wabt": "^1.0.32"
@@ -13,8 +12,7 @@
   "dependencies": {
     "acorn": "^8.11.2",
     "command-line-args": "^5.2.1",
-    "playwright": ">=1.55.1",
-    "ws": "^8.17.1"
+    "playwright": ">=1.55.1"
   },
   "scripts": {
     "start": "node --experimental-strip-types ./src/start.ts",
